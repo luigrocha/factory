@@ -1,6 +1,6 @@
-<div class="grid">
-    <div class="col-12">
-        <div class="card docs no-margin">
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card docs">
 
             <h4>Current Version</h4>
             <p>Angular 13 and PrimeNG 13</p>
@@ -9,17 +9,15 @@
             <p>Poseidon has no direct dependency. More information about dependencies is available at <a href="https://www.primefaces.org/why-primeng-templates/">Why PrimeNG Templates</a> article.</p>
 
             <h4>Getting Started</h4>
-            <p>Poseidon is a true native application template for Angular and is distributed as a CLI project. If you don't have CLI installed already run the following commands to set it up. In case
-            you have an application that do not use CLI, skip the <a href="#noncli">Integration with an Existing Non CLI Application</a> part.
-            Poseidon is distributed with PrimeNG 5.2.x and Angular 5.2.x based on Angular CLI 1.6.x.</p>
+            <p>Poseidon is a true native application template for Angular and is distributed as a CLI project. In case CLI is not installed already, use the command below to set it up.</p>
 <app-code ngPreserveWhitespaces ngNonBindable lang="markup">
-npm install -g @angular/cli
+npm install -g @angular-cli
 </app-code>
 
             <p>Once CLI is ready in your system, extract the contents of the Poseidon zip file distribution, cd to the directory,
             install the libraries from npm and then execute "ng serve" to run the application in your local environment at http://localhost:4200/.</p>
 <app-code ngPreserveWhitespaces ngNonBindable lang="markup">
-cd Poseidon
+cd poseidon
 npm install
 ng serve
 </app-code>
@@ -48,58 +46,54 @@ Run 'ng help' for more options.
             </p>
 
             <h4>Template</h4>
-            <p>Main layout is the html view of the app.component.ts, it is divided into a couple of sections such as topbar, menu and footer. Here is the code for
-                the main template. The component class app.component.ts implements the logic such as opening menus, managing layout modes and so on.
+            <p>Main layout is the html view of the app.component.ts, it is divided into a couple of sections such as topbar, right panel, menu and footer. Here is the code for
+                the main template. The component class app.main.component.ts implements the logic such as opening menus, layout modes and so on.
             </p>
 <app-code ngPreserveWhitespaces ngNonBindable>
-&lt;div class="layout-wrapper" (click)="onLayoutClick()"
-    [ngClass]="&#123;'layout-horizontal': isHorizontal(),
-                'layout-overlay': isOverlay(),
-                'layout-static': isStatic(),
-                'layout-slim':isSlim(),
-                'layout-static-inactive': staticMenuDesktopInactive,
-                'layout-mobile-active': staticMenuMobileActive,
-                'layout-overlay-active':overlayMenuActive, 'p-input-filled': app.inputStyle === 'filled', 'p-ripple-disabled': !app.ripple&#125;"&gt;
+&lt;div class=&quot;layout-wrapper&quot; [ngClass]=&quot;&#123;'p-input-filled': app.inputStyle === 'filled', 'p-ripple-disabled': !app.ripple,
+    'layout-static': isStatic(),
+    'layout-overlay': isOverlay(),
+    'layout-overlay-active': overlayMenuActive &amp;&amp; isOverlay(),
+    'layout-horizontal': isHorizontal(),
+    'layout-static-active': !staticMenuDesktopInactive &amp;&amp; isStatic(),
+    'layout-mobile-active': staticMenuMobileActive,
+    'layout-rtl': app.isRTL,
+    'layout-rightpanel-active': rightPanelActive&#125;&quot; [class]=&quot;'layout-menu-'+ app.menuTheme+ ' layout-topbar-'+ app.topbarTheme&quot;&gt;
 
     &lt;app-topbar&gt;&lt;/app-topbar&gt;
-    &lt;div class="layout-menu-container" (click)="onMenuClick($event)"&gt;
-        &lt;div class="layout-menu-content"&gt;
+
+    &lt;app-rightpanel&gt;&lt;/app-rightpanel&gt;
+
+    &lt;div class=&quot;menu-wrapper&quot; (click)=&quot;onMenuClick($event)&quot;&gt;
+        &lt;div class=&quot;layout-menu-container&quot;&gt;
             &lt;app-menu&gt;&lt;/app-menu&gt;
-            &lt;div class="layout-menu-footer"&gt;
-                &lt;div class="layout-menu-footer-title"&gt;TASKS&lt;/div&gt;
-
-                &lt;div class="layout-menu-footer-content"&gt;
-                    &lt;p-progressBar [value]="50" [showValue]="false"&gt;&lt;/p-progressBar&gt;
-                    Today
-
-                    &lt;p-progressBar [value]="80" [showValue]="false"&gt;&lt;/p-progressBar&gt;
-                    Overall
-                &lt;/div&gt;
-            &lt;/div&gt;
         &lt;/div&gt;
     &lt;/div&gt;
 
-    &lt;div class="layout-content"&gt;
+    &lt;div class=&quot;layout-main&quot;&gt;
         &lt;app-breadcrumb&gt;&lt;/app-breadcrumb&gt;
 
-        &lt;div class="layout-content-container"&gt;
+        &lt;div class=&quot;layout-content&quot;&gt;
             &lt;router-outlet&gt;&lt;/router-outlet&gt;
         &lt;/div&gt;
 
-        &lt;app-config&gt;&lt;/app-config&gt;
         &lt;app-footer&gt;&lt;/app-footer&gt;
-        &lt;div class="layout-mask" *ngIf="staticMenuMobileActive"&gt;&lt;/div&gt;
     &lt;/div&gt;
+
+    &lt;app-config&gt;&lt;/app-config&gt;
+
+    &lt;div *ngIf=&quot;staticMenuMobileActive&quot; class=&quot;layout-mask modal-in&quot;&gt;&lt;/div&gt;
+
 &lt;/div&gt;
 </app-code>
 
             <h4>Menu</h4>
             <p>Menu is a separate component defined in app.menu.component.ts file based on PrimeNG MenuModel API. In order to define the menuitems,
-            navigate to this file and define your own model as a nested structure. Here is the menu component from the sample application.</p>
-
+            navigate to menu.component.ts and define your own model. Here is the menu component from the sample application.</p>
 <div style="height:400px;overflow: auto;">
 <app-code ngPreserveWhitespaces ngNonBindable lang="javascript">
-import &#123;Component, OnInit&#125; from '@angular/core';
+import &#123;Component,OnInit&#125; from '@angular/core';
+import &#123;AppMainComponent&#125; from './app.component';
 
 @Component(&#123;
     selector: 'app-menu',
@@ -111,7 +105,12 @@ import &#123;Component, OnInit&#125; from '@angular/core';
 &#125;)
 export class AppMenuComponent implements OnInit &#123;
 
+
+    export class AppMenuComponent implements OnInit &#123;
+
     model: any[];
+
+    constructor(public app: AppComponent) &#123;&#125;
 
     ngOnInit() &#123;
         this.model = [
@@ -126,8 +125,8 @@ export class AppMenuComponent implements OnInit &#123;
                 items: [
                     &#123;label: 'Form Layout', icon: 'pi pi-fw pi-id-card', routerLink: ['/uikit/formlayout']&#125;,
                     &#123;label: 'Input', icon: 'pi pi-fw pi-check-square', routerLink: ['/uikit/input']&#125;,
-                    &#123;label: 'Float Label', icon: 'pi pi-bookmark', routerLink: ['/uikit/floatlabel']&#125;,
-                    &#123;label: 'Invalid State', icon: 'pi pi-exclamation-circle', routerLink: ['/uikit/invalidstate']&#125;,
+                    &#123;label: 'Float Label', icon: 'pi pi-fw pi-bookmark', routerLink: ['/uikit/floatlabel']&#125;,
+                    &#123;label: 'Invalid State', icon: 'pi pi-fw pi-exclamation-circle', routerLink: ['/uikit/invalidstate']&#125;,
                     &#123;label: 'Button', icon: 'pi pi-fw pi-mobile', routerLink: ['/uikit/button'], class: 'rotated-icon'&#125;,
                     &#123;label: 'Table', icon: 'pi pi-fw pi-table', routerLink: ['/uikit/table']&#125;,
                     &#123;label: 'List', icon: 'pi pi-fw pi-list', routerLink: ['/uikit/list']&#125;,
@@ -135,7 +134,7 @@ export class AppMenuComponent implements OnInit &#123;
                     &#123;label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/uikit/panel']&#125;,
                     &#123;label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/uikit/overlay']&#125;,
                     &#123;label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/uikit/media']&#125;,
-                    &#123;label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu'], preventExact: true&#125;,
+                    &#123;label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu']&#125;,
                     &#123;label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/uikit/message']&#125;,
                     &#123;label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/uikit/file']&#125;,
                     &#123;label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/uikit/charts']&#125;,
@@ -143,17 +142,17 @@ export class AppMenuComponent implements OnInit &#123;
                 ]
             &#125;,
             &#123;
-                label: 'Prime Blocks', icon: 'pi pi-fw pi-prime', routerLink: ['/blocks'],
+                label: 'Utilities', icon: 'pi pi-fw pi-compass', routerLink: ['utilities'],
                 items: [
-                    &#123;label: 'Free Blocks', icon: 'pi pi-fw pi-eye', routerLink: ['/blocks']&#125;,
-                    &#123;label: 'All Blocks', icon: 'pi pi-fw pi-globe', url: ['https://www.primefaces.org/primeblocks-ng'], target: '_blank'&#125;,
-                ]
-            &#125;,
-            &#123;
-                label: 'Utilities', icon: 'pi pi-fw pi-compass', routerLink: ['/utilities'],
-                items: [
-                    &#123;label: 'PrimeIcons', icon: 'pi pi-fw pi-prime', routerLink: ['utilities/icons']&#125;,
-                    &#123;label: 'PrimeFlex', icon: 'pi pi-fw pi-desktop', url: ['https://www.primefaces.org/primeflex/'], target: '_blank'&#125;,
+                    &#123;label: 'Display', icon: 'pi pi-fw pi-desktop', routerLink: ['utilities/display']&#125;,
+                    &#123;label: 'Elevation', icon: 'pi pi-fw pi-external-link', routerLink: ['utilities/elevation']&#125;,
+                    &#123;label: 'FlexBox', icon: 'pi pi-fw pi-directions', routerLink: ['utilities/flexbox']&#125;,
+                    &#123;label: 'Icons', icon: 'pi pi-fw pi-search', routerLink: ['utilities/icons']&#125;,
+                    &#123;label: 'Text', icon: 'pi pi-fw pi-pencil', routerLink: ['utilities/text']&#125;,
+                    &#123;label: 'Widgets', icon: 'pi pi-fw pi-star', routerLink: ['utilities/widgets']&#125;,
+                    &#123;label: 'Grid System', icon: 'pi pi-fw pi-th-large', routerLink: ['utilities/grid']&#125;,
+                    &#123;label: 'Spacing', icon: 'pi pi-fw pi-arrow-right', routerLink: ['utilities/spacing']&#125;,
+                    &#123;label: 'Typography', icon: 'pi pi-fw pi-align-center', routerLink: ['utilities/typography']&#125;
                 ]
             &#125;,
             &#123;
@@ -215,7 +214,7 @@ export class AppMenuComponent implements OnInit &#123;
                 ]
             &#125;,
             &#123;
-                label: 'Start', icon: 'pi pi-download',
+                label: 'Start', icon: 'pi pi-fw pi-download',
                 items: [
                     &#123;
                         label: 'Buy Now', icon: 'pi pi-fw pi-shopping-cart', url: ['https://www.primefaces.org/store']
@@ -231,69 +230,67 @@ export class AppMenuComponent implements OnInit &#123;
 </app-code>
 </div>
 
-
             <h4>Integration with an Existing CLI Project</h4>
             <p>To setup Poseidon in an existing project, copy the <i>src/assets</i> folder to your projects folder with the same name
                 and replace the contents of app.component.ts, app.component.html with their counterparts in Poseidon under <i>src/app</i> folder.</p>
 
-          <p>Install PrimeNG</p>
+            <p>Install PrimeNG</p>
 <app-code ngPreserveWhitespaces ngNonBindable lang="markup">
 npm install primeng@latest --save
 npm install primeicons@latest --save
 </app-code>
 
-          <p>Add PrimeNG CSS at styles section in angular.json.</p>
+            <p>Add PrimeNG CSS at styles section in angular.json.</p>
 
-<app-code ngPreserveWhitespaces ngNonBindable lang="markup">
+ <app-code ngPreserveWhitespaces ngNonBindable lang="json">
 "styles": [
-    "styles.scss"                 //your styles and overrides
+    "styles.scss"      //your styles and overrides
 ],
 </app-code>
 
             <p>Last part is adding theme and layout css files, in the CLI app they are defined using link tags in index.html so the demo can switch them on
             the fly by changing the path however if this is not a requirement, you may also add them to the styles configuration so they go inside the bundle.</p>
 
-            <h4 id="noncli">Integration with an Existing Non-CLI Project</h4>
-            <p>For an existing project that do not use CLI, setup steps are more or less similar. Start with installing the dependencies listed above in package.json</p>
-            <p>Copy the <i>src/assets</i> folder to your application and include the resources listed above with a module bundler like webpack or using link-script tags.</p>
-            <p>Finally copy the contents of app.component.html to your application's main component template such as <i>app/application.html</i> along
-            with the sub components which are app.menu.component.ts, app.breadcrumb.component.ts, app.app.topbar.component.ts and app.footer.component.ts.</p>
-
             <h4>Theme</h4>
-            <p>Poseidon provides 16 PrimeNG themes out of the box, setup of a theme is simple by including the css of theme to your bundle that are located inside resources/theme folder.</p>
+            <p>Poseidon provides 36 PrimeNG themes out of the box, setup of a theme simple including the css of theme to your page that are located inside assets/theme folder such as assets/theme/theme-amber.</p>
 
             <ul>
-                <li>theme-blue-dark</li>
-                <li>blue-light</li>
-                <li>blue-dark</li>
-                <li>blue-light</li>
-                <li>cyan-light</li>
-                <li>cyan-dark</li>
-                <li>cyan-light</li>
-                <li>deeppurple-light</li>
-                <li>deeppurple-dark</li>
-                <li>deeppurple-light</li>
-                <li>green-light</li>
-                <li>green-dark</li>
-                <li>green-light</li>
-                <li>indigo-light</li>
-                <li>indigo-dark</li>
-                <li>indigo-light</li>
-                <li>lightgreen-light</li>
-                <li>lightgreen-dark</li>
-                <li>lightgreen-light</li>
-                <li>orange-light</li>
-                <li>orange-dark</li>
-                <li>orange-light</li>
-                <li>pink-light</li>
-                <li>pink-dark</li>
-                <li>pink-light</li>
-                <li>purple-light</li>
-                <li>blupurplee-dark</li>
-                <li>purple-light</li>
-                <li>teal-light</li>
-                <li>teal-dark</li>
-                <li>teal-light</li>
+                <li>theme-amber-dark</li>
+                <li>theme-amber-dim</li>
+                <li>theme-amber-light</li>
+                <li>theme-amethyst-dark</li>
+                <li>theme-amethyst-dim</li>
+                <li>theme-amethyst-light</li>
+                <li>theme-apple-dark</li>
+                <li>theme-apple-dim</li>
+                <li>theme-apple-light</li>
+                <li>theme-camelot-dark</li>
+                <li>theme-camelot-dim</li>
+                <li>theme-camelot-light</li>
+                <li>theme-cape-palliser-dark</li>
+                <li>theme-cape-palliser-dim</li>
+                <li>theme-cape-palliser-light</li>
+                <li>theme-cyan-dark</li>
+                <li>theme-cyan-dim</li>
+                <li>theme-cyan-light</li>
+                <li>theme-denim-dark</li>
+                <li>theme-denim-dim</li>
+                <li>theme-denim-light</li>
+                <li>theme-gigas-dark</li>
+                <li>theme-gigas-dim</li>
+                <li>theme-gigas-light</li>
+                <li>theme-jungle-green-dark</li>
+                <li>theme-jungle-green-dim</li>
+                <li>theme-jungle-green-light</li>
+                <li>theme-sea-green-dark</li>
+                <li>theme-sea-green-dim</li>
+                <li>theme-sea-green-light</li>
+                <li>theme-tapestry-dark</li>
+                <li>theme-tapestry-dim</li>
+                <li>theme-tapestry-light</li>
+                <li>theme-wegewood-dark</li>
+                <li>theme-wegewood-dim</li>
+                <li>theme-wegewood-light</li>
             </ul>
 
             <p>A custom theme can be developed by the following steps.</p>
@@ -305,45 +302,32 @@ npm install primeicons@latest --save
                 <li>Include the generated theme.css to your page.</li>
             </ul>
 
-            <p>Here are the variables required to create a theme.</p>
+            <p>Here are the variables required to create a theme, you may need to change the last line according to the
+                relative path of the sass folder in your application.</p>
 
 <app-code ngPreserveWhitespaces ngNonBindable lang="css">
-$primaryColor: #39a3f4 !default;
-$primaryLightColor: scale-color($primaryColor, $lightness: 60%) !default;
-$primaryDarkColor: scale-color($primaryColor, $lightness: -10%) !default;
-$primaryDarkerColor: scale-color($primaryColor, $lightness: -20%) !default;
-$primaryTextColor: #ffffff !default;
+$primaryLightColor: #4D9FDC;
+$primaryColor: #1B74C5;
+$primaryDarkColor: #135AA9;
+$primaryDarkerColor: #0D438D;
+$primaryTextColor: #f8fafc;
 
 $highlightBg: $primaryColor;
 $highlightTextColor: $primaryTextColor;
 
-@import '../sass/theme/_theme_light.scss';
-</app-code>
-
-            <p>If you are creating a dark theme, import the _theme_dark.scss instead;</p>
-<app-code ngPreserveWhitespaces ngNonBindable lang="css">
-$primaryColor: #39a3f4;
-$primaryLightColor: scale-color($primaryColor, $lightness: 30%) !default;
-$primaryDarkColor: scale-color($primaryColor, $lightness: -10%) !default;
-$primaryDarkerColor: scale-color($primaryColor, $lightness: -20%) !default;
-$primaryTextColor: #ffffff;
-
-$highlightBg: $primaryColor;
-$highlightTextColor: $primaryTextColor;
-
-@import '../sass/theme/_theme_dark.scss';
+@import '../../sass/theme/_theme_light';
 </app-code>
 
             <p> An example sass command to compile the css would be;</p>
 
 <app-code ngPreserveWhitespaces ngNonBindable lang="markup">
-sass src/assets/theme/theme-myown.scss src/assets/theme/theme-myown.css
+sass src/assets/theme-myown/theme.scss src/assets/theme-myown/theme.css
 </app-code>
 
             <p>Watch mode is handy to avoid compiling everytime when a change is made, instead use the following command
             so that sass generates the file whenever you make a customization. This builds all css files whenever a change is made to any scss file.</p>
 <app-code ngPreserveWhitespaces ngNonBindable lang="markup">
-sass --watch src/:src/ --no-source-map
+sass --watch src/assets:src/assets --no-source-map
 </app-code>
 
             <p>Same can also be applied to layout itself;</p>
@@ -355,56 +339,52 @@ sass --watch src/:src/ --no-source-map
                 <li>Serve the css by importing it using a link tag or a bundler.</li>
             </ul>
 
-            <p>Here are the variables required to create a layout.</p>
+            <p>Here are the variables required to create a layout, you may need to change the last line according to the
+                relative path of the sass folder in your application.</p>
 
 <app-code ngPreserveWhitespaces ngNonBindable lang="css">
-$primaryColor:#39a3f4;
+$primaryColor:#2c84d8;
+$primaryLightColor:#3B92E5;
 $primaryTextColor:#ffffff;
 
-@import '../../sass/layout/_layout_light.scss';
+@import '../../sass/variables/layout/_layout_light';
+@import '../../sass/layout/_layout';
 </app-code>
 
-            <h4>Common SASS Variables</h4>
-            <p>In case you'd like to customize the shared variables, the _variables.scss files are where the options are defined for layout and theme.</p>
-            <p>Variables of the light component theme, see the <a href="https://www.primefaces.org/designer/api/primeng/13.0.0/">Theme Designer API</a> for documentation.</p>
-<h5>sass/layout/_variables.scss</h5>
+            <p>For both cases, several .scss files such as _layout.scss, _theme.scss or _variables.scss has to be present relative to your scss files, these are available inside the assets/sass folder in the distribution.</p>
+            <p>In case you'd like to customize the structure not just the colors, the _variables.scss is where the structural variables (e.g. font size, paddings) for the layout are defined.</p>
+<h5>sass/variables/layout/_layout_common.scss</h5>
 <app-code ngPreserveWhitespaces ngNonBindable lang="css">
-$fontFamily:"Source Sans Pro",Arial,sans-serif;
-$fontSize:14px;
-$borderRadius:2px;
-$transitionDuration:.3s;
+//general
+$fontSize:14px !default;
+$fontFamily: 'Open Sans' !default;
+$mobileBreakpoint:991px !default;
+$borderRadius:5px !default;
+$animationDuration:.2s !default;
+$animationTimingFunction:cubic-bezier(.05,.74,.2,.99) !default;
+$letterSpacing:normal !default;
+$transitionDuration:.2s !default;
+$tabletBreakpoint:991px !default;
+$phoneBreakpoint:576px !default;
 </app-code>
 
-<h5>sass/theme/_theme_light.scss</h5>
+<h5>sass/variables/theme/_theme_light.scss</h5>
 <div style="height:400px;overflow: auto;">
 <app-code ngPreserveWhitespaces ngNonBindable lang="css">
-$colors: (
-    "blue": #2196F3,
-    "green": #4caf50,
-    "yellow": #FBC02D,
-    "cyan": #00BCD4,
-    "pink": #E91E63,
-    "indigo": #3F51B5,
-    "teal": #009688,
-    "orange": #F57C00,
-    "bluegray": #607D8B,
-    "purple": #9C27B0
-);
-
 //reused color variables
-$shade000:#ffffff !default;    //surface
-$shade100:#f8f9fa !default;    //header background
-$shade200:#e9ecef !default;    //hover background
-$shade300:#dee2e6 !default;    //border, divider
-$shade400:#ced4da !default;    //input border
-$shade500:#adb5bd !default;    //input icon
-$shade600:#6c757d !default;    //text secondary color
-$shade700:#495057 !default;    //text color
-$shade800:#343a40 !default;    //unused
-$shade900:#212529 !default;    //unused
+$shade000:#FDFEFF !default;    //surface
+$shade100:#F6F9FE !default;    //header background
+$shade200:rgba(#E8F1F8,.7) !default;    //hover background
+$shade300:#E4E5E5 !default;    //border, divider
+$shade400:#D7D8D9 !default;    //input border
+$shade500:#515C66 !default;    //input icon
+$shade600:#657380 !default;    //text secondary color
+$shade700:#515C66 !default;    //text color
+$shade800:#3B475F !default;    //unused
+$shade900:#252F44 !default;    //unused
 
 //global
-$fontFamily:"Source Sans Pro",Arial,sans-serif !default;
+$fontFamily:'Open Sans' !default;
 $fontSize:1rem !default;
 $fontWeight:normal !default;
 $textColor:$shade700 !default;
@@ -489,6 +469,12 @@ $inputOverlayBg:$inputListBg !default;
 $inputOverlayHeaderBg:$inputListHeaderBg !default;
 $inputOverlayBorder:0 none !default;
 $inputOverlayShadow:0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12) !default;
+
+//password
+$passwordMeterBg:$shade300 !default;
+$passwordWeakBg:#D32F2F !default;
+$passwordMediumBg:#FBC02D !default;
+$passwordStrongBg:#689F38 !default;
 
 //button
 $buttonPadding:.5rem 1rem !default;
@@ -612,6 +598,7 @@ $radiobuttonActiveHoverBorderColor:$primaryDarkerColor !default;
 $colorPickerPreviewWidth:2rem !default;
 $colorPickerPreviewHeight:2rem !default;
 $colorPickerBg:#323232 !default;
+$colorPickerBorder:1px solid #191919 !default;
 $colorPickerBorderColor:#191919 !default;
 $colorPickerHandleColor:$shade000 !default;
 
@@ -676,6 +663,7 @@ $calendarHeaderBorder:1px solid $shade300 !default;
 $calendarHeaderTextColor:$shade700 !default;
 $calendarHeaderFontWeight:600 !default;
 $calendarHeaderCellPadding:.5rem !default;
+$calendarMonthYearHeaderHoverTextColor: $primaryColor !default;
 
 $calendarCellDatePadding:.5rem !default;
 $calendarCellDateWidth:2.5rem !default;
@@ -711,6 +699,7 @@ $inputSwitchSliderOnHoverBg:$primaryDarkColor !default;
 $inputSwitchHandleOnBg:$shade000 !default;
 
 //panel
+$panelHeaderBorderColor:$shade300 !default;
 $panelHeaderBorder:1px solid $shade300 !default;
 $panelHeaderBg:$shade100 !default;
 $panelHeaderTextColor:$shade700 !default;
@@ -722,6 +711,7 @@ $panelHeaderHoverBg:$shade200 !default;
 $panelHeaderHoverBorderColor:$shade300 !default;
 $panelHeaderTextHoverColor:$shade700 !default;
 
+$panelContentBorderColor: $shade300 !default;
 $panelContentBorder:1px solid $shade300 !default;
 $panelContentBg:$shade000 !default;
 $panelContentTextColor:$shade700 !default;
@@ -898,6 +888,7 @@ $pickListBreakpoint:769px !default;
 
 //schedule
 $fullCalendarEventBg:$primaryDarkColor !default;
+$fullCalendarEventBorderColor: $primaryDarkColor !default;
 $fullCalendarEventBorder:1px solid $primaryDarkColor !default;
 $fullCalendarEventTextColor:$primaryTextColor !default;
 
@@ -1003,6 +994,7 @@ $progressBarHeight:1.5rem !default;
 $progressBarBorder:0 none !default;
 $progressBarBg:$shade300 !default;
 $progressBarValueBg:$primaryColor !default;
+$progressBarValueTextColor:$primaryTextColor !default;
 
 //menu (e.g. menu, menubar, tieredmenu)
 $menuWidth:12.5rem !default;
@@ -1030,6 +1022,7 @@ $overlayMenuBg:$menuBg !default;
 $overlayMenuBorder:0 none !default;
 $overlayMenuShadow:0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12) !default;
 $verticalMenuPadding:.25rem 0 !default;
+$verticalMenuitemMargin:0;
 $menuSeparatorMargin:.25rem 0 !default;
 
 $breadcrumbPadding:1rem !default;
@@ -1155,66 +1148,39 @@ $splitterGutterBg:$shade100;
 $splitterGutterHandleBg:$shade300;
 
 :root &#123;
---surface-a:#&#123;$shade000&#125;;
---surface-b:#&#123;$shade100&#125;;
---surface-c:#&#123;$shade200&#125;;
---surface-d:#&#123;$shade300&#125;;
---surface-e:#&#123;$shade000&#125;;
---surface-f:#&#123;$shade000&#125;;
---text-color:#&#123;$shade700&#125;;
---text-color-secondary:#&#123;$shade600&#125;;
---primary-color:#&#123;$primaryColor&#125;;
---primary-color-text:#&#123;$primaryTextColor&#125;;
---font-family:#&#123;$fontFamily&#125;;
+    --surface-a:#&#123;$shade000&#125;;
+    --surface-b:#&#123;$shade100&#125;;
+    --surface-c:#&#123;$shade200&#125;;
+    --surface-d:#&#123;$shade300&#125;;
+    --surface-e:#&#123;$shade000&#125;;
+    --surface-f:#&#123;$shade000&#125;;
+    --text-color:#&#123;$shade700&#125;;
+    --text-color-secondary:#&#123;$shade600&#125;;
+    --primary-color:#&#123;$primaryColor&#125;;
+    --primary-color-text:#&#123;$primaryTextColor&#125;;
+    --primary-dark-color:#&#123;$primaryDarkColor&#125;;
+    --font-family:#&#123;$fontFamily&#125;;
 &#125;
-
-@import '../overrides/_theme_variables';
-@import './designer/_components';
-@import '../overrides/_theme_styles';
-
 </app-code>
 </div>
 
             <h4>Menu Modes</h4>
-            <p>Menu has 4 modes, static, overlay, slim and horizontal. Layout container element in app.component.html is used to define which mode to use by adding specific classes. List
-            below indicates the style classes for each mode.</p>
+            <p>Menu has 3 modes, static, overlay and horizontal. Layout container element in application.html is used to define which mode to use by adding specific classes. List
+            below indicates the style classes for each mode. In addition menu</p>
             <ul>
                 <li>Static: "layout-wrapper layout-static"</li>
                 <li>Overlay: "layout-wrapper layout-overlay"</li>
-                <li>Popup: "layout-wrapper layout-popup"</li>
-                <li>Horizontal: "layout-wrapper layout-horizontal"</li>
+                <li>Horizontal: "layout-wrapper layout-static layout-horizontal"</li>
             </ul>
 
             <p>For example to create a horizontal menu, the div element should be in following form;</p>
-<app-code ngPreserveWhitespaces ngNonBindable lang="markup">
-&lt;div class="layout-wrapper layout-horizontal"&gt;
-</app-code>
-
-            <p>It is also possible to leave the choice to the user by keeping the preference at a component and using an ngClass expression so that user can switch between modes. Sample
-            application has an example implementation of such use case. Refer to app.component.ts for an example.</p>
-
-            <h4>Breadcrumb</h4>
-            <p>Poseidon has an optional built-in breadcrumb section right below the topbar.
-                The items are dynamically generated using a AppBreadcrumbService where each main page that goes into the router-outlet should provide a collection of MenuItem instances.
-                Here is an example component that updates the breadcrumb.</p>
 <app-code ngPreserveWhitespaces ngNonBindable lang="javascript">
-import &#123;Component&#125; from '@angular/core';
-import &#123;AppBreadcrumbService&#125; from '../../breadcrumb.service';
-
-@Component(&#123;
-    templateUrl: './emptydemo.component.html'
-&#125;)
-export class ControlPanelComponent &#123;
-
-    constructor(private breadcrumbService: AppBreadcrumbService) &#123;
-        this.breadcrumbService.setItems([
-            &#123;label: 'Admin'&#125;,
-            &#123;label: 'Control Panel', routerLink: ['/controlpanel']&#125;
-        ]);
-    &#125;
-
-&#125;
+&lt;div class="layout-wrapper layout-compact"&gt;
+    &lt;div class="layout-container layout-static layout-horizonal"&gt;
 </app-code>
+
+            <p>It is also possible to leave the choice to the user by keeping the preference at a component and usign an expression to bind it so that user can switch between modes. Sample
+            application has an example implementation of such use case. Refer to app.component.ts for an example.</p>
 
             <h4>Grid CSS</h4>
             <p>Poseidon uses PrimeNG Flex Grid CSS throughout the demos such as Dashboard, however any Grid library can be used with it since Poseidon Layout itself does not depend on PrimeFlex CSS.</p>

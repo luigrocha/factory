@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {ConfirmationService, MessageService} from 'primeng/api';
+import { AppBreadcrumbService } from 'src/app/app.breadcrumb.service';
 import {Product} from '../domain/product';
 import {ProductService} from '../service/productservice';
-import {AppBreadcrumbService} from '../../app.breadcrumb.service';
 
 @Component({
     templateUrl: './overlaysdemo.component.html',
+    styleUrls: ['./overlaysdemo.scss'],
     providers: [ConfirmationService, MessageService]
 })
 export class OverlaysDemoComponent implements OnInit {
@@ -31,8 +32,8 @@ export class OverlaysDemoComponent implements OnInit {
     constructor(private productService: ProductService, private confirmationService: ConfirmationService,
                 private messageService: MessageService, private breadcrumbService: AppBreadcrumbService) {
         this.breadcrumbService.setItems([
-            {label: 'UI Kit'},
-            {label: 'Overlay'}
+            { label: 'Ui Kit' },
+            { label: 'Overlay', routerLink: ['/uikit/overlay'] }
         ]);
     }
 
@@ -78,9 +79,5 @@ export class OverlaysDemoComponent implements OnInit {
                 this.messageService.add({severity: 'error', summary: 'Rejected', detail: 'You have rejected'});
             }
         });
-    }
-
-    formatCurrency(value) {
-        return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
     }
 }

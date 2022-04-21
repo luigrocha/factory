@@ -1,16 +1,13 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {Product} from '../domain/product';
 import {ProductService} from '../service/productservice';
 import {AppBreadcrumbService} from '../../app.breadcrumb.service';
 import { AppMainComponent } from '../../app.main.component';
-import {AppConfig} from '../domain/appconfig';
-import {ConfigService} from '../service/app.config.service';
-import {Subscription} from 'rxjs';
 
 @Component({
     templateUrl: './dashboard.component.html',
-    styleUrls: ['../../../assets/demo/badges.scss']
+    styleUrls: ['./tabledemo.scss']
 })
 export class DashboardDemoComponent implements OnInit {
 
@@ -46,21 +43,12 @@ export class DashboardDemoComponent implements OnInit {
 
     productsLastWeek: Product[];
 
-    config: AppConfig;
-
-    subscription: Subscription;
-
-    constructor(private productService: ProductService, private breadcrumbService: AppBreadcrumbService, private appMain: AppMainComponent, public configService: ConfigService) {
+    constructor(private productService: ProductService,
+                private breadcrumbService: AppBreadcrumbService, private appMain: AppMainComponent) {
         this.breadcrumbService.setItems([
             { label: 'Favorites' },
-            { label: 'Dashboard' }
+            { label: 'Dashboard', routerLink: ['/'] }
         ]);
-
-        this.config = this.configService.config;
-        this.subscription = this.configService.configUpdate$.subscribe(config => {
-            this.config = config;
-            this.updateChartOptions();
-        });
     }
 
     ngOnInit() {
@@ -94,6 +82,39 @@ export class DashboardDemoComponent implements OnInit {
                 pointRadius: 3,
                 tension: .4
             }]
+        };
+
+        this.ordersOptions = {
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#A0A7B5'
+                    }
+                }
+            },
+            responsive: true,
+            hover: {
+                mode: 'index'
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        color: '#A0A7B5'
+                    },
+                    grid: {
+                        color:  'rgba(160, 167, 181, .3)',
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: '#A0A7B5'
+                    },
+                    grid: {
+                        color:  'rgba(160, 167, 181, .3)',
+                    }
+                },
+            }
         };
 
         this.trafficChart = this.getTrafficChartData();
@@ -201,92 +222,6 @@ export class DashboardDemoComponent implements OnInit {
             this.products = this.productsThisWeek;
         } else {
             this.products = this.productsLastWeek;
-        }
-    }
-
-    updateChartOptions() {
-        if(this.config.dark){
-            this.applyDarkTheme();
-        } else {
-            this.applyLightTheme();
-        }
-    }
-
-    applyDarkTheme() {
-
-        this.ordersOptions = {
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: {
-                        color: '#ebedef'
-                    }
-                }
-            },
-            responsive: true,
-            hover: {
-                mode: 'index'
-            },
-            scales: {
-                y: {
-                    ticks: {
-                        color: '#ebedef'
-                    },
-                    grid: {
-                        color:  'rgba(160, 167, 181, .3)',
-                    }
-                },
-                x: {
-                    ticks: {
-                        color: '#ebedef'
-                    },
-                    grid: {
-                        color:  'rgba(160, 167, 181, .3)',
-                    }
-                },
-            }
-        };
-    }
-
-    applyLightTheme() {
-
-        this.ordersOptions = {
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: {
-                        color: '#A0A7B5'
-                    }
-                }
-            },
-            responsive: true,
-            hover: {
-                mode: 'index'
-            },
-            scales: {
-                y: {
-                    ticks: {
-                        color: '#A0A7B5'
-                    },
-                    grid: {
-                        color:  'rgba(160, 167, 181, .3)',
-                    }
-                },
-                x: {
-                    ticks: {
-                        color: '#A0A7B5'
-                    },
-                    grid: {
-                        color:  'rgba(160, 167, 181, .3)',
-                    }
-                },
-            }
-        };
-    }
-
-    ngOnDestroy() {
-        if(this.subscription){
-            this.subscription.unsubscribe();
         }
     }
 }

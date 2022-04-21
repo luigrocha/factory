@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {EventService} from '../demo/service/eventservice';
-import {AppBreadcrumbService} from "../app.breadcrumb.service";
+import {AppBreadcrumbService} from '../app.breadcrumb.service';
 
 @Component({
     templateUrl: './app.calendar.component.html',
@@ -9,16 +9,6 @@ import {AppBreadcrumbService} from "../app.breadcrumb.service";
             :host ::ng-deep .fc-header-toolbar {
                 display: flex;
                 flex-wrap: wrap;
-
-                .fc-dayGridMonth-button {
-                    margin-top: 1rem;
-                }
-                .fc-timeGridWeek-button{
-                    margin-top: 1rem;
-                }
-                .fc-timeGridDay-button{
-                    margin-top: 1rem;
-                }
             }
         }
     `]
@@ -39,8 +29,8 @@ export class AppCalendarComponent implements OnInit {
 
     constructor(private eventService: EventService, private breadcrumbService: AppBreadcrumbService) {
         this.breadcrumbService.setItems([
-            {label: 'Pages'},
-            {label: 'Calendar'}
+            { label: 'Pages' },
+            { label: 'Calendar', routerLink: ['/pages/calendar'] }
         ]);
     }
 

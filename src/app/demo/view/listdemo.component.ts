@@ -6,8 +6,7 @@ import {AppBreadcrumbService} from '../../app.breadcrumb.service';
 
 @Component({
     templateUrl: './listdemo.component.html',
-    styleUrls: ['../../../assets/demo/badges.scss']
-
+    styleUrls: ['./listdemo.scss']
 })
 export class ListDemoComponent implements OnInit {
 
@@ -27,8 +26,8 @@ export class ListDemoComponent implements OnInit {
 
     constructor(private productService: ProductService, private breadcrumbService: AppBreadcrumbService) {
         this.breadcrumbService.setItems([
-            {label: 'UI Kit'},
-            {label: 'List'}
+            { label: 'Ui Kit' },
+            { label: 'List', routerLink: ['/uikit/list'] }
         ]);
     }
 

@@ -37,7 +37,7 @@ export class AppMenuComponent implements OnInit {
                     {label: 'Panel', icon: 'pi pi-fw pi-tablet', routerLink: ['/uikit/panel']},
                     {label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/uikit/overlay']},
                     {label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/uikit/media']},
-                    {label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu'], preventExact: true},
+                    {label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu']},
                     {label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/uikit/message']},
                     {label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/uikit/file']},
                     {label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/uikit/charts']},
@@ -45,17 +45,17 @@ export class AppMenuComponent implements OnInit {
                 ]
             },
             {
-                label:'Prime Blocks', icon:'pi pi-fw pi-prime', routerLink: ['/blocks'],
-                items:[
-                    {label: 'Free Blocks', icon: 'pi pi-fw pi-eye', routerLink: ['/blocks']},
-                    {label: 'All Blocks', icon: 'pi pi-fw pi-globe', url: ['https://www.primefaces.org/primeblocks-ng'], target: '_blank'},
-                ]
-            },
-            {
-                label: 'Utilities', icon: 'pi pi-fw pi-compass', routerLink: ['/utilities'],
+                label: 'Utilities', icon: 'pi pi-fw pi-compass', routerLink: ['utilities'],
                 items: [
-                    {label: 'PrimeIcons', icon: 'pi pi-fw pi-prime', routerLink: ['utilities/icons']},
-                    {label: 'PrimeFlex', icon: 'pi pi-fw pi-desktop', url: ['https://www.primefaces.org/primeflex/'], target: '_blank'},
+                    {label: 'Display', icon: 'pi pi-fw pi-desktop', routerLink: ['utilities/display']},
+                    {label: 'Elevation', icon: 'pi pi-fw pi-external-link', routerLink: ['utilities/elevation']},
+                    {label: 'FlexBox', icon: 'pi pi-fw pi-directions', routerLink: ['utilities/flexbox']},
+                    {label: 'Icons', icon: 'pi pi-fw pi-search', routerLink: ['utilities/icons']},
+                    {label: 'Text', icon: 'pi pi-fw pi-pencil', routerLink: ['utilities/text']},
+                    {label: 'Widgets', icon: 'pi pi-fw pi-star', routerLink: ['utilities/widgets']},
+                    {label: 'Grid System', icon: 'pi pi-fw pi-th-large', routerLink: ['utilities/grid']},
+                    {label: 'Spacing', icon: 'pi pi-fw pi-arrow-right', routerLink: ['utilities/spacing']},
+                    {label: 'Typography', icon: 'pi pi-fw pi-align-center', routerLink: ['utilities/typography']}
                 ]
             },
             {

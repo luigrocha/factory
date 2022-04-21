@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import { IconService } from '../demo/service/iconservice';
+import {IconService} from '../demo/service/iconservice';
 import {AppBreadcrumbService} from '../app.breadcrumb.service';
 
 @Component({
     templateUrl: './icons.component.html',
+    styleUrls: ['./icons.scss']
 })
 export class IconsComponent implements OnInit {
 
@@ -15,8 +16,8 @@ export class IconsComponent implements OnInit {
 
     constructor(private iconService: IconService, private breadcrumbService: AppBreadcrumbService) {
         this.breadcrumbService.setItems([
-            {label: 'Utilities'},
-            {label: 'Icons'}
+            { label: 'Utilities' },
+            { label: 'Icons', routerLink: ['/utilities/icons'] }
         ]);
     }
 
@@ -46,9 +47,8 @@ export class IconsComponent implements OnInit {
 
         if (!searchText) {
             this.filteredIcons = this.icons;
-        }
-        else {
-            this.filteredIcons = this.icons.filter( it => {
+        } else {
+            this.filteredIcons = this.icons.filter(it => {
                 return it.icon.tags[0].includes(searchText);
             });
         }

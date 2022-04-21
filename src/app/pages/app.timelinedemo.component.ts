@@ -1,50 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {AppBreadcrumbService} from '../app.breadcrumb.service';
 import {PrimeIcons} from 'primeng/api';
+import {AppBreadcrumbService} from '../app.breadcrumb.service';
 
 @Component({
     templateUrl: './app.timelinedemo.component.html',
-    styles: [`
-        .custom-marker {
-            display: flex;
-            width: 2rem;
-            height: 2rem;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            border-radius: 50%;
-            z-index: 1;
-        }
-        
-        ::ng-deep {
-            .p-timeline-event-content,
-            .p-timeline-event-opposite {
-                line-height: 1;
-            }
-        }
-        
-        @media screen and (max-width: 960px) {
-            :host ::ng-deep {
-                .customized-timeline {
-                    .p-timeline-event:nth-child(even) {
-                        flex-direction: row !important;
-        
-                        .p-timeline-event-content {
-                            text-align: left !important;
-                        }
-                    }
-        
-                    .p-timeline-event-opposite {
-                        flex: 0;
-                    }
-        
-                    .p-card {
-                        margin-top: 1rem;
-                    }
-                }
-            }
-        }
-    `]
+    styleUrls: ['./app.timelinedemo.scss']
 })
 export class AppTimelineDemoComponent implements OnInit{
 
@@ -54,8 +14,8 @@ export class AppTimelineDemoComponent implements OnInit{
 
     constructor(private breadcrumbService: AppBreadcrumbService) {
         this.breadcrumbService.setItems([
-            {label: 'Pages'},
-            {label: 'Timeline'}
+            { label: 'Pages' },
+            { label: 'Timeline', routerLink: ['/pages/timeline']}
         ]);
     }
 

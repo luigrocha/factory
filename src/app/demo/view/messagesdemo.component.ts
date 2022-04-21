@@ -5,12 +5,16 @@ import {AppBreadcrumbService} from '../../app.breadcrumb.service';
 @Component({
     templateUrl: './messagesdemo.component.html',
     styles: [`
+        :host ::ng-deep .p-button {
+            min-width: 8em;
+        }
+
 		:host ::ng-deep .p-message {
 			margin-left: .25em;
 		}
 
-        :host ::ng-deep .p-toast{
-            z-index:99999;
+		:host ::ng-deep .p-toast {
+            z-index: 100000;
         }
     `],
     providers: [MessageService]
@@ -21,8 +25,8 @@ export class MessagesDemoComponent {
 
     constructor(private service: MessageService, private breadcrumbService: AppBreadcrumbService) {
         this.breadcrumbService.setItems([
-            {label: 'UI Kit'},
-            {label: 'Messages'}
+            { label: 'Ui Kit' },
+            { label: 'Message', routerLink: ['/uikit/message'] }
         ]);
     }
 

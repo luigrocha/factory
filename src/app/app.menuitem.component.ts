@@ -22,7 +22,7 @@ import {AppMainComponent} from './app.main.component';
                 <i class="pi pi-fw pi-angle-down layout-submenu-toggler" *ngIf="item.items"></i>
             </a>
             <a (click)="itemClick($event)" *ngIf="(item.routerLink && !item.items) && item.visible !== false"
-               [routerLink]="item.routerLink" routerLinkActive="active-menuitem-routerlink" [routerLinkActiveOptions]="{exact: !item.preventExact}"
+               [routerLink]="item.routerLink" routerLinkActive="active-menuitem-routerlink" [routerLinkActiveOptions]="{exact: true}"
                [attr.target]="item.target" [attr.tabindex]="0" [ngClass]="item.class" (mouseenter)="onMouseEnter()" pRipple>
                 <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
                 <span class="layout-menuitem-text">{{item.label}}</span>
@@ -123,7 +123,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
     }
 
     updateActiveStateFromRoute() {
-        this.active = this.router.isActive(this.item.routerLink[0], !this.item.items && !this.item.preventExact);
+        this.active = this.router.isActive(this.item.routerLink[0], this.item.items ? false : true);
     }
 
     itemClick(event: Event) {
