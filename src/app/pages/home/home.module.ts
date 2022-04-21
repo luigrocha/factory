@@ -88,7 +88,7 @@ import { FormsModule } from '@angular/forms';
 
 import { HomeComponent } from './home.component';
 import { AppTopBarComponent } from 'src/app/components/topbar/app.topbar.component';
-import { AppConfigComponent } from 'src/app/app.config.component';
+import { AppConfigComponent } from 'src/app/components/config/app.config.component';
 import { AppMenuComponent } from 'src/app/components/menu/app.menu.component';
 import { AppMenuitemComponent } from 'src/app/components/menu/app.menuitem.component';
 import { AppRightPanelComponent } from '../../components/rightpanel/app.rightpanel.component';

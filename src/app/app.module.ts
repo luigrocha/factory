@@ -23,6 +23,9 @@ import { AccessDeniedComponent } from './pages/access-denied/access-denied.compo
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { HomeModule } from './pages/home/home.module';
 
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
     timeGridPlugin,
@@ -36,6 +39,10 @@ FullCalendarModule.registerPlugins([
         AppRoutingModule,
         HttpClientModule,
         BrowserAnimationsModule,
+
+        ButtonModule,
+        InputTextModule,
+
         AppCodeModule,
         HomeModule,
     ],
