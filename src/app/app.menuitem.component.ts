@@ -1,10 +1,10 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
-import {MenuService} from './app.menu.service';
-import {AppMainComponent} from './app.main.component';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { MenuService } from './app.menu.service';
+import { HomeComponent } from './pages/home/home.component';
 
 @Component({
     /* tslint:disable:component-selector */
@@ -88,7 +88,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
 
     key: string;
 
-    constructor(public app: AppMainComponent, public router: Router, private cd: ChangeDetectorRef, private menuService: MenuService) {
+    constructor(public app: HomeComponent, public router: Router, private cd: ChangeDetectorRef, private menuService: MenuService) {
         this.menuSourceSubscription = this.menuService.menuSource$.subscribe(key => {
             // deactivate current active menu
             if (this.active && this.key !== key && key.indexOf(this.key) !== 0) {
@@ -143,7 +143,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
 
         // execute command
         if (this.item.command) {
-            this.item.command({originalEvent: event, item: this.item});
+            this.item.command({ originalEvent: event, item: this.item });
         }
 
         // toggle active state
@@ -166,7 +166,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
 
     onMouseEnter() {
         // activate item on hover
-        if (this.root  && this.app.isHorizontal() && this.app.isDesktop()) {
+        if (this.root && this.app.isHorizontal() && this.app.isDesktop()) {
             if (this.app.menuHoverActive) {
                 this.menuService.onMenuStateChange(this.key);
                 this.active = true;

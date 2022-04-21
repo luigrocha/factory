@@ -1,4 +1,8 @@
-<div class="layout-wrapper" [ngClass]="{'p-input-filled': app.inputStyle === 'filled', 'p-ripple-disabled': !app.ripple,
+<div
+    class="layout-wrapper"
+    [ngClass]="{
+        'p-input-filled': app.inputStyle === 'filled',
+        'p-ripple-disabled': !app.ripple,
         'layout-static': isStatic(),
         'layout-overlay': isOverlay(),
         'layout-overlay-active': overlayMenuActive && isOverlay(),
@@ -6,8 +10,12 @@
         'layout-static-active': !staticMenuDesktopInactive && isStatic(),
         'layout-mobile-active': staticMenuMobileActive,
         'layout-rtl': app.isRTL,
-        'layout-rightpanel-active': rightPanelActive}" [class]="'layout-menu-'+ app.menuTheme+ ' layout-topbar-'+ app.topbarTheme">
-
+        'layout-rightpanel-active': rightPanelActive
+    }"
+    [class]="
+        'layout-menu-' + app.menuTheme + ' layout-topbar-' + app.topbarTheme
+    "
+>
     <app-topbar></app-topbar>
 
     <app-rightpanel></app-rightpanel>
@@ -31,5 +39,4 @@
     <app-config></app-config>
 
     <div *ngIf="staticMenuMobileActive" class="layout-mask modal-in"></div>
-
 </div>

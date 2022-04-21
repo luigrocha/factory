@@ -1,10 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AppRoutingModule } from './app-routing.module';
+import { CommonModule } from '@angular/common';
 
 import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
@@ -86,141 +81,127 @@ import { TooltipModule } from 'primeng/tooltip';
 import { TreeModule } from 'primeng/tree';
 import { TreeTableModule } from 'primeng/treetable';
 import { VirtualScrollerModule } from 'primeng/virtualscroller';
+import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
-import { AppCodeModule } from './app.code.component';
-import { AppComponent } from './app.component';
+import { HomeComponent } from './home.component';
+import { AppTopBarComponent } from 'src/app/app.topbar.component';
+import { AppComponent } from 'src/app/app.component';
+import { AppConfigComponent } from 'src/app/app.config.component';
+import { AppMenuComponent } from 'src/app/app.menu.component';
+import { AppMenuitemComponent } from 'src/app/app.menuitem.component';
+import { AppRightPanelComponent } from 'src/app/app.rightpanel.component';
+import { AppBreadcrumbComponent } from 'src/app/app.breadcrumb.component';
+import { AppFooterComponent } from 'src/app/app.footer.component';
+import { AppCodeModule } from 'src/app/app.code.component';
+import { AppRoutingModule } from 'src/app/app-routing.module';
+import { CirelComponent } from './cirel/cirel.component';
 
-import { MenuService } from './app.menu.service';
-import { AppBreadcrumbService } from './app.breadcrumb.service';
-
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { LoginComponent } from './pages/login/login.component';
-import { ErrorComponent } from './pages/error/error.component';
-import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { HomeModule } from './pages/home/home.module';
-
-FullCalendarModule.registerPlugins([
-    dayGridPlugin,
-    timeGridPlugin,
-    interactionPlugin
-]);
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        FormsModule,
-        AppRoutingModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        AccordionModule,
-        AutoCompleteModule,
-        AvatarGroupModule,
-        AvatarModule,
-        BadgeModule,
-        BreadcrumbModule,
-        ButtonModule,
-        CalendarModule,
-        CardModule,
-        CarouselModule,
-        CascadeSelectModule,
-        ChartModule,
-        CheckboxModule,
-        ChipModule,
-        ChipsModule,
-        CodeHighlighterModule,
-        ConfirmDialogModule,
-        ConfirmPopupModule,
-        ColorPickerModule,
-        ContextMenuModule,
-        DataViewModule,
-        DialogModule,
-        DividerModule,
-        DropdownModule,
-        FieldsetModule,
-        FileUploadModule,
-        FullCalendarModule,
-        GalleriaModule,
-        ImageModule,
-        InplaceModule,
-        InputNumberModule,
-        InputMaskModule,
-        InputSwitchModule,
-        InputTextModule,
-        InputTextareaModule,
-        KnobModule,
-        LightboxModule,
-        ListboxModule,
-        MegaMenuModule,
-        MenuModule,
-        MenubarModule,
-        MessageModule,
-        MessagesModule,
-        MultiSelectModule,
-        OrderListModule,
-        OrganizationChartModule,
-        OverlayPanelModule,
-        PaginatorModule,
-        PanelModule,
-        PanelMenuModule,
-        PasswordModule,
-        PickListModule,
-        ProgressBarModule,
-        RadioButtonModule,
-        RatingModule,
-        RippleModule,
-        AppRoutingModule,
-        ScrollPanelModule,
-        ScrollTopModule,
-        SelectButtonModule,
-        SidebarModule,
-        SkeletonModule,
-        SlideMenuModule,
-        SliderModule,
-        SplitButtonModule,
-        SplitterModule,
-        StepsModule,
-        TableModule,
-        TabMenuModule,
-        TabViewModule,
-        TagModule,
-        TerminalModule,
-        TieredMenuModule,
-        TimelineModule,
-        ToastModule,
-        ToggleButtonModule,
-        ToolbarModule,
-        TooltipModule,
-        TreeModule,
-        TreeTableModule,
-        VirtualScrollerModule,
-        AppCodeModule,
+  imports: [
+    BrowserModule,
+    CommonModule,
+    FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    AccordionModule,
+    AutoCompleteModule,
+    AvatarGroupModule,
+    AvatarModule,
+    BadgeModule,
+    BreadcrumbModule,
+    ButtonModule,
+    CalendarModule,
+    CardModule,
+    CarouselModule,
+    CascadeSelectModule,
+    ChartModule,
+    CheckboxModule,
+    ChipModule,
+    ChipsModule,
+    CodeHighlighterModule,
+    ConfirmDialogModule,
+    ConfirmPopupModule,
+    ColorPickerModule,
+    ContextMenuModule,
+    DataViewModule,
+    DialogModule,
+    DividerModule,
+    DropdownModule,
+    FieldsetModule,
+    FileUploadModule,
+    FullCalendarModule,
+    GalleriaModule,
+    ImageModule,
+    InplaceModule,
+    InputNumberModule,
+    InputMaskModule,
+    InputSwitchModule,
+    InputTextModule,
+    InputTextareaModule,
+    KnobModule,
+    LightboxModule,
+    ListboxModule,
+    MegaMenuModule,
+    MenuModule,
+    MenubarModule,
+    MessageModule,
+    MessagesModule,
+    MultiSelectModule,
+    OrderListModule,
+    OrganizationChartModule,
+    OverlayPanelModule,
+    PaginatorModule,
+    PanelModule,
+    PanelMenuModule,
+    PasswordModule,
+    PickListModule,
+    ProgressBarModule,
+    RadioButtonModule,
+    RatingModule,
+    RippleModule,
+    AppRoutingModule,
+    ScrollPanelModule,
+    ScrollTopModule,
+    SelectButtonModule,
+    SidebarModule,
+    SkeletonModule,
+    SlideMenuModule,
+    SliderModule,
+    SplitButtonModule,
+    SplitterModule,
+    StepsModule,
+    TableModule,
+    TabMenuModule,
+    TabViewModule,
+    TagModule,
+    TerminalModule,
+    TieredMenuModule,
+    TimelineModule,
+    ToastModule,
+    ToggleButtonModule,
+    ToolbarModule,
+    TooltipModule,
+    TreeModule,
+    TreeTableModule,
+    VirtualScrollerModule,
+    AppCodeModule,
+  ],
+  declarations: [
+    HomeComponent,
 
-        HomeModule
-    ],
-    declarations: [
-        AppComponent,
-        //AppMainComponent,
-        //AppConfigComponent,
-        //AppMenuComponent,
-        //AppMenuitemComponent,
-        //AppRightPanelComponent,
-        // AppBreadcrumbComponent,
-        //AppTopBarComponent,
-        //AppFooterComponent,
+    AppConfigComponent,
+    AppMenuComponent,
+    AppMenuitemComponent,
+    AppRightPanelComponent,
+    AppBreadcrumbComponent,
+    AppTopBarComponent,
+    AppFooterComponent,
 
-        LoginComponent,
-        ErrorComponent,
-        AccessDeniedComponent,
-        NotFoundComponent,
-    ],
-    providers: [
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
-        MenuService, AppBreadcrumbService
-    ],
-    bootstrap: [AppComponent]
+    CirelComponent
+  ]
 })
-export class AppModule {
-}
+export class HomeModule { }

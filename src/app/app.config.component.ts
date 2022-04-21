@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AppComponent } from './app.component';
-import { AppMainComponent } from './app.main.component';
+import { HomeComponent } from './pages/home/home.component';
 
 @Component({
     selector: 'app-config',
@@ -138,22 +138,22 @@ export class AppConfigComponent implements OnInit {
 
     theme = 'denim';
 
-    constructor(public appMain: AppMainComponent, public app: AppComponent) {}
+    constructor(public appMain: HomeComponent, public app: AppComponent) { }
 
     ngOnInit() {
         this.themes = [
-            {name: 'denim', color: '#2f8ee5'},
-            {name: 'sea-green', color: '#30A059'},
-            {name: 'amethyst', color: '#834CA8'},
-            {name: 'wedgewood', color: '#557DAA'},
-            {name: 'tapestry', color: '#A74896'},
-            {name: 'cape-palliser', color: '#A46B3E'},
-            {name: 'apple', color: '#52A235'},
-            {name: 'gigas', color: '#5751A9'},
-            {name: 'jungle-green', color: '#2B9F9C'},
-            {name: 'camelot', color: '#A54357'},
-            {name: 'amber', color: '#D49341'},
-            {name: 'cyan', color: '#399DB2'}
+            { name: 'denim', color: '#2f8ee5' },
+            { name: 'sea-green', color: '#30A059' },
+            { name: 'amethyst', color: '#834CA8' },
+            { name: 'wedgewood', color: '#557DAA' },
+            { name: 'tapestry', color: '#A74896' },
+            { name: 'cape-palliser', color: '#A46B3E' },
+            { name: 'apple', color: '#52A235' },
+            { name: 'gigas', color: '#5751A9' },
+            { name: 'jungle-green', color: '#2B9F9C' },
+            { name: 'camelot', color: '#A54357' },
+            { name: 'amber', color: '#D49341' },
+            { name: 'cyan', color: '#399DB2' }
         ];
     }
 

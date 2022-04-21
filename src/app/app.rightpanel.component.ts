@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {AppMainComponent} from './app.main.component';
+import { Component } from '@angular/core';
+import { HomeComponent } from './pages/home/home.component';
 
 @Component({
     selector: 'app-rightpanel',
@@ -22,6 +22,6 @@ export class AppRightPanelComponent {
 
     checked8 = false;
 
-    constructor(public app: AppMainComponent) {
+    constructor(public app: HomeComponent) {
     }
 }
