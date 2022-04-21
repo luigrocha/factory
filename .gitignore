@@ -4,10 +4,10 @@ node_modules
 .DS_Store
 .idea
 sassdoc
+.angular
 
 src/assets/theme/*/*.css
 src/assets/layout/css/*.css
-src/assets/demo/*.css
 src/assets/sass/theme/designer
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
