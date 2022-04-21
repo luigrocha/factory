@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './pages/home/home.component';
+import { AppComponent } from '../../app.component';
+import { HomeComponent } from '../../pages/home/home.component';
 
 @Component({
     selector: 'app-topbar',

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { AppComponent } from 'src/app/app.component';
-import { MenuService } from 'src/app/app.menu.service';
+import { MenuService } from '../../components/menu/app.menu.service';
 
 @Component({
   selector: 'app-home',

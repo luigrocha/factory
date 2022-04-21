@@ -87,16 +87,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
 import { HomeComponent } from './home.component';
-import { AppTopBarComponent } from 'src/app/app.topbar.component';
-import { AppComponent } from 'src/app/app.component';
+import { AppTopBarComponent } from 'src/app/components/topbar/app.topbar.component';
 import { AppConfigComponent } from 'src/app/app.config.component';
-import { AppMenuComponent } from 'src/app/app.menu.component';
-import { AppMenuitemComponent } from 'src/app/app.menuitem.component';
-import { AppRightPanelComponent } from 'src/app/app.rightpanel.component';
-import { AppBreadcrumbComponent } from 'src/app/app.breadcrumb.component';
-import { AppFooterComponent } from 'src/app/app.footer.component';
-import { AppCodeModule } from 'src/app/app.code.component';
-import { AppRoutingModule } from 'src/app/app-routing.module';
+import { AppMenuComponent } from 'src/app/components/menu/app.menu.component';
+import { AppMenuitemComponent } from 'src/app/components/menu/app.menuitem.component';
+import { AppRightPanelComponent } from '../../components/rightpanel/app.rightpanel.component';
+import { AppBreadcrumbComponent } from 'src/app/components/breadcrumb/app.breadcrumb.component';
+import { AppFooterComponent } from 'src/app/components/footer/app.footer.component';
+import { AppCodeModule } from 'src/app/components/code/app.code.component';
+import { AppRoutingModule } from 'src/app/app-routing.routing';
 import { CirelComponent } from './cirel/cirel.component';
 
 
