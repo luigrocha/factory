@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.session.NullAuthenticated
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 /**
+ * Keycloak Config
+ *
  * @author jyepez
  */
 @KeycloakConfiguration
@@ -24,7 +26,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 public class KeycloakConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth) {
         KeycloakAuthenticationProvider provider = new KeycloakAuthenticationProvider();
         provider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider(provider);

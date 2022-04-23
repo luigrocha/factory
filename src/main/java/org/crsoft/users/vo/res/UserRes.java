@@ -1,4 +1,4 @@
-package org.crsoft.users.model;
+package org.crsoft.users.vo.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +9,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * User
- *
- * @author jyepez
+ * @author jyepez on 22/4/2022
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
+public class UserRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,6 +24,5 @@ public class User implements Serializable {
     private String email;
     private String firstName;
     private String lastName;
-    private String password;
     private List<String> roles;
 }

@@ -3,6 +3,8 @@ package org.crsoft.users.enums;
 import lombok.Getter;
 
 /**
+ * Status Keycloak Enum
+ *
  * @author jyepez
  */
 @Getter
