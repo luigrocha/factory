@@ -62,30 +62,30 @@ pipeline {
         }
       }
     }
-    // stage('Build project test') {
-    //   when {
-    //     branch 'develop'
-    //   }
-    //   steps {
-    //     container('node') {
-    //       sh '''
-    //         npm run build -- --outputPath=./dist/out --c test
-    //       '''
-    //     }
-    //   }
-    // }
-    // stage('Build project master') {
-    //   when {
-    //     branch 'master'
-    //   }
-    //   steps {
-    //     container('node') {
-    //       sh '''
-    //         npm run build -- --outputPath=./dist/out --configuration production
-    //       '''
-    //     }
-    //   }
-    // }
+    stage('Build project test') {
+      when {
+        branch 'develop'
+      }
+      steps {
+        container('node') {
+          sh '''
+            npm run build -- --outputPath=./dist/out --c test
+          '''
+        }
+      }
+    }
+    stage('Build project master') {
+      when {
+        branch 'master'
+      }
+      steps {
+        container('node') {
+          sh '''
+            npm run build -- --outputPath=./dist/out --configuration production
+          '''
+        }
+      }
+    }
     // stage('Build docker image') {
     //   when {
     //     expression { BRANCH_NAME ==~ /(master|develop)/ }
