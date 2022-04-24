@@ -1,6 +1,6 @@
 {
-    "name": "poseidon",
-    "version": "13.0.0",
+    "name": "carton-plast-ng",
+    "version": "1.0.0",
     "license": "COMMERCIAL",
     "angular-cli": {},
     "scripts": {
