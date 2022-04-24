@@ -32,10 +32,10 @@ pipeline {
             resources:
               requests:
                 memory: "512Mi"
-                cpu: "3"
+                cpu: "1"
               limits:
-                memory: "5Gi"
-                cpu: "4"
+                memory: "4Gi"
+                cpu: "2"
             tty: true
             volumeMounts:
             - name: pvol-node
