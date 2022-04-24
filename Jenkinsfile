@@ -86,19 +86,19 @@ pipeline {
         }
       }
     }
-    // stage('Build docker image') {
-    //   when {
-    //     expression { BRANCH_NAME ==~ /(master|develop)/ }
-    //   }
-    //   steps {
-    //     container('dind') {
-    //       echo 'Building docker images..'
-    //       script {
-    //         dockerImage = docker.build env.REGISTRY + imageName + ":${env.GIT_COMMIT}"
-    //       }
-    //     }
-    //   }
-    // }
+    stage('Build docker image') {
+      when {
+        expression { BRANCH_NAME ==~ /(master|develop)/ }
+      }
+      steps {
+        container('dind') {
+          echo 'Building docker images..'
+          script {
+            dockerImage = docker.build env.REGISTRY + imageName + ":${env.GIT_COMMIT}"
+          }
+        }
+      }
+    }
     // stage('Publish container') {
     //   when {
     //     expression { BRANCH_NAME ==~ /(master|develop)/ }
