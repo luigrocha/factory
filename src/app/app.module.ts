@@ -25,6 +25,7 @@ import { HomeModule } from './pages/home/home.module';
 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { AuthModule } from './auth/auth.module';
 
 FullCalendarModule.registerPlugins([
     dayGridPlugin,
@@ -39,6 +40,7 @@ FullCalendarModule.registerPlugins([
         AppRoutingModule,
         HttpClientModule,
         BrowserAnimationsModule,
+        AuthModule,
 
         ButtonModule,
         InputTextModule,

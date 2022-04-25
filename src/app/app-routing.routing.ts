@@ -7,18 +7,21 @@ import { AccessDeniedComponent } from './pages/access-denied/access-denied.compo
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CirelComponent } from './pages/home/cirel/cirel.component';
+import { AuthGuard } from './auth/auth.guard';
 
 
 @NgModule({
     imports: [
         RouterModule.forRoot([
-            { path: '', component: LoginComponent },
+            { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'error', component: ErrorComponent },
             { path: 'access', component: AccessDeniedComponent },
             { path: 'notfound', component: NotFoundComponent },
             {
                 path: 'home', component: HomeComponent,
-                children: [{ path: 'cirel', component: CirelComponent }]
+                children: [{ path: 'cirel', component: CirelComponent }],
+                canActivate: [AuthGuard],
+                // data: { roles: ['realm-admin', 'realm-user'] }
             },
             { path: '**', redirectTo: '/notfound' },
         ], { scrollPositionRestoration: 'enabled' })

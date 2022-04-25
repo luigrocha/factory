@@ -27,6 +27,8 @@
         "@fullcalendar/interaction": "^5.8.0",
         "@fullcalendar/timegrid": "^5.8.0",
         "chart.js": "^3.3.2",
+        "keycloak-angular": "^9.1.0",
+        "keycloak-js": "^18.0.0",
         "primeflex": "2.0.0",
         "primeicons": "~5.0.0",
         "primeng": "~13.0.2",
