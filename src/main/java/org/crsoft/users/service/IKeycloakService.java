@@ -1,8 +1,8 @@
 package org.crsoft.users.service;
 
+import org.crsoft.users.dto.ResponseMessage;
 import org.crsoft.users.vo.req.UserReq;
 import org.crsoft.users.vo.res.UserRes;
-import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
@@ -11,7 +11,6 @@ import java.util.Collection;
  *
  * @author jyepez
  */
-@Service
 public interface IKeycloakService {
 
     /**
@@ -19,7 +18,7 @@ public interface IKeycloakService {
      *
      * @param user user
      */
-    void createUser(UserReq user);
+    ResponseMessage createUser(UserReq user);
 
     /**
      * Find All Users

@@ -1,6 +1,7 @@
 package org.crsoft.users.service.impl;
 
 import lombok.extern.log4j.Log4j2;
+import org.crsoft.users.dto.ResponseMessage;
 import org.crsoft.users.enums.StatusKeycloakEnum;
 import org.crsoft.users.service.IKeycloakService;
 import org.crsoft.users.vo.req.UserReq;
@@ -14,6 +15,7 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.List;
  *
  * @author jyepez
  */
+@Service
 @Log4j2
 public class KeycloakService implements IKeycloakService {
 
@@ -38,7 +41,8 @@ public class KeycloakService implements IKeycloakService {
      * {@inheritDoc}
      */
     @Override
-    public void createUser(UserReq user) {
+    public ResponseMessage createUser(UserReq user) {
+        ResponseMessage responseMessage = ResponseMessage.builder().build();
         try {
             UsersResource usersResource = getUsersResource();
             UserRepresentation userRepresentation = new UserRepresentation();
@@ -50,6 +54,7 @@ public class KeycloakService implements IKeycloakService {
 
             Response response = usersResource.create(userRepresentation);
             Integer status = response.getStatus();
+            responseMessage.setStatus(status);
 
             if (StatusKeycloakEnum.OK.getCode().equals(status)) {
                 String path = response.getLocation().getPath();
@@ -64,16 +69,20 @@ public class KeycloakService implements IKeycloakService {
                 RoleRepresentation roleRepresentation = realmResource.roles().get("realm-user").toRepresentation();
                 realmResource.users().get(userId).roles().realmLevel().add(List.of(roleRepresentation));
 
+                responseMessage.setMessage(user.getUserName() + " usuario creado");
                 log.info("{} user created", user.getUserName());
 
             } else if (StatusKeycloakEnum.EXIST.getCode().equals(status)) {
-                log.info("{} exists yet", user.getUserName());
+                responseMessage.setMessage(user.getUserName() + " ya existe");
+                log.info("{} already exists", user.getUserName());
             } else {
+                responseMessage.setMessage("Error creando usuario, contacte al administrador");
                 log.info("Error creating user");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return responseMessage;
     }
 
     /**
@@ -151,7 +160,7 @@ public class KeycloakService implements IKeycloakService {
                 .serverUrl(serviceUrl)
                 .realm("master")
                 .username("admin")
-                .password("admin")
+                .password("as897gsdfs766dfsgjhsdf")
                 .clientId("admin-cli")
                 .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
                 .build();

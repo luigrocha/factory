@@ -1,5 +1,6 @@
 package org.crsoft.users.controller;
 
+import org.crsoft.users.dto.ResponseMessage;
 import org.crsoft.users.service.IKeycloakService;
 import org.crsoft.users.vo.req.UserReq;
 import org.crsoft.users.vo.res.UserRes;
@@ -31,9 +32,8 @@ public class UserController {
      * @return void
      */
     @PostMapping("/createUser")
-    public ResponseEntity<?> createUser(@RequestBody UserReq user) {
-        this.keycloakService.createUser(user);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ResponseMessage> createUser(@RequestBody UserReq user) {
+        return ResponseEntity.ok().body(this.keycloakService.createUser(user));
     }
 
     /**
