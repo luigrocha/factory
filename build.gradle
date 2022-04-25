@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-group = 'com.plast.carton'
+group = 'org.crsoft'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
@@ -26,6 +26,10 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	implementation group: 'org.keycloak.bom', name: 'keycloak-adapter-bom', version: '18.0.0', ext: 'pom'
+	implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '18.0.0'
+	implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '18.0.0'
 }
 
 tasks.named('test') {
