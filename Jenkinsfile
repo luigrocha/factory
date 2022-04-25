@@ -56,8 +56,8 @@ pipeline {
         container('node') {
           sh '''
             node --version
-            yarn --version
-            yarn install --frozen-lockfile
+            npm --version
+            npm install -f
           '''
         }
       }
