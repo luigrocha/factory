@@ -26,7 +26,7 @@ pipeline {
             - cat
             tty: true
           - name: node
-            image: node:14.15.4        
+            image: node:14.15.4
             command:
             - cat
             resources:
