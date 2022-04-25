@@ -31,7 +31,11 @@
                             "src/assets",
                             "src/upload.php"
                         ],
-                        "styles": ["src/styles.scss"],
+                        "styles": [
+                            "src/styles.scss",
+                            "src/assets/theme/denim/theme-light.css",
+                            "src/assets/layout/css/layout-light.css"
+                        ],
                         "scripts": [
                             "node_modules/prismjs/prism.js",
                             "node_modules/prismjs/components/prism-typescript.js"
