@@ -135,7 +135,7 @@ pipeline {
             sh('git config --global user.name Jenkins Pipeline')
             sh "git commit -am 'Publish new version ${argoCDFolderApp}'"
             withCredentials([usernamePassword(credentialsId: gitlabCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-              sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.ARGO_APPS_TEST} HEAD:master || echo 'no changes'"
+              sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.ARGO_APPS_TEST} HEAD:main || echo 'no changes'"
             }
           }
         }
