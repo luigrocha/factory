@@ -1,7 +1,7 @@
 pipeline {
   environment {               
   imageName = '/frontend/cartonplastng'   //path project gitlab
-  gitlabCredential = 'gitlab-info-user-access-token'
+  gitlabCredential = 'gitlab-info-user'
   argoCDFolderApp = 'carton-plast/frontend/carton-plast-ng'   //path argocd
   dockerImage = ''
   }
