@@ -122,7 +122,7 @@ pipeline {
         container('kustomize') {
           echo 'Deploying to test environment..'
           checkout([$class: 'GitSCM',
-            branches: [[name: '*/master' ]],
+            branches: [[name: '*/main' ]],
             extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'argocd-test-apps'], [$class: 'ScmName', name: 'argocd-test-apps']],
             userRemoteConfigs: [[
               url: 'https://gitlab.crsoft.org/devops/kubernetes/argocd-test-apps.git',
