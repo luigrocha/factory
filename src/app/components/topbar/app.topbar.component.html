@@ -252,8 +252,8 @@
                             alt="demo"
                         />
                         <div class="profile-info">
-                            <h6>Peter Taylor</h6>
-                            <span>Webmaster</span>
+                            <h6>{{ userData.name }}</h6>
+                            <span>{{ rolShow }}</span>
                         </div>
                     </a>
 
@@ -265,8 +265,8 @@
                                 alt="demo"
                             />
                             <div class="profile-info">
-                                <h6>Peter Taylor</h6>
-                                <span>Webmaster</span>
+                                <h6>{{ userData.name }}</h6>
+                                <span>{{ rolShow }}</span>
                             </div>
                         </li>
                         <li role="menuitem">
@@ -297,10 +297,7 @@
                             </a>
                         </li>
                         <li role="menuitem">
-                            <a
-                                href="#"
-                                (click)="appMain.onTopbarSubItemClick($event)"
-                            >
+                            <a href="#" (click)="logout()">
                                 <i class="pi pi-power-off"></i>
                                 <h6>Logout</h6>
                             </a>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
@@ -6,7 +6,10 @@ import { PrimeNGConfig } from 'primeng/api';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
+
+    constructor(private primengConfig: PrimeNGConfig) {
+    }
 
     topbarTheme = 'light';
 
@@ -22,9 +25,8 @@ export class AppComponent implements OnInit{
 
     ripple: boolean;
 
-    constructor(private primengConfig: PrimeNGConfig) {}
-
     ngOnInit() {
         this.primengConfig.ripple = true;
     }
+
 }
