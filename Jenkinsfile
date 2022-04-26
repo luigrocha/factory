@@ -48,113 +48,81 @@ pipeline {
     }
   }
   stages {
-    stage('Run Tests') {
-        steps {
-            container('gradle') {
-                sh 'gradle -version'
-                echo 'Running tests..'
-                sh 'gradle test'
+        stage('Run Tests') {
+            steps {
+                container('gradle') {
+                    sh 'gradle -version'
+                    echo 'Running tests..'
+                    sh 'gradle test'
+                }
             }
-       }
-    }
-    stage('Build project') {
-      when {
-        expression { BRANCH_NAME ==~ /(master|develop)/ }
-      }
-      steps {
-        container('gradle') {
-          echo 'Building project..'
-          sh 'gradle clean build -x test'
-          archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
         }
-      }
-    }
-    stage('Build docker image') {
-      when {
-        expression { BRANCH_NAME ==~ /(master|develop)/ }
-      }
-      steps {
-        container('dind') {
-          echo 'Building docker images..'
-          script {
-            dockerImage = docker.build env.REGISTRY + imageName + ":${env.GIT_COMMIT}"
-          }
-        }
-      }
-    }
-    stage('Publish container') {
-      when {
-        expression { BRANCH_NAME ==~ /(master|develop)/ }
-      }
-      steps {
-        container('dind') {
-          echo 'Deploying docker image to registry..'
-          script {
-            docker.withRegistry('https://' + env.REGISTRY, gitlabCredential) {
-              dockerImage.push()
+        stage('Build project') {
+            when {
+                expression { BRANCH_NAME ==~ /(master|develop)/ }
             }
-          }
-        }
-      }
-    }
-    stage('Deploy project develop') {
-      when {
-        expression { BRANCH_NAME ==~ /(develop)/ }
-      }
-      stage('Deploy project develop') {
-        when {
-          expression { BRANCH_NAME ==~ /(develop)/ }
-        }
-        steps {
-          container('kustomize') {
-            echo 'Deploying to test environment..'
-            checkout([$class: 'GitSCM',
-              branches: [[name: '*/main' ]],
-              extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'argocd-test-apps'], [$class: 'ScmName', name: 'argocd-test-apps']],
-              userRemoteConfigs: [[
-                url: 'https://gitlab.crsoft.org/devops/kubernetes/argocd-test-apps.git',
-                credentialsId: gitlabCredential
-              ]]
-            ])
-            dir('./argocd-test-apps/' + argoCDFolderApp + '/settings' ) {
-              sh('kustomize edit set image ' + env.REGISTRY + imageName + ':' + env.GIT_COMMIT)
-              sh('git config --global user.email jenkinsci@ci.com')
-              sh('git config --global user.name Jenkins Pipeline')
-              sh "git commit -am 'Publish new version ${argoCDFolderApp}'"
-              withCredentials([usernamePassword(credentialsId: gitlabCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.ARGO_APPS_TEST} HEAD:main || echo 'no changes'"
-              }
+            steps {
+                container('gradle') {
+                    echo 'Building project..'
+                    sh 'gradle clean build -x test'
+                    archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
+                }
             }
-          }
         }
-      }
-    }
-    /* stage('Deploy project master') {
-      when {
-        expression { BRANCH_NAME ==~ /(master)/ }
-      }
-      steps {
-        container('kustomize') {
-          echo 'Deploying to test environment..'
-          checkout([$class: 'GitSCM',
-            branches: [[name: '*//* master' ]],
-            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'argocd-master-backend'], [$class: 'ScmName', name: 'argocd-master-backend']],
-            userRemoteConfigs: [[
-              url: 'https://gitlab.espe.edu.ec/devops/argocd-master-backend.git',
-              credentialsId: gitlabCredential
-            ]]
-          ])
-          dir('./argocd-master-backend/' + argoCDFolderApp + '/settings' ) {
-            sh('kustomize edit set image ' + env.REGISTRY + imageName + ':' + env.GIT_COMMIT)
-            sh('git config --global user.email jenkinsci@ci.com')
-            sh('git config --global user.name Jenkins Pipeline')
-            sh "git commit -am 'Publish new version ${argoCDFolderApp }'"
-            withCredentials([usernamePassword(credentialsId: gitlabCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-              sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.ARGO_APPS_URL_MASTER_BACKEND} HEAD:master || echo 'no changes'"
+        stage('Build docker image') {
+            when {
+                expression { BRANCH_NAME ==~ /(master|develop)/ }
             }
-          }
+            steps {
+                container('dind') {
+                    echo 'Building docker images..'
+                    script {
+                        dockerImage = docker.build env.REGISTRY + imageName + ":${env.GIT_COMMIT}"
+                    }
+                }
+            }
         }
-      }
-    } */
+        stage('Publish container') {
+            when {
+                expression { BRANCH_NAME ==~ /(master|develop)/ }
+            }
+            steps {
+                container('dind') {
+                    echo 'Deploying docker image to registry..'
+                    script {
+                        docker.withRegistry('https://' + env.REGISTRY, gitlabCredential) {
+                            dockerImage.push()
+                        }
+                    }
+                }
+            }
+        }
+        stage('Deploy project develop') {
+            when {
+              expression { BRANCH_NAME ==~ /(develop)/ }
+            }
+            steps {
+                container('kustomize') {
+                    echo 'Deploying to test environment..'
+                    checkout([$class: 'GitSCM',
+                        branches: [[name: '*/main' ]],
+                        extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'argocd-test-apps'], [$class: 'ScmName', name: 'argocd-test-apps']],
+                        userRemoteConfigs: [[
+                            url: 'https://gitlab.crsoft.org/devops/kubernetes/argocd-test-apps.git',
+                            credentialsId: gitlabCredential
+                        ]]
+                    ])
+                    dir('./argocd-test-apps/' + argoCDFolderApp + '/settings' ) {
+                        sh('kustomize edit set image ' + env.REGISTRY + imageName + ':' + env.GIT_COMMIT)
+                        sh('git config --global user.email jenkinsci@ci.com')
+                        sh('git config --global user.name Jenkins Pipeline')
+                        sh "git commit -am 'Publish new version ${argoCDFolderApp}'"
+                        withCredentials([usernamePassword(credentialsId: gitlabCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                            sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.ARGO_APPS_TEST} HEAD:main || echo 'no changes'"
+                        }
+                    }
+                }
+            }
+        }
   }
 }
