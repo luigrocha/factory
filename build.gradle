@@ -15,8 +15,7 @@ configurations {
 }
 
 jar {
-	enabled = true
-	archiveClassifier = ''
+	enabled = false
 }
 
 repositories {
