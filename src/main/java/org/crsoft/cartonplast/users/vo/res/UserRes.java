@@ -1,12 +1,12 @@
-package org.crsoft.users.vo.req;
+package org.crsoft.cartonplast.users.vo.res;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * @author jyepez on 22/4/2022
@@ -15,14 +15,14 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserReq implements Serializable {
+public class UserRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String id;
     private String userName;
     private String email;
     private String firstName;
     private String lastName;
-    @JsonIgnore
-    private String password;
+    private Collection<String> roles;
 }

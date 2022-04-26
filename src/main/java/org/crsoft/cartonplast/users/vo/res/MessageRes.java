@@ -1,4 +1,4 @@
-package org.crsoft.users.dto;
+package org.crsoft.cartonplast.users.vo.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseMessage {
+public class MessageRes {
     private String message;
     private Integer status;
 }
