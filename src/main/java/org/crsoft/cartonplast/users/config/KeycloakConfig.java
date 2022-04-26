@@ -1,4 +1,4 @@
-package org.crsoft.users.config;
+package org.crsoft.cartonplast.users.config;
 
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;

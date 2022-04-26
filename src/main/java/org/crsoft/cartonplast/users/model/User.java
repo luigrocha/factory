@@ -1,4 +1,4 @@
-package org.crsoft.users.model;
+package org.crsoft.cartonplast.users.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package org.crsoft.users;
+package org.crsoft.cartonplast.users;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
