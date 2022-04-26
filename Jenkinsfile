@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    imageName = 'microservices/cartonplast/cp-users-ws'     //path project gitlab
+    imageName = '/microservices/cartonplast/cp-users-ws'     //path project gitlab
     gitlabCredential = 'gitlab-info-user'
     argoCDFolderApp = 'carton-plast/microservices/cp-users-ws'     //path argocd
     dockerImage = ''
