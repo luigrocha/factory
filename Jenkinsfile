@@ -96,7 +96,8 @@ pipeline {
           }
         }
       }
-    }       stage('Deploy project develop') {
+    }
+    stage('Deploy project develop') {
       when {
         expression { BRANCH_NAME ==~ /(develop)/ }
       }
