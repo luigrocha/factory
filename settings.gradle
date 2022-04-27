@@ -1,4 +1,5 @@
-rootProject.name = 'cp-core-ws'
+rootProject.name = 'cp-core-root-ws'
+include 'cp-core-ws'
 include 'cp-desing-ws'
 include 'cp-core-vo'
 
