@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     @GetMapping("/findTest")
-    public ResponseEntity<TestRes> findTest(){
+    public ResponseEntity<TestRes> findTest() {
         return ResponseEntity.ok().body(TestRes.builder().attribute("design...").build());
     }
 }
