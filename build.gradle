@@ -7,6 +7,18 @@ plugins {
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
+
+	bootJar {
+		enabled = false
+	}
+
+	jar {
+		enabled = true
+	}
+
+	println "\n\n**************************"
+	println "Build ${project.name}"
+	println "***************************"
 }
 
 allprojects {
@@ -48,5 +60,5 @@ allprojects {
 
 dependencies {
 	implementation project(":cp-core-vo")
-	implementation project(":cp-desing-ws")
+	implementation project(":cp-design-ws")
 }

@@ -1,4 +1,4 @@
-package org.crsfotf.cartonplast.desing.controller;
+package org.crsotf.cartonplast.design.controller;
 
 import org.crsoft.cartonplast.vo.res.TestRes;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,6 @@ public class TestController {
 
     @GetMapping("/findTest")
     public ResponseEntity<TestRes> findTest(){
-        return ResponseEntity.ok().body(TestRes.builder().attribute("Test...").build());
+        return ResponseEntity.ok().body(TestRes.builder().attribute("design...").build());
     }
 }
