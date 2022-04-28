@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.core.controller;
 
+import org.crsfotf.cartonplast.desing.service.impl.TestService;
 import org.crsoft.cartonplast.vo.res.TestRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,12 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
  * @author jyepez on 27/4/2022
  */
 @RestController
-@RequestMapping("/test2")
+@RequestMapping("/test")
 @CrossOrigin
-public class Test2 {
+public class TestController {
+
+    private final TestService testService;
+
+    public TestController(TestService testService) {
+        this.testService = testService;
+    }
+
 
     @GetMapping("/findTest")
-    public ResponseEntity<TestRes> findTest(){
-        return ResponseEntity.ok().body(TestRes.builder().attribute("Test...").build());
+    public ResponseEntity<TestRes> findTest() {
+        return ResponseEntity.ok().body(this.testService.findTest());
     }
 }
