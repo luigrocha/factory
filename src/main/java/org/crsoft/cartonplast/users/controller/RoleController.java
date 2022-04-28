@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+import static org.crsoft.cartonplast.users.util.Constants.*;
+
 /**
  * Role Controller
  *
@@ -17,7 +19,7 @@ import java.util.Collection;
  */
 @RestController
 @RequestMapping("/role")
-@CrossOrigin
+@CrossOrigin(origins = {CROSS_LOCAL, CROSS_DEVELOP, CROSS_PRODUCTION})
 public class RoleController {
 
     private final IRoleService roleService;

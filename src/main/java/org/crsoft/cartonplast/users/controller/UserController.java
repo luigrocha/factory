@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
+import static org.crsoft.cartonplast.users.util.Constants.*;
+
 /**
  * User Controller
  *
@@ -19,7 +21,7 @@ import java.util.Collection;
  */
 @RestController
 @RequestMapping("/user")
-@CrossOrigin
+@CrossOrigin(origins = {CROSS_LOCAL, CROSS_DEVELOP, CROSS_PRODUCTION})
 public class UserController {
 
     private final IUserService userService;
