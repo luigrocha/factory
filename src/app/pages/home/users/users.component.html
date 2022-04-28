@@ -1,0 +1,78 @@
+<p-table
+    #dt
+    [value]="users"
+    dataKey="id"
+    styleClass="p-datatable-customers"
+    [rowHover]="true"
+    [rows]="10"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [loading]="loading"
+    [paginator]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [filterDelay]="0"
+    [globalFilterFields]="['name', 'firstName', 'lastName']"
+>
+    <ng-template pTemplate="caption">
+        <div class="table-header">
+            Lista de usuarios
+            <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                    pInputText
+                    type="text"
+                    (input)="dt.filterGlobal($event.target.value, 'contains')"
+                    placeholder="Buscar"
+                />
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="userName">
+                Username <p-sortIcon field="userName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="firstName">
+                Nombre <p-sortIcon field="firstName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="lastName">
+                Apellido <p-sortIcon field="lastName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="email">Email</th>
+            <th style="width: 8rem"><p-cogIcon></p-cogIcon></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+        <tr class="p-selectable-row">
+            <td>
+                <span class="p-column-title">Username</span>
+                {{ user.userName }}
+            </td>
+            <td>
+                <span class="p-column-title">Nombre</span>
+                {{ user.firstName }}
+            </td>
+            <td>
+                <span class="p-column-title">Apellido</span>
+                {{ user.lastName }}
+            </td>
+            <td>
+                <span class="p-column-title">Email</span>
+                {{ user.email }}
+            </td>
+            <td style="text-align: center">
+                <button
+                    pButton
+                    type="button"
+                    class="p-button-secondary"
+                    icon="pi pi-cog"
+                ></button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="5">No se encontraron usuarios.</td>
+        </tr>
+    </ng-template>
+</p-table>

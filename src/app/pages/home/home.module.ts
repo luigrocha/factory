@@ -97,6 +97,7 @@ import { AppFooterComponent } from 'src/app/components/footer/app.footer.compone
 import { AppCodeModule } from 'src/app/components/code/app.code.component';
 import { AppRoutingModule } from 'src/app/app-routing.routing';
 import { CirelComponent } from './cirel/cirel.component';
+import { UsersComponent } from './users/users.component';
 
 
 @NgModule({
@@ -200,7 +201,8 @@ import { CirelComponent } from './cirel/cirel.component';
     AppTopBarComponent,
     AppFooterComponent,
 
-    CirelComponent
+    CirelComponent,
+    UsersComponent,
   ]
 })
 export class HomeModule { }
