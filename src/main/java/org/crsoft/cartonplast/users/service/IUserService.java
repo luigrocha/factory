@@ -14,7 +14,7 @@ import java.util.Collection;
  *
  * @author jyepez
  */
-public interface IKeycloakService {
+public interface IUserService {
 
     /**
      * Create User

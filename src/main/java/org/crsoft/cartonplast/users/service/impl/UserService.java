@@ -5,26 +5,22 @@ import org.crsoft.cartonplast.users.enums.StatusKeycloakEnum;
 import org.crsoft.cartonplast.users.exception.InsertException;
 import org.crsoft.cartonplast.users.exception.NotFoundException;
 import org.crsoft.cartonplast.users.exception.UpdateException;
-import org.crsoft.cartonplast.users.service.IKeycloakService;
+import org.crsoft.cartonplast.users.service.IUserService;
+import org.crsoft.cartonplast.users.util.KeycloakUtil;
 import org.crsoft.cartonplast.users.vo.req.UserReq;
 import org.crsoft.cartonplast.users.vo.res.MessageRes;
 import org.crsoft.cartonplast.users.vo.res.UserRes;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Keycloak Service
@@ -33,18 +29,13 @@ import java.util.Objects;
  */
 @Service
 @Log4j2
-public class KeycloakService implements IKeycloakService {
+public class UserService implements IUserService {
 
-    @Value("${keycloak.auth-server-url}")
-    private String serviceUrl;
+    private final KeycloakUtil keycloakUtil;
 
-    @Value("${keycloak.realm}")
-    private String realm;
-
-    @Value("${token-adm}")
-    private String tokenAdm;
-
-    private static RealmResource realmResource;
+    public UserService(KeycloakUtil keycloakUtil) {
+        this.keycloakUtil = keycloakUtil;
+    }
 
     /**
      * {@inheritDoc}
@@ -74,8 +65,8 @@ public class KeycloakService implements IKeycloakService {
                 credentialRepresentation.setValue(user.getPassword());
                 usersResource.get(userId).resetPassword(credentialRepresentation);
 
-                RoleRepresentation roleRepresentation = getRealmResource().roles().get("realm-user").toRepresentation();
-                getRealmResource().users().get(userId).roles().realmLevel().add(List.of(roleRepresentation));
+                RoleRepresentation roleRepresentation = keycloakUtil.getRealmResource().roles().get("realm-user").toRepresentation();
+                keycloakUtil.getRealmResource().users().get(userId).roles().realmLevel().add(List.of(roleRepresentation));
 
                 messageRes.setMessage(user.getUserName() + " usuario creado");
                 log.info("{} user created", user.getUserName());
@@ -134,7 +125,7 @@ public class KeycloakService implements IKeycloakService {
             userRepresentation.setFirstName(user.getFirstName());
             userRepresentation.setLastName(user.getLastName());
 
-            realmResource.users().get(id).update(userRepresentation);
+            keycloakUtil.getRealmResource().users().get(id).update(userRepresentation);
         } catch (Exception e) {
             log.error("findUserById Not Found Id {}", id);
             throw new UpdateException("updateUserById", "No se puede actualizar usuario");
@@ -178,9 +169,9 @@ public class KeycloakService implements IKeycloakService {
      * @return UserRepresentation
      * @throws NotFoundException Not Found Exception
      */
-    private UserRepresentation getUserRepresentationById(String id) throws NotFoundException {
+    public UserRepresentation getUserRepresentationById(String id) throws NotFoundException {
         try {
-            RealmResource realmResource = getRealmResource();
+            RealmResource realmResource = keycloakUtil.getRealmResource();
             return realmResource.users().get(id).toRepresentation();
         } catch (Exception e) {
             log.error("getUserRepresentationById Not Found Id {}", id);
@@ -188,25 +179,6 @@ public class KeycloakService implements IKeycloakService {
         }
     }
 
-    /**
-     * Get Realm Resource
-     *
-     * @return RealmResource
-     */
-    private RealmResource getRealmResource() {
-        if (Objects.isNull(realmResource)) {
-            Keycloak keycloak = KeycloakBuilder.builder()
-                    .serverUrl(serviceUrl)
-                    .realm("master")
-                    .username("admin")
-                    .password(tokenAdm)
-                    .clientId("admin-cli")
-                    .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build())
-                    .build();
-            realmResource = keycloak.realm(realm);
-        }
-        return realmResource;
-    }
 
     /**
      * Get Users Resource
@@ -214,7 +186,7 @@ public class KeycloakService implements IKeycloakService {
      * @return UsersResource
      */
     private UsersResource getUsersResource() {
-        return getRealmResource().users();
+        return keycloakUtil.getRealmResource().users();
     }
 
     /**
@@ -225,7 +197,8 @@ public class KeycloakService implements IKeycloakService {
      */
     private Collection<String> getRolesByUserId(String userId) {
         Collection<String> roles = new ArrayList<>();
-        Collection<RoleRepresentation> roleRepresentations = getRealmResource().users().get(userId).roles().realmLevel().listAll();
+        Collection<RoleRepresentation> roleRepresentations = keycloakUtil.getRealmResource()
+                .users().get(userId).roles().realmLevel().listAll();
         for (RoleRepresentation roleRepresentation : roleRepresentations) {
             roles.add(roleRepresentation.getName());
         }

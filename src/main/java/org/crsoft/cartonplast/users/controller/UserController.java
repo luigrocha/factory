@@ -3,7 +3,7 @@ package org.crsoft.cartonplast.users.controller;
 import org.crsoft.cartonplast.users.exception.InsertException;
 import org.crsoft.cartonplast.users.exception.NotFoundException;
 import org.crsoft.cartonplast.users.exception.UpdateException;
-import org.crsoft.cartonplast.users.service.IKeycloakService;
+import org.crsoft.cartonplast.users.service.IUserService;
 import org.crsoft.cartonplast.users.vo.req.UserReq;
 import org.crsoft.cartonplast.users.vo.res.MessageRes;
 import org.crsoft.cartonplast.users.vo.res.UserRes;
@@ -22,10 +22,10 @@ import java.util.Collection;
 @CrossOrigin
 public class UserController {
 
-    private final IKeycloakService keycloakService;
+    private final IUserService userService;
 
-    public UserController(IKeycloakService keycloakService) {
-        this.keycloakService = keycloakService;
+    public UserController(IUserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -37,7 +37,7 @@ public class UserController {
     @PostMapping("/createUser")
     public ResponseEntity<MessageRes> createUser(@RequestBody UserReq user) {
         try {
-            return ResponseEntity.ok().body(this.keycloakService.createUser(user));
+            return ResponseEntity.ok().body(this.userService.createUser(user));
         } catch (InsertException e) {
             return ResponseEntity.badRequest().body(MessageRes.builder().message(e.getMessage()).build());
         }
@@ -51,7 +51,7 @@ public class UserController {
     @GetMapping("/findAllUsers")
     public ResponseEntity<Collection<UserRes>> findAllUsers() {
         try {
-            return ResponseEntity.ok().body(this.keycloakService.findAllUsers());
+            return ResponseEntity.ok().body(this.userService.findAllUsers());
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -66,7 +66,7 @@ public class UserController {
     @GetMapping("/findUserById/{id}")
     public ResponseEntity<UserRes> findUserById(@PathVariable("id") String id) {
         try {
-            return ResponseEntity.ok().body(this.keycloakService.findUserById(id));
+            return ResponseEntity.ok().body(this.userService.findUserById(id));
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -82,7 +82,7 @@ public class UserController {
     @PutMapping("/updateUserById/{id}")
     public ResponseEntity<?> updateUserById(@PathVariable("id") String id, @RequestBody UserReq user) {
         try {
-            this.keycloakService.updateUserById(id, user);
+            this.userService.updateUserById(id, user);
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (UpdateException e) {
@@ -100,7 +100,7 @@ public class UserController {
     @DeleteMapping("/deleteUserById/{id}")
     public ResponseEntity<?> deleteUserById(@PathVariable("id") String id) {
         try {
-            this.keycloakService.deleteUserById(id);
+            this.userService.deleteUserById(id);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

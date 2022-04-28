@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
+ * User Req
+ *
  * @author jyepez on 22/4/2022
  */
 @Data
