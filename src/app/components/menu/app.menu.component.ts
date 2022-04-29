@@ -17,7 +17,7 @@ export class AppMenuComponent implements OnInit {
     constructor(public app: AppComponent, private authService: AuthService) { }
 
     get isAdmin(): boolean {
-        return this.authService.isAdmin()
+        return this.authService.isAdmin();
     }
 
     ngOnInit() {

@@ -1,78 +1,191 @@
-<p-table
-    #dt
-    [value]="users"
-    dataKey="id"
-    styleClass="p-datatable-customers"
-    [rowHover]="true"
-    [rows]="10"
-    [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[10, 25, 50]"
-    [loading]="loading"
-    [paginator]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [filterDelay]="0"
-    [globalFilterFields]="['name', 'firstName', 'lastName']"
->
-    <ng-template pTemplate="caption">
-        <div class="table-header">
-            Lista de usuarios
-            <span class="p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input
-                    pInputText
-                    type="text"
-                    (input)="dt.filterGlobal($event.target.value, 'contains')"
-                    placeholder="Buscar"
-                />
-            </span>
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-toast></p-toast>
+
+        <div class="card">
+            <p-toolbar styleClass="p-mb-4">
+                <ng-template pTemplate="left">
+                    <button
+                        pButton
+                        pRipple
+                        label="Nuevo"
+                        icon="pi pi-plus"
+                        class="p-button-success p-mr-2 p-mb-2"
+                        (click)="openNew()"
+                    ></button>
+                    <button
+                        pButton
+                        pRipple
+                        label="Eliminar"
+                        icon="pi pi-trash"
+                        class="p-button-danger p-mb-2"
+                        (click)="deleteSelectedUsers()"
+                        [disabled]="!selectedUsers || !selectedUsers.length"
+                    ></button>
+                </ng-template>
+
+                <ng-template pTemplate="right">
+                    <button
+                        pButton
+                        pRipple
+                        label="Export"
+                        icon="pi pi-upload"
+                        class="p-button-help p-mb-2"
+                        (click)="dt.exportCSV()"
+                    ></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table
+                #dt
+                [value]="users"
+                [columns]="cols"
+                [rows]="5"
+                [paginator]="true"
+                [globalFilterFields]="['userName', 'firstName', 'lastName']"
+                [(selection)]="selectedUsers"
+                [rowHover]="true"
+                dataKey="id"
+                styleClass="p-datatable-customers"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header"
+                    >
+                        <h5 class="p-m-0">Gestión de Usuarios</h5>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="
+                                    dt.filterGlobal(
+                                        $event.target.value,
+                                        'contains'
+                                    )
+                                "
+                                placeholder="Search..."
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="userName">
+                            Usuario <p-sortIcon field="userName"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="firstName">
+                            Nombre <p-sortIcon field="firstName"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="lastName">
+                            Apellido <p-sortIcon field="lastName"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="email">Email</th>
+                        <th style="text-align: center">
+                            <i
+                                class="pi pi-cog"
+                                style="font-size: 18px"
+                                pTooltip="Opciones"
+                            ></i>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="user"></p-tableCheckbox>
+                        </td>
+                        <td>
+                            <span class="p-column-title">Usuario</span>
+                            {{ user.userName }}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Nombre</span>
+                            {{ user.firstName }}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Apellido</span>
+                            {{ user.lastName }}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Email</span>
+                            {{ user.email }}
+                        </td>
+                        <td>
+                            <button
+                                pButton
+                                pRipple
+                                icon="pi pi-pencil"
+                                class="p-button-rounded p-button-success p-mr-2"
+                                (click)="editUser(user)"
+                            ></button>
+                            <button
+                                pButton
+                                pRipple
+                                icon="pi pi-trash"
+                                class="p-button-rounded p-button-warning"
+                                (click)="deleteUser(user)"
+                            ></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        Total de usuarios:
+                        {{ users ? users.length : 0 }}
+                    </div>
+                </ng-template>
+            </p-table>
         </div>
-    </ng-template>
-    <ng-template pTemplate="header">
-        <tr>
-            <th pSortableColumn="userName">
-                Username <p-sortIcon field="userName"></p-sortIcon>
-            </th>
-            <th pSortableColumn="firstName">
-                Nombre <p-sortIcon field="firstName"></p-sortIcon>
-            </th>
-            <th pSortableColumn="lastName">
-                Apellido <p-sortIcon field="lastName"></p-sortIcon>
-            </th>
-            <th pSortableColumn="email">Email</th>
-            <th style="width: 8rem"><p-cogIcon></p-cogIcon></th>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-user>
-        <tr class="p-selectable-row">
-            <td>
-                <span class="p-column-title">Username</span>
-                {{ user.userName }}
-            </td>
-            <td>
-                <span class="p-column-title">Nombre</span>
-                {{ user.firstName }}
-            </td>
-            <td>
-                <span class="p-column-title">Apellido</span>
-                {{ user.lastName }}
-            </td>
-            <td>
-                <span class="p-column-title">Email</span>
-                {{ user.email }}
-            </td>
-            <td style="text-align: center">
+
+        <p-dialog
+            [(visible)]="userDialog"
+            [style]="{ width: '450px' }"
+            header="Detalles de Usuario"
+            [modal]="true"
+            styleClass="p-fluid"
+        >
+            <ng-template pTemplate="content">
+                <div class="p-field">
+                    <label for="userName">Usuario</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="userName"
+                        [(ngModel)]="user.userName"
+                        required
+                        autofocus
+                    />
+                    <small class="p-invalid" *ngIf="submitted && !user.userName"
+                        >Usuario es requerido.</small
+                    >
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
                 <button
                     pButton
-                    type="button"
-                    class="p-button-secondary"
-                    icon="pi pi-cog"
+                    pRipple
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="hideDialog()"
                 ></button>
-            </td>
-        </tr>
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-        <tr>
-            <td colspan="5">No se encontraron usuarios.</td>
-        </tr>
-    </ng-template>
-</p-table>
+                <button
+                    pButton
+                    pRipple
+                    label="Guardar"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveProduct()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+    </div>
+</div>
