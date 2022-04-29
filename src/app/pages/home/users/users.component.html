@@ -47,7 +47,6 @@
                 [rowHover]="true"
                 dataKey="id"
                 styleClass="p-datatable-customers"
-                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
                 <ng-template pTemplate="caption">
                     <div
@@ -157,11 +156,64 @@
                         pInputText
                         id="userName"
                         [(ngModel)]="user.userName"
+                        disabled
+                    />
+                </div>
+                <div class="p-field">
+                    <label for="firstName">Nombre</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="firstName"
+                        [(ngModel)]="user.firstName"
+                        (ngModelChange)="createFirstLetterUserName($event)"
                         required
                         autofocus
                     />
-                    <small class="p-invalid" *ngIf="submitted && !user.userName"
-                        >Usuario es requerido.</small
+                    <small
+                        class="p-invalid"
+                        *ngIf="submitted && !user.firstName"
+                        >Campo nombre es requerido.</small
+                    >
+                </div>
+                <div class="p-field">
+                    <label for="lastName">Apellido</label>
+                    <input
+                        type="text"
+                        pInputText
+                        id="lastName"
+                        [(ngModel)]="user.lastName"
+                        (ngModelChange)="createUsername($event)"
+                        required
+                    />
+                    <small class="p-invalid" *ngIf="submitted && !user.lastName"
+                        >Campo apellido es requerido.</small
+                    >
+                </div>
+                <div class="p-field">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        pInputText
+                        id="email"
+                        [(ngModel)]="user.email"
+                        required
+                    />
+                    <small class="p-invalid" *ngIf="submitted && !user.email"
+                        >Campo email es requerido y debe ser válido.</small
+                    >
+                </div>
+                <div class="p-field" *ngIf="!user.id">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        pInputText
+                        id="password"
+                        [(ngModel)]="user.password"
+                        required
+                    />
+                    <small class="p-invalid" *ngIf="submitted && !user.password"
+                        >Campo contraseña es requerido.</small
                     >
                 </div>
             </ng-template>

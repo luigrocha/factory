@@ -63,7 +63,6 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private userService: UsersService,
-    private primengConfig: PrimeNGConfig,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: AppBreadcrumbService
@@ -75,12 +74,7 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.getAllUsers().subscribe((users) => {
-      this.users = users;
-      this.loading = false;
-    });
-    this.primengConfig.ripple = true;
-
+    this.getAllUsers();
     this.cols = [
       { field: 'userName', header: 'Usuario' },
       { field: 'firstName', header: 'Nombre' },
@@ -107,14 +101,27 @@ export class UsersComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.users = this.users.filter((val) => val.id !== user.id);
-        this.user = {};
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Usuario Eliminado',
-          life: 3000,
-        });
+        this.userService.deleteUserById(user.id).subscribe(
+          (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Usuario Eliminado',
+              life: 3000,
+            });
+            this.users = [];
+            this.getAllUsers();
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
+
       },
     });
   }
@@ -125,9 +132,29 @@ export class UsersComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.users = this.users.filter(
-          (val) => !this.selectedUsers.includes(val)
-        );
+        this.selectedUsers.forEach(user => {
+          this.userService.deleteUserById(user.id).subscribe(
+            (res) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Usuario Eliminado',
+                life: 3000,
+              });
+              this.users = [];
+              this.getAllUsers();
+            },
+            (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message,
+                life: 3000,
+              });
+            }
+          );
+        })
+
         this.selectedUsers = null;
         this.messageService.add({
           severity: 'success',
@@ -144,22 +171,56 @@ export class UsersComponent implements OnInit {
 
     if (this.user.userName.trim()) {
       if (this.user.id) {
-        this.users[this.findIndexById(this.user.id)] = this.user;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Updated',
-          life: 3000,
-        });
+        this.userService.updateUserById(this.user.id, this.user).subscribe(
+          (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Usuario Actualizado',
+              life: 3000,
+            });
+            this.users = [];
+            this.getAllUsers();
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
       } else {
-        // this.user.id = this.createId();
-        this.users.push(this.user);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Created',
-          life: 3000,
-        });
+        this.userService.createUser(this.user).subscribe(
+          (res) => {
+            if (res.status === 201) {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Usuario Creado',
+                life: 3000,
+              });
+              this.users = [];
+              this.getAllUsers();
+            } else if (res.status === 409) {
+              this.messageService.add({
+                severity: 'warn',
+                summary: 'Alerta',
+                detail: res.message,
+                life: 3000,
+              });
+            }
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
       }
 
       this.users = [...this.users];
@@ -168,19 +229,44 @@ export class UsersComponent implements OnInit {
     }
   }
 
-  findIndexById(id: string): number {
-    let index = -1;
-    for (let i = 0; i < this.users.length; i++) {
-      if (this.users[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-    return index;
-  }
-
   hideDialog() {
     this.userDialog = false;
     this.submitted = false;
+  }
+
+  getAllUsers() {
+    this.userService.getAllUsers().subscribe((users) => {
+      this.users = users;
+      this.loading = false;
+    });
+  }
+
+  removeAccents(str: string): string {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  createFirstLetterUserName() {
+    if (!this.user.id) {
+      this.user.userName = this.removeAccents(this.user.firstName.charAt(0)).toLowerCase();
+    }
+  }
+
+  createUsername(e: string) {
+    if (!this.user.id) {
+      let lastName = e;
+      if (e.includes(' ')) {
+        lastName = e.split(' ')[0];
+      }
+      this.user.userName = this.removeAccents((this.user.firstName.charAt(0) + lastName).toLowerCase());
+      this.verifyUsername();
+      this.user.email = this.user.userName;
+    }
+  }
+
+  verifyUsername() {
+    const repeatedRecords = this.users.filter(user => user.userName.includes(this.user.userName));
+    if (repeatedRecords.length > 1) {
+      this.user.userName = this.user.userName + (repeatedRecords.length + 1);
+    }
   }
 }
