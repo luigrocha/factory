@@ -60,4 +60,13 @@ public interface IUserService {
      */
     void deleteUserById(String id) throws NotFoundException, UpdateException;
 
+    /**
+     * Find User By User Name
+     *
+     * @param userName userName
+     * @return User Res
+     * @throws NotFoundException Not Found Exception
+     */
+    UserRes findUserByUserName(String userName) throws NotFoundException;
+
 }

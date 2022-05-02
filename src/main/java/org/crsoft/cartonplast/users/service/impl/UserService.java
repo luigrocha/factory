@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Keycloak Service
@@ -146,6 +147,23 @@ public class UserService implements IUserService {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserRes findUserByUserName(String userName) throws NotFoundException {
+        Collection<UserRepresentation> userRepresentations = getUsersResource().list();
+        UserRepresentation userRepresentation = userRepresentations.stream()
+                .filter(user -> user.getUsername().equals(userName))
+                .findAny()
+                .orElse(null);
+        if(Objects.nonNull(userRepresentation)){
+            return  buildUserRes(userRepresentation);
+        }else{
+            throw new NotFoundException("No existe usuario");
+        }
+    }
+
+    /**
      * Build User Res
      *
      * @param userRepresentation userRepresentation
@@ -200,6 +218,7 @@ public class UserService implements IUserService {
         Collection<RoleRepresentation> roleRepresentations = keycloakUtil.getRealmResource()
                 .users().get(userId).roles().realmLevel().listAll();
         for (RoleRepresentation roleRepresentation : roleRepresentations) {
+            if(!roleRepresentation.getName().equals("default-roles-tutorial"))
             roles.add(roleRepresentation.getName());
         }
         return roles;
