@@ -98,6 +98,7 @@ import { AppCodeModule } from 'src/app/components/code/app.code.component';
 import { AppRoutingModule } from 'src/app/app-routing.routing';
 import { CirelComponent } from './cirel/cirel.component';
 import { UsersComponent } from './users/users.component';
+import { RoleComponent } from './role/role.component';
 
 
 @NgModule({
@@ -203,6 +204,7 @@ import { UsersComponent } from './users/users.component';
 
     CirelComponent,
     UsersComponent,
+    RoleComponent,
   ]
 })
 export class HomeModule { }

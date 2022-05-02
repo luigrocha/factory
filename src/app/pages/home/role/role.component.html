@@ -1,0 +1,165 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-toast></p-toast>
+
+        <div class="card">
+            <p-toolbar styleClass="p-mb-4">
+                <ng-template pTemplate="left">
+                    <button
+                        pButton
+                        pRipple
+                        label="Añadir o quitar rol a usuario"
+                        icon="pi pi-user-plus"
+                        class="p-button-success p-mr-2 p-mb-2"
+                        (click)="addRoleUser()"
+                    ></button>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table
+                #dt
+                [value]="roles"
+                [columns]="cols"
+                [rows]="5"
+                [paginator]="true"
+                [globalFilterFields]="['name']"
+                [(selection)]="selectedRoles"
+                [rowHover]="true"
+                dataKey="id"
+                styleClass="p-datatable-customers"
+            >
+                <ng-template pTemplate="caption">
+                    <div
+                        class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header"
+                    >
+                        <h5 class="p-m-0">Gestión de Roles</h5>
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input
+                                pInputText
+                                type="text"
+                                (input)="
+                                    dt.filterGlobal(
+                                        $event.target.value,
+                                        'contains'
+                                    )
+                                "
+                                placeholder="Buscar..."
+                            />
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="name">
+                            Nombre <p-sortIcon field="name"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="description">Descripción</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-role>
+                    <tr>
+                        <td>
+                            <span class="p-column-title">Nombre</span>
+                            {{ getRoleType(role.name).name }}
+                        </td>
+                        <td>
+                            <span class="p-column-title">Descripción</span>
+                            {{ role.description }}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="summary">
+                    <div class="p-d-flex p-ai-center p-jc-between">
+                        Total de roles:
+                        {{ roles ? roles.length : 0 }}
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+
+        <p-dialog
+            [(visible)]="roleDialog"
+            [style]="{ width: '450px' }"
+            header="Detalles de Roles"
+            [modal]="true"
+            styleClass="p-fluid"
+        >
+            <ng-template pTemplate="content">
+                <div class="p-field">
+                    <label for="userName">Usuario</label>
+                    <span class="p-input-icon-right">
+                        <input
+                            type="text"
+                            pInputText
+                            placeholder="Buscar por nombre de usuario"
+                            [(ngModel)]="userName"
+                            (keyup.enter)="getUserByUserName(userName)"
+                            autofocus
+                        />
+                        <i
+                            class="pi pi-search"
+                            (click)="getUserByUserName(userName)"
+                        ></i>
+                        <small class="p-invalid" *ngIf="submitted && !userName"
+                            >Campo usuario es requerido.</small
+                        >
+                    </span>
+                </div>
+                <div class="user-item" *ngIf="user.userName">
+                    <div class="user-item-content">
+                        <div>
+                            <h4 class="p-mb-1">
+                                {{ user.firstName }} {{ user.lastName }}
+                            </h4>
+                            <h6 class="p-mt-0 p-mb-3">{{ user.email }}</h6>
+                            <p-tag
+                                *ngFor="let role of user.roles"
+                                styleClass="p-mr-2"
+                                severity="{{ getRoleType(role).color }}"
+                                value="{{ getRoleType(role).name }}"
+                                [rounded]="true"
+                            ></p-tag>
+                        </div>
+                    </div>
+                </div>
+                <p-pickList
+                    *ngIf="user"
+                    [source]="roleName"
+                    [target]="rolesActually"
+                    sourceHeader="Disponibles"
+                    targetHeader="Actuales"
+                    dragdrop="true"
+                    [responsive]="true"
+                    [sourceStyle]="{ height: '200px' }"
+                    [targetStyle]="{ height: '200px' }"
+                >
+                    <ng-template let-role pTemplate="item">
+                        <div>{{ getRoleType(role).name }}</div>
+                    </ng-template>
+                </p-pickList>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button
+                    pButton
+                    pRipple
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    class="p-button-text"
+                    (click)="hideDialog()"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    label="Guardar"
+                    icon="pi pi-check"
+                    class="p-button-text"
+                    (click)="saveRoles()"
+                ></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+    </div>
+</div>

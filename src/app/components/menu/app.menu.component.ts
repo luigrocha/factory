@@ -25,7 +25,8 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Administración', icon: 'pi pi-fw pi-home', condition: this.isAdmin,
                 items: [
-                    { label: 'Usuarios', icon: 'pi pi-fw pi-users', condition: this.isAdmin, routerLink: ['/home/users'] }
+                    { label: 'Usuarios', icon: 'pi pi-fw pi-users', condition: this.isAdmin, routerLink: ['/home/users'] },
+                    { label: 'Roles', icon: 'pi pi-fw pi-user-edit', condition: this.isAdmin, routerLink: ['/home/role'] }
                 ]
             },/*
             {

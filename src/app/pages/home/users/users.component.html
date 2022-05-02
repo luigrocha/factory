@@ -42,7 +42,12 @@
                 [columns]="cols"
                 [rows]="5"
                 [paginator]="true"
-                [globalFilterFields]="['userName', 'firstName', 'lastName']"
+                [globalFilterFields]="[
+                    'userName',
+                    'firstName',
+                    'lastName',
+                    'roles'
+                ]"
                 [(selection)]="selectedUsers"
                 [rowHover]="true"
                 dataKey="id"
@@ -64,7 +69,7 @@
                                         'contains'
                                     )
                                 "
-                                placeholder="Search..."
+                                placeholder="Buscar..."
                             />
                         </span>
                     </div>
@@ -84,7 +89,16 @@
                             Apellido <p-sortIcon field="lastName"></p-sortIcon>
                         </th>
                         <th pSortableColumn="email">Email</th>
-                        <th style="text-align: center">
+                        <th pSortableColumn="roles">
+                            Roles <p-sortIcon field="roles"></p-sortIcon>
+                        </th>
+                        <th
+                            style="
+                                text-align: center;
+                                display: flex;
+                                justify-content: space-around;
+                            "
+                        >
                             <i
                                 class="pi pi-cog"
                                 style="font-size: 18px"
@@ -115,6 +129,17 @@
                             {{ user.email }}
                         </td>
                         <td>
+                            <p-tag
+                                *ngFor="let role of user.roles"
+                                styleClass="p-mb-2 p-mr-2 flex flex-column"
+                                severity="{{ getRoleType(role).color }}"
+                                value="{{ getRoleType(role).name }}"
+                                [rounded]="true"
+                            ></p-tag>
+                        </td>
+                        <td
+                            style="display: flex; justify-content: space-around"
+                        >
                             <button
                                 pButton
                                 pRipple
@@ -233,7 +258,7 @@
                     label="Guardar"
                     icon="pi pi-check"
                     class="p-button-text"
-                    (click)="saveProduct()"
+                    (click)="saveUser()"
                 ></button>
             </ng-template>
         </p-dialog>

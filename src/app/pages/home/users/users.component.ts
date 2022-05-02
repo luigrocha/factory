@@ -6,7 +6,9 @@ import {
   PrimeNGConfig,
 } from 'primeng/api';
 import { AppBreadcrumbService } from 'src/app/components/breadcrumb/app.breadcrumb.service';
+import { RoleType } from 'src/app/types/role.types';
 import { User } from 'src/app/types/user.types';
+import { RoleService } from '../role/role.service';
 import { UsersService } from './users.service';
 
 @Component({
@@ -63,6 +65,7 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private userService: UsersService,
+    private roleService: RoleService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: AppBreadcrumbService
@@ -80,6 +83,7 @@ export class UsersComponent implements OnInit {
       { field: 'firstName', header: 'Nombre' },
       { field: 'lastName', header: 'Apellido' },
       { field: 'email', header: 'Email' },
+      { field: 'roles', header: 'Roles' },
     ];
   }
 
@@ -166,7 +170,7 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  saveProduct() {
+  saveUser() {
     this.submitted = true;
 
     if (this.user.userName.trim()) {
@@ -268,5 +272,9 @@ export class UsersComponent implements OnInit {
     if (repeatedRecords.length > 1) {
       this.user.userName = this.user.userName + (repeatedRecords.length + 1);
     }
+  }
+
+  getRoleType(name: string): RoleType {
+    return this.roleService.getRoleType(name);
   }
 }

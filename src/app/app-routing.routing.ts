@@ -9,6 +9,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { CirelComponent } from './pages/home/cirel/cirel.component';
 import { AuthGuard } from './auth/auth.guard';
 import { UsersComponent } from './pages/home/users/users.component';
+import { RoleComponent } from './pages/home/role/role.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { UsersComponent } from './pages/home/users/users.component';
                 path: 'home', component: HomeComponent,
                 children: [
                     { path: 'cirel', component: CirelComponent },
-                    { path: 'users', component: UsersComponent, canActivate: [AuthGuard], data: { roles: ['realm-admin'] } }
+                    { path: 'users', component: UsersComponent, canActivate: [AuthGuard], data: { roles: ['realm-admin'] } },
+                    { path: 'role', component: RoleComponent, canActivate: [AuthGuard], data: { roles: ['realm-admin'] } },
                 ],
                 canActivate: [AuthGuard],
                 // data: { roles: ['realm-admin', 'realm-user'] }
