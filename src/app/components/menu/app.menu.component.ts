@@ -6,7 +6,7 @@ import { AppComponent } from '../../app.component';
     selector: 'app-menu',
     template: `
         <ul class="layout-menu">
-            <li app-menuitem  *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true" ></li>
+            <li app-menuitem  *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
         </ul>
     `
 })

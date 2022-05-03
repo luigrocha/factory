@@ -23,7 +23,7 @@
             </div>
 
             <div id="lightdark-panel" class="layout-config-section options">
-                <h6>Color Mode</h6>
+                <h6>Modo Color</h6>
                 <div class="p-d-flex p-jc-between">
                     <div class="p-d-flex p-ai-center">
                         <p-radioButton
@@ -59,13 +59,14 @@
             </div>
 
             <div id="menumodes-panel" class="layout-config-section options">
-                <h6 class="p-mt-2">Menu Mode</h6>
-                <div class="p-d-flex p-jc-between">
+                <h6 class="p-mt-2">Modo Menú</h6>
+                <div class="p-d-flex p-jc-around">
                     <div class="p-d-flex p-ai-center">
                         <p-radioButton
                             name="menuMode"
                             value="static"
                             [(ngModel)]="app.menuMode"
+                            (onClick)="onUpdatePreferences()"
                             inputId="menuMode1"
                         ></p-radioButton>
                         <label for="menuMode1" class="p-ml-2">Static</label>
@@ -75,24 +76,26 @@
                             name="menuMode"
                             value="overlay"
                             [(ngModel)]="app.menuMode"
+                            (onClick)="onUpdatePreferences()"
                             inputId="menuMode2"
                         ></p-radioButton>
                         <label for="menuMode2" class="p-ml-2">Overlay</label>
                     </div>
-                    <div class="p-d-flex p-ai-center">
+                    <!-- <div class="p-d-flex p-ai-center">
                         <p-radioButton
                             name="menuMode"
                             value="horizontal"
                             [(ngModel)]="app.menuMode"
+                            (onClick)="onUpdatePreferences()"
                             inputId="menuMode3"
                         ></p-radioButton>
                         <label for="menuMode3" class="p-ml-2">Horizontal</label>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
             <div id="menuthemes-panel" class="layout-config-section options">
-                <h6 class="p-mt-2">Menu Theme</h6>
+                <h6 class="p-mt-2">Tema Menú</h6>
                 <div class="p-d-flex p-jc-between">
                     <div class="p-d-flex p-ai-center">
                         <p-radioButton
@@ -100,6 +103,7 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="light"
                             [(ngModel)]="app.menuTheme"
+                            (onClick)="onUpdatePreferences()"
                             inputId="menuTheme1"
                         ></p-radioButton>
                         <label for="menuTheme1" class="p-ml-2">Light</label>
@@ -110,6 +114,7 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="dark"
                             [(ngModel)]="app.menuTheme"
+                            (onClick)="onUpdatePreferences()"
                             inputId="menuTheme2"
                         ></p-radioButton>
                         <label for="menuTheme2" class="p-ml-2">Dark</label>
@@ -120,6 +125,7 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="dim"
                             [(ngModel)]="app.menuTheme"
+                            (onClick)="onUpdatePreferences()"
                             inputId="menuTheme3"
                         ></p-radioButton>
                         <label for="menuTheme3" class="p-ml-2">Dim</label>
@@ -128,7 +134,7 @@
             </div>
 
             <div id="topbarthemes-panel" class="layout-config-section options">
-                <h6 class="p-mt-2">TopBar Mode</h6>
+                <h6 class="p-mt-2">Modo Barra Superior</h6>
                 <div class="p-d-flex p-jc-between">
                     <div class="p-d-flex p-ai-center">
                         <p-radioButton
@@ -136,6 +142,7 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="light"
                             [(ngModel)]="app.topbarTheme"
+                            (onClick)="onUpdatePreferences()"
                             inputId="topbarTheme1"
                         ></p-radioButton>
                         <label for="topbarTheme1" class="p-ml-2">Light</label>
@@ -146,6 +153,7 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="dark"
                             [(ngModel)]="app.topbarTheme"
+                            (onClick)="onUpdatePreferences()"
                             inputId="topbarTheme2"
                         ></p-radioButton>
                         <label for="topbarTheme2" class="p-ml-2">Dark</label>
@@ -156,6 +164,7 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="dim"
                             [(ngModel)]="app.topbarTheme"
+                            (onClick)="onUpdatePreferences()"
                             inputId="topbarTheme3"
                         ></p-radioButton>
                         <label for="topbarTheme3" class="p-ml-2">Dim</label>
@@ -163,7 +172,7 @@
                 </div>
             </div>
 
-            <div id="outlined-panel" class="layout-config-section options">
+            <!-- <div id="outlined-panel" class="layout-config-section options">
                 <h6 class="p-mt-2">Input Background</h6>
                 <div class="p-d-flex p-jc-between">
                     <div class="p-d-flex p-ai-center">
@@ -201,13 +210,13 @@
                     [ngModel]="app.isRTL"
                     (onChange)="appMain.onRTLChange($event)"
                 ></p-inputSwitch>
-            </div>
+            </div> -->
 
             <div
                 id="componentthemes-panel"
                 class="layout-config-section colors"
             >
-                <h6 class="p-mt-2">Component Themes</h6>
+                <h6 class="p-mt-2">Colores Disponibles</h6>
                 <div class="p-grid layout-config-colors">
                     <div *ngFor="let t of themes" class="p-col p-col-fixed">
                         <a
