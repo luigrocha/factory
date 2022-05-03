@@ -5,10 +5,15 @@ import org.crsoft.cartonplast.users.enums.StatusKeycloakEnum;
 import org.crsoft.cartonplast.users.exception.InsertException;
 import org.crsoft.cartonplast.users.exception.NotFoundException;
 import org.crsoft.cartonplast.users.exception.UpdateException;
+import org.crsoft.cartonplast.users.model.Preferences;
+import org.crsoft.cartonplast.users.model.User;
+import org.crsoft.cartonplast.users.repository.PreferencesRepository;
+import org.crsoft.cartonplast.users.repository.UserRepository;
 import org.crsoft.cartonplast.users.service.IUserService;
 import org.crsoft.cartonplast.users.util.KeycloakUtil;
 import org.crsoft.cartonplast.users.vo.req.UserReq;
 import org.crsoft.cartonplast.users.vo.res.MessageRes;
+import org.crsoft.cartonplast.users.vo.res.PreferencesRes;
 import org.crsoft.cartonplast.users.vo.res.UserRes;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
@@ -18,6 +23,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
 import javax.ws.rs.core.Response;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,9 +38,15 @@ import java.util.Objects;
 @Log4j2
 public class UserService implements IUserService {
 
+    private final UserRepository userRepository;
+
+    private final PreferencesRepository preferencesRepository;
+
     private final KeycloakUtil keycloakUtil;
 
-    public UserService(KeycloakUtil keycloakUtil) {
+    public UserService(UserRepository userRepository, PreferencesRepository preferencesRepository, KeycloakUtil keycloakUtil) {
+        this.userRepository = userRepository;
+        this.preferencesRepository = preferencesRepository;
         this.keycloakUtil = keycloakUtil;
     }
 
@@ -58,6 +70,7 @@ public class UserService implements IUserService {
             messageRes.setStatus(status);
 
             if (StatusKeycloakEnum.OK.getCode().equals(status)) {
+                createPersistenUser(user);
                 String path = response.getLocation().getPath();
                 String userId = path.substring(path.lastIndexOf("/") + 1);
                 CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
@@ -156,10 +169,76 @@ public class UserService implements IUserService {
                 .filter(user -> user.getUsername().equals(userName))
                 .findAny()
                 .orElse(null);
-        if(Objects.nonNull(userRepresentation)){
-            return  buildUserRes(userRepresentation);
-        }else{
+        if (Objects.nonNull(userRepresentation)) {
+            return buildUserRes(userRepresentation);
+        } else {
             throw new NotFoundException("No existe usuario");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PreferencesRes findPreferencesByUsername(String userName) throws NotFoundException {
+        User user = findUserByUsername(userName);
+        return buildPreferencesRes(user.getPreferences());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updatePreferencesByUsername(String userName, Preferences preferences) throws NotFoundException, UpdateException {
+        User user = findUserByUsername(userName);
+        try {
+            Preferences preference = user.getPreferences();
+            preference.setColorMode(preferences.getColorMode());
+            preference.setMenuMode(preferences.getMenuMode());
+            preference.setMenuTheme(preferences.getMenuTheme());
+            preference.setTopBarMode(preferences.getTopBarMode());
+            preference.setColor(preferences.getColor());
+            preference.setUpdatedBy(userName);
+            preference.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
+            this.preferencesRepository.save(preference);
+        }catch (Exception e){
+            log.error("updatePreferencesByUsername {}", userName);
+            throw new UpdateException("CBTPRE", "No se puede actualizar preferencias");
+        }
+    }
+
+    /**
+     * Build Preferences Res
+     *
+     * @param preferences preferences
+     * @return PreferencesRes
+     */
+    private PreferencesRes buildPreferencesRes(Preferences preferences){
+        return PreferencesRes.builder()
+                .code(preferences.getCode())
+                .colorMode(preferences.getColorMode())
+                .menuMode(preferences.getMenuMode())
+                .menuTheme(preferences.getMenuTheme())
+                .topBarMode(preferences.getTopBarMode())
+                .color(preferences.getColor())
+                .build();
+    }
+
+    /**
+     * Find User By Username
+     *
+     * @param userName userName
+     * @return User
+     * @throws NotFoundException Not Found Exception
+     */
+    private User findUserByUsername(String userName) throws NotFoundException {
+        User user = this.userRepository.findUserByUsername(userName);
+        if(Objects.nonNull(user)){
+            return  user;
+        }else{
+            log.info("findUserByUsername, {} not found",userName);
+            throw new NotFoundException("No existe usuario "+userName);
         }
     }
 
@@ -218,9 +297,43 @@ public class UserService implements IUserService {
         Collection<RoleRepresentation> roleRepresentations = keycloakUtil.getRealmResource()
                 .users().get(userId).roles().realmLevel().listAll();
         for (RoleRepresentation roleRepresentation : roleRepresentations) {
-            if(!roleRepresentation.getName().equals("default-roles-tutorial"))
-            roles.add(roleRepresentation.getName());
+            if (!roleRepresentation.getName().equals("default-roles-tutorial"))
+                roles.add(roleRepresentation.getName());
         }
         return roles;
+    }
+
+    private void createPersistenUser(UserReq userReq) throws InsertException {
+        try {
+            User user = new User();
+            user.setUsername(userReq.getUserName());
+            user.setPhoto("");
+            user.setPhone("");
+            user.setAddress("");
+            user.setValidFrom(new Timestamp(System.currentTimeMillis()));
+            user.setCreatedBy(userReq.getUserName());
+            user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            user.setPreferences(buildDefaultPreference());
+            this.userRepository.save(user);
+        } catch (Exception e) {
+            log.info("Error to create persistence user {}", userReq.getUserName());
+            throw new InsertException("CBTUSE", "No se puede crear usuario {}" + userReq.getUserName());
+        }
+    }
+
+    private Preferences buildDefaultPreference() throws InsertException {
+        try {
+            Preferences preferences = new Preferences();
+            preferences.setColorMode("light");
+            preferences.setMenuMode("static");
+            preferences.setMenuTheme("light");
+            preferences.setTopBarMode("light");
+            preferences.setColor("#30A059");
+            this.preferencesRepository.save(preferences);
+            return preferences;
+        } catch (Exception e) {
+            log.info("Error to create preferences");
+            throw new InsertException("CBTPRE", "No se puede crear preferencias");
+        }
     }
 }

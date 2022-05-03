@@ -3,8 +3,10 @@ package org.crsoft.cartonplast.users.service;
 import org.crsoft.cartonplast.users.exception.InsertException;
 import org.crsoft.cartonplast.users.exception.NotFoundException;
 import org.crsoft.cartonplast.users.exception.UpdateException;
+import org.crsoft.cartonplast.users.model.Preferences;
 import org.crsoft.cartonplast.users.vo.req.UserReq;
 import org.crsoft.cartonplast.users.vo.res.MessageRes;
+import org.crsoft.cartonplast.users.vo.res.PreferencesRes;
 import org.crsoft.cartonplast.users.vo.res.UserRes;
 
 import java.util.Collection;
@@ -69,4 +71,22 @@ public interface IUserService {
      */
     UserRes findUserByUserName(String userName) throws NotFoundException;
 
+    /**
+     * Find Preferences By Username
+     *
+     * @param userName userName
+     * @return PreferencesRes
+     * @throws NotFoundException Not Found Exception
+     */
+    PreferencesRes findPreferencesByUsername(String userName) throws NotFoundException;
+
+    /**
+     * Update Preferences By Username
+     *
+     * @param userName userName
+     * @param preferences preferences
+     * @throws NotFoundException Not Found Exception
+     * @throws UpdateException UpdateException
+     */
+    void updatePreferencesByUsername(String userName, Preferences preferences) throws NotFoundException, UpdateException;
 }

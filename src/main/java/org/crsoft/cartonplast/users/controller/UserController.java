@@ -85,12 +85,12 @@ public class UserController {
     public ResponseEntity<?> updateUserById(@PathVariable("id") String id, @RequestBody UserReq user) {
         try {
             this.userService.updateUserById(id, user);
+            return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (UpdateException e) {
             return ResponseEntity.badRequest().body(MessageRes.builder().message(e.getMessage()).build());
         }
-        return ResponseEntity.ok().build();
     }
 
     /**
@@ -112,7 +112,7 @@ public class UserController {
     }
 
     @GetMapping("/findUserByUserName/{userName}")
-    public ResponseEntity<UserRes> findUserByUserName(@PathVariable("userName") String userName){
+    public ResponseEntity<UserRes> findUserByUserName(@PathVariable("userName") String userName) {
         try {
             return ResponseEntity.ok().body(this.userService.findUserByUserName(userName));
         } catch (NotFoundException e) {
