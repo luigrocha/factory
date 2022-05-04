@@ -21,3 +21,10 @@ export interface Die {
   leafLength: number;
   leafWidth: number;
 }
+
+export enum DieStatus {
+  VI = 'VIGENTE',
+  OB = 'OBSOLETO',
+  PE = 'PENDIENTE',
+  IN = 'INDEFINIDO'
+}

@@ -5,6 +5,8 @@ import { DiesRoutingModule } from './dies-routing.module';
 import { DiesListComponent } from './pages/dies-list/dies-list.component';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
 
 
 @NgModule({
@@ -15,7 +17,9 @@ import { InputTextModule } from 'primeng/inputtext';
     CommonModule,
     DiesRoutingModule,
     TableModule,
-    InputTextModule
+    InputTextModule,
+    ButtonModule,
+    RippleModule
   ]
 })
 export class DiesModule { }

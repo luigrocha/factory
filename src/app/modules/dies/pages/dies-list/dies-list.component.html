@@ -5,19 +5,30 @@
       <p>Lista de todos los troqueles</p>
       <p-table #dt [value]="dies"
                dataKey="id"
-               styleClass="p-datatable-customers"
+               styleClass="p-datatable-gridlines"
                [rowHover]="true"
                [rows]="10"
                [paginator]="true"
-               [filterDelay]="0" [globalFilterFields]="['code']">
+               [filterDelay]="0"
+               [pageLinks]="5"
+               responsiveLayout="scroll"
+               [globalFilterFields]="['code']">
         <ng-template pTemplate="caption">
-          <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
-            Troqueles
-            <span class="p-input-icon-left">
-                    <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
-                           placeholder="Buscar"/>
-                </span>
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <button pButton
+                    pRipple
+                    label="Nuevo"
+                    class="mr-2 mb-2"
+                    icon="pi pi-plus"
+                    (click)="addNewDie(dt)"></button>
+            <span class="p-input-icon-left mb-2">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text"
+                       #filter
+                       (input)="dt.filterGlobal($event.target.value, 'contains')"
+                       placeholder="Buscar..."
+                       class="w-full"/>
+            </span>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
@@ -26,48 +37,65 @@
               <div class="p-d-flex p-jc-between p-ai-center">
                 {{ header.label }}
                 <p-sortIcon [field]="header.property"></p-sortIcon>
-                <p-columnFilter type="text" [field]="header.property" display="menu" class="p-ml-auto"></p-columnFilter>
               </div>
             </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-die>
           <tr class="p-selectable-row">
-            <td>
-              <span class="p-column-title">Troquel</span>
+            <td style="min-width: 12rem;">
               {{die.name}}
             </td>
-            <td>
-              <span class="p-column-title">Fecha</span>
-              {{die.createdDate}}
+            <td style="min-width: 8rem;">
+              {{die.createdDate | date: 'dd/MM/yyyy'}}
             </td>
-            <td>
-              <span class="p-column-title">Fabricante</span>
+            <td style="min-width: 11rem;">
               PENDIENTE
             </td>
-            <td>
-              <span class="p-column-title">Observaciones</span>
+            <td style="min-width: 12rem;">
               {{die.observations}}
             </td>
-            <td>
-              <span class="p-column-title">Prod</span>
+            <td style="min-width: 8rem;">
               {{die.code}}
             </td>
-            <td>
-              <span class="p-column-title">Referencia</span>
+            <td style="min-width: 12rem;">
               {{die.description}}
             </td>
-            <td>
-              <span class="p-column-title">Largo</span>
+            <td style="min-width: 8rem;">
               {{die.length}}
             </td>
-            <td>
-              <span class="p-column-title">Ancho</span>
+            <td style="min-width: 8rem;">
               {{die.width}}
             </td>
-            <td>
-              <span class="p-column-title">Cant1</span>
+            <td style="min-width: 8rem;">
               {{die.quantity}}
+            </td>
+            <td style="min-width: 10rem;">
+              {{die.quantityLength}}
+            </td>
+            <td style="min-width: 10rem;">
+              {{die.separationLength}}
+            </td>
+            <td style="min-width: 10rem;">
+              {{die.quantityWidth}}
+            </td>
+            <td style="min-width: 10rem;">
+              {{die.separationWidth}}
+            </td>
+            <td style="min-width: 12rem;">
+              {{die.leafLength}}
+            </td>
+            <td style="min-width: 12rem;">
+              {{die.leafWidth}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.area}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.gsmdis}}
+            </td>
+            <td style="min-width: 10rem;">
+              <span [class]="'die-badge status-' + die.status">{{getDieStatus(die.status)}}</span>
             </td>
           </tr>
         </ng-template>

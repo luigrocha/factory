@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { BreadcrumbModule } from 'src/app/layout/common/breadcrumb/breadcrumb.module';
 import { FooterModule } from 'src/app/layout/common/footer/footer.module';
 import { ConfigModule } from 'src/app/layout/common/config/config.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { ConfigModule } from 'src/app/layout/common/config/config.module';
     MenuModule,
     BreadcrumbModule,
     FooterModule,
-    ConfigModule
+    ConfigModule,
+    SharedModule
   ]
 })
 export class LayoutModule { }
