@@ -25,13 +25,18 @@ export class MenuComponent implements OnInit {
       {
         label: 'Administración', icon: 'pi pi-fw pi-home', condition: this.isAdmin,
         items: [
-          { label: 'Usuarios', icon: 'pi pi-fw pi-users', condition: this.isAdmin, routerLink: ['/admin/usuarios'] }
+          {
+            label: 'Gestión de Usuarios', icon: 'pi pi-fw pi-users', condition: this.isAdmin, items: [
+              { label: 'Usuarios', icon: 'pi pi-fw pi-user', condition: this.isAdmin, routerLink: ['/home/usuarios'] },
+              { label: 'Roles', icon: 'pi pi-fw pi-user-edit', condition: this.isAdmin, routerLink: ['/home/roles'] }
+            ]
+          },
         ]
       },
       {
         label: 'Diseño', icon: 'pi pi-fw pi-star-fill', condition: this.isAdmin,
         items: [
-          { label: 'Troqueles', icon: 'pi pi-fw pi-users', routerLink: ['/admin/troqueles'] }
+          { label: 'Troqueles', icon: 'pi pi-fw pi-users', routerLink: ['/home/troqueles'] }
         ]
       },/*
             {

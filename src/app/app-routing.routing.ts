@@ -9,7 +9,7 @@ import { AuthGuard } from 'src/app/core/auth/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'admin',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -25,13 +25,17 @@ const routes: Routes = [
     component: Error500Component
   },
   {
-    path: 'admin',
+    path: 'home',
     component: LayoutComponent,
     canActivate: [AuthGuard],
     children: [
       {
         path: 'usuarios',
         loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule)
+      },
+      {
+        path: 'roles',
+        loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule)
       },
       {
         path: 'troqueles',
