@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { DiesRoutingModule } from './dies-routing.module';
 import { DiesListComponent } from './pages/dies-list/dies-list.component';
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
 
 
 @NgModule({
@@ -11,7 +13,9 @@ import { DiesListComponent } from './pages/dies-list/dies-list.component';
   ],
   imports: [
     CommonModule,
-    DiesRoutingModule
+    DiesRoutingModule,
+    TableModule,
+    InputTextModule
   ]
 })
 export class DiesModule { }
