@@ -66,7 +66,6 @@
                             name="menuMode"
                             value="static"
                             [(ngModel)]="app.menuMode"
-                            (onClick)="onUpdatePreferences()"
                             inputId="menuMode1"
                         ></p-radioButton>
                         <label for="menuMode1" class="p-ml-2">Static</label>
@@ -76,7 +75,6 @@
                             name="menuMode"
                             value="overlay"
                             [(ngModel)]="app.menuMode"
-                            (onClick)="onUpdatePreferences()"
                             inputId="menuMode2"
                         ></p-radioButton>
                         <label for="menuMode2" class="p-ml-2">Overlay</label>
@@ -85,8 +83,7 @@
                         <p-radioButton
                             name="menuMode"
                             value="horizontal"
-                            [(ngModel)]="app.menuMode"
-                            (onClick)="onUpdatePreferences()"
+                            [(ngModel)]="app.menuMode"                            
                             inputId="menuMode3"
                         ></p-radioButton>
                         <label for="menuMode3" class="p-ml-2">Horizontal</label>
@@ -103,7 +100,6 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="light"
                             [(ngModel)]="app.menuTheme"
-                            (onClick)="onUpdatePreferences()"
                             inputId="menuTheme1"
                         ></p-radioButton>
                         <label for="menuTheme1" class="p-ml-2">Light</label>
@@ -114,7 +110,6 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="dark"
                             [(ngModel)]="app.menuTheme"
-                            (onClick)="onUpdatePreferences()"
                             inputId="menuTheme2"
                         ></p-radioButton>
                         <label for="menuTheme2" class="p-ml-2">Dark</label>
@@ -125,7 +120,6 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="dim"
                             [(ngModel)]="app.menuTheme"
-                            (onClick)="onUpdatePreferences()"
                             inputId="menuTheme3"
                         ></p-radioButton>
                         <label for="menuTheme3" class="p-ml-2">Dim</label>
@@ -142,7 +136,6 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="light"
                             [(ngModel)]="app.topbarTheme"
-                            (onClick)="onUpdatePreferences()"
                             inputId="topbarTheme1"
                         ></p-radioButton>
                         <label for="topbarTheme1" class="p-ml-2">Light</label>
@@ -153,7 +146,6 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="dark"
                             [(ngModel)]="app.topbarTheme"
-                            (onClick)="onUpdatePreferences()"
                             inputId="topbarTheme2"
                         ></p-radioButton>
                         <label for="topbarTheme2" class="p-ml-2">Dark</label>
@@ -164,54 +156,12 @@
                             [disabled]="app.layoutMode !== 'light'"
                             value="dim"
                             [(ngModel)]="app.topbarTheme"
-                            (onClick)="onUpdatePreferences()"
                             inputId="topbarTheme3"
                         ></p-radioButton>
                         <label for="topbarTheme3" class="p-ml-2">Dim</label>
                     </div>
                 </div>
             </div>
-
-            <!-- <div id="outlined-panel" class="layout-config-section options">
-                <h6 class="p-mt-2">Input Background</h6>
-                <div class="p-d-flex p-jc-between">
-                    <div class="p-d-flex p-ai-center">
-                        <p-radioButton
-                            name="inputStyle"
-                            value="outlined"
-                            [(ngModel)]="app.inputStyle"
-                            inputId="inputStyle1"
-                        ></p-radioButton>
-                        <label for="inputStyle1" class="p-ml-2">Outlined</label>
-                    </div>
-                    <div class="p-d-flex p-ai-center">
-                        <p-radioButton
-                            name="inputStyle"
-                            value="filled"
-                            [(ngModel)]="app.inputStyle"
-                            inputId="inputStyle2"
-                        ></p-radioButton>
-                        <label for="inputStyle2" class="p-ml-2">Filled</label>
-                    </div>
-                </div>
-            </div>
-
-            <div id="ripple-panel" class="layout-config-section ripple">
-                <h6 class="p-mt-2">Ripple Effect</h6>
-                <p-inputSwitch
-                    [ngModel]="app.ripple"
-                    (onChange)="appMain.onRippleChange($event)"
-                ></p-inputSwitch>
-            </div>
-
-            <div id="orientation-panel" class="layout-config-section dark">
-                <h6 class="p-mt-2">RTL</h6>
-                <p-inputSwitch
-                    [ngModel]="app.isRTL"
-                    (onChange)="appMain.onRTLChange($event)"
-                ></p-inputSwitch>
-            </div> -->
-
             <div
                 id="componentthemes-panel"
                 class="layout-config-section colors"
@@ -237,6 +187,16 @@
                         </a>
                     </div>
                 </div>
+            </div>
+            <div class="p-d-flex p-jc-center">
+                <button
+                    pButton
+                    pRipple
+                    label="Guardar"
+                    icon="pi pi-save"
+                    class="p-button-success p-mt-2"
+                    (click)="onUpdatePreferences()"
+                ></button>
             </div>
         </div>
     </div>

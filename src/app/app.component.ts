@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 
     ripple: boolean;
 
-    color = '#2f8ee5';
+    color = 'amber';
 
     ngOnInit() {
         this.primengConfig.ripple = true;

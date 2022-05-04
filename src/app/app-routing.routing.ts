@@ -1,7 +1,6 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 
-import { LoginComponent } from './pages/login/login.component';
 import { ErrorComponent } from './pages/error/error.component';
 import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
