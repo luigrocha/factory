@@ -36,7 +36,7 @@ public class PreferenceController {
      * @return PreferencesRes
      */
     @GetMapping("/findPreferencesByUsername/{userName}")
-    @RolesAllowed({"realm-admin","realm-user", "realm-supervisor"})
+    @RolesAllowed({"backend-admin","backend-user", "backend-supervisor"})
     public ResponseEntity<PreferencesRes> findPreferencesByUsername(@PathVariable String userName) {
         try {
             return ResponseEntity.ok().body(this.userService.findPreferencesByUsername(userName));
@@ -53,7 +53,7 @@ public class PreferenceController {
      * @return void
      */
     @PatchMapping("/updatePreferencesByUsername/{userName}")
-    @RolesAllowed({"realm-admin","realm-user", "realm-supervisor"})
+    @RolesAllowed({"backend-admin","backend-user", "backend-supervisor"})
     public ResponseEntity<?> updatePreferencesByUsername(@PathVariable String userName, @RequestBody Preferences preferences) {
         try {
             this.userService.updatePreferencesByUsername(userName, preferences);

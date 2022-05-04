@@ -35,7 +35,7 @@ public class RoleController {
      * @return Collection Role
      */
     @GetMapping("/findAllRole")
-    @RolesAllowed("realm-admin")
+    @RolesAllowed("backend-admin")
     public ResponseEntity<Collection<Role>> findAllRole() {
         return ResponseEntity.ok().body(this.roleService.findAllRole());
     }
@@ -47,7 +47,7 @@ public class RoleController {
      * @return Role
      */
     @GetMapping("/findRoleByName/{name}")
-    @RolesAllowed("realm-admin")
+    @RolesAllowed("backend-admin")
     public ResponseEntity<Role> findRoleByName(@PathVariable("name") String name) {
         try {
             return ResponseEntity.ok().body(this.roleService.findRoleByName(name));
@@ -64,7 +64,7 @@ public class RoleController {
      * @return Status
      */
     @PatchMapping("/addRolesUser/{userId}")
-    @RolesAllowed("realm-admin")
+    @RolesAllowed("backend-admin")
     public ResponseEntity<?> addRolesUser(@PathVariable("userId") String userId, @RequestBody Collection<Role> roles) {
         try {
             this.roleService.addRolesUser(userId, roles);
@@ -84,7 +84,7 @@ public class RoleController {
      * @return Status
      */
     @PatchMapping("/removeRolesUser/{userId}")
-    @RolesAllowed("realm-admin")
+    @RolesAllowed("backend-admin")
     public ResponseEntity<?> removeRolesUser(@PathVariable("userId") String userId, @RequestBody Collection<Role> roles) {
         try {
             this.roleService.removeRolesUser(userId, roles);
