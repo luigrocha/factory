@@ -9,6 +9,8 @@ import org.crsoft.cartonplast.users.vo.res.PreferencesRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+
 import static org.crsoft.cartonplast.users.util.Constants.*;
 
 /**
@@ -34,7 +36,8 @@ public class PreferenceController {
      * @return PreferencesRes
      */
     @GetMapping("/findPreferencesByUsername/{userName}")
-    public ResponseEntity<PreferencesRes> findPreferencesByUsername(@PathVariable String userName){
+    @RolesAllowed({"realm-admin","realm-user", "realm-supervisor"})
+    public ResponseEntity<PreferencesRes> findPreferencesByUsername(@PathVariable String userName) {
         try {
             return ResponseEntity.ok().body(this.userService.findPreferencesByUsername(userName));
         } catch (NotFoundException e) {
@@ -45,14 +48,15 @@ public class PreferenceController {
     /**
      * Update Preferences By Username
      *
-     * @param userName userName
+     * @param userName    userName
      * @param preferences preferences
      * @return void
      */
     @PatchMapping("/updatePreferencesByUsername/{userName}")
-    public ResponseEntity<?> updatePreferencesByUsername(@PathVariable String userName,@RequestBody Preferences preferences){
+    @RolesAllowed({"realm-admin","realm-user", "realm-supervisor"})
+    public ResponseEntity<?> updatePreferencesByUsername(@PathVariable String userName, @RequestBody Preferences preferences) {
         try {
-            this.userService.updatePreferencesByUsername(userName,preferences);
+            this.userService.updatePreferencesByUsername(userName, preferences);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

@@ -8,6 +8,7 @@ import org.crsoft.cartonplast.users.vo.res.MessageRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
 import static org.crsoft.cartonplast.users.util.Constants.*;
@@ -34,6 +35,7 @@ public class RoleController {
      * @return Collection Role
      */
     @GetMapping("/findAllRole")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<Collection<Role>> findAllRole() {
         return ResponseEntity.ok().body(this.roleService.findAllRole());
     }
@@ -45,6 +47,7 @@ public class RoleController {
      * @return Role
      */
     @GetMapping("/findRoleByName/{name}")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<Role> findRoleByName(@PathVariable("name") String name) {
         try {
             return ResponseEntity.ok().body(this.roleService.findRoleByName(name));
@@ -61,6 +64,7 @@ public class RoleController {
      * @return Status
      */
     @PatchMapping("/addRolesUser/{userId}")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<?> addRolesUser(@PathVariable("userId") String userId, @RequestBody Collection<Role> roles) {
         try {
             this.roleService.addRolesUser(userId, roles);
@@ -80,6 +84,7 @@ public class RoleController {
      * @return Status
      */
     @PatchMapping("/removeRolesUser/{userId}")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<?> removeRolesUser(@PathVariable("userId") String userId, @RequestBody Collection<Role> roles) {
         try {
             this.roleService.removeRolesUser(userId, roles);

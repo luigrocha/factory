@@ -83,10 +83,10 @@ public interface IUserService {
     /**
      * Update Preferences By Username
      *
-     * @param userName userName
+     * @param userName    userName
      * @param preferences preferences
      * @throws NotFoundException Not Found Exception
-     * @throws UpdateException UpdateException
+     * @throws UpdateException   UpdateException
      */
     void updatePreferencesByUsername(String userName, Preferences preferences) throws NotFoundException, UpdateException;
 }

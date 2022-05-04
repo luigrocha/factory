@@ -10,6 +10,7 @@ import org.crsoft.cartonplast.users.vo.res.UserRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
 import static org.crsoft.cartonplast.users.util.Constants.*;
@@ -37,6 +38,7 @@ public class UserController {
      * @return void
      */
     @PostMapping("/createUser")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<MessageRes> createUser(@RequestBody UserReq user) {
         try {
             return ResponseEntity.ok().body(this.userService.createUser(user));
@@ -51,6 +53,7 @@ public class UserController {
      * @return Collection User
      */
     @GetMapping("/findAllUsers")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<Collection<UserRes>> findAllUsers() {
         try {
             return ResponseEntity.ok().body(this.userService.findAllUsers());
@@ -66,6 +69,7 @@ public class UserController {
      * @return User
      */
     @GetMapping("/findUserById/{id}")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<UserRes> findUserById(@PathVariable("id") String id) {
         try {
             return ResponseEntity.ok().body(this.userService.findUserById(id));
@@ -82,6 +86,7 @@ public class UserController {
      * @return void
      */
     @PutMapping("/updateUserById/{id}")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<?> updateUserById(@PathVariable("id") String id, @RequestBody UserReq user) {
         try {
             this.userService.updateUserById(id, user);
@@ -100,6 +105,7 @@ public class UserController {
      * @return void
      */
     @DeleteMapping("/deleteUserById/{id}")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<?> deleteUserById(@PathVariable("id") String id) {
         try {
             this.userService.deleteUserById(id);
@@ -112,6 +118,7 @@ public class UserController {
     }
 
     @GetMapping("/findUserByUserName/{userName}")
+    @RolesAllowed("realm-admin")
     public ResponseEntity<UserRes> findUserByUserName(@PathVariable("userName") String userName) {
         try {
             return ResponseEntity.ok().body(this.userService.findUserByUserName(userName));

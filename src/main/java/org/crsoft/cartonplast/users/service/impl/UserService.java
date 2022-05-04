@@ -202,7 +202,7 @@ public class UserService implements IUserService {
             preference.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
             this.preferencesRepository.save(preference);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("updatePreferencesByUsername {}", userName);
             throw new UpdateException("CBTPRE", "No se puede actualizar preferencias");
         }
@@ -214,7 +214,7 @@ public class UserService implements IUserService {
      * @param preferences preferences
      * @return PreferencesRes
      */
-    private PreferencesRes buildPreferencesRes(Preferences preferences){
+    private PreferencesRes buildPreferencesRes(Preferences preferences) {
         return PreferencesRes.builder()
                 .code(preferences.getCode())
                 .colorMode(preferences.getColorMode())
@@ -234,11 +234,11 @@ public class UserService implements IUserService {
      */
     private User findUserByUsername(String userName) throws NotFoundException {
         User user = this.userRepository.findUserByUsername(userName);
-        if(Objects.nonNull(user)){
-            return  user;
-        }else{
-            log.info("findUserByUsername, {} not found",userName);
-            throw new NotFoundException("No existe usuario "+userName);
+        if (Objects.nonNull(user)) {
+            return user;
+        } else {
+            log.info("findUserByUsername, {} not found", userName);
+            throw new NotFoundException("No existe usuario " + userName);
         }
     }
 
