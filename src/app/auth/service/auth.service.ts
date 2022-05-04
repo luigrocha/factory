@@ -41,6 +41,8 @@ export class AuthService {
     return this.keycloackService.getUserRoles();
   }
 
-
+  public isAdmin(): boolean {
+    return this.getRoles().find(rol => rol.includes('realm-admin')) ? true : false;
+  }
 
 }

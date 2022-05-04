@@ -8,6 +8,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { HomeComponent } from './pages/home/home.component';
 import { CirelComponent } from './pages/home/cirel/cirel.component';
 import { AuthGuard } from './auth/auth.guard';
+import { UsersComponent } from './pages/home/users/users.component';
 
 
 @NgModule({
@@ -19,7 +20,10 @@ import { AuthGuard } from './auth/auth.guard';
             { path: 'notfound', component: NotFoundComponent },
             {
                 path: 'home', component: HomeComponent,
-                children: [{ path: 'cirel', component: CirelComponent }],
+                children: [
+                    { path: 'cirel', component: CirelComponent },
+                    { path: 'users', component: UsersComponent, canActivate: [AuthGuard], data: { roles: ['realm-admin'] } }
+                ],
                 canActivate: [AuthGuard],
                 // data: { roles: ['realm-admin', 'realm-user'] }
             },

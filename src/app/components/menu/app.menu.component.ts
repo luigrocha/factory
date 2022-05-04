@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/auth/service/auth.service';
 import { AppComponent } from '../../app.component';
 
 @Component({
     selector: 'app-menu',
     template: `
         <ul class="layout-menu">
-            <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
+            <li app-menuitem  *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true" ></li>
         </ul>
     `
 })
@@ -13,16 +14,20 @@ export class AppMenuComponent implements OnInit {
 
     model: any[];
 
-    constructor(public app: AppComponent) { }
+    constructor(public app: AppComponent, private authService: AuthService) { }
+
+    get isAdmin(): boolean {
+        return this.authService.isAdmin();
+    }
 
     ngOnInit() {
         this.model = [
             {
-                label: 'Favorites', icon: 'pi pi-fw pi-home',
+                label: 'Administración', icon: 'pi pi-fw pi-home', condition: this.isAdmin,
                 items: [
-                    { label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }
+                    { label: 'Usuarios', icon: 'pi pi-fw pi-users', condition: this.isAdmin, routerLink: ['/home/users'] }
                 ]
-            },
+            },/*
             {
                 label: 'UI Kit', icon: 'pi pi-fw pi-star-fill', routerLink: ['/uikit'],
                 items: [
@@ -126,7 +131,7 @@ export class AppMenuComponent implements OnInit {
                         label: 'Documentation', icon: 'pi pi-fw pi-info-circle', routerLink: ['/documentation']
                     }
                 ]
-            }
+            }*/
         ];
     }
 }

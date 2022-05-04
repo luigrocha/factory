@@ -12,7 +12,7 @@ import { HomeComponent } from '../../pages/home/home.component';
     /* tslint:enable:component-selector */
     template: `
         <ng-container>
-            <div *ngIf="root && item.visible !== false">
+            <div *ngIf="root && item.visible !== false && item.condition">
                 <span class="layout-menuitem-text">{{item.label}}</span>
             </div>
             <a [attr.href]="item.url" (click)="itemClick($event)" *ngIf="(!item.routerLink || item.items) && item.visible !== false" (keydown.enter)="itemClick($event)"
@@ -32,7 +32,7 @@ import { HomeComponent } from '../../pages/home/home.component';
                 <div class="layout-menu-tooltip-arrow"></div>
                 <div class="layout-menu-tooltip-text">{{item.label}}</div>
             </div>
-            <ul *ngIf="((item.items && root) || (item.items && active)) && item.visible !== false" [@children]="root ? 'visible' : active ? 'visibleAnimated' : 'hiddenAnimated'">
+            <ul *ngIf="((item.items && root) || (item.items && active)) && item.visible !== false && item.condition" [@children]="root ? 'visible' : active ? 'visibleAnimated' : 'hiddenAnimated'">
                 <ng-template ngFor let-child let-i="index" [ngForOf]="item.items">
                     <li app-menuitem [item]="child" [index]="i" [parentKey]="key" [class]="child.badgeClass"></li>
                 </ng-template>
