@@ -3,70 +3,73 @@
         <p-toast></p-toast>
 
         <div class="card">
-            <p-toolbar styleClass="p-mb-4">
-                <ng-template pTemplate="left">
-                    <button
-                        pButton
-                        pRipple
-                        label="Nuevo"
-                        icon="pi pi-plus"
-                        class="p-button-success p-mr-2 p-mb-2"
-                        (click)="openNew()"
-                    ></button>
-                    <button
-                        pButton
-                        pRipple
-                        label="Eliminar"
-                        icon="pi pi-trash"
-                        class="p-button-danger p-mb-2"
-                        (click)="deleteSelectedUsers()"
-                        [disabled]="!selectedUsers || !selectedUsers.length"
-                    ></button>
-                </ng-template>
-
-                <ng-template pTemplate="right">
-                    <button
-                        pButton
-                        pRipple
-                        label="Export"
-                        icon="pi pi-upload"
-                        class="p-button-help p-mb-2"
-                        (click)="dt.exportCSV()"
-                    ></button>
-                </ng-template>
-            </p-toolbar>
-
             <p-table
                 #dt
                 [value]="users"
                 [columns]="cols"
-                [rows]="5"
+                [rows]="6"
                 [paginator]="true"
-                [globalFilterFields]="['userName', 'firstName', 'lastName']"
+                [globalFilterFields]="[
+                    'userName',
+                    'firstName',
+                    'lastName',
+                    'roles'
+                ]"
                 [(selection)]="selectedUsers"
                 [rowHover]="true"
                 dataKey="id"
-                styleClass="p-datatable-customers"
+                styleClass="p-datatable-customers p-datatable-sm"
             >
                 <ng-template pTemplate="caption">
                     <div
                         class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header"
                     >
                         <h5 class="p-m-0">Gestión de Usuarios</h5>
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input
-                                pInputText
-                                type="text"
-                                (input)="
-                                    dt.filterGlobal(
-                                        $event.target.value,
-                                        'contains'
-                                    )
+
+                        <div>
+                            <button
+                                pButton
+                                pRipple
+                                label="Nuevo"
+                                icon="pi pi-plus"
+                                class="p-button-success p-mr-2"
+                                (click)="openNew()"
+                            ></button>
+                            <button
+                                pButton
+                                pRipple
+                                label="Eliminar"
+                                icon="pi pi-trash"
+                                class="p-button-danger p-mr-2"
+                                (click)="deleteSelectedUsers()"
+                                [disabled]="
+                                    !selectedUsers || !selectedUsers.length
                                 "
-                                placeholder="Search..."
-                            />
-                        </span>
+                            ></button>
+                            <button
+                                pButton
+                                pRipple
+                                label="Export"
+                                icon="pi pi-upload"
+                                class="p-button-help p-mr-2"
+                                (click)="dt.exportCSV()"
+                            ></button>
+
+                            <span class="p-input-icon-left">
+                                <i class="pi pi-search"></i>
+                                <input
+                                    pInputText
+                                    type="text"
+                                    (input)="
+                                        dt.filterGlobal(
+                                            $event.target.value,
+                                            'contains'
+                                        )
+                                    "
+                                    placeholder="Buscar..."
+                                />
+                            </span>
+                        </div>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
@@ -84,7 +87,16 @@
                             Apellido <p-sortIcon field="lastName"></p-sortIcon>
                         </th>
                         <th pSortableColumn="email">Email</th>
-                        <th style="text-align: center">
+                        <th pSortableColumn="roles">
+                            Roles <p-sortIcon field="roles"></p-sortIcon>
+                        </th>
+                        <th
+                            style="
+                                text-align: center;
+                                display: flex;
+                                justify-content: space-around;
+                            "
+                        >
                             <i
                                 class="pi pi-cog"
                                 style="font-size: 18px"
@@ -115,6 +127,17 @@
                             {{ user.email }}
                         </td>
                         <td>
+                            <p-tag
+                                *ngFor="let role of user.roles"
+                                styleClass="p-mb-2 p-mr-2 flex flex-column"
+                                severity="{{ getRoleType(role).color }}"
+                                value="{{ getRoleType(role).name }}"
+                                [rounded]="true"
+                            ></p-tag>
+                        </td>
+                        <td
+                            style="display: flex; justify-content: space-around"
+                        >
                             <button
                                 pButton
                                 pRipple
@@ -233,7 +256,7 @@
                     label="Guardar"
                     icon="pi pi-check"
                     class="p-button-text"
-                    (click)="saveProduct()"
+                    (click)="saveUser()"
                 ></button>
             </ng-template>
         </p-dialog>

@@ -36,4 +36,8 @@ export class UsersService {
     return this.http.delete<any>(this.URL_USER + '/deleteUserById/' + id, this.httpOptions);
   }
 
+  getUserByUserName(userNane: string) {
+    return this.http.get<User>(this.URL_USER + '/findUserByUserName/' + userNane, this.httpOptions);
+  }
+
 }
