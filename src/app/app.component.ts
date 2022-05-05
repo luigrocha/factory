@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
     constructor(
         private primengConfig: PrimeNGConfig,
         private authService: AuthService,
-        private preferenceService: PreferencesService
+        private preferenceService: PreferencesService,
     ) { }
 
     topbarTheme = 'light';
@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
 
     ripple: boolean;
 
-    color = 'amber';
+    color = 'denim';
 
     ngOnInit() {
         this.primengConfig.ripple = true;
