@@ -31,10 +31,14 @@ const routes: Routes = [
     children: [
       {
         path: 'usuarios',
+        canActivate: [AuthGuard],
+        data: { roles: ['realm-admin'] },
         loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule)
       },
       {
         path: 'roles',
+        canActivate: [AuthGuard],
+        data: { roles: ['realm-admin'] },
         loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule)
       },
       {
