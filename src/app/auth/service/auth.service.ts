@@ -41,6 +41,10 @@ export class AuthService {
     return this.keycloackService.getUserRoles();
   }
 
+  public getToken() {
+    return this.keycloackService.getKeycloakInstance().token;
+  }
+
   public isAdmin(): boolean {
     return this.getRoles().find(rol => rol.includes('realm-admin')) ? true : false;
   }
