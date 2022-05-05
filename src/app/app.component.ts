@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
-import { AuthService } from './auth/service/auth.service';
-import { PreferencesService } from './components/config/preferences.service';
+import { AuthService } from './core/auth/service/auth.service';
+import { PreferencesService } from './core/http/preferences/preferences.service';
+
 
 @Component({
     selector: 'app-root',

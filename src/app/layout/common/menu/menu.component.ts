@@ -3,51 +3,42 @@ import { AppComponent } from 'src/app/app.component';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 
 @Component({
-<<<<<<< HEAD:src/app/components/menu/app.menu.component.ts
     selector: 'app-menu',
-    template: `
-        <ul class="layout-menu">
-            <li app-menuitem  *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
-        </ul>
-    `
-=======
-  selector: 'app-menu',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss']
->>>>>>> feature/CARPLAST-79:src/app/layout/common/menu/menu.component.ts
+    templateUrl: './menu.component.html',
+    styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
 
-  model: any[];
+    model: any[];
 
-  constructor(
-    public app: AppComponent,
-    private authService: AuthService
-  ) { }
+    constructor(
+        public app: AppComponent,
+        private authService: AuthService
+    ) { }
 
-  get isAdmin(): boolean {
-    return this.authService.isAdmin();
-  }
+    get isAdmin(): boolean {
+        return this.authService.isAdmin();
+    }
 
-  ngOnInit() {
-    this.model = [
-      {
-        label: 'Administración', icon: 'pi pi-fw pi-home', condition: this.isAdmin,
-        items: [
-          {
-            label: 'Gestión de Usuarios', icon: 'pi pi-fw pi-users', condition: this.isAdmin, items: [
-              { label: 'Usuarios', icon: 'pi pi-fw pi-user', condition: this.isAdmin, routerLink: ['/home/usuarios'] },
-              { label: 'Roles', icon: 'pi pi-fw pi-user-edit', condition: this.isAdmin, routerLink: ['/home/roles'] }
-            ]
-          },
-        ]
-      },
-      {
-        label: 'Diseño', icon: 'pi pi-fw pi-star-fill', condition: this.isAdmin,
-        items: [
-          { label: 'Troqueles', icon: 'pi pi-fw pi-users', routerLink: ['/home/troqueles'] }
-        ]
-      },/*
+    ngOnInit() {
+        this.model = [
+            {
+                label: 'Administración', icon: 'pi pi-fw pi-home', condition: this.isAdmin,
+                items: [
+                    {
+                        label: 'Gestión de Usuarios', icon: 'pi pi-fw pi-users', condition: this.isAdmin, items: [
+                            { label: 'Usuarios', icon: 'pi pi-fw pi-user', condition: this.isAdmin, routerLink: ['/home/usuarios'] },
+                            { label: 'Roles', icon: 'pi pi-fw pi-user-edit', condition: this.isAdmin, routerLink: ['/home/roles'] }
+                        ]
+                    },
+                ]
+            },
+            {
+                label: 'Diseño', icon: 'pi pi-fw pi-star-fill', condition: this.isAdmin,
+                items: [
+                    { label: 'Troqueles', icon: 'pi pi-fw pi-users', routerLink: ['/home/troqueles'] }
+                ]
+            },/*
             {
                 label: 'UI Kit', icon: 'pi pi-fw pi-star-fill', routerLink: ['/uikit'],
                 items: [
@@ -152,6 +143,6 @@ export class MenuComponent implements OnInit {
                     }
                 ]
             }*/
-    ];
-  }
+        ];
+    }
 }

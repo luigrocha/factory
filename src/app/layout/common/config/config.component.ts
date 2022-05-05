@@ -1,62 +1,83 @@
 import { Component, OnInit } from '@angular/core';
 import { AppComponent } from 'src/app/app.component';
-import { LayoutComponent } from 'src/app/layout/layout.component';
+import { AuthService } from 'src/app/core/auth/service/auth.service';
+import { Preferences } from 'src/app/types/preferences.types';
+import { LayoutComponent } from '../../layout.component';
+import { PreferencesService } from '../../../core/http/preferences/preferences.service';
 
 @Component({
   selector: 'app-config',
-  templateUrl: './config.component.html',
-  styleUrls: ['./config.component.scss']
+  templateUrl: 'config.component.html'
 })
 export class ConfigComponent implements OnInit {
-
   themes: any[];
 
-  theme = 'denim';
+  theme: string;
+
+  preferences: Preferences;
+
+  refreshTrafficChart = 'refreshTrafficChart';
 
   constructor(
+    public app: AppComponent,
     public appMain: LayoutComponent,
-    public app: AppComponent
+    private authService: AuthService,
+    private preferenceService: PreferencesService
   ) { }
+
+  get userName(): string {
+    return this.authService.getLoggedUser().preferred_username;
+  }
 
   ngOnInit() {
     this.themes = [
       { name: 'denim', color: '#2f8ee5' },
       { name: 'sea-green', color: '#30A059' },
-      { name: 'amethyst', color: '#834CA8' },
-      { name: 'wedgewood', color: '#557DAA' },
-      { name: 'tapestry', color: '#A74896' },
-      { name: 'cape-palliser', color: '#A46B3E' },
-      { name: 'apple', color: '#52A235' },
-      { name: 'gigas', color: '#5751A9' },
-      { name: 'jungle-green', color: '#2B9F9C' },
-      { name: 'camelot', color: '#A54357' },
       { name: 'amber', color: '#D49341' },
-      { name: 'cyan', color: '#399DB2' }
     ];
+    setTimeout(() => {
+      this.onLayoutModeChange(null);
+    }, 300);
   }
 
   onLayoutModeChange(event) {
     this.app.menuTheme = this.app.layoutMode;
     this.app.topbarTheme = this.app.layoutMode;
+    this.theme = this.app.color;
 
-    const layoutLink: HTMLLinkElement = document.getElementById('layout-css') as HTMLLinkElement;
-    const layoutHref = 'assets/layout/css/layout-' + this.app.layoutMode + '.css';
+    const layoutLink: HTMLLinkElement = document.getElementById(
+      'layout-css'
+    ) as HTMLLinkElement;
+    const layoutHref =
+      'assets/layout/css/layout-' + this.app.layoutMode + '.css';
     this.replaceLink(layoutLink, layoutHref);
 
     const themeLink = document.getElementById('theme-css');
     const urlTokens = themeLink.getAttribute('href').split('/');
-    urlTokens[urlTokens.length - 1] = 'theme-' + this.app.layoutMode + '.css';
+    urlTokens[urlTokens.length - 1] =
+      'theme-' + this.app.layoutMode + '.css';
+    urlTokens[2] = this.theme;
     const newURL = urlTokens.join('/');
 
-    this.replaceLink(themeLink, newURL, this.appMain['refreshTrafficChart']);
+    this.replaceLink(
+      themeLink,
+      newURL,
+      this.appMain[this.refreshTrafficChart]
+    );
   }
 
   changeTheme(theme) {
     this.theme = theme;
-
-    const themeLink: HTMLLinkElement = document.getElementById('theme-css') as HTMLLinkElement;
-    const themeHref = 'assets/theme/' + theme + '/theme-' + this.app.layoutMode + '.css';
-    this.replaceLink(themeLink, themeHref, this.appMain['refreshTrafficChart']);
+    const themeLink: HTMLLinkElement = document.getElementById(
+      'theme-css'
+    ) as HTMLLinkElement;
+    const themeHref =
+      'assets/theme/' + theme + '/theme-' + this.app.layoutMode + '.css';
+    this.replaceLink(
+      themeLink,
+      themeHref,
+      this.appMain[this.refreshTrafficChart]
+    );
   }
 
   isIE() {
@@ -76,7 +97,10 @@ export class ConfigComponent implements OnInit {
       cloneLinkElement.setAttribute('href', href);
       cloneLinkElement.setAttribute('id', id + '-clone');
 
-      linkElement.parentNode.insertBefore(cloneLinkElement, linkElement.nextSibling);
+      linkElement.parentNode.insertBefore(
+        cloneLinkElement,
+        linkElement.nextSibling
+      );
 
       cloneLinkElement.addEventListener('load', () => {
         linkElement.remove();
@@ -89,9 +113,36 @@ export class ConfigComponent implements OnInit {
     }
   }
 
-  onConfigButtonClick(event) {
+  onConfig() {
     this.appMain.configActive = !this.appMain.configActive;
     this.appMain.configClick = true;
+  }
+
+  onConfigButtonClick(event) {
+    this.onConfig();
     event.preventDefault();
+  }
+
+  onUpdatePreferences() {
+    this.updatePreferencesByUsername(this.userName, this.app);
+    this.onConfig();
+  }
+
+  updatePreferencesByUsername(userName: string, app: AppComponent) {
+    const prefernces: Preferences = {
+      colorMode: app.layoutMode,
+      menuMode: app.menuMode,
+      menuTheme: app.menuTheme,
+      topBarMode: app.topbarTheme,
+      color: this.theme
+    };
+    this.preferenceService
+      .updatePreferencesByUsername(userName, prefernces)
+      .subscribe(
+        (data) => { },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 }
