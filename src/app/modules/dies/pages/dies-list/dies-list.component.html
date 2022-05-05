@@ -1,0 +1,110 @@
+<div class="p-grid table-demo">
+  <div class="p-col-12">
+    <div class="card">
+      <h5>Troqueles</h5>
+      <p>Lista de todos los troqueles</p>
+      <p-table #dt [value]="dies"
+               dataKey="id"
+               styleClass="p-datatable-gridlines"
+               [rowHover]="true"
+               [rows]="10"
+               [paginator]="true"
+               [filterDelay]="0"
+               [pageLinks]="5"
+               responsiveLayout="scroll"
+               [globalFilterFields]="['code']">
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <button pButton
+                    pRipple
+                    label="Nuevo"
+                    class="mr-2 mb-2"
+                    icon="pi pi-plus"
+                    (click)="addNewDie(dt)"></button>
+            <span class="p-input-icon-left mb-2">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text"
+                       #filter
+                       (input)="dt.filterGlobal($event.target.value, 'contains')"
+                       placeholder="Buscar..."
+                       class="w-full"/>
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th *ngFor="let header of headers" [pSortableColumn]="header.property">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                {{ header.label }}
+                <p-sortIcon [field]="header.property"></p-sortIcon>
+              </div>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-die>
+          <tr class="p-selectable-row">
+            <td style="min-width: 12rem;">
+              {{die.name}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.createdDate | date: 'dd/MM/yyyy'}}
+            </td>
+            <td style="min-width: 11rem;">
+              PENDIENTE
+            </td>
+            <td style="min-width: 12rem;">
+              {{die.observations}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.code}}
+            </td>
+            <td style="min-width: 12rem;">
+              {{die.description}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.length}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.width}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.quantity}}
+            </td>
+            <td style="min-width: 10rem;">
+              {{die.quantityLength}}
+            </td>
+            <td style="min-width: 10rem;">
+              {{die.separationLength}}
+            </td>
+            <td style="min-width: 10rem;">
+              {{die.quantityWidth}}
+            </td>
+            <td style="min-width: 10rem;">
+              {{die.separationWidth}}
+            </td>
+            <td style="min-width: 12rem;">
+              {{die.leafLength}}
+            </td>
+            <td style="min-width: 12rem;">
+              {{die.leafWidth}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.area}}
+            </td>
+            <td style="min-width: 8rem;">
+              {{die.gsmdis}}
+            </td>
+            <td style="min-width: 10rem;">
+              <span [class]="'die-badge status-' + die.status">{{getDieStatus(die.status)}}</span>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8">No se pudo encontrar resultados.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
