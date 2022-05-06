@@ -1,35 +1,64 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.7'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.6.7'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
 }
 
-group = 'org.crsoft.cartonplast'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+
+    println "\n\n**************************"
+    println "Build ${project.name}"
+    println "***************************"
 }
 
-repositories {
-	mavenCentral()
+allprojects {
+    group = 'org.crsoft.cartonplast'
+    version = '1.0.0-SNAPSHOT'
+
+    java.sourceCompatibility(JavaVersion.VERSION_11)
+
+    configurations {
+        compileOnly.extendsFrom annotationProcessor
+        testCompileOnly.extendsFrom annotationProcessor
+        testAnotationProcesor.extendsFrom annotationProcessor
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.7'
+        implementation 'org.springframework.boot:spring-boot-starter-security:2.6.7'
+        implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
+        compileOnly 'org.projectlombok:lombok:1.18.24'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.7'
+        runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
+        annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+        implementation group: 'org.keycloak.bom', name: 'keycloak-adapter-bom', version: '18.0.0', ext: 'pom'
+        implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '18.0.0'
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
+        testImplementation 'org.springframework.security:spring-security-test:5.6.3'
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
+    implementation project(":cp-core-vo")
+    implementation project(":cp-design-ws")
 }
