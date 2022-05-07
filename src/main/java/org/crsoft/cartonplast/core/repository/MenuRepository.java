@@ -13,4 +13,5 @@ import java.util.Collection;
  */
 @Repository
 public interface MenuRepository extends JpaRepository<Menu,Integer> {
+    Collection<Menu> findAllByChild(Menu child);
 }

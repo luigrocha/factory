@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.vo.req;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +24,6 @@ public class MenuReq implements Serializable {
     private String icon;
     private String url;
     private String role;
+    private Integer order;
     private Integer child;
 }

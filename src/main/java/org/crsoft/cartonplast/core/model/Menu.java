@@ -55,6 +55,10 @@ public class Menu {
     private Boolean condition;
 
     @Basic
+    @Column(name = "CBTMEN_ORDER")
+    private Integer order;
+
+    @Basic
     @Column(name = "CBTMEN_VALID_FROM")
     private Date validFrom;
 

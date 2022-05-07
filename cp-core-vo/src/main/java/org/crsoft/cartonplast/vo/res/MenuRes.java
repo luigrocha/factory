@@ -25,5 +25,5 @@ public class MenuRes implements Serializable {
     private Boolean condition;
     private Collection<String> routerLink;
     private Collection<MenuRes> items;
-
+    private Integer order;
 }
