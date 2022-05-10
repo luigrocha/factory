@@ -9,6 +9,10 @@ repositories {
     mavenCentral()
 }
 
+bootJar {
+    enabled = true
+}
+
 dependencies {
     implementation project(":cp-core-vo")
     implementation project(":cp-design-ws")
