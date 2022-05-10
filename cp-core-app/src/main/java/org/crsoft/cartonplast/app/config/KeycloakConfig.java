@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.core.config;
+package org.crsoft.cartonplast.app.config;
 
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;

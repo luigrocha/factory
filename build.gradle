@@ -63,21 +63,8 @@ allprojects {
     }
 }
 
-dependencies {
-    implementation project(":cp-core-vo")
-    implementation project(":cp-design-ws")
-}
-
 jacocoTestReport {
     reports {
         xml.enabled true
-    }
-}
-
-jar {
-    manifest {
-        attributes(
-            'Main-Class': 'org.crsoft.cartonplast.core.CpCoreWsApplication'
-        )
     }
 }

@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.core.config;
+package org.crsoft.cartonplast.app.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
