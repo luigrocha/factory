@@ -4,6 +4,7 @@ import { ConfigComponent } from './config.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { ButtonModule } from 'primeng/button';
 
 
 
@@ -18,7 +19,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
     CommonModule,
     RadioButtonModule,
     FormsModule,
-    InputSwitchModule
+    InputSwitchModule,
+    ButtonModule
   ]
 })
 export class ConfigModule { }

@@ -44,6 +44,12 @@ const routes: Routes = [
       {
         path: 'troqueles',
         loadChildren: () => import('./modules/dies/dies.module').then(m => m.DiesModule)
+      },
+      {
+        path: 'menu',
+        canActivate: [AuthGuard],
+        data: { roles: ['realm-admin'] },
+        loadChildren: () => import('./modules/menu/menu.module').then(m => m.MenuModule)
       }
     ]
   },

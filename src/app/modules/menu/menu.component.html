@@ -1,0 +1,186 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <div class="card">
+      <p-treeTable [value]="menu" [columns]="cols" styleClass="p-datatable-sm">
+        <ng-template pTemplate="caption">
+          <div
+            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+          >
+            <h5 class="m-0">Gestión de Menú</h5>
+            <div class="flex">
+              <button
+                pButton
+                pRipple
+                label="Añadir item raíz"
+                icon="pi pi-user-plus"
+                (click)="openNew(0)"
+              ></button>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th *ngFor="let col of columns">
+              {{ col.header }}
+            </th>
+            <th
+              style="
+                text-align: center;
+                display: flex;
+                justify-content: space-around;
+              "
+            >
+              <i
+                class="pi pi-cog"
+                style="font-size: 18px"
+                pTooltip="Opciones"
+              ></i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-rowNode
+          let-rowData="rowData"
+          let-columns="columns"
+        >
+          <tr>
+            <td *ngFor="let col of columns; let i = index">
+              <div *ngIf="col.field != 'icon'">
+                <p-treeTableToggler
+                  [rowNode]="rowNode"
+                  *ngIf="i == 0"
+                ></p-treeTableToggler>
+                {{ rowData[col.field] }}
+              </div>
+              <div *ngIf="col.field == 'icon'">
+                <i class="{{ rowData[col.field] }}"></i>
+              </div>
+            </td>
+            <td style="text-align: center">
+              <button
+                pButton
+                pRipple
+                icon="pi pi-plus"
+                class="p-button-rounded mr-2"
+                (click)="openNew(rowData.id)"
+              ></button>
+              <button
+                pButton
+                pRipple
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-success mr-2"
+                (click)="editItem(rowData)"
+              ></button>
+              <button
+                pButton
+                pRipple
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-warning"
+                (click)="deleteItem(rowData)"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-treeTable>
+    </div>
+
+    <p-dialog
+      [(visible)]="menuDialog"
+      [style]="{ width: '450px' }"
+      header="Detalles de Item Menú"
+      [modal]="true"
+      styleClass="p-fluid"
+    >
+      <ng-template pTemplate="content">
+        <div class="p-field">
+          <label for="label">Nombre</label>
+          <input
+            type="text"
+            pInputText
+            id="label"
+            [(ngModel)]="item.label"
+            required
+            autofocus
+          />
+          <small class="p-invalid" *ngIf="submitted && !item.label"
+            >Campo nombre es requerido.</small
+          >
+        </div>
+        <div class="p-field">
+          <label for="icon">Icono</label>
+          <input
+            type="text"
+            pInputText
+            id="icon"
+            [(ngModel)]="item.icon"
+            required
+          />
+          <small class="p-invalid" *ngIf="submitted && !item.icon"
+            >Campo icono es requerido.</small
+          >
+        </div>
+        <div class="p-field">
+          <label for="role">Rol</label>
+          <p-dropdown
+            id="role"
+            [options]="roleValue"
+            [(ngModel)]="item.role"
+          ></p-dropdown>
+        </div>
+        <div class="p-field">
+          <label for="url">Url</label>
+          <input
+            type="text"
+            pInputText
+            id="url"
+            [(ngModel)]="item.url"
+            required
+          />
+          <small class="p-invalid" *ngIf="submitted && !item.url"
+            >Campo url es requerido.</small
+          >
+        </div>
+        <div class="p-field">
+          <label for="order">Orden</label>
+          <div class="p-inputgroup">
+            <input
+              type="number"
+              pInputText
+              id="order"
+              [(ngModel)]="item.order"
+              required
+            />
+            <span class="p-inputgroup-addon">5</span>
+          </div>
+          <small class="p-invalid" *ngIf="submitted && !item.order"
+            >Campo orden es requerido.</small
+          >
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button
+          pButton
+          pRipple
+          label="Cancelar"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="hideDialog()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="Guardar"
+          icon="pi pi-check"
+          class="p-button-text"
+          (click)="saveItem()"
+        ></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+  </div>
+</div>

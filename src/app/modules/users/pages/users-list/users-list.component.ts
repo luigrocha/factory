@@ -55,8 +55,6 @@ export class UsersListComponent implements OnInit {
 
   user: User;
 
-  statuses: any[];
-
   loading = true;
 
   constructor(
@@ -67,19 +65,19 @@ export class UsersListComponent implements OnInit {
     private breadcrumbService: BreadcrumbService
   ) {
     this.breadcrumbService.setItems([
-      {label: 'Administración'},
-      {label: 'Usuarios', routerLink: ['/home/usuarios']},
+      { label: 'Administración' },
+      { label: 'Usuarios', routerLink: ['/home/usuarios'] },
     ]);
   }
 
   ngOnInit() {
     this.getAllUsers();
     this.cols = [
-      {field: 'userName', header: 'Usuario'},
-      {field: 'firstName', header: 'Nombre'},
-      {field: 'lastName', header: 'Apellido'},
-      {field: 'email', header: 'Email'},
-      {field: 'roles', header: 'Roles'},
+      { field: 'userName', header: 'Usuario' },
+      { field: 'firstName', header: 'Nombre' },
+      { field: 'lastName', header: 'Apellido' },
+      { field: 'email', header: 'Email' },
+      { field: 'roles', header: 'Roles' },
     ];
   }
 
@@ -90,7 +88,7 @@ export class UsersListComponent implements OnInit {
   }
 
   editUser(user: User) {
-    this.user = {...user};
+    this.user = { ...user };
     this.userDialog = true;
   }
 

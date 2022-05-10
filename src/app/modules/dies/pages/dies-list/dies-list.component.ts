@@ -34,43 +34,42 @@ export class DiesListComponent implements OnInit, AfterViewInit {
   actualPage: number = 0;
   query: string = null;
   headers: TableHeader<Die>[] = [
-    {label: 'Troquel', property: 'name'},
-    {label: 'Fecha', property: 'createdDate'},
-    {label: 'Fabricante', property: 'name'},
-    {label: 'Máquina', property: 'name'},
-    {label: 'DesbMúltiple', property: 'dsbMultiple'},
-    {label: 'Observaciones.', property: 'observations'},
-    {label: 'Prod', property: 'code'},
-    {label: 'Referencia', property: 'description'},
-    {label: 'Largo', property: 'length'},
-    {label: 'Ancho', property: 'width'},
-    {label: 'Cant1', property: 'quantity'},
-    {label: 'Cant. largo', property: 'quantityLength'},
-    {label: 'Sep. largo', property: 'separationLength'},
-    {label: 'Cant. ancho', property: 'quantityWidth'},
-    {label: 'Sep. ancho', property: 'separationWidth'},
-    {label: 'Largo lámina', property: 'leafLength'},
-    {label: 'Ancho lámina', property: 'leafWidth'},
-    {label: 'Área', property: 'area'},
-    {label: 'GSMDIS', property: 'gsmdis'},
-    {label: 'Estado', property: 'status'},
+    { label: 'Troquel', property: 'name' },
+    { label: 'Fecha', property: 'createdDate' },
+    { label: 'Fabricante', property: 'name' },
+    { label: 'Máquina', property: 'name' },
+    { label: 'DesbMúltiple', property: 'dsbMultiple' },
+    { label: 'Observaciones.', property: 'observations' },
+    { label: 'Prod', property: 'code' },
+    { label: 'Referencia', property: 'description' },
+    { label: 'Largo', property: 'length' },
+    { label: 'Ancho', property: 'width' },
+    { label: 'Cant1', property: 'quantity' },
+    { label: 'Cant. largo', property: 'quantityLength' },
+    { label: 'Sep. largo', property: 'separationLength' },
+    { label: 'Cant. ancho', property: 'quantityWidth' },
+    { label: 'Sep. ancho', property: 'separationWidth' },
+    { label: 'Largo lámina', property: 'leafLength' },
+    { label: 'Ancho lámina', property: 'leafWidth' },
+    { label: 'Área', property: 'area' },
+    { label: 'GSMDIS', property: 'gsmdis' },
+    { label: 'Estado', property: 'status' },
   ]
 
   @ViewChild('dt') table: Table;
-
   constructor(
     private dieService: DieService,
     private breadcrumbService: BreadcrumbService
   ) {
     this.breadcrumbService.setItems([
-      {label: 'Diseño'},
-      {label: 'Troqueles', routerLink: ['/home/troqueles']}
+      { label: 'Diseño' },
+      { label: 'Troqueles', routerLink: ['/home/troqueles'] }
     ]);
   }
 
   ngAfterViewInit(): void {
     this.table.onPage
-      .subscribe(({first, rows}) => {
+      .subscribe(({ first, rows }) => {
         this.actualPage = first / rows
         this.pageSize = rows;
         this.getDies(this.actualPage, this.pageSize, this.query);
@@ -79,7 +78,7 @@ export class DiesListComponent implements OnInit, AfterViewInit {
       .pipe(
         debounceTime(500)
       )
-      .subscribe(({filters}) => {
+      .subscribe(({ filters }) => {
         const isEmpty = Object.keys(filters).length === 0;
         if (isEmpty) {
           this.query = null;

@@ -3,49 +3,58 @@
     <div class="card">
       <h5>Troqueles</h5>
       <p>Lista de todos los troqueles</p>
-      <p-table #dt [value]="dies"
-               dataKey="id"
-               styleClass="p-datatable-gridlines"
-               [rowHover]="true"
-               [rows]="pageSize"
-               [paginator]="true"
-               lazy="true"
-               [(selection)]="selectedDies"
-               [rowsPerPageOptions]="rowsPerPageOptions"
-               [globalFilterFields]="globalFilterFields"
-               responsiveLayout="scroll">
+      <p-table
+        #dt
+        [value]="dies"
+        dataKey="id"
+        styleClass="p-datatable-gridlines"
+        [rowHover]="true"
+        [rows]="pageSize"
+        [paginator]="true"
+        lazy="true"
+        [(selection)]="selectedDies"
+        [rowsPerPageOptions]="rowsPerPageOptions"
+        [globalFilterFields]="globalFilterFields"
+        responsiveLayout="scroll"
+      >
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <span class="flex-auto"></span>
-            <button pButton
-                    pRipple
-                    label="Nuevo"
-                    class="mb-2 mr-2"
-                    icon="pi pi-plus"
-                    (click)="addNewDie(dt)">
-            </button>
-            <button pButton
-                    pRipple
-                    label="Eliminar"
-                    class="p-button-danger mb-2 mr-2"
-                    icon="pi pi-trash"
-                    (click)="deleteSelectedDies()"
-                    *ngIf="selectedDies.length > 0">
-            </button>
-            <button pButton
-                    pRipple
-                    label="Exportar"
-                    class="p-button-help mb-2 mr-2"
-                    icon="pi pi-file-excel"
-                    (click)="exportToCSV()">
-            </button>
+            <button
+              pButton
+              pRipple
+              label="Nuevo"
+              class="mb-2 mr-2"
+              icon="pi pi-plus"
+              (click)="addNewDie(dt)"
+            ></button>
+            <button
+              pButton
+              pRipple
+              label="Eliminar"
+              class="p-button-danger mb-2 mr-2"
+              icon="pi pi-trash"
+              (click)="deleteSelectedDies()"
+              *ngIf="selectedDies.length > 0"
+            ></button>
+            <button
+              pButton
+              pRipple
+              label="Exportar"
+              class="p-button-help mb-2 mr-2"
+              icon="pi pi-file-excel"
+              (click)="exportToCSV()"
+            ></button>
             <span class="p-input-icon-left mb-2">
               <i class="pi pi-search"></i>
-              <input pInputText
-                     type="text"
-                     (input)="dt.filterGlobal($event.target.value, 'contains')"
-                     placeholder="Buscar..." class="w-full"/>
-              </span>
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Buscar..."
+                class="w-full"
+              />
+            </span>
           </div>
         </ng-template>
 
@@ -54,7 +63,10 @@
             <th style="width: 3rem">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th *ngFor="let header of headers" [pSortableColumn]="header.property">
+            <th
+              *ngFor="let header of headers"
+              [pSortableColumn]="header.property"
+            >
               <div class="p-d-flex p-jc-between p-ai-center">
                 {{ header.label }}
                 <p-sortIcon [field]="header.property"></p-sortIcon>
@@ -67,74 +79,78 @@
             <td>
               <p-tableCheckbox [value]="die"></p-tableCheckbox>
             </td>
-            <td style="min-width: 12rem;">
-              {{die.name}}
+            <td style="min-width: 12rem">
+              {{ die.name }}
             </td>
-            <td style="min-width: 8rem;">
-              {{die.createdDate | date: 'dd/MM/yyyy'}}
+            <td style="min-width: 8rem">
+              {{ die.createdDate | date: "dd/MM/yyyy" }}
             </td>
-            <td style="min-width: 10rem;">
-              {{die.manufacturer}}
+            <td style="min-width: 10rem">
+              {{ die.manufacturer }}
             </td>
-            <td style="min-width: 10rem;">
+            <td style="min-width: 10rem">
               <span *ngFor="let machine of die.machines">
-                {{machine}}
+                {{ machine }}
               </span>
             </td>
-            <td style="min-width: 11rem;">
-              {{die.dsbMultiple}}
+            <td style="min-width: 11rem">
+              {{ die.dsbMultiple }}
             </td>
-            <td style="min-width: 12rem;">
-              {{die.observations}}
+            <td style="min-width: 12rem">
+              {{ die.observations }}
             </td>
-            <td style="min-width: 8rem;">
-              {{die.code}}
+            <td style="min-width: 8rem">
+              {{ die.code }}
             </td>
-            <td style="min-width: 12rem;">
-              {{die.description}}
+            <td style="min-width: 12rem">
+              {{ die.description }}
             </td>
-            <td style="min-width: 8rem;">
-              {{die.length}}
+            <td style="min-width: 8rem">
+              {{ die.length }}
             </td>
-            <td style="min-width: 8rem;">
-              {{die.width}}
+            <td style="min-width: 8rem">
+              {{ die.width }}
             </td>
-            <td style="min-width: 8rem;">
-              {{die.quantity}}
+            <td style="min-width: 8rem">
+              {{ die.quantity }}
             </td>
-            <td style="min-width: 10rem;">
-              {{die.quantityLength}}
+            <td style="min-width: 10rem">
+              {{ die.quantityLength }}
             </td>
-            <td style="min-width: 10rem;">
-              {{die.separationLength}}
+            <td style="min-width: 10rem">
+              {{ die.separationLength }}
             </td>
-            <td style="min-width: 10rem;">
-              {{die.quantityWidth}}
+            <td style="min-width: 10rem">
+              {{ die.quantityWidth }}
             </td>
-            <td style="min-width: 10rem;">
-              {{die.separationWidth}}
+            <td style="min-width: 10rem">
+              {{ die.separationWidth }}
             </td>
-            <td style="min-width: 12rem;">
-              {{die.leafLength}}
+            <td style="min-width: 12rem">
+              {{ die.leafLength }}
             </td>
-            <td style="min-width: 12rem;">
-              {{die.leafWidth}}
+            <td style="min-width: 12rem">
+              {{ die.leafWidth }}
             </td>
-            <td style="min-width: 8rem;">
-              {{die.area}}
+            <td style="min-width: 8rem">
+              {{ die.area }}
             </td>
-            <td style="min-width: 8rem;">
-              {{die.gsmdis}}
+            <td style="min-width: 8rem">
+              {{ die.gsmdis }}
             </td>
-            <td style="min-width: 10rem;">
-              <span [class]="'die-badge status-' + die.status">{{getDieStatus(die.status)}}</span>
+            <td style="min-width: 10rem">
+              <span [class]="'die-badge status-' + die.status">{{
+                getDieStatus(die.status)
+              }}</span>
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
             <td colspan="19">
-              <span class="pt-4 pb-4 font-bold">No se pudo encontrar resultados.</span>
+              <span class="pt-4 pb-4 font-bold"
+                >No se pudo encontrar resultados.</span
+              >
             </td>
           </tr>
         </ng-template>
