@@ -68,3 +68,7 @@ jacocoTestReport {
         xml.enabled true
     }
 }
+
+springBoot {
+    mainClass = 'org.crsoft.cartonplast.app.CpCoreWsApplication'
+}
