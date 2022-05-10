@@ -13,6 +13,10 @@ bootJar {
     enabled = true
 }
 
+jar {
+    enabled = false
+}
+
 dependencies {
     implementation project(":cp-core-vo")
     implementation project(":cp-design-ws")
