@@ -58,6 +58,11 @@ pipeline {
           }
       }
       stage('SonarQube Analysis') {
+          when {
+              not {
+                  expression { BRANCH_NAME ==~ /(master|develop)/ }
+              }
+          }
           steps {
               withSonarQubeEnv('sonar') {
                   container('gradle') {
