@@ -90,7 +90,6 @@
             background: $tableBodyRowBg;
             color: $tableBodyRowTextColor;
             transition: $listItemTransition;
-            outline-color: $focusOutlineColor;
 
             > td {
                 text-align: $tableCellContentAlignment;
@@ -112,6 +111,11 @@
                         }
                     }
                 }
+            }
+
+            &:focus {
+                outline: 0.15rem solid $focusOutlineColor;
+                outline-offset: -0.15rem;
             }
 
             &.p-highlight {

@@ -1,3 +1,16 @@
+$colors: (
+    "blue": #2196F3,
+    "green": #4caf50,
+    "yellow": #FBC02D,
+    "cyan": #00BCD4,
+    "pink": #E91E63,
+    "indigo": #3F51B5,
+    "teal": #009688,
+    "orange": #F57C00,
+    "bluegray": #607D8B,
+    "purple": #9C27B0
+) !default;
+
 //reused color variables
 $shade000:#FDFEFF !default;    //surface
 $shade100:#F6F9FE !default;    //header background
