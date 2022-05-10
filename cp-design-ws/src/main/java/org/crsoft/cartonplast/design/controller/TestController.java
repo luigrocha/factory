@@ -1,4 +1,4 @@
-package org.crsotf.cartonplast.design.controller;
+package org.crsoft.cartonplast.design.controller;
 
 import org.crsoft.cartonplast.vo.res.TestRes;
 import org.springframework.http.ResponseEntity;

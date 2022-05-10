@@ -2,8 +2,12 @@ package org.crsoft.cartonplast.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages = {"org.crsoft.cartonplast.core", "org.crsotf.cartonplast.design"})
+@EntityScan(basePackages = {"org.crsoft.cartonplast"})
+@SpringBootApplication(scanBasePackages = {"org.crsoft.cartonplast"})
+@EnableJpaRepositories(basePackages = {"org.crsoft.cartonplast"})
 public class CpCoreWsApplication {
 
     public static void main(String[] args) {
