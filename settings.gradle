@@ -1,4 +1,5 @@
 rootProject.name = 'cp-core-ws'
 include 'cp-design-ws'
 include 'cp-core-vo'
+include 'cp-core-common'
 

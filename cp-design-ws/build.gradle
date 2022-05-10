@@ -1,3 +1,4 @@
 dependencies {
     implementation project(":cp-core-vo")
+    implementation project(":cp-core-common")
 }

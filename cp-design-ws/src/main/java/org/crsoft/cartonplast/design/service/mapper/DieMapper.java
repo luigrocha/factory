@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
+import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Die;
 import org.crsoft.cartonplast.design.model.DieMachine;
 import org.crsoft.cartonplast.design.vo.res.DieRes;
@@ -33,6 +34,7 @@ public interface DieMapper {
 
     @Mapping(target = "manufacturer", ignore = true)
     @Mapping(target = "dieMachines", ignore = true)
+    @WithoutAuditField
     Die dieResToDie(DieRes dieRes);
 
     List<DieRes> diesToDiesResList(List<Die> dies);
