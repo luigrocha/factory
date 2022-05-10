@@ -1,38 +1,63 @@
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
+import { LayoutComponent } from 'src/app/layout/layout.component';
+import { Error404Component } from 'src/app/core/error/error404/error404.component';
+import { Error403Component } from 'src/app/core/error/error403/error403.component';
+import { Error500Component } from 'src/app/core/error/error500/error500.component';
+import { AuthGuard } from 'src/app/core/auth/auth.guard';
 
-import { LoginComponent } from './pages/login/login.component';
-import { ErrorComponent } from './pages/error/error.component';
-import { AccessDeniedComponent } from './pages/access-denied/access-denied.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { HomeComponent } from './pages/home/home.component';
-import { CirelComponent } from './pages/home/cirel/cirel.component';
-import { AuthGuard } from './auth/auth.guard';
-import { UsersComponent } from './pages/home/users/users.component';
-import { RoleComponent } from './pages/home/role/role.component';
-
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'not-found',
+    component: Error404Component
+  },
+  {
+    path: 'access-denied',
+    component: Error403Component
+  },
+  {
+    path: 'error',
+    component: Error500Component
+  },
+  {
+    path: 'home',
+    component: LayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'usuarios',
+        canActivate: [AuthGuard],
+        data: { roles: ['realm-admin'] },
+        loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule)
+      },
+      {
+        path: 'roles',
+        canActivate: [AuthGuard],
+        data: { roles: ['realm-admin'] },
+        loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule)
+      },
+      {
+        path: 'troqueles',
+        loadChildren: () => import('./modules/dies/dies.module').then(m => m.DiesModule)
+      }
+    ]
+  },
+  {
+    path: '**',
+    redirectTo: 'not-found'
+  }
+]
 
 @NgModule({
-    imports: [
-        RouterModule.forRoot([
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
-            { path: 'error', component: ErrorComponent },
-            { path: 'access', component: AccessDeniedComponent },
-            { path: 'notfound', component: NotFoundComponent },
-            {
-                path: 'home', component: HomeComponent,
-                children: [
-                    { path: 'cirel', component: CirelComponent },
-                    { path: 'users', component: UsersComponent, canActivate: [AuthGuard], data: { roles: ['realm-admin'] } },
-                    { path: 'role', component: RoleComponent, canActivate: [AuthGuard], data: { roles: ['realm-admin'] } },
-                ],
-                canActivate: [AuthGuard],
-                // data: { roles: ['realm-admin', 'realm-user'] }
-            },
-            { path: '**', redirectTo: '/notfound' },
-        ], { scrollPositionRestoration: 'enabled' })
-    ],
-    exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes, {
+    scrollPositionRestoration: 'enabled'
+  })],
+  exports: [RouterModule]
 })
 export class AppRoutingModule {
 }
