@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.app.config;
 
+import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -17,7 +18,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200")
+                        .allowedOrigins(
+                                GlobalConstant.LOCALHOST_URI,
+                                GlobalConstant.WEBAPP_TEST_URI
+                        )
                         .exposedHeaders("Content-Disposition")
                         .allowedMethods("*");
             }
