@@ -9,21 +9,16 @@ import java.io.Serializable;
 import java.util.Collection;
 
 /**
- * @author jyepez on 6/5/2022
+ * @author jyepez on 9/5/2022
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuRes implements Serializable {
+public class TreeNodeRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
-    private String label;
-    private String icon;
-    private Collection<String> routerLink;
-    private Collection<MenuRes> items;
-    private Integer order;
-    private Integer child;
+    private MenuRes data;
+    private Collection<TreeNodeRes> children;
 }

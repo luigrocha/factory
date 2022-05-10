@@ -7,6 +7,8 @@ import org.crsoft.cartonplast.core.model.Menu;
 import org.crsoft.cartonplast.core.service.IMenuService;
 import org.crsoft.cartonplast.vo.req.MenuReq;
 import org.crsoft.cartonplast.vo.res.MenuRes;
+import org.crsoft.cartonplast.vo.res.TreeNodeRes;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,11 +43,11 @@ public class MenuController {
         }
     }
 
-    @GetMapping("/findAllItems")
+    @PostMapping("/findAllItems")
     @RolesAllowed({"backend-admin","backend-supervisor","backend-user"})
-    public ResponseEntity<Collection<MenuRes>> findAllItems(){
+    public ResponseEntity<Collection<MenuRes>> findAllItems(@RequestBody Collection<String> roles){
         try {
-            return ResponseEntity.ok().body(this.menuService.findAllItems());
+            return ResponseEntity.ok().body(this.menuService.findAllItems(roles));
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -74,6 +76,16 @@ public class MenuController {
             return ResponseEntity.notFound().build();
         } catch (UpdateException e) {
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/findAllItemsTree")
+    @RolesAllowed("backend-admin")
+    public ResponseEntity<Collection<TreeNodeRes>> findAllItemsTree(){
+        try {
+            return ResponseEntity.ok().body(this.menuService.findAllItemsTree());
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

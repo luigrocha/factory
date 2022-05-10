@@ -9,9 +9,11 @@ import org.crsoft.cartonplast.core.repository.MenuRepository;
 import org.crsoft.cartonplast.core.service.IMenuService;
 import org.crsoft.cartonplast.vo.req.MenuReq;
 import org.crsoft.cartonplast.vo.res.MenuRes;
+import org.crsoft.cartonplast.vo.res.TreeNodeRes;
 import org.keycloak.common.util.CollectionUtil;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.NumberUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,14 +61,16 @@ public class MenuService implements IMenuService {
     }
 
     @Override
-    public Collection<MenuRes> findAllItems() throws NotFoundException {
+    public Collection<MenuRes> findAllItems(Collection<String> roles) {
         Collection<MenuRes> allItems = new ArrayList<>(0);
         Collection<Menu> menuList = findAllOrderByCode();
         for (Menu menu : menuList) {
-            if (Objects.nonNull(menu.getChild())) {
-                buildItemsMenuRes(allItems, menu.getChild().getCode(), menu);
-            } else {
-                allItems.add(buildMenuRes(menu));
+            if(roles.contains(menu.getRole())){
+                if (Objects.nonNull(menu.getChild())) {
+                    buildItemsMenuRes(allItems, menu.getChild().getCode(), menu);
+                } else {
+                    allItems.add(buildMenuRes(menu));
+                }
             }
         }
         allItems = allItems.stream().sorted(Comparator.comparing(MenuRes::getOrder)).collect(Collectors.toList());
@@ -107,6 +111,45 @@ public class MenuService implements IMenuService {
         }
     }
 
+    @Override
+    public Collection<TreeNodeRes> findAllItemsTree() {
+        Collection<TreeNodeRes> treeNode = new ArrayList<>(0);
+        Collection<Menu> menuList = findAllOrderByCode();
+        for (Menu menu : menuList) {
+                if (Objects.nonNull(menu.getChild())) {
+                    buildItemsTreeNodeRes(treeNode, menu.getChild().getCode(), menu);
+                } else {
+                    treeNode.add(buildTreeNodeRes(menu));
+                }
+        }
+        return treeNode;
+    }
+
+    private void buildItemsTreeNodeRes(Collection<TreeNodeRes> treeNodeRes, Integer code, Menu menu) {
+        for (TreeNodeRes item : treeNodeRes) {
+            if (item.getData().getId().equals(code)) {
+                Collection<TreeNodeRes> child = new ArrayList<>(0);
+                if (CollectionUtil.isNotEmpty(item.getChildren())) {
+                    child = item.getChildren();
+                }
+                child.add(buildTreeNodeRes(menu));
+
+
+                child = child.stream().sorted(Comparator.comparing(l-> l.getData().getOrder())).collect(Collectors.toList());
+
+                item.setChildren(child);
+            }
+            if (CollectionUtil.isNotEmpty(item.getChildren())) {
+                buildItemsTreeNodeRes(item.getChildren(), code, menu);
+            }
+        }
+    }
+
+
+    private TreeNodeRes buildTreeNodeRes(Menu menu){
+        return TreeNodeRes.builder().data(buildMenuRes(menu)).build();
+    }
+
     private void updateOrder(Menu child, Integer order) throws UpdateException, NotFoundException {
         Collection<Menu> allByChild = this.menuRepository.findAllByChild(child);
         Integer sequence = order;
@@ -122,8 +165,6 @@ public class MenuService implements IMenuService {
             } catch (Exception e) {
                 throw new UpdateException("CBTMEN", "No se pudo actualizar el orden");
             }
-        }else {
-            throw new NotFoundException("No se encontraron datos");
         }
     }
 
@@ -138,13 +179,14 @@ public class MenuService implements IMenuService {
     }
 
     private MenuRes buildMenuRes(Menu menu) {
+        Optional<Menu> child = Optional.ofNullable(menu.getChild());
         return MenuRes.builder()
                 .id(menu.getCode())
                 .label(menu.getLabel())
                 .icon(menu.getIcon())
                 .routerLink(Collections.singleton(menu.getUrl()))
-                .condition(menu.getCondition())
                 .order(menu.getOrder())
+                .child(child.isPresent() ? child.get().getCode() : 0)
                 .build();
     }
 

@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.core.exeption.NotFoundException;
 import org.crsoft.cartonplast.core.exeption.UpdateException;
 import org.crsoft.cartonplast.vo.req.MenuReq;
 import org.crsoft.cartonplast.vo.res.MenuRes;
+import org.crsoft.cartonplast.vo.res.TreeNodeRes;
 
 import java.util.Collection;
 
@@ -15,9 +16,11 @@ public interface IMenuService {
 
     void createItem(MenuReq menuReq) throws InsertException;
 
-    Collection<MenuRes> findAllItems() throws NotFoundException;
+    Collection<MenuRes> findAllItems(Collection<String> roles) throws NotFoundException;
 
     void updateItem(Integer code, MenuReq menuReq) throws NotFoundException, UpdateException;
 
     void deleteItem(Integer code) throws NotFoundException, UpdateException;
+
+    Collection<TreeNodeRes> findAllItemsTree() throws NotFoundException;
 }
