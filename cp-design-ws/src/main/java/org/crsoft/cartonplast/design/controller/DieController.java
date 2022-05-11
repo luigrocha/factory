@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
+
 /**
  * @author lpillaga on 30/04/2022
  */
 
 @RestController
-@RequestMapping(DesignConstant.V1_API_VERSION + "/dies")
+@RequestMapping(V1_API_VERSION + "/dies")
 public class DieController {
 
     private final DieService dieService;
