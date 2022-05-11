@@ -225,11 +225,15 @@ export class MenuComponent implements OnInit {
 
   findLevel(list: Array<TreeNode>) {
     list.forEach((item) => {
-      if (item.data.id == this.childSelected) {
-        this.sugederOrder = item.children.length + 1;
+      if (item.data.id === this.childSelected) {
+        if (!item.children) {
+          this.sugederOrder = 1;
+        } else {
+          this.sugederOrder = item.children.length + 1;
+        }
       }
       if (item.children) {
-        this.findLevel(item.children)
+        this.findLevel(item.children);
       }
     })
   }
