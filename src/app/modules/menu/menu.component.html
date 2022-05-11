@@ -64,21 +64,21 @@
                 pButton
                 pRipple
                 icon="pi pi-plus"
-                class="p-button-rounded mr-2"
+                class="p-button-rounded p-button-outlined mr-2"
                 (click)="openNew(rowData.id)"
               ></button>
               <button
                 pButton
                 pRipple
                 icon="pi pi-pencil"
-                class="p-button-rounded p-button-success mr-2"
+                class="p-button-rounded p-button-outlined p-button-success mr-2"
                 (click)="editItem(rowData)"
               ></button>
               <button
                 pButton
                 pRipple
                 icon="pi pi-trash"
-                class="p-button-rounded p-button-warning"
+                class="p-button-rounded p-button-outlined p-button-warning"
                 (click)="deleteItem(rowData)"
               ></button>
             </td>
@@ -153,7 +153,9 @@
               [(ngModel)]="item.order"
               required
             />
-            <span class="p-inputgroup-addon">5</span>
+            <span class="p-inputgroup-addon" *ngIf="!item.id">{{
+              sugederOrder
+            }}</span>
           </div>
           <small class="p-invalid" *ngIf="submitted && !item.order"
             >Campo orden es requerido.</small

@@ -7,7 +7,8 @@ export const environment = {
   production: false,
 
   appApiUrl: 'http://localhost:8080/api/v1',
-  userApi: 'http://localhost:8080',
+  // appApiUrl: 'https://webapp-test-api.carton-plast.com/api/v1',
+  userApi: 'http://localhost:8081',
   // userApi: 'https://users-test.carton-plast.com',
   keycloak: {
     url: 'https://auth-test.carton-plast.com',

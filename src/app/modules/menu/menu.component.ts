@@ -59,6 +59,8 @@ export class MenuComponent implements OnInit {
 
   childSelected: number;
 
+  sugederOrder: number;
+
   constructor(
     private menuService: MenuService,
     private roleService: RoleService,
@@ -86,6 +88,7 @@ export class MenuComponent implements OnInit {
     this.item = {};
     this.submitted = false;
     this.childSelected = code;
+    this.calculateOrder();
     this.menuDialog = true;
   }
 
@@ -150,6 +153,7 @@ export class MenuComponent implements OnInit {
     this.menu = [...this.menu];
     this.menuDialog = false;
     this.childSelected = 0;
+    this.sugederOrder = 0;
     this.item = {};
   }
 
@@ -188,6 +192,7 @@ export class MenuComponent implements OnInit {
   hideDialog() {
     this.menuDialog = false;
     this.submitted = false;
+    this.sugederOrder = 0;
   }
 
   getAllItemsTree() {
@@ -210,7 +215,24 @@ export class MenuComponent implements OnInit {
     );
   }
 
+  calculateOrder() {
+    if (this.childSelected === 0) {
+      this.sugederOrder = this.menu.length + 1;
+    } else {
+      this.findLevel(this.menu);
+    }
+  }
 
+  findLevel(list: Array<TreeNode>) {
+    list.forEach((item) => {
+      if (item.data.id == this.childSelected) {
+        this.sugederOrder = item.children.length + 1;
+      }
+      if (item.children) {
+        this.findLevel(item.children)
+      }
+    })
+  }
 
 
 }
