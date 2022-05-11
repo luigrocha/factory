@@ -36,6 +36,8 @@ dependencies {
     implementation group: 'org.keycloak.bom', name: 'keycloak-adapter-bom', version: '18.0.0', ext: 'pom'
     implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '18.0.0'
     implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '18.0.0'
+
+    implementation 'org.flywaydb:flyway-core:8.0.5'
 }
 
 tasks.named('test') {
