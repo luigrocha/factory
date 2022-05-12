@@ -3,7 +3,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { HomopolimerosService } from 'src/app/core/http/catalogs/homopolimeros/homopolimeros.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Homopolimero } from 'src/app/types/homopolimero.types';
-import { User } from 'src/app/types/user.types';
 
 @Component({
   selector: 'app-homopolimeros',
@@ -70,7 +69,7 @@ export class HomopolimerosComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAllUsers();
+    this.getAll();
     this.cols = [
       { field: 'percent', header: 'Porcentaje' },
       { field: 'hp', header: 'HP' },
@@ -217,7 +216,7 @@ export class HomopolimerosComponent implements OnInit {
     this.submitted = false;
   }
 
-  getAllUsers() {
+  getAll() {
     // this.homoService.getAll().subscribe((homos) => {
     //   this.homos = homos;
     //   this.loading = false;
