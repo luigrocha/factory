@@ -204,6 +204,12 @@ public class Die {
     )
     private List<DieMachine> dieMachines = new ArrayList<>();
 
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "die"
+    )
+    private List<Cyrel> cyrels = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
         this.validFrom = LocalDateTime.now();

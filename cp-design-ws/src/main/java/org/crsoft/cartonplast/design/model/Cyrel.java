@@ -94,6 +94,34 @@ public class Cyrel {
     )
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATTRO_CODE",
+            referencedColumnName = "ID_CATTRO_CODE",
+            insertable = false,
+            updatable = false
+    )
+    private Die die;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATIMP_CODE",
+            referencedColumnName = "ID_CATIMP_CODE",
+            insertable = false,
+            updatable = false,
+            nullable = false
+    )
+    private Printer printer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATCOL_CODE",
+            referencedColumnName = "ID_CATCOL_CODE",
+            insertable = false,
+            updatable = false
+    )
+    private ColorB mbLeaf;
+
     @PrePersist
     public void prePersist() {
         this.validFrom = LocalDateTime.now();

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lpillaga on 11/05/2022
@@ -81,6 +83,12 @@ public class ColorB {
             updatable = false
     )
     private ColorA colorA;
+
+    @OneToMany(
+            mappedBy = "mbLeaf",
+            fetch = FetchType.LAZY
+    )
+    private List<Cyrel> cyrels = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

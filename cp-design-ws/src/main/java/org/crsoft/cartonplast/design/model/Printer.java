@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lpillaga on 12/05/2022
@@ -33,7 +35,8 @@ public class Printer {
 
     @Column(
             name = "CATIMP_NAME",
-            nullable = false
+            nullable = false,
+            length = 64
     )
     private String name;
 
@@ -78,6 +81,12 @@ public class Printer {
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;
+
+    @OneToMany(
+            mappedBy = "printer",
+            fetch = FetchType.LAZY
+    )
+    private List<Cyrel> cyrels = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
