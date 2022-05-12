@@ -7,7 +7,7 @@
         #dt
         [value]="users"
         [columns]="cols"
-        [rows]="6"
+        [rows]="10"
         [paginator]="true"
         [globalFilterFields]="['userName', 'firstName', 'lastName', 'roles']"
         [(selection)]="selectedUsers"
@@ -126,14 +126,14 @@
                 pButton
                 pRipple
                 icon="pi pi-pencil"
-                class="p-button-rounded p-button-success p-mr-2"
+                class="p-button-rounded p-button-outlined p-button-success p-mr-2"
                 (click)="editUser(user)"
               ></button>
               <button
                 pButton
                 pRipple
                 icon="pi pi-trash"
-                class="p-button-rounded p-button-warning"
+                class="p-button-rounded p-button-outlined p-button-warning"
                 (click)="deleteUser(user)"
               ></button>
             </td>
