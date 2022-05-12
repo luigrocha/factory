@@ -5,6 +5,7 @@ import { Error404Component } from 'src/app/core/error/error404/error404.componen
 import { Error403Component } from 'src/app/core/error/error403/error403.component';
 import { Error500Component } from 'src/app/core/error/error500/error500.component';
 import { AuthGuard } from 'src/app/core/auth/auth.guard';
+import { RoleEnum } from './types/role.types';
 
 const routes: Routes = [
   {
@@ -32,33 +33,37 @@ const routes: Routes = [
       {
         path: 'usuarios',
         canActivate: [AuthGuard],
-        data: { roles: ['realm-admin'] },
+        data: { roles: [RoleEnum.ADMIN] },
         loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule)
       },
       {
         path: 'roles',
         canActivate: [AuthGuard],
-        data: { roles: ['realm-admin'] },
+        data: { roles: [RoleEnum.ADMIN] },
         loadChildren: () => import('./modules/roles/roles.module').then(m => m.RolesModule)
-      },
-      {
-        path: 'troqueles',
-        loadChildren: () => import('./modules/dies/dies.module').then(m => m.DiesModule)
       },
       {
         path: 'menu',
         canActivate: [AuthGuard],
-        data: { roles: ['realm-admin'] },
+        data: { roles: [RoleEnum.ADMIN] },
         loadChildren: () => import('./modules/menu/menu.module').then(m => m.MenuModule)
       },
       {
         path: 'catalogs',
         canActivate: [AuthGuard],
-        data: { roles: ['realm-admin'] },
+        data: { roles: [RoleEnum.SUPERVISOR] },
         loadChildren: () => import('./modules/catalogs/catalogs.module').then(m => m.CatalogsModule)
       },
       {
+        path: 'troqueles',
+        canActivate: [AuthGuard],
+        data: { roles: [RoleEnum.USER] },
+        loadChildren: () => import('./modules/dies/dies.module').then(m => m.DiesModule)
+      },
+      {
         path: 'cireles',
+        canActivate: [AuthGuard],
+        data: { roles: [RoleEnum.USER] },
         loadChildren: () => import('./modules/cireles/cireles.module').then(m => m.CirelesModule)
       },
 
@@ -68,7 +73,7 @@ const routes: Routes = [
     path: '**',
     redirectTo: 'not-found'
   }
-]
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {

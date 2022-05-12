@@ -5,6 +5,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { MenuService } from 'src/app/core/services/menu.service';
 import { LayoutComponent } from 'src/app/layout/layout.component';
+import { TreeNode } from 'primeng/api';
 
 @Component({
   selector: '[app-menuitem]',
@@ -72,12 +73,26 @@ export class MenuitemComponent implements OnInit, OnDestroy {
     if (!this.app.isHorizontal() && this.item.routerLink) {
       this.updateActiveStateFromRoute();
     }
-
     this.key = this.parentKey ? this.parentKey + '-' + this.index : String(this.index);
   }
 
   updateActiveStateFromRoute() {
-    this.active = this.router.isActive(this.item.routerLink[0], this.item.items ? false : true);
+    // this.active = this.router.isActive(this.item.routerLink[0], this.item.items ? false : true);
+    if (this.item.items) {
+      this.findRouter(this.item.items);
+    } else {
+      this.active = this.item.routerLink[0] === this.router.url ? true : false;
+    }
+  }
+
+  findRouter(list: Array<any>) {
+    list.forEach(item => {
+      if (this.router.url === item.routerLink[0]) {
+        this.active = true;
+      } else if (item.items) {
+        this.findRouter(item.items);
+      }
+    });
   }
 
   itemClick(event: Event) {
