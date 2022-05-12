@@ -8,5 +8,5 @@ export interface Menu {
     data?: string;
     order?: number;
     role?: string;
-    child?: number
+    child?: number;
 }

@@ -1,28 +1,28 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Homopolimero } from 'src/app/types/homopolimero.types';
+import { Cirel } from 'src/app/types/cirel.types';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class HomopolimerosService {
+export class CirelService {
   httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
 
-  URL_USER = environment.appApiUrl + '/homopolymers';
+  URL_USER = environment.appApiUrl + '/cirel';
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Homopolimero[]> {
-    return this.http.get<Homopolimero[]>(this.URL_USER + '', this.httpOptions);
+  getAll(): Observable<Cirel[]> {
+    return this.http.get<Cirel[]>(this.URL_USER + '/', this.httpOptions);
   }
 
-  create(user: Homopolimero): Observable<any> {
+  create(user: Cirel): Observable<any> {
     return this.http.post<any>(this.URL_USER + '/', user, this.httpOptions);
   }
 
-  update(id: string, user: Homopolimero): Observable<any> {
+  update(id: string, user: Cirel): Observable<any> {
     return this.http.put<any>(this.URL_USER + '/' + id, user, this.httpOptions);
   }
 

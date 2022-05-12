@@ -1,5 +1,5 @@
 export interface Homopolimero {
     id?: number;
-    percen?: number;
-    hp?: string;
+    percentage?: number;
+    hpCode?: string;
 }

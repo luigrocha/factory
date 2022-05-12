@@ -4,7 +4,7 @@
 
     <div class="card">
       <p-table #dt [value]="homos" [columns]="cols" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['percent', 'hp']" [(selection)]="selectedHomo" [rowHover]="true" dataKey="id"
+        [globalFilterFields]="['percentage', 'hpCode']" [(selection)]="selectedHomo" [rowHover]="true" dataKey="id"
         styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -30,11 +30,11 @@
             <th style="width: 3rem">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th pSortableColumn="percent">
-              Porsentaje <p-sortIcon field="percent"></p-sortIcon>
+            <th pSortableColumn="percentage">
+              Porcentaje <p-sortIcon field="percentage"></p-sortIcon>
             </th>
-            <th pSortableColumn="hp">
-              HP <p-sortIcon field="hp"></p-sortIcon>
+            <th pSortableColumn="hpCode">
+              HP <p-sortIcon field="hpCode"></p-sortIcon>
             </th>
             <th style="
                 text-align: center;
@@ -52,11 +52,11 @@
             </td>
             <td>
               <span class="p-column-title">Porcentaje</span>
-              {{ homo.percent }}
+              {{ homo.percentage }}
             </td>
             <td>
               <span class="p-column-title">HP</span>
-              {{ homo.hp }}
+              {{ homo.hpCode }}
             </td>
             <td style="display: flex; justify-content: space-evenly">
               <button pButton pRipple icon="pi pi-pencil"
@@ -79,14 +79,14 @@
       styleClass="p-fluid">
       <ng-template pTemplate="content">
         <div class="p-field">
-          <label for="percent">Porcentaje</label>
-          <input type="text" pInputText id="percent" [(ngModel)]="homo.percent" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !homo.percent">Campo porcentaje es requerido.</small>
+          <label for="percentage">Porcentaje</label>
+          <input type="text" pInputText id="percentage" [(ngModel)]="homo.percentage" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !homo.percentage">Campo porcentaje es requerido.</small>
         </div>
         <div class="p-field">
-          <label for="hp">HP</label>
-          <input type="text" pInputText id="hp" [(ngModel)]="homo.hp" required />
-          <small class="p-invalid" *ngIf="submitted && !homo.hp">Campo hp es requerido.</small>
+          <label for="hpCode">HP</label>
+          <input type="text" pInputText id="hpCode" [(ngModel)]="homo.hpCode" required />
+          <small class="p-invalid" *ngIf="submitted && !homo.hpCode">Campo hp es requerido.</small>
         </div>
       </ng-template>
 

@@ -90,7 +90,7 @@ export class HomopolimerosComponent implements OnInit {
   deleteHomo(homo: Homopolimero) {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar el homopolímero ' + homo.hp + '?',
+        'Estas seguro de eliminar el homopolímero ' + homo.hpCode + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
@@ -217,10 +217,10 @@ export class HomopolimerosComponent implements OnInit {
   }
 
   getAll() {
-    // this.homoService.getAll().subscribe((homos) => {
-    //   this.homos = homos;
-    //   this.loading = false;
-    // });
+    this.homoService.getAll().subscribe((homos) => {
+      this.homos = homos;
+      this.loading = false;
+    });
   }
 
 }
