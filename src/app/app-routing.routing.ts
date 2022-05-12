@@ -50,7 +50,18 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: ['realm-admin'] },
         loadChildren: () => import('./modules/menu/menu.module').then(m => m.MenuModule)
-      }
+      },
+      {
+        path: 'catalogs',
+        canActivate: [AuthGuard],
+        data: { roles: ['realm-admin'] },
+        loadChildren: () => import('./modules/catalogs/catalogs.module').then(m => m.CatalogsModule)
+      },
+      {
+        path: 'cireles',
+        loadChildren: () => import('./modules/cireles/cireles.module').then(m => m.CirelesModule)
+      },
+
     ]
   },
   {

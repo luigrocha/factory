@@ -235,8 +235,6 @@ export class MenuComponent implements OnInit {
       if (item.children) {
         this.findLevel(item.children);
       }
-    })
+    });
   }
-
-
 }
