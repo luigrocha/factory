@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { PrinterService } from 'src/app/core/http/catalogs/printers/printer.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Printer } from 'src/app/types/printer.types';
+import { Client } from 'src/app/types/client.types';
 
 @Component({
-  selector: 'app-printers',
-  templateUrl: './printers.component.html',
-  styleUrls: ['./printers.component.scss'],
+  selector: 'app-clients',
+  templateUrl: './clients.component.html',
+  styleUrls: ['./clients.component.scss'],
   styles: [
     `
         :host ::ng-deep .p-dialog .product-image {
@@ -39,19 +38,19 @@ import { Printer } from 'src/app/types/printer.types';
   ],
   providers: [MessageService, ConfirmationService],
 })
-export class PrintersComponent implements OnInit {
+export class ClientsComponent implements OnInit {
 
-  printerDialog: boolean;
+  clientDialog: boolean;
 
-  selectedPrinter: Printer[];
+  selectedClient: Client[];
 
   submitted: boolean;
 
   cols: any[];
 
-  printers: Printer[];
+  clients: Client[];
 
-  printer: Printer;
+  client: Client;
 
   loading = true;
 
@@ -59,43 +58,41 @@ export class PrintersComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
-    private printerService: PrinterService,
+    // private clientAService: ClientService,
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Catálogos' },
-      { label: 'Impresoras', routerLink: ['home/catalogs/impresoras'] },
+      { label: 'Administración' },
+      { label: 'Clientes', routerLink: ['home/clientes'] },
     ]);
   }
 
   ngOnInit() {
     this.getAll();
     this.cols = [
+      { field: 'color', header: 'Color' },
       { field: 'name', header: 'Nombre' },
-      { field: 'numColors', header: 'N° Colores' },
-      { field: 'description', header: 'Descripción' },
     ];
   }
 
   openNew() {
-    this.printer = {};
+    this.client = {};
     this.submitted = false;
-    this.printerDialog = true;
+    this.clientDialog = true;
   }
 
-  editPrinter(printer: Printer) {
-    this.printer = { ...printer };
-    this.printerDialog = true;
+  editClient(client: Client) {
+    this.client = { ...client };
+    this.clientDialog = true;
   }
 
-  deletePrinter(printer: Printer) {
+  deleteClient(client: Client) {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar la impresora ' + printer.name + '?',
+        'Estas seguro de eliminar el client ' + client.name + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.printerService.delete(printer.id).subscribe(
+        // this.clientAService.delete(client.id).subscribe(
         //   (res) => {
         //     this.messageService.add({
         //       severity: 'success',
@@ -103,7 +100,7 @@ export class PrintersComponent implements OnInit {
         //       detail: 'Homopolímero Eliminado',
         //       life: 3000,
         //     });
-        //     this.printers = [];
+        //     this.clients = [];
         //     this.getAllUsers();
         //   },
         //   (err) => {
@@ -120,14 +117,14 @@ export class PrintersComponent implements OnInit {
     });
   }
 
-  deleteSelectedPrinters() {
+  deleteSelectedClients() {
     this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar las impresoras seleccionados?',
+      message: 'Estás seguro de eliminar los clientes seleccionados?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.selectedHomo.forEach(printer => {
-        //   this.printerService.delete(printer.id).subscribe(
+        // this.selectedHomo.forEach(client => {
+        //   this.clientAService.delete(client.id).subscribe(
         //     (res) => {
         //       this.messageService.add({
         //         severity: 'success',
@@ -135,7 +132,7 @@ export class PrintersComponent implements OnInit {
         //         detail: 'Homopolímero Eliminado',
         //         life: 3000,
         //       });
-        //       this.printers = [];
+        //       this.clients = [];
         //       this.getAllUsers();
         //     },
         //     (err) => {
@@ -149,7 +146,7 @@ export class PrintersComponent implements OnInit {
         //   );
         // })
 
-        this.selectedPrinter = null;
+        this.selectedClient = null;
         this.messageService.add({
           severity: 'success',
           summary: 'Correcto',
@@ -160,11 +157,11 @@ export class PrintersComponent implements OnInit {
     });
   }
 
-  savePrinter() {
+  saveClient() {
     this.submitted = true;
 
-    if (this.printer.id) {
-      // this.printerService.update(this.printer.id, this.printer).subscribe(
+    if (this.client.id) {
+      // this.clientAService.update(this.client.id, this.client).subscribe(
       //   (res) => {
       //     this.messageService.add({
       //       severity: 'success',
@@ -172,7 +169,7 @@ export class PrintersComponent implements OnInit {
       //       detail: 'Homopolímero Actualizado',
       //       life: 3000,
       //     });
-      //     this.printers = [];
+      //     this.clients = [];
       //     this.getAllUsers();
       //   },
       //   (err) => {
@@ -185,7 +182,7 @@ export class PrintersComponent implements OnInit {
       //   }
       // );
     } else {
-      // this.printerService.create(this.printer).subscribe(
+      // this.clientAService.create(this.client).subscribe(
       //   (res) => {
       //     this.messageService.add({
       //       severity: 'success',
@@ -193,7 +190,7 @@ export class PrintersComponent implements OnInit {
       //       detail: 'Homopolímero Creado',
       //       life: 3000,
       //     });
-      //     this.printers = [];
+      //     this.clients = [];
       //     this.getAllUsers();
       //   },
       //   (err) => {
@@ -207,21 +204,21 @@ export class PrintersComponent implements OnInit {
       // );
     }
 
-    this.printers = [...this.printers];
-    this.printerDialog = false;
-    this.printer = {};
+    this.clients = [...this.clients];
+    this.clientDialog = false;
+    this.client = {};
   }
 
   hideDialog() {
-    this.printerDialog = false;
+    this.clientDialog = false;
     this.submitted = false;
   }
 
   getAll() {
-    this.printerService.getAll().subscribe((printers) => {
-      this.printers = printers;
-      this.loading = false;
-    });
+    // this.clientAService.getAll().subscribe((clients) => {
+    //   this.clients = clients;
+    //   this.loading = false;
+    // });
   }
 
 }

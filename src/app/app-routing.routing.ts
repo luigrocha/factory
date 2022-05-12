@@ -66,7 +66,12 @@ const routes: Routes = [
         data: { roles: [RoleEnum.USER] },
         loadChildren: () => import('./modules/cireles/cireles.module').then(m => m.CirelesModule)
       },
-
+      {
+        path: 'clientes',
+        canActivate: [AuthGuard],
+        data: { roles: [RoleEnum.ADMIN] },
+        loadChildren: () => import('./modules/clients/clients.module').then(m => m.ClientsModule)
+      },
     ]
   },
   {

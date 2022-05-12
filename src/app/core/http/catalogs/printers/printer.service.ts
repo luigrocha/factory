@@ -10,12 +10,12 @@ import { environment } from 'src/environments/environment';
 export class PrinterService {
   httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
 
-  URL_USER = environment.appApiUrl + '/printer';
+  URL_USER = environment.appApiUrl + '/printers';
 
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<Printer[]> {
-    return this.http.get<Printer[]>(this.URL_USER + '/', this.httpOptions);
+    return this.http.get<Printer[]>(this.URL_USER + '', this.httpOptions);
   }
 
   create(user: Printer): Observable<any> {
