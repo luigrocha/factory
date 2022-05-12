@@ -1,7 +1,6 @@
 package org.crsoft.cartonplast.design.controller;
 
 import org.crsoft.cartonplast.design.service.impl.DieService;
-import org.crsoft.cartonplast.design.util.DesignConstant;
 import org.crsoft.cartonplast.design.vo.res.DieRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
 

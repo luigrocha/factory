@@ -6,87 +6,73 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * @author lpillaga on 02/05/2022
+ * @author lpillaga on 10/05/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(
-        name = "CATMAQ",
-        indexes = {
-                @Index(name = "CAIMAQ_NAME", columnList = "CATMAQ_NAME"),
+        name = "CATHOM",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "CAIHOM_HP_CODE", columnNames = "CATHOM_HP_CODE")
         }
 )
-public class Machine {
+public class HomoPolymer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "ID_CATMAQ_CODE",
+            name = "ID_CATHOM_CODE",
             updatable = false,
             nullable = false
     )
     private Integer id;
 
     @Column(
-            name = "CATMAQ_NAME",
-            nullable = false,
-            length = 32
-    )
-    private String name;
-
-    @Column(
-            name = "CATMAQ_HAS_DESB",
+            name = "CATHOM_PERCENT",
             nullable = false
     )
-    private Boolean hasDesb;
-
-    @OneToMany(
-            mappedBy = "machine",
-            fetch = FetchType.LAZY
-    )
-    private List<DieMachine> dies = new ArrayList<>();
+    private Integer percentage;
 
     @Column(
-            name = "CATMAQ_VALID_FROM",
+            name = "CATHOM_HP_CODE",
+            nullable = false,
+            length = 2
+    )
+    private String hpCode;
+
+    @Column(
+            name = "CATHOM_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CATMAQ_VALID_TO",
+            name = "CATHOM_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CATMAQ_CREATED_BY", length = 16)
+    @Column(name = "CATHOM_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CATMAQ_UPDATED_BY", length = 16)
+    @Column(name = "CATHOM_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CATMAQ_CREATED_AT",
+            name = "CATHOM_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CATMAQ_UPDATED_AT",
+            name = "CATHOM_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;
-
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            mappedBy = "machine"
-    )
-    private List<DieMachine> dieMachines = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

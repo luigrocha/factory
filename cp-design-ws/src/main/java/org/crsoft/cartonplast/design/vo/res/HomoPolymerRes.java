@@ -7,15 +7,16 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * @author lpillaga on 08/05/2022
+ * @author lpillaga on 11/05/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ManufacturerRes implements Serializable {
+public class HomoPolymerRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private String name;
+    private Integer percentage;
+    private String hpCode;
 }
