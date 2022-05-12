@@ -15,8 +15,7 @@ import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-
-
+import { ThicknessComponent } from './pages/thickness/thickness.component';
 
 @NgModule({
   imports: [
@@ -37,7 +36,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     ColorAComponent,
     ColorBComponent,
     HomopolimerosComponent,
-    PrintersComponent
+    PrintersComponent,
+    ThicknessComponent
   ]
 })
 export class CatalogsModule { }

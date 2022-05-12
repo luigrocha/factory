@@ -3,59 +3,24 @@
     <p-toast></p-toast>
 
     <div class="card">
-      <p-table
-        #dt
-        [value]="users"
-        [columns]="cols"
-        [rows]="10"
-        [paginator]="true"
-        [globalFilterFields]="['userName', 'firstName', 'lastName', 'roles']"
-        [(selection)]="selectedUsers"
-        [rowHover]="true"
-        dataKey="id"
-        styleClass="p-datatable-customers p-datatable-sm"
-      >
+      <p-table #dt [value]="users" [columns]="cols" [rows]="7" [paginator]="true"
+        [globalFilterFields]="['userName', 'firstName', 'lastName', 'roles']" [(selection)]="selectedUsers"
+        [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
-          <div
-            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
-          >
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <h5 class="m-0">Gestión de Usuarios</h5>
 
             <div class="flex">
-              <button
-                pButton
-                pRipple
-                label="Nuevo"
-                icon="pi pi-plus"
-                class="mr-2"
-                (click)="openNew()"
-              ></button>
-              <button
-                pButton
-                pRipple
-                label="Eliminar"
-                icon="pi pi-trash"
-                class="p-button-danger mr-2"
-                (click)="deleteSelectedUsers()"
-                [disabled]="!selectedUsers || !selectedUsers.length"
-              ></button>
-              <button
-                pButton
-                pRipple
-                label="Export"
-                icon="pi pi-upload"
-                class="p-button-help mr-2"
-                (click)="dt.exportCSV()"
-              ></button>
+              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
+              <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mr-2"
+                (click)="deleteSelectedUsers()" [disabled]="!selectedUsers || !selectedUsers.length"></button>
+              <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mr-2"
+                (click)="dt.exportCSV()"></button>
 
               <span class="block mt-2 md:mt-0 p-input-icon-left">
                 <i class="pi pi-search"></i>
-                <input
-                  pInputText
-                  type="text"
-                  (input)="dt.filterGlobal($event.target.value, 'contains')"
-                  placeholder="Buscar..."
-                />
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                  placeholder="Buscar..." />
               </span>
             </div>
           </div>
@@ -76,18 +41,12 @@
             </th>
             <th>Email</th>
             <th>Roles</th>
-            <th
-              style="
+            <th style="
                 text-align: center;
                 display: flex;
                 justify-content: space-around;
-              "
-            >
-              <i
-                class="pi pi-cog"
-                style="font-size: 18px"
-                pTooltip="Opciones"
-              ></i>
+              ">
+              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
           </tr>
         </ng-template>
@@ -113,29 +72,14 @@
               {{ user.email }}
             </td>
             <td>
-              <p-tag
-                *ngFor="let role of user.roles"
-                styleClass="mb-2 mr-2"
-                severity="{{ getRoleType(role).color }}"
-                value="{{ getRoleType(role).name }}"
-                [rounded]="true"
-              ></p-tag>
+              <p-tag *ngFor="let role of user.roles" styleClass="mb-2 mr-2" severity="{{ getRoleType(role).color }}"
+                value="{{ getRoleType(role).name }}" [rounded]="true"></p-tag>
             </td>
             <td style="display: flex; justify-content: space-around">
-              <button
-                pButton
-                pRipple
-                icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-success p-mr-2"
-                (click)="editUser(user)"
-              ></button>
-              <button
-                pButton
-                pRipple
-                icon="pi pi-trash"
-                class="p-button-rounded p-button-outlined p-button-warning"
-                (click)="deleteUser(user)"
-              ></button>
+              <button pButton pRipple icon="pi pi-pencil"
+                class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editUser(user)"></button>
+              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
+                (click)="deleteUser(user)"></button>
             </td>
           </tr>
         </ng-template>
@@ -148,98 +92,41 @@
       </p-table>
     </div>
 
-    <p-dialog
-      [(visible)]="userDialog"
-      [style]="{ width: '450px' }"
-      header="Detalles de Usuario"
-      [modal]="true"
-      styleClass="p-fluid"
-    >
+    <p-dialog [(visible)]="userDialog" [style]="{ width: '450px' }" header="Detalles de Usuario" [modal]="true"
+      styleClass="p-fluid">
       <ng-template pTemplate="content">
         <div class="p-field">
           <label for="userName">Usuario</label>
-          <input
-            type="text"
-            pInputText
-            id="userName"
-            [(ngModel)]="user.userName"
-            disabled
-          />
+          <input type="text" pInputText id="userName" [(ngModel)]="user.userName" disabled />
         </div>
         <div class="p-field">
           <label for="firstName">Nombre</label>
-          <input
-            type="text"
-            pInputText
-            id="firstName"
-            [(ngModel)]="user.firstName"
-            (ngModelChange)="createFirstLetterUserName($event)"
-            required
-            autofocus
-          />
-          <small class="p-invalid" *ngIf="submitted && !user.firstName"
-            >Campo nombre es requerido.</small
-          >
+          <input type="text" pInputText id="firstName" [(ngModel)]="user.firstName"
+            (ngModelChange)="createFirstLetterUserName($event)" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !user.firstName">Campo nombre es requerido.</small>
         </div>
         <div class="p-field">
           <label for="lastName">Apellido</label>
-          <input
-            type="text"
-            pInputText
-            id="lastName"
-            [(ngModel)]="user.lastName"
-            (ngModelChange)="createUsername($event)"
-            required
-          />
-          <small class="p-invalid" *ngIf="submitted && !user.lastName"
-            >Campo apellido es requerido.</small
-          >
+          <input type="text" pInputText id="lastName" [(ngModel)]="user.lastName"
+            (ngModelChange)="createUsername($event)" required />
+          <small class="p-invalid" *ngIf="submitted && !user.lastName">Campo apellido es requerido.</small>
         </div>
         <div class="p-field">
           <label for="email">Email</label>
-          <input
-            type="email"
-            pInputText
-            id="email"
-            [(ngModel)]="user.email"
-            required
-          />
-          <small class="p-invalid" *ngIf="submitted && !user.email"
-            >Campo email es requerido y debe ser válido.</small
-          >
+          <input type="email" pInputText id="email" [(ngModel)]="user.email" required />
+          <small class="p-invalid" *ngIf="submitted && !user.email">Campo email es requerido y debe ser válido.</small>
         </div>
         <div class="p-field" *ngIf="!user.id">
           <label for="password">Password</label>
-          <input
-            type="password"
-            pInputText
-            id="password"
-            [(ngModel)]="user.password"
-            required
-          />
-          <small class="p-invalid" *ngIf="submitted && !user.password"
-            >Campo contraseña es requerido.</small
-          >
+          <input type="password" pInputText id="password" [(ngModel)]="user.password" required />
+          <small class="p-invalid" *ngIf="submitted && !user.password">Campo contraseña es requerido.</small>
         </div>
       </ng-template>
 
       <ng-template pTemplate="footer">
-        <button
-          pButton
-          pRipple
-          label="Cancelar"
-          icon="pi pi-times"
-          class="p-button-text"
-          (click)="hideDialog()"
-        ></button>
-        <button
-          pButton
-          pRipple
-          label="Guardar"
-          icon="pi pi-check"
-          class="p-button-text"
-          (click)="saveUser()"
-        ></button>
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveUser()"></button>
       </ng-template>
     </p-dialog>
 
