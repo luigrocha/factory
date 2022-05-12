@@ -1,4 +1,4 @@
 export interface ColorA {
-    color?: string;
+    id?: string;
     name?: string;
 }

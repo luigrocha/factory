@@ -162,7 +162,7 @@ export class ColorAComponent implements OnInit {
   saveColor() {
     this.submitted = true;
 
-    if (this.color.color) {
+    if (this.color.id) {
       // this.colorAService.update(this.color.color, this.color).subscribe(
       //   (res) => {
       //     this.messageService.add({
@@ -217,10 +217,10 @@ export class ColorAComponent implements OnInit {
   }
 
   getAll() {
-    // this.colorAService.getAll().subscribe((colors) => {
-    //   this.colors = colors;
-    //   this.loading = false;
-    // });
+    this.colorAService.getAll().subscribe((colors) => {
+      this.colors = colors;
+      this.loading = false;
+    });
   }
 
 }

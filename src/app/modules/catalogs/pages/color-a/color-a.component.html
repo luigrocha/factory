@@ -4,7 +4,7 @@
 
     <div class="card">
       <p-table #dt [value]="colors" [columns]="cols" [rows]="10" [paginator]="true"
-        [globalFilterFields]="['color', 'name']" [(selection)]="selectedColor" [rowHover]="true" dataKey="id"
+        [globalFilterFields]="['id', 'name']" [(selection)]="selectedColor" [rowHover]="true" dataKey="id"
         styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -30,8 +30,8 @@
             <th style="width: 3rem">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th pSortableColumn="color">
-              Color <p-sortIcon field="color"></p-sortIcon>
+            <th pSortableColumn="id">
+              ID <p-sortIcon field="id"></p-sortIcon>
             </th>
             <th pSortableColumn="name">
               Nombre <p-sortIcon field="name"></p-sortIcon>
@@ -51,8 +51,8 @@
               <p-tableCheckbox [value]="color"></p-tableCheckbox>
             </td>
             <td>
-              <span class="p-column-title">Color</span>
-              {{ color.color }}
+              <span class="p-column-title">ID</span>
+              {{ color.id }}
             </td>
             <td>
               <span class="p-column-title">Nombre</span>
@@ -79,9 +79,9 @@
       styleClass="p-fluid">
       <ng-template pTemplate="content">
         <div class="p-field">
-          <label for="color">Color</label>
-          <input type="text" pInputText id="color" [(ngModel)]="color.color" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !color.color">Campo color es requerido.</small>
+          <label for="id">ID</label>
+          <input type="text" pInputText id="id" [(ngModel)]="color.id" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !color.id">Campo id es requerido.</small>
         </div>
         <div class="p-field">
           <label for="name">Nombre</label>
