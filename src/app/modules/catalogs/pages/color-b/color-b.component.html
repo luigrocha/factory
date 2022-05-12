@@ -1,3 +1,137 @@
-<p>
-  color-b works!
-</p>
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <div class="card">
+      <p-table #dt [value]="colors" [columns]="cols" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['color', 'name']" [(selection)]="selectedColor" [rowHover]="true" dataKey="id"
+        styleClass="p-datatable-customers p-datatable-sm">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Gestión de Colores B</h5>
+
+            <div class="flex">
+              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
+              <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mr-2"
+                (click)="deleteSelectedColors()" [disabled]="!selectedColor || !selectedColor.length"></button>
+              <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mr-2"
+                (click)="dt.exportCSV()"></button>
+
+              <span class="block mt-2 md:mt-0 p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                  placeholder="Buscar..." />
+              </span>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="color">
+              Color <p-sortIcon field="color"></p-sortIcon>
+            </th>
+            <th pSortableColumn="colorA">
+              Color Primario <p-sortIcon field="colorA"></p-sortIcon>
+            </th>
+            <th pSortableColumn="index">
+              Indice <p-sortIcon field="index"></p-sortIcon>
+            </th>
+            <th pSortableColumn="dosage">
+              Dosis <p-sortIcon field="dosage"></p-sortIcon>
+            </th>
+            <th pSortableColumn="description">
+              Descripción <p-sortIcon field="description"></p-sortIcon>
+            </th>
+            <th style="
+                text-align: center;
+                display: flex;
+                justify-content: space-around;
+              ">
+              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-color>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="color"></p-tableCheckbox>
+            </td>
+            <td>
+              <span class="p-column-title">Color</span>
+              {{ color.color }}
+            </td>
+            <td>
+              <span class="p-column-title">Color Primario</span>
+              {{ color.colorA.name }}
+            </td>
+            <td>
+              <span class="p-column-title">Indice</span>
+              {{ color.index }}
+            </td>
+            <td>
+              <span class="p-column-title">Dosis</span>
+              {{ color.dosage }}
+            </td>
+            <td>
+              <span class="p-column-title">Descripción</span>
+              {{ color.description }}
+            </td>
+            <td style="display: flex; justify-content: space-evenly">
+              <button pButton pRipple icon="pi pi-pencil"
+                class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editColor(color)"></button>
+              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
+                (click)="deleteColor(color)"></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            Total de Colores:
+            {{ colors ? colors.length : 0 }}
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="colorDialog" [style]="{ width: '450px' }" header="Detalles de Colores A" [modal]="true"
+      styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-field">
+          <label for="color">Color</label>
+          <input type="text" pInputText id="color" [(ngModel)]="color.color" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !color.color">Campo color es requerido.</small>
+        </div>
+        <!-- <div class="p-field">
+          <label for="role">Color Primario</label>
+          <p-dropdown id="role" [options]="roleValue" [(ngModel)]="color.colorA"></p-dropdown>
+        </div> -->
+        <div class="p-field">
+          <label for="index">Indice</label>
+          <input type="number" pInputText id="index" [(ngModel)]="color.index" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !color.index">Campo indice es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="dosage">Dosis</label>
+          <input type="number" pInputText id="dosage" [(ngModel)]="color.dosage" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !color.dosage">Campo dosis es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="description">Descripción</label>
+          <input type="text" pInputText id="description" [(ngModel)]="color.description" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !color.description">Campo descripción es requerido.</small>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveColor()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+  </div>
+</div>

@@ -162,7 +162,7 @@ export class ColorAComponent implements OnInit {
   saveColor() {
     this.submitted = true;
 
-    if (this.color.name) {
+    if (this.color.color) {
       // this.colorAService.update(this.color.color, this.color).subscribe(
       //   (res) => {
       //     this.messageService.add({

@@ -81,12 +81,12 @@
         <div class="p-field">
           <label for="color">Color</label>
           <input type="text" pInputText id="color" [(ngModel)]="color.color" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !user.color">Campo color es requerido.</small>
+          <small class="p-invalid" *ngIf="submitted && !color.color">Campo color es requerido.</small>
         </div>
         <div class="p-field">
           <label for="name">Nombre</label>
           <input type="text" pInputText id="name" [(ngModel)]="color.name" required />
-          <small class="p-invalid" *ngIf="submitted && !user.name">Campo nombre es requerido.</small>
+          <small class="p-invalid" *ngIf="submitted && !color.name">Campo nombre es requerido.</small>
         </div>
       </ng-template>
 

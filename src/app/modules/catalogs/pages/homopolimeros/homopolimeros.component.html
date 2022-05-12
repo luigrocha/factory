@@ -52,11 +52,11 @@
             </td>
             <td>
               <span class="p-column-title">Porcentaje</span>
-              {{ homo.userName }}
+              {{ homo.percent }}
             </td>
             <td>
               <span class="p-column-title">HP</span>
-              {{ homo.firstName }}
+              {{ homo.hp }}
             </td>
             <td style="display: flex; justify-content: space-evenly">
               <button pButton pRipple icon="pi pi-pencil"
@@ -81,12 +81,12 @@
         <div class="p-field">
           <label for="percent">Porcentaje</label>
           <input type="text" pInputText id="percent" [(ngModel)]="homo.percent" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !user.percent">Campo porcentaje es requerido.</small>
+          <small class="p-invalid" *ngIf="submitted && !homo.percent">Campo porcentaje es requerido.</small>
         </div>
         <div class="p-field">
           <label for="hp">HP</label>
           <input type="text" pInputText id="hp" [(ngModel)]="homo.hp" required />
-          <small class="p-invalid" *ngIf="submitted && !user.hp">Campo hp es requerido.</small>
+          <small class="p-invalid" *ngIf="submitted && !homo.hp">Campo hp es requerido.</small>
         </div>
       </ng-template>
 
