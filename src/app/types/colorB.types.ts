@@ -1,7 +1,7 @@
 import { ColorA } from './colorA.types';
 
 export interface ColorB {
-    color?: string;
+    id?: string;
     colorA?: ColorA;
     index?: number;
     dosage?: number;

@@ -30,8 +30,8 @@
             <th style="width: 3rem">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th pSortableColumn="color">
-              Color <p-sortIcon field="color"></p-sortIcon>
+            <th pSortableColumn="id">
+              ID <p-sortIcon field="id"></p-sortIcon>
             </th>
             <th pSortableColumn="colorA">
               Color Primario <p-sortIcon field="colorA"></p-sortIcon>
@@ -60,12 +60,12 @@
               <p-tableCheckbox [value]="color"></p-tableCheckbox>
             </td>
             <td>
-              <span class="p-column-title">Color</span>
-              {{ color.color }}
+              <span class="p-column-title">ID</span>
+              {{ color.id }}
             </td>
             <td>
               <span class="p-column-title">Color Primario</span>
-              {{ color.colorA.name }}
+              {{ color.colorA.id }} - {{ color.colorA.name }}
             </td>
             <td>
               <span class="p-column-title">Indice</span>
@@ -100,9 +100,9 @@
       styleClass="p-fluid">
       <ng-template pTemplate="content">
         <div class="p-field">
-          <label for="color">Color</label>
-          <input type="text" pInputText id="color" [(ngModel)]="color.color" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !color.color">Campo color es requerido.</small>
+          <label for="id">ID</label>
+          <input type="text" pInputText id="id" [(ngModel)]="color.id" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !color.id">Campo id es requerido.</small>
         </div>
         <!-- <div class="p-field">
           <label for="role">Color Primario</label>

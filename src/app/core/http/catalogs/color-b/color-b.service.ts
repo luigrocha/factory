@@ -10,12 +10,12 @@ import { environment } from 'src/environments/environment';
 export class ColorBService {
   httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
 
-  URL_USER = environment.appApiUrl + '/color-a';
+  URL_USER = environment.appApiUrl + '/colors-b';
 
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<ColorB[]> {
-    return this.http.get<ColorB[]>(this.URL_USER + '/', this.httpOptions);
+    return this.http.get<ColorB[]>(this.URL_USER + '', this.httpOptions);
   }
 
   create(user: ColorB): Observable<any> {

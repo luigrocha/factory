@@ -165,7 +165,7 @@ export class ColorBComponent implements OnInit {
   saveColor() {
     this.submitted = true;
 
-    if (this.color.color) {
+    if (this.color.id) {
       // this.colorBService.update(this.color.color, this.color).subscribe(
       //   (res) => {
       //     this.messageService.add({
@@ -220,10 +220,10 @@ export class ColorBComponent implements OnInit {
   }
 
   getAll() {
-    // this.colorBService.getAll().subscribe((colors) => {
-    //   this.colors = colors;
-    //   this.loading = false;
-    // });
+    this.colorBService.getAll().subscribe((colors) => {
+      this.colors = colors;
+      this.loading = false;
+    });
   }
 
 }
