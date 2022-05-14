@@ -1,7 +1,7 @@
 <div class="p-grid table-demo">
   <div class="p-col-12">
     <div class="card">
-      <h5>Troqueles</h5>
+      <h5>Gestión de troqueles</h5>
       <p>Lista de todos los troqueles</p>
       <p-table
         #dt
@@ -37,14 +37,6 @@
               (click)="deleteSelectedDies()"
               *ngIf="selectedDies.length > 0"
             ></button>
-            <button
-              pButton
-              pRipple
-              label="Exportar"
-              class="p-button-help mb-2 mr-2"
-              icon="pi pi-file-excel"
-              (click)="exportToCSV()"
-            ></button>
             <span class="p-input-icon-left mb-2">
               <i class="pi pi-search"></i>
               <input
@@ -64,12 +56,9 @@
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
             <th
-              *ngFor="let header of headers"
-              [pSortableColumn]="header.property"
-            >
+              *ngFor="let header of headers">
               <div class="p-d-flex p-jc-between p-ai-center">
                 {{ header.label }}
-                <p-sortIcon [field]="header.property"></p-sortIcon>
               </div>
             </th>
           </tr>
@@ -92,12 +81,6 @@
               <span *ngFor="let machine of die.machines">
                 {{ machine }}
               </span>
-            </td>
-            <td style="min-width: 11rem">
-              {{ die.dsbMultiple }}
-            </td>
-            <td style="min-width: 12rem">
-              {{ die.observations }}
             </td>
             <td style="min-width: 8rem">
               {{ die.code }}
@@ -138,9 +121,17 @@
             <td style="min-width: 8rem">
               {{ die.gsmdis }}
             </td>
+            <td style="min-width: 11rem">
+              {{ die.dsbMultiple }}
+            </td>
+            <td style="min-width: 12rem">
+              {{ die.observations }}
+            </td>
             <td style="min-width: 10rem">
-              <span [class]="'die-badge status-' + die.status">{{
-                getDieStatus(die.status)
+              <span class="die-badge"
+                    appDieStatusHighlight
+                    [status]="die.status">{{
+                die.status.name
               }}</span>
             </td>
           </tr>

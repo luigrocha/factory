@@ -9,7 +9,6 @@ export interface Die {
   name: string;
   createdDate: string;
   description: string;
-  status: string;
   area: number;
   length: number;
   width: number;
@@ -26,12 +25,13 @@ export interface Die {
   leafLength: number;
   leafWidth: number;
   manufacturer: string;
+  status: DieStatus;
   machines: string[];
 }
 
-export enum DieStatus {
-  VI = 'VIGENTE',
-  OB = 'OBSOLETO',
-  PE = 'PENDIENTE',
-  IN = 'INDEFINIDO'
+export interface DieStatus {
+  id: string;
+  name: string;
+  color: string;
+  backgroundColor: string;
 }

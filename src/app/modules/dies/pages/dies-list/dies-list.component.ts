@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { Die, DieStatus } from 'src/app/types/dies.types';
+import { Die } from 'src/app/types/dies.types';
 import { DieService } from 'src/app/core/http/dies/die.service';
 import { TableHeader } from 'src/app/types/table.types';
 import { Table } from 'primeng/table';
@@ -38,8 +38,6 @@ export class DiesListComponent implements OnInit, AfterViewInit {
     { label: 'Fecha', property: 'createdDate' },
     { label: 'Fabricante', property: 'name' },
     { label: 'Máquina', property: 'name' },
-    { label: 'DesbMúltiple', property: 'dsbMultiple' },
-    { label: 'Observaciones.', property: 'observations' },
     { label: 'Prod', property: 'code' },
     { label: 'Referencia', property: 'description' },
     { label: 'Largo', property: 'length' },
@@ -53,6 +51,8 @@ export class DiesListComponent implements OnInit, AfterViewInit {
     { label: 'Ancho lámina', property: 'leafWidth' },
     { label: 'Área', property: 'area' },
     { label: 'GSMDIS', property: 'gsmdis' },
+    { label: 'DesbMúltiple', property: 'dsbMultiple' },
+    { label: 'Observaciones.', property: 'observations' },
     { label: 'Estado', property: 'status' },
   ]
 
@@ -104,12 +104,6 @@ export class DiesListComponent implements OnInit, AfterViewInit {
 
   addNewDie(dt: Table): void {
     console.log(dt);
-  }
-
-  getDieStatus(status: string): string {
-    const states = Object.entries(DieStatus);
-    const state = states.find(s => s[0] === status);
-    return state[1] || '';
   }
 
   deleteSelectedDies(): void {
