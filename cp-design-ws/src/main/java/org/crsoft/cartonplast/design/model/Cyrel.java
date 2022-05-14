@@ -118,15 +118,6 @@ public class Cyrel {
     )
     private ColorB mbLeaf;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "XID_CATCLI_CODE",
-            referencedColumnName = "ID_CATCLI_CODE",
-            insertable = false,
-            updatable = false
-    )
-    private Client client;
-
     @OneToMany(
             mappedBy = "cyrel",
             fetch = FetchType.LAZY
