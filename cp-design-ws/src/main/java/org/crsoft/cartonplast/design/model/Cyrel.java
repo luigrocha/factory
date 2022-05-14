@@ -7,6 +7,8 @@ import org.crsoft.cartonplast.client.model.Client;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lpillaga on 12/05/2022
@@ -124,6 +126,12 @@ public class Cyrel {
             updatable = false
     )
     private Client client;
+
+    @OneToMany(
+            mappedBy = "cyrel",
+            fetch = FetchType.LAZY
+    )
+    private List<CyrelColor> cyrelColors = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

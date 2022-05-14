@@ -22,7 +22,6 @@ public class DieRes implements Serializable {
     private String name;
     private LocalDate createdDate;
     private String description;
-    private String status;
     private Double area;
     private Double length;
     private Double width;
@@ -39,5 +38,6 @@ public class DieRes implements Serializable {
     private Double leafLength;
     private Double leafWidth;
     private String manufacturer;
+    private DieStatusRes status;
     private List<String> machines;
 }

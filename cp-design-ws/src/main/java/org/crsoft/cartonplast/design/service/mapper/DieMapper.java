@@ -16,10 +16,12 @@ import java.util.stream.Collectors;
 /**
  * @author lpillaga on 02/05/2022
  */
-@Mapper(componentModel = "spring", uses = {ManufacturerMapper.class})
+@Mapper(componentModel = "spring", uses = {
+        ManufacturerMapper.class,
+        DieStatusMapper.class
+})
 public interface DieMapper {
 
-    @Mapping(target = "status", source = "status.name")
     @Mapping(target = "manufacturer", source = "manufacturer.name")
     @Mapping(target = "machines", source = "dieMachines", qualifiedByName = "generateMachines")
     DieRes dieToDieRes(Die die);
@@ -37,6 +39,7 @@ public interface DieMapper {
     @Mapping(target = "manufacturer", ignore = true)
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "dieMachines", ignore = true)
+    @Mapping(target = "cyrels", ignore = true)
     @WithoutAuditField
     Die dieResToDie(DieRes dieRes);
 

@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
+import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Thickness;
 import org.crsoft.cartonplast.design.vo.res.ThicknessRes;
 import org.mapstruct.InheritInverseConfiguration;
@@ -18,6 +19,7 @@ public interface ThicknessMapper {
     ThicknessRes thicknessToThicknessRes(Thickness thickness);
 
     @InheritInverseConfiguration
+    @WithoutAuditField
     Thickness thicknessResToThickness(ThicknessRes thicknessRes);
 
     List<ThicknessRes> thicknessesToThicknessesRes(List<Thickness> thicknesses);

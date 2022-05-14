@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
+import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.ColorA;
 import org.crsoft.cartonplast.design.vo.res.ColorARes;
 import org.mapstruct.Mapper;
@@ -14,6 +15,7 @@ public interface ColorAMapper {
 
     ColorARes colorAtoColorARes(ColorA colorA);
 
+    @WithoutAuditField
     ColorA colorAResToColorA(ColorARes colorARes);
 
     List<ColorARes> colorsAToColorsARes(List<ColorA> colorsA);

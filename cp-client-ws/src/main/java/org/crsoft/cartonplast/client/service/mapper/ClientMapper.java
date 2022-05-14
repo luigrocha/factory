@@ -3,7 +3,9 @@ package org.crsoft.cartonplast.client.service.mapper;
 import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.client.vo.res.ClientRes;
 import org.crsoft.cartonplast.client.vo.res.ClientShortRes;
+import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ public interface ClientMapper {
 
     ClientShortRes clientToClientShortRes(Client client);
 
+    @WithoutAuditField
+    @Mapping(target = "category", ignore = true)
     Client clientResToClient(ClientRes clientRes);
 
     List<ClientRes> clientsToClientsRes(List<Client> clients);

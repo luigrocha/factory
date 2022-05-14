@@ -6,95 +6,88 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * @author lpillaga on 11/05/2022
+ * @author lpillaga on 13/05/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CATCOL")
-public class ColorB {
+@Table(name = "CATCIR_COL")
+public class CyrelColor {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "ID_CATCOL_CODE",
+            name = "ID_CATCIR_COL_CODE",
             updatable = false,
             nullable = false
     )
-    private String id;
+    private Integer id;
 
     @Column(
-            name = "CATCOL_INDEX",
+            name = "CATCIR_COL_INDEX",
             nullable = false
     )
     private Integer index;
 
     @Column(
-            name = "CATCOL_DOSAGE",
-            nullable = false
-    )
-    private Double dosage;
-
-    @Column(
-            name = "CATCOL_DESCRIPTION",
-            nullable = false
-    )
-    private String description;
-
-    @Column(
-            name = "CATCOL_OBSERVATION",
-            length = 255
-    )
-    private String observation;
-
-    @Column(
-            name = "CATCOL_VALID_FROM",
+            name = "CATCIR_COL_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CATCOL_VALID_TO",
+            name = "CATCIR_COL_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CATCOL_CREATED_BY", length = 16)
+    @Column(name = "CATCIR_COL_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CATCOL_UPDATED_BY", length = 16)
+    @Column(name = "CATCIR_COL_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CATCOL_CREATED_AT",
+            name = "CATCIR_COL_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CATCOL_UPDATED_AT",
+            name = "CATCIR_COL_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "XID_CATCOP_CODE",
-            referencedColumnName = "ID_CATCOP_CODE",
+            name = "XID_CATCIR_CODE",
+            referencedColumnName = "ID_CATCIR_CODE",
             insertable = false,
             updatable = false
     )
-    private ColorA colorA;
+    private Cyrel cyrel;
 
-    @OneToMany(
-            mappedBy = "mbLeaf",
-            fetch = FetchType.LAZY
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATCATCOL_CODE",
+            referencedColumnName = "ID_CATCATCOL_CODE",
+            insertable = false,
+            updatable = false
     )
-    private List<Cyrel> cyrels = new ArrayList<>();
+    private ColorCatalog color;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATCOLTI_CODE",
+            referencedColumnName = "ID_CATCOLTI_CODE",
+            insertable = false,
+            updatable = false
+    )
+    private ColorType colorType;
 
     @PrePersist
     public void prePersist() {

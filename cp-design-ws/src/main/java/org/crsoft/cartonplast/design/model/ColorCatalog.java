@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lpillaga on 13/05/2022
@@ -14,66 +16,60 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CATTROSTA")
-public class DieStatus {
+@Table(name = "CATCATCOL")
+public class ColorCatalog {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "ID_CATROSTA_CODE",
-            nullable = false,
+            name = "ID_CATCATCOL_CODE",
             updatable = false,
-            length = 2
+            nullable = false
     )
-    private String id;
+    private Integer id;
 
     @Column(
-            name = "CATROSTA_NAME",
+            name = "CATCATCOL_NAME",
             nullable = false,
-            length = 16
+            length = 256
     )
     private String name;
 
     @Column(
-            name = "CATROSTA_COLOR",
-            length = 8
-    )
-    private String color;
-
-    @Column(
-            name = "CATROSTA_BACKGROUND_COLOR",
-            length = 8
-    )
-    private String backgroundColor;
-
-    @Column(
-            name = "CATROSTA_VALID_FROM",
+            name = "CATCATCOL_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CATROSTA_VALID_TO",
+            name = "CATCATCOL_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CATROSTA_CREATED_BY", length = 16)
+    @Column(name = "CATCATCOL_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CATROSTA_UPDATED_BY", length = 16)
+    @Column(name = "CATCATCOL_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CATROSTA_CREATED_AT",
+            name = "CATCATCOL_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CATROSTA_UPDATED_AT",
+            name = "CATCATCOL_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;
+
+    @OneToMany(
+            mappedBy = "color",
+            fetch = FetchType.LAZY
+    )
+    private List<CyrelColor> cyrelColors = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

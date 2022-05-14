@@ -1,7 +1,6 @@
 package org.crsoft.cartonplast.design.controller;
 
 import org.crsoft.cartonplast.design.service.impl.ColorBService;
-import org.crsoft.cartonplast.design.vo.res.ColorARes;
 import org.crsoft.cartonplast.design.vo.res.ColorBRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
