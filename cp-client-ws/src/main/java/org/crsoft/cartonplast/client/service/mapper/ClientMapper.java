@@ -1,0 +1,23 @@
+package org.crsoft.cartonplast.client.service.mapper;
+
+import org.crsoft.cartonplast.client.model.Client;
+import org.crsoft.cartonplast.client.vo.res.ClientRes;
+import org.crsoft.cartonplast.client.vo.res.ClientShortRes;
+import org.mapstruct.Mapper;
+
+import java.util.List;
+
+/**
+ * @author lpillaga on 12/05/2022
+ */
+@Mapper(componentModel = "spring")
+public interface ClientMapper {
+
+    ClientRes clientToClientRes(Client client);
+
+    ClientShortRes clientToClientShortRes(Client client);
+
+    Client clientResToClient(ClientRes clientRes);
+
+    List<ClientRes> clientsToClientsRes(List<Client> clients);
+}

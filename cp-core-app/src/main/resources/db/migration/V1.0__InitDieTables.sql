@@ -30,11 +30,11 @@ CREATE TABLE CATTRO
 (
     ID_CATTRO_CODE      INT           NOT NULL AUTO_INCREMENT,
     XID_CATFAB_CODE     INT,
+    XID_CATROSTA_CODE   VARCHAR(2)    NOT NULL,
     CATTRO_PTROQ        VARCHAR(8)    NOT NULL,
     CATTRO_NAME         VARCHAR(64)   NOT NULL,
     CATTRO_CREATED_DATE TIMESTAMP     NOT NULL,
     CATTRO_DESCRIPTION  VARCHAR(128)  NOT NULL,
-    CATTRO_STATUS       VARCHAR(2)    NOT NULL,
     CATTRO_AREA         DECIMAL(8, 4) NOT NULL,
     CATTRO_LENGTH       DECIMAL(8, 4) NOT NULL,
     CATTRO_WIDTH        DECIMAL(8, 4) NOT NULL,
@@ -68,11 +68,6 @@ ALTER TABLE CATTRO
 CREATE INDEX CAITRO_PTROQ ON CATTRO (CATTRO_PTROQ);
 
 /*==============================================================*/
-/* Index: CAITRO_STATUS                                         */
-/*==============================================================*/
-CREATE INDEX CAITRO_STATUS ON CATTRO (CATTRO_STATUS);
-
-/*==============================================================*/
 /* Table: CATMAQ                                                */
 /*==============================================================*/
 CREATE TABLE CATMAQ
@@ -90,7 +85,7 @@ CREATE TABLE CATMAQ
 );
 
 ALTER TABLE CATMAQ
-    COMMENT 'M�QUINA';
+    COMMENT 'MAQUINA';
 
 /*==============================================================*/
 /* Index: CAIMAQ_NAME                                           */
@@ -116,6 +111,24 @@ CREATE TABLE CATMAQ_TRO
 ALTER TABLE CATMAQ_TRO
     COMMENT 'TROQUEL MAQUINA';
 
+/*==============================================================*/
+/* Table: CATTROSTA                                             */
+/*==============================================================*/
+CREATE TABLE CATTROSTA
+(
+    ID_CATROSTA_CODE     VARCHAR(2) NOT NULL,
+    CATROSTA_NAME        VARCHAR(16) NOT NULL,
+    CATROSTA_VALID_FROM  TIMESTAMP,
+    CATROSTA_VALID_TO    TIMESTAMP NULL,
+    CATROSTA_CREATED_BY  VARCHAR(16),
+    CATROSTA_UPDATED_BY  VARCHAR(16),
+    CATROSTA_CREATED_AT  TIMESTAMP,
+    CATROSTA_UPDATED_AT  TIMESTAMP,
+    PRIMARY KEY (ID_CATROSTA_CODE)
+);
+
+ALTER TABLE CATTROSTA COMMENT 'ESTADO TROQUEL';
+
 ALTER TABLE CATMAQ_TRO
     ADD CONSTRAINT XID_CATMAQ_TRO_XID_CATMAQ_CODE FOREIGN KEY (XID_CATMAQ_CODE)
         REFERENCES CATMAQ (ID_CATMAQ_CODE) ON DELETE CASCADE;
@@ -127,3 +140,7 @@ ALTER TABLE CATMAQ_TRO
 ALTER TABLE CATTRO
     ADD CONSTRAINT XID_CATTRO_CODE_XID_CATFAB_CODE FOREIGN KEY (XID_CATFAB_CODE)
         REFERENCES CATFAB (ID_CATFAB_CODE) ON DELETE RESTRICT;
+
+ALTER TABLE CATTRO
+    ADD CONSTRAINT XID_CATTRO_CODE_XID_CATTROSTA_CODE FOREIGN KEY (XID_CATROSTA_CODE)
+    REFERENCES CATTROSTA (ID_CATROSTA_CODE) ON DELETE RESTRICT;

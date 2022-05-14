@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author lpillaga on 11/05/2022
@@ -20,14 +22,14 @@ public class ClientCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "ID_CATIMP_CODE",
+            name = "ID_CATCAT_CLI_CODE",
             updatable = false,
             nullable = false
     )
     private Integer id;
 
     @Column(
-            name = "CATIMP_NAME",
+            name = "CATCAT_CLI_NAME",
             nullable = false,
             length = 32
     )
@@ -62,4 +64,16 @@ public class ClientCategory {
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;
+
+    @OneToMany(
+            mappedBy = "category",
+            fetch = FetchType.LAZY
+    )
+    private List<Client> clients = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        this.validFrom = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+    }
 }

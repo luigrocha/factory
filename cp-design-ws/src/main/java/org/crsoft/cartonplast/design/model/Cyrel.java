@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.client.model.Client;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -56,13 +57,6 @@ public class Cyrel {
             length = 128
     )
     private String observation;
-
-    @Column(
-            name = "CATCIR_LEAF_COLOR",
-            nullable = false,
-            length = 256
-    )
-    private String leafColor;
 
     @Column(
             name = "CATCIR_VALID_FROM",
@@ -121,6 +115,15 @@ public class Cyrel {
             updatable = false
     )
     private ColorB mbLeaf;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATCLI_CODE",
+            referencedColumnName = "ID_CATCLI_CODE",
+            insertable = false,
+            updatable = false
+    )
+    private Client client;
 
     @PrePersist
     public void prePersist() {

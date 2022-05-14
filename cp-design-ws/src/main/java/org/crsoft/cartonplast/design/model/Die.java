@@ -3,7 +3,6 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.crsoft.cartonplast.design.enums.DieStatus;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -18,7 +17,6 @@ import java.util.List;
 @Table(
         name = "CATTRO",
         indexes = {
-                @Index(name = "CAITRO_STATUS", columnList = "CATTRO_STATUS"),
                 @Index(name = "CAITRO_PTROQ", columnList = "CATTRO_PTROQ")
         }
 )
@@ -60,14 +58,6 @@ public class Die {
             length = 128
     )
     private String description;
-
-    @Column(
-            name = "CATTRO_STATUS",
-            nullable = false,
-            length = 2
-    )
-    @Enumerated(EnumType.STRING)
-    private DieStatus status;
 
     @Column(
             name = "CATTRO_AREA",
@@ -197,6 +187,16 @@ public class Die {
             updatable = false
     )
     private Manufacturer manufacturer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATROSTA_CODE",
+            referencedColumnName = "ID_CATROSTA_CODE",
+            insertable = false,
+            updatable = false,
+            nullable = false
+    )
+    private DieStatus status;
 
     @OneToMany(
             fetch = FetchType.LAZY,
