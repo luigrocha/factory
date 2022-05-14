@@ -1,6 +1,6 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
-import org.crsoft.cartonplast.app.service.mapper.CatalogStatusMapper;
+import org.crsoft.cartonplast.common.mapper.CatalogStatusMapper;
 import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Die;
 import org.crsoft.cartonplast.design.model.DieMachine;

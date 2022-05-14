@@ -3,7 +3,8 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.crsoft.cartonplast.app.model.CatalogStatus;
+import org.crsoft.cartonplast.common.model.CatalogStatus;
+
 
 import javax.persistence.*;
 import java.time.LocalDate;
