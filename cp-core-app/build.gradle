@@ -19,7 +19,7 @@ jar {
 
 dependencies {
     implementation project(":cp-core-vo")
-    implementation project(":cp-design-ws")
+//    implementation project(":cp-design-ws")
     implementation project(":cp-core-common")
     implementation project(":cp-client-ws")
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'

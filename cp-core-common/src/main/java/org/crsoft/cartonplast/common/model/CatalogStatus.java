@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.design.model;
+package org.crsoft.cartonplast.common.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,63 +14,70 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CATTROSTA")
-public class DieStatus {
+@Table(name = "CATSTATUS")
+public class CatalogStatus {
 
     @Id
     @Column(
-            name = "ID_CATROSTA_CODE",
+            name = "ID_CATSTATUS_CODE",
             nullable = false,
             updatable = false,
-            length = 2
+            length = 4
     )
     private String id;
 
     @Column(
-            name = "CATROSTA_NAME",
+            name = "CATSTATUS_NAME",
             nullable = false,
             length = 16
     )
     private String name;
 
     @Column(
-            name = "CATROSTA_COLOR",
+            name = "CATSTATUS_COLOR",
             length = 8
     )
     private String color;
 
     @Column(
-            name = "CATROSTA_BACKGROUND_COLOR",
+            name = "CATSTATUS_BACKGROUND_COLOR",
             length = 8
     )
     private String backgroundColor;
 
     @Column(
-            name = "CATROSTA_VALID_FROM",
+            name = "CATSTATUS_TYPE",
+            length = 2,
+            nullable = false
+    )
+    private String type;
+
+    @Column(
+            name = "CATSTATUS_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CATROSTA_VALID_TO",
+            name = "CATSTATUS_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CATROSTA_CREATED_BY", length = 16)
+    @Column(name = "CATSTATUS_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CATROSTA_UPDATED_BY", length = 16)
+    @Column(name = "CATSTATUS_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CATROSTA_CREATED_AT",
+            name = "CATSTATUS_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CATROSTA_UPDATED_AT",
+            name = "CATSTATUS_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;

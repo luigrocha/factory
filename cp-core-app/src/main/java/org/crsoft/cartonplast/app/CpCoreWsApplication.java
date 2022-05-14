@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EntityScan(basePackages = {"org.crsoft.cartonplast"})
-@SpringBootApplication(scanBasePackages = {"org.crsoft.cartonplast"})
+@SpringBootApplication(scanBasePackages = {"org.crsoft.cartonplast", "org.crsoft.cartonplast.design"})
 @EnableJpaRepositories(basePackages = {"org.crsoft.cartonplast"})
 public class CpCoreWsApplication {
 

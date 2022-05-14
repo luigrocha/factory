@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.app.model.CatalogStatus;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -190,13 +191,13 @@ public class Die {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "XID_CATROSTA_CODE",
-            referencedColumnName = "ID_CATROSTA_CODE",
+            name = "XID_CATSTATUS_CODE",
+            referencedColumnName = "ID_CATSTATUS_CODE",
             insertable = false,
             updatable = false,
             nullable = false
     )
-    private DieStatus status;
+    private CatalogStatus status;
 
     @OneToMany(
             fetch = FetchType.LAZY,

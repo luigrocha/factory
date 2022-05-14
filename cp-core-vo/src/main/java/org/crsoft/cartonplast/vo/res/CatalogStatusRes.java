@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.design.vo.res;
+package org.crsoft.cartonplast.vo.res;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DieStatusRes implements Serializable {
+public class CatalogStatusRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -20,4 +20,5 @@ public class DieStatusRes implements Serializable {
     private String name;
     private String color;
     private String backgroundColor;
+    private String type;
 }

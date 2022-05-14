@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(":cp-core-vo")
     implementation project(":cp-core-common")
+    implementation project(":cp-core-vo")
     implementation project(":cp-client-ws")
 }
