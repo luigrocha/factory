@@ -65,7 +65,7 @@ export class CirelesListComponent implements OnInit {
   ) {
     this.breadcrumbService.setItems([
       {label: 'Diseño'},
-      {label: 'Cireles', routerLink: ['home/catalogs/cireles']},
+      {label: 'Cireles', routerLink: ['/home/cireles']},
     ]);
   }
 

@@ -2,9 +2,9 @@ import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { DieStatus } from 'src/app/types/dies.types';
 
 @Directive({
-  selector: '[appDieStatusHighlight]'
+  selector: '[appStatusHighlight]'
 })
-export class DieStatusHighlightDirective implements OnInit {
+export class StatusHighlightDirective implements OnInit {
 
   @Input() status: DieStatus;
 

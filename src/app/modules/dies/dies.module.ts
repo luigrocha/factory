@@ -7,13 +7,12 @@ import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-import { DieStatusHighlightDirective } from './directives/die-status-highlight/die-status-highlight.directive';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
   declarations: [
-    DiesListComponent,
-    DieStatusHighlightDirective
+    DiesListComponent
   ],
   imports: [
     CommonModule,
@@ -21,7 +20,8 @@ import { DieStatusHighlightDirective } from './directives/die-status-highlight/d
     TableModule,
     InputTextModule,
     ButtonModule,
-    RippleModule
+    RippleModule,
+    SharedModule
   ]
 })
 export class DiesModule { }
