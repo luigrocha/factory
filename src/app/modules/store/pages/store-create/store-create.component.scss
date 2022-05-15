@@ -1,0 +1,10 @@
+.store-footer {
+  display: flex;
+  flex-direction: column;
+
+  .store-footer-signature {
+    margin-top: 10rem;
+    display: flex;
+    justify-content: space-around;
+  }
+}
