@@ -1,0 +1,163 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <div class="card">
+      <p-table #dt [value]="orders" [columns]="cols" [rows]="7" [paginator]="true"
+        [globalFilterFields]="['lote', 'client','code','name','amount','deliverAt','observation','difference','priority','status']"
+        [(selection)]="selectedOrder" [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm"
+        responsiveLayout="scroll">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Gestión de Ordenes</h5>
+
+            <div class="flex">
+              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
+              <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mr-2"
+                (click)="deleteSelectedOrders()" [disabled]="!selectedOrder || !selectedOrder.length"></button>
+              <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mr-2"
+                (click)="dt.exportCSV()"></button>
+
+              <span class="block mt-2 md:mt-0 p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                  placeholder="Buscar..." />
+              </span>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="lote">
+              Lote <p-sortIcon field="lote"></p-sortIcon>
+            </th>
+            <th pSortableColumn="client">
+              Cliente <p-sortIcon field="client"></p-sortIcon>
+            </th>
+            <th pSortableColumn="code">
+              Codigo <p-sortIcon field="code"></p-sortIcon>
+            </th>
+            <th pSortableColumn="name">
+              Nombre <p-sortIcon field="name"></p-sortIcon>
+            </th>
+            <th>
+              Cantidad
+            </th>
+            <th pSortableColumn="deliverAt">
+              Fecha Entrega <p-sortIcon field="deliverAt"></p-sortIcon>
+            </th>
+            <th pSortableColumn="priority">
+              Prioridad <p-sortIcon field="priority"></p-sortIcon>
+            </th>
+            <th>
+              Observación
+            </th>
+            <th>
+              Diferencia
+            </th>
+            <th pSortableColumn="status">
+              Estado <p-sortIcon field="status"></p-sortIcon>
+            </th>
+            <th style="
+                min-height: 34.5px;
+                text-align: center;
+                display: flex;
+                justify-content: space-around;
+              ">
+              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="order"></p-tableCheckbox>
+            </td>
+            <td style="min-width: 8rem">
+              <span class="p-column-title">Lote</span>
+              {{ order.lote }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Cliente</span>
+              {{ order.client.name }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Codigo</span>
+
+            </td>
+            <td style="min-width: 12rem">
+              <span class="p-column-title">Nombre</span>
+
+            </td>
+            <td>
+              <span class="p-column-title">Cantidad</span>
+              {{ order.amount }}
+            </td>
+            <td style="min-width: 10rem">
+              <span class="p-column-title">Fecha Entrega</span>
+              {{ order.deliverAt }}
+            </td>
+            <td style="min-width: 8rem; text-align: center;">
+              <span class="p-column-title">Prioridad</span>
+              <button pButton pRipple type="button" icon="pi {{order.priority.icon}}"
+                class="p-button-rounded p-button-text" [ngClass]="order.priority.color ? order.priority.color:''"
+                pTooltip="{{order.priority.name}}"></button>
+            </td>
+            <td style="min-width: 12rem">
+              <span class="p-column-title">Observación</span>
+              {{ order.observation }}
+            </td>
+            <td>
+              <span class="p-column-title">Diferencia</span>
+              {{ order.difference }}
+            </td>
+            <td style="min-width: 8rem">
+              <span class="p-column-title">Estado</span>
+              <span class="order-badge" [style.color]="order.status.color"
+                [style.backgroundColor]="order.status.backgroundColor">{{order.status.name}}</span>
+            </td>
+            <td style="display: flex; justify-content: space-evenly; min-width: 8rem">
+              <button pButton pRipple icon="pi pi-pencil"
+                class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editOrder(order)"></button>
+              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
+                (click)="deleteOrder(order)"></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            Total de Ordenes:
+            {{ orders ? orders.length : 0 }}
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="orderDialog" [style]="{ width: '450px' }" header="Detalles de Orderes A" [modal]="true"
+      styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-field">
+          <label for="id">ID</label>
+          <input type="text" pInputText id="id" [(ngModel)]="order.id" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !order.id">Campo id es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="name">Nombre</label>
+          <input type="text" pInputText id="name" [(ngModel)]="order.name" required />
+          <small class="p-invalid" *ngIf="submitted && !order.name">Campo nombre es requerido.</small>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveOrder()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+  </div>
+</div>

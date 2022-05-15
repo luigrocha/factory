@@ -1,0 +1,107 @@
+<button pButton label="Print" type="button" icon="pi pi-print" (click)="print()"
+  style="display:block;margin-bottom: 20px; margin-left: 6px;"></button>
+
+<div class="grid">
+  <div class="col">
+    <div class="card">
+      <div id="invoice-content">
+        <div class="invoice">
+          <div class="invoice-header">
+            <div class="invoice-company">
+              <img id="invoice-logo" [src]="'assets/img/cp-logo.png'" alt="poseidon-layout" style="max-height: 45px;" />
+              <div>Dirección</div>
+              <div>Telefono</div>
+            </div>
+            <div>
+              <div class="invoice-title">Egreso de Materiales</div>
+              <div class="invoice-details">
+                <div class="invoice-label">FECHA</div>
+                <div class="invoice-value">{{ currentDate | date :'longDate'}}</div>
+
+                <div class="invoice-label">COMPROBANTE #</div>
+                <div class="invoice-value">CEB-1485</div>
+              </div>
+            </div>
+          </div>
+          <div class="invoice-to">
+            <div class="bill-to">MOTIVO</div>
+            <div class="invoice-to-info">
+              <div>Producción de:</div>
+              <div>Nuevo Peidod</div>
+            </div>
+          </div>
+          <div class="invoice-items">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Tipo</th>
+                  <th>Producto/Envase</th>
+                  <th>LOTE</th>
+                  <th>Unidades</th>
+                  <th>Saldos(1Kg)</th>
+                  <th>Sacos(25Kg)</th>
+                  <th>Palletes(55Kg)</th>
+                  <th>Peso</th>
+                  <th>Ubicación</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>PEL </td>
+                  <td>Pelletizado (XP)</td>
+                  <td>PB-18</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>-320</td>
+                  <td>0</td>
+                  <td>-8000</td>
+                  <td>Zona E</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>HPO </td>
+                  <td>EXPORT YUNGSOX 1020</td>
+                  <td>PB-18</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>-10</td>
+                  <td>-5</td>
+                  <td>-7125</td>
+                  <td>Zona B</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>CPO</td>
+                  <td>EXPORT COPO YUNGSOX 3015</td>
+                  <td>M18430</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>0</td>
+                  <td>-7</td>
+                  <td>-9625</td>
+                  <td>Zona A</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="invoice-summary store-footer">
+            <div class="invoice-notes">
+              <b>Observaciones</b>
+              <div>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aut optio quam nesciunt omnis repellat qui
+                magnam quae doloribus accusamus, provident exercitationem veniam pariatur accusantium! Pariatur suscipit
+                tempora necessitatibus non accusamus!
+              </div>
+            </div>
+            <div class="invoice-notes store-footer-signature">
+              <b>Entregado</b>
+              <b>Recibido</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
