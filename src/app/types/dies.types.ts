@@ -35,3 +35,8 @@ export interface DieStatus {
   color: string;
   backgroundColor: string;
 }
+
+export interface ShortDie {
+  code: string;
+  name: string;
+}

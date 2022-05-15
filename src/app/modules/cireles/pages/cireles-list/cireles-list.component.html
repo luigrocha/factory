@@ -1,28 +1,49 @@
 <div class="p-grid">
   <div class="p-col-12">
     <p-toast></p-toast>
-
     <div class="card">
-      <p-table #dt [value]="cirels" [columns]="cols" [rows]="7" [paginator]="true"
-        [globalFilterFields]="['print', 'description']" [(selection)]="selectedCirel" [rowHover]="true" dataKey="id"
-        styleClass="p-datatable-customers p-datatable-sm">
+      <h5>Gestión de cireles</h5>
+      <p>Lista de todos los cireles</p>
+      <p-table #dt
+               [value]="cirels"
+               dataKey="id"
+               styleClass="p-datatable-gridlines"
+               [rows]="7"
+               [paginator]="true"
+               lazy="true"
+               [(selection)]="selectedCirels"
+               [rowsPerPageOptions]="rowsPerPageOptions"
+               responsiveLayout="scroll">
         <ng-template pTemplate="caption">
-          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 class="m-0">Gestión de Cireles</h5>
-
-            <div class="flex">
-              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
-              <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mr-2"
-                (click)="deleteSelectedCirels()" [disabled]="!selectedCirel || !selectedCirel.length"></button>
-              <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mr-2"
-                (click)="dt.exportCSV()"></button>
-
-              <span class="block mt-2 md:mt-0 p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
-                  placeholder="Buscar..." />
-              </span>
-            </div>
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <span class="flex-auto"></span>
+            <button
+                    pButton
+                    pRipple
+                    label="Nuevo"
+                    class="mb-2 mr-2"
+                    icon="pi pi-plus"
+                    (click)="addNewCyrel()"
+            ></button>
+            <button
+                    pButton
+                    pRipple
+                    label="Eliminar"
+                    class="p-button-danger mb-2 mr-2"
+                    icon="pi pi-trash"
+                    (click)="deleteSelectedCirels()"
+                    *ngIf="selectedCirels.length > 0"
+            ></button>
+            <span class="p-input-icon-left mb-2">
+              <i class="pi pi-search"></i>
+              <input
+                      pInputText
+                      type="text"
+                      (input)="dt.filterGlobal($event.target.value, 'contains')"
+                      placeholder="Buscar..."
+                      class="w-full"
+              />
+            </span>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
@@ -30,109 +51,109 @@
             <th style="width: 3rem">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th pSortableColumn="print">
-              Cirel <p-sortIcon field="print"></p-sortIcon>
+            <th *ngFor="let header of headers">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                {{ header.label }}
+              </div>
             </th>
-            <th pSortableColumn="description">
-              Descripción <p-sortIcon field="description"></p-sortIcon>
-            </th>
-            <th pSortableColumn="description2">
-              Descripción 2 <p-sortIcon field="description2"></p-sortIcon>
-            </th>
-            <th pSortableColumn="observation">
-              Observación <p-sortIcon field="observation"></p-sortIcon>
-            </th>
-            <th pSortableColumn="leafColor">
-              Color Lámina <p-sortIcon field="leafColor"></p-sortIcon>
-            </th>
-            <th style="
-                text-align: center;
-                display: flex;
-                justify-content: space-around;
-              ">
+            <th class="text-center">
               <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-cirel>
+        <ng-template pTemplate="body" let-cirel let-expanded="expanded">
           <tr>
             <td>
               <p-tableCheckbox [value]="cirel"></p-tableCheckbox>
             </td>
             <td>
-              <span class="p-column-title">Cirel</span>
               {{ cirel.print }}
             </td>
             <td>
-              <span class="p-column-title">Descripción</span>
+              {{ cirel.printer }}
+            </td>
+            <td>
               {{ cirel.description }}
             </td>
             <td>
-              <span class="p-column-title">Descripción 2</span>
+              <button type="button"
+                      pButton
+                      pRipple
+                      [pRowToggler]="cirel"
+                      class="p-button-text p-button-rounded p-button-plain"
+                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+              </button>
+            </td>
+            <td style="min-width: 10rem">
+              {{ cirel.mbLeaf }}
+            </td>
+            <td>
+              {{ cirel.die?.code }} - {{ cirel.die?.name }}
+            </td>
+            <td>
+              {{ cirel.observation }}
+            </td>
+            <td style="min-width: 10rem">
               {{ cirel.description2 }}
             </td>
             <td>
-              <span class="p-column-title">Observación</span>
-              {{ cirel.observation }}
+              <div class="flex">
+                <button pButton
+                        pRipple
+                        icon="pi pi-pencil"
+                        class="p-button-rounded p-button-outlined p-button-success mr-2"
+                        (click)="editCirel(cirel)">
+                </button>
+                <button pButton
+                        pRipple
+                        icon="pi pi-trash"
+                        class="p-button-rounded p-button-outlined p-button-warning"
+                        (click)="deleteCirel(cirel)">
+                </button>
+              </div>
             </td>
-            <td>
-              <span class="p-column-title">Color Lámina</span>
-              {{ cirel.leafColor }}
-            </td>
-            <td style="display: flex; justify-content: space-evenly">
-              <button pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editCirel(cirel)"></button>
-              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
-                (click)="deleteCirel(cirel)"></button>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-cirel>
+          <tr>
+            <td colspan="10">
+              <div class="p-3">
+                <p-table [value]="cirel.cyrelColors"
+                         dataKey="id"
+                         responsiveLayout="scroll">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th *ngFor="let header of subHeaders">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          {{ header.label }}
+                        </div>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-color>
+                    <tr>
+                      <td>
+                        {{ color.colorType }}
+                      </td>
+                      <td>
+                        {{ color.index }}
+                      </td>
+                      <td>
+                        {{ color.color }}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary">
           <div class="p-d-flex p-ai-center p-jc-between">
-            Total de Cireles:
-            {{ cireles ? cireles.length : 0 }}
+            Total de registros: {{ table?.totalRecords }}
           </div>
         </ng-template>
       </p-table>
     </div>
-
-    <p-dialog [(visible)]="cirelDialog" [style]="{ width: '450px' }" header="Detalles de Impresora" [modal]="true"
-      styleClass="p-fluid">
-      <ng-template pTemplate="content">
-        <div class="p-field">
-          <label for="print">Cirel</label>
-          <input type="text" pInputText id="print" [(ngModel)]="cirel.print" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !cirel.print">Campo cirel es requerido.</small>
-        </div>
-        <div class="p-field">
-          <label for="description">Descripción</label>
-          <input type="text" pInputText id="description" [(ngModel)]="cirel.description" required />
-          <small class="p-invalid" *ngIf="submitted && !cirel.description">Campo descripción colores es
-            requerido.</small>
-        </div>
-        <div class="p-field">
-          <label for="description2">Descripción 2</label>
-          <input type="text" pInputText id="description2" [(ngModel)]="cirel.description2" />
-        </div>
-        <div class="p-field">
-          <label for="observation">Observación</label>
-          <input type="text" pInputText id="observation" [(ngModel)]="cirel.observation" />
-        </div>
-        <div class="p-field">
-          <label for="leafColor">Color Lámina</label>
-          <input type="text" pInputText id="leafColor" [(ngModel)]="cirel.leafColor" />
-          <small class="p-invalid" *ngIf="submitted && !cirel.leafColor">Campo color lámina colores es
-            requerido.</small>
-        </div>
-      </ng-template>
-
-      <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-          (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveCirel()"></button>
-      </ng-template>
-    </p-dialog>
-
-    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
   </div>
 </div>

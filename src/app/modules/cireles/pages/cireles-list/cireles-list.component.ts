@@ -1,59 +1,61 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CirelService } from 'src/app/core/http/cirel/cirel.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Cirel } from 'src/app/types/cirel.types';
+import { Cirel, CirelColor } from 'src/app/types/cirel.types';
+import { TableHeader } from 'src/app/types/table.types';
+import { Die } from 'src/app/types/dies.types';
+import { Table } from 'primeng/table';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-cireles-list',
   templateUrl: './cireles-list.component.html',
   styleUrls: ['./cireles-list.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
+  styles: [`
+      :host ::ng-deep .p-frozen-column {
+          font-weight: bold;
+      }
 
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
+      :host ::ng-deep .p-datatable-frozen-tbody {
+          font-weight: bold;
+      }
 
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
+      :host ::ng-deep .p-progressbar {
+          height: .5rem;
+      }
+  `],
   providers: [MessageService, ConfirmationService],
 })
 export class CirelesListComponent implements OnInit {
 
-  cirelDialog: boolean;
+  cirels: Cirel[] = [];
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+  selectedCirels: Cirel[] = [];
+  initialPage: number = 0;
+  pageSize: number = 10;
+  actualPage: number = 0;
+  query: string = null;
 
-  selectedCirel: Cirel[];
+  headers: TableHeader<Cirel>[] = [
+    {label: 'Impresión', property: 'print'},
+    {label: 'Impresora', property: 'printer'},
+    {label: 'Descripción', property: 'description'},
+    {label: 'Colores', property: 'cyrelColors'},
+    {label: 'MB Lamina', property: 'mbLeaf'},
+    {label: 'Troquel', property: 'die'},
+    {label: 'Observaciones', property: 'observation'},
+    {label: 'Descripción 2', property: 'description2'}
+  ];
 
-  submitted: boolean;
+  subHeaders: TableHeader<CirelColor>[] = [
+    {label: 'Tipo', property: 'colorType'},
+    {label: 'Número color', property: 'index'},
+    {label: 'Color', property: 'color'}
+  ];
 
-  cols: any[];
 
-  cirels: Cirel[];
-
-  cirel: Cirel;
-
-  loading = true;
+  @ViewChild('dt') table: Table;
 
   constructor(
     private messageService: MessageService,
@@ -62,167 +64,66 @@ export class CirelesListComponent implements OnInit {
     private cirelService: CirelService,
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Cireles', routerLink: ['home/catalogs/cireles'] },
+      {label: 'Diseño'},
+      {label: 'Cireles', routerLink: ['home/catalogs/cireles']},
     ]);
   }
 
   ngOnInit() {
-    this.getAll();
-    this.cols = [
-      { field: 'print', header: 'Cirel' },
-      { field: 'description', header: 'Descripción' },
-      { field: 'description2', header: 'Descripción 2' },
-      { field: 'observation', header: 'Observación' },
-      { field: 'leafColor', header: 'Color Lámina' },
-    ];
+    this.getCirels(this.initialPage, this.pageSize, this.query);
   }
 
-  openNew() {
-    this.cirel = {};
-    this.submitted = false;
-    this.cirelDialog = true;
+  ngAfterViewInit(): void {
+    this.table.onPage
+      .subscribe(({ first, rows }) => {
+        this.actualPage = first / rows
+        this.pageSize = rows;
+        this.getCirels(this.actualPage, this.pageSize, this.query);
+      });
+    this.table.onFilter
+      .pipe(
+        debounceTime(500)
+      )
+      .subscribe(({ filters }) => {
+        const isEmpty = Object.keys(filters).length === 0;
+        if (isEmpty) {
+          this.query = null;
+        } else {
+          this.query = filters.global.value;
+        }
+
+        this.getCirels(this.initialPage, this.pageSize, this.query);
+      });
   }
 
-  editCirel(cirel: Cirel) {
-    this.cirel = { ...cirel };
-    this.cirelDialog = true;
+  private getCirels(page: number, size: number, query: string): void {
+    this.cirelService.getAllCirels(page, size, query)
+      .subscribe(response => {
+        this.cirels = response.content;
+        this.table.totalRecords = response.totalElements;
+      });
   }
 
-  deleteCirel(cirel: Cirel) {
-    this.confirmationService.confirm({
-      message:
-        'Estas seguro de eliminar el cirel ' + cirel.code + '?',
-      header: 'Confirmación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // this.cirelService.delete(cirel.id).subscribe(
-        //   (res) => {
-        //     this.messageService.add({
-        //       severity: 'success',
-        //       summary: 'Éxito',
-        //       detail: 'Homopolímero Eliminado',
-        //       life: 3000,
-        //     });
-        //     this.cirels = [];
-        //     this.getAllUsers();
-        //   },
-        //   (err) => {
-        //     this.messageService.add({
-        //       severity: 'error',
-        //       summary: 'Error',
-        //       detail: err.message,
-        //       life: 3000,
-        //     });
-        //   }
-        // );
+  // private expandAll() {
+  //   if (!this.isExpanded) {
+  //     this.products.forEach(product => this.expandedRows[product.name] = true);
+  //   } else {
+  //     this.expandedRows = {};
+  //   }
+  //   this.isExpanded = !this.isExpanded;
+  // }
 
-      },
-    });
+  private addNewCyrel(): void {
+
   }
 
-  deleteSelectedCirels() {
-    this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar los cireles seleccionados?',
-      header: 'Confirmación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // this.selectedHomo.forEach(cirel => {
-        //   this.cirelService.delete(cirel.id).subscribe(
-        //     (res) => {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Éxito',
-        //         detail: 'Homopolímero Eliminado',
-        //         life: 3000,
-        //       });
-        //       this.cirels = [];
-        //       this.getAllUsers();
-        //     },
-        //     (err) => {
-        //       this.messageService.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: err.message,
-        //         life: 3000,
-        //       });
-        //     }
-        //   );
-        // })
-
-        this.selectedCirel = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Homopolímeros Elimnados',
-          life: 3000,
-        });
-      },
-    });
+  private deleteSelectedCirels(): void {
   }
 
-  saveCirel() {
-    this.submitted = true;
-
-    if (this.cirel.code) {
-      // this.cirelService.update(this.cirel.code, this.cirel).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Actualizado',
-      //       life: 3000,
-      //     });
-      //     this.cirels = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
-    } else {
-      // this.cirelService.create(this.cirel).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Creado',
-      //       life: 3000,
-      //     });
-      //     this.cirels = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
-    }
-
-    this.cirels = [...this.cirels];
-    this.cirelDialog = false;
-    this.cirel = {};
+  private deleteCirel(cirel: any): void {
   }
 
-  hideDialog() {
-    this.cirelDialog = false;
-    this.submitted = false;
-  }
+  private editCirel(cirel: any): void {
 
-  getAll() {
-    // this.cirelService.getAll().subscribe((cirels) => {
-    //   this.cirels = cirels;
-    //   this.loading = false;
-    // });
   }
-
 }

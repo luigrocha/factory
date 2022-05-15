@@ -54,7 +54,7 @@ export class DiesListComponent implements OnInit, AfterViewInit {
     { label: 'DesbMúltiple', property: 'dsbMultiple' },
     { label: 'Observaciones.', property: 'observations' },
     { label: 'Estado', property: 'status' },
-  ]
+  ];
 
   @ViewChild('dt') table: Table;
   constructor(
@@ -108,8 +108,5 @@ export class DiesListComponent implements OnInit, AfterViewInit {
 
   deleteSelectedDies(): void {
 
-  }
-
-  exportToCSV(): void {
   }
 }

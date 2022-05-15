@@ -15,7 +15,7 @@ export class DieStatusHighlightDirective implements OnInit {
 
   ngOnInit(): void {
     const defaultColor = this.elementRef.nativeElement.style.color;
-    const defaultBackgroundColor = this.elementRef.nativeElement.style.color;
+    const defaultBackgroundColor = this.elementRef.nativeElement.style.backgroundColor;
 
     if (this.status) {
       this.elementRef.nativeElement.style.color = this.status.color || defaultColor;
