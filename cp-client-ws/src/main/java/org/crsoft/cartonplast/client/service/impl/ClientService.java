@@ -3,7 +3,7 @@ package org.crsoft.cartonplast.client.service.impl;
 import org.crsoft.cartonplast.client.repository.ClientRepository;
 import org.crsoft.cartonplast.client.service.IClientService;
 import org.crsoft.cartonplast.client.service.mapper.ClientMapper;
-import org.crsoft.cartonplast.client.vo.res.ClientRes;
+import org.crsoft.cartonplast.vo.res.ClientRes;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
