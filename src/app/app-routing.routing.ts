@@ -72,6 +72,12 @@ const routes: Routes = [
         data: { roles: [RoleEnum.ADMIN] },
         loadChildren: () => import('./modules/clients/clients.module').then(m => m.ClientsModule)
       },
+      {
+        path: 'pedidos',
+        canActivate: [AuthGuard],
+        data: { roles: [RoleEnum.ADMIN] },
+        loadChildren: () => import('./modules/order/order.module').then(m => m.OrderModule)
+      },
     ]
   },
   {
