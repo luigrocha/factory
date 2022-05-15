@@ -1,6 +1,5 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
-import org.crsoft.cartonplast.client.service.mapper.ClientMapper;
 import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Cyrel;
 import org.crsoft.cartonplast.design.vo.res.CyrelRes;
@@ -15,7 +14,6 @@ import java.util.List;
         DieMapper.class,
         PrinterMapper.class,
         ColorBMapper.class,
-        ClientMapper.class
 })
 public interface CyrelMapper {
 

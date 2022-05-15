@@ -1,7 +1,7 @@
 package org.crsoft.cartonplast.client.controller;
 
 import org.crsoft.cartonplast.client.service.impl.ClientService;
-import org.crsoft.cartonplast.client.vo.res.ClientRes;
+import org.crsoft.cartonplast.vo.res.ClientRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
