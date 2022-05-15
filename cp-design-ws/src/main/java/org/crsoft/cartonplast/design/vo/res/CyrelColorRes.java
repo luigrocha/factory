@@ -18,6 +18,6 @@ public class CyrelColorRes implements Serializable {
 
     private Integer id;
     private Integer index;
-    private ColorCatalogRes color;
-    private ColorTypeRes colorType;
+    private String color;
+    private String colorType;
 }
