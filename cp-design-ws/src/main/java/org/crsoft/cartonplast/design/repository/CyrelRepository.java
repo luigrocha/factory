@@ -17,6 +17,6 @@ public interface CyrelRepository extends PagingAndSortingRepository<Cyrel, Integ
             "OR c.validTo > CURRENT_TIMESTAMP) AND " +
             "((:query IS NULL OR c.print LIKE CONCAT('%',:query ,'%')) OR " +
             "(:query IS NULL OR c.description LIKE CONCAT('%',:query ,'%'))) " +
-            "ORDER BY c.print ASC")
+            "ORDER BY c.print DESC")
     Page<Cyrel> findAllValidCyrels(Pageable pageable, @Param("query") String query);
 }
