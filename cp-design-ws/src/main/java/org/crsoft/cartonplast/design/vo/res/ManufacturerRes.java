@@ -13,6 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ManufacturerRes implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     private Integer id;

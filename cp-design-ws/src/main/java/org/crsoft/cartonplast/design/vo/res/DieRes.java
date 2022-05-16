@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.vo.res;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.vo.res.CatalogStatusRes;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -22,7 +23,6 @@ public class DieRes implements Serializable {
     private String name;
     private LocalDate createdDate;
     private String description;
-    private String status;
     private Double area;
     private Double length;
     private Double width;
@@ -39,5 +39,6 @@ public class DieRes implements Serializable {
     private Double leafLength;
     private Double leafWidth;
     private String manufacturer;
+    private CatalogStatusRes status;
     private List<String> machines;
 }

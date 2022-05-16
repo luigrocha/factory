@@ -68,4 +68,10 @@ public class DieMachine {
     )
     @MapsId("dieId")
     private Die die;
+
+    @PrePersist
+    public void prePersist() {
+        this.validFrom = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+    }
 }

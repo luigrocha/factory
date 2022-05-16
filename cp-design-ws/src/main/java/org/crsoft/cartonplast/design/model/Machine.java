@@ -52,10 +52,16 @@ public class Machine {
     )
     private List<DieMachine> dies = new ArrayList<>();
 
-    @Column(name = "CATMAQ_VALID_FROM")
+    @Column(
+            name = "CATMAQ_VALID_FROM",
+            columnDefinition = "TIMESTAMP"
+    )
     private LocalDateTime validFrom;
 
-    @Column(name = "CATMAQ_VALID_TO")
+    @Column(
+            name = "CATMAQ_VALID_TO",
+            columnDefinition = "TIMESTAMP"
+    )
     private LocalDateTime validTo;
 
     @Column(name = "CATMAQ_CREATED_BY", length = 16)
@@ -64,10 +70,16 @@ public class Machine {
     @Column(name = "CATMAQ_UPDATED_BY", length = 16)
     private String updatedBy;
 
-    @Column(name = "CATMAQ_CREATED_AT")
+    @Column(
+            name = "CATMAQ_CREATED_AT",
+            columnDefinition = "TIMESTAMP"
+    )
     private LocalDateTime createdAt;
 
-    @Column(name = "CATMAQ_UPDATED_AT")
+    @Column(
+            name = "CATMAQ_UPDATED_AT",
+            columnDefinition = "TIMESTAMP"
+    )
     private LocalDateTime updatedAt;
 
     @OneToMany(

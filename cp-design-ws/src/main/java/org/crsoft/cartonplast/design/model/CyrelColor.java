@@ -1,0 +1,97 @@
+package org.crsoft.cartonplast.design.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+/**
+ * @author lpillaga on 13/05/2022
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "CATCIR_COL")
+public class CyrelColor {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(
+            name = "ID_CATCIR_COL_CODE",
+            updatable = false,
+            nullable = false
+    )
+    private Integer id;
+
+    @Column(
+            name = "CATCIR_COL_INDEX",
+            nullable = false
+    )
+    private Integer index;
+
+    @Column(
+            name = "CATCIR_COL_VALID_FROM",
+            columnDefinition = "TIMESTAMP"
+    )
+    private LocalDateTime validFrom;
+
+    @Column(
+            name = "CATCIR_COL_VALID_TO",
+            columnDefinition = "TIMESTAMP"
+    )
+    private LocalDateTime validTo;
+
+    @Column(name = "CATCIR_COL_CREATED_BY", length = 16)
+    private String createdBy;
+
+    @Column(name = "CATCIR_COL_UPDATED_BY", length = 16)
+    private String updatedBy;
+
+    @Column(
+            name = "CATCIR_COL_CREATED_AT",
+            columnDefinition = "TIMESTAMP"
+    )
+    private LocalDateTime createdAt;
+
+    @Column(
+            name = "CATCIR_COL_UPDATED_AT",
+            columnDefinition = "TIMESTAMP"
+    )
+    private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATCIR_CODE",
+            referencedColumnName = "ID_CATCIR_CODE",
+            insertable = false,
+            updatable = false
+    )
+    private Cyrel cyrel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATCATCOL_CODE",
+            referencedColumnName = "ID_CATCATCOL_CODE",
+            insertable = false,
+            updatable = false
+    )
+    private ColorCatalog color;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATCOLTI_CODE",
+            referencedColumnName = "ID_CATCOLTI_CODE",
+            insertable = false,
+            updatable = false
+    )
+    private ColorType colorType;
+
+    @PrePersist
+    public void prePersist() {
+        this.validFrom = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+    }
+}

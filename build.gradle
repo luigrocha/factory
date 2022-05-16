@@ -70,13 +70,22 @@ jacocoTestReport {
 }
 
 springBoot {
-    mainClass = 'org.crsoft.cartonplast.app.CpCoreWsApplication'
+    mainClass = 'app.CpCoreWsApplication'
 }
 
 jar {
     manifest {
         attributes(
-                'Main-Class': 'org.crsoft.cartonplast.app.CpCoreWsApplication'
+                'Main-Class': 'app.CpCoreWsApplication'
         )
     }
+}
+
+dependencies {
+    implementation project(":cp-core-vo")
+    implementation project(":cp-core-common")
+
+    implementation project(":cp-design-ws")
+    implementation project(":cp-client-ws")
+    implementation project(":cp-order-ws")
 }

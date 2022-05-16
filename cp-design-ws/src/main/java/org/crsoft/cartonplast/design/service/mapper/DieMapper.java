@@ -1,9 +1,11 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
+import org.crsoft.cartonplast.common.mapper.CatalogStatusMapper;
 import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Die;
 import org.crsoft.cartonplast.design.model.DieMachine;
 import org.crsoft.cartonplast.design.vo.res.DieRes;
+import org.crsoft.cartonplast.design.vo.res.DieShortRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -15,7 +17,10 @@ import java.util.stream.Collectors;
 /**
  * @author lpillaga on 02/05/2022
  */
-@Mapper(componentModel = "spring", uses = {ManufacturerMapper.class})
+@Mapper(componentModel = "spring", uses = {
+        ManufacturerMapper.class,
+        CatalogStatusMapper.class
+})
 public interface DieMapper {
 
     @Mapping(target = "manufacturer", source = "manufacturer.name")
@@ -33,9 +38,13 @@ public interface DieMapper {
     }
 
     @Mapping(target = "manufacturer", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "dieMachines", ignore = true)
+    @Mapping(target = "cyrels", ignore = true)
     @WithoutAuditField
     Die dieResToDie(DieRes dieRes);
+
+    DieShortRes dieToDieShortRes(Die die);
 
     List<DieRes> diesToDiesResList(List<Die> dies);
 }
