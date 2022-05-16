@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ClientService } from 'src/app/core/http/clients/client.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Client } from 'src/app/types/client.types';
 
@@ -58,7 +59,7 @@ export class ClientsComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
-    // private clientAService: ClientService,
+    private clientService: ClientService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Administración' },
@@ -67,7 +68,7 @@ export class ClientsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAll();
+    this.getAllClients();
     this.cols = [
       { field: 'color', header: 'Color' },
       { field: 'name', header: 'Nombre' },
@@ -214,11 +215,15 @@ export class ClientsComponent implements OnInit {
     this.submitted = false;
   }
 
-  getAll() {
+  getAllClients() {
     // this.clientAService.getAll().subscribe((clients) => {
     //   this.clients = clients;
     //   this.loading = false;
     // });
+    this.clientService.getAllClients().subscribe(clients => {
+      this.clients = clients;
+      this.loading = false;
+    });
   }
 
 }

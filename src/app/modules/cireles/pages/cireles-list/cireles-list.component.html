@@ -2,13 +2,11 @@
   <div class="p-col-12">
     <p-toast></p-toast>
     <div class="card">
-      <h5>Gestión de cireles</h5>
-      <p>Lista de todos los cireles</p>
       <p-table #dt
                [value]="cirels"
                dataKey="id"
-               styleClass="p-datatable-gridlines"
-               [rows]="7"
+               styleClass="p-datatable-sm"
+               [rows]="pageSize"
                [paginator]="true"
                lazy="true"
                [(selection)]="selectedCirels"
@@ -16,12 +14,13 @@
                responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
+            <h5 class="h-100 mb-0 align-self-center">Gestión de cireles</h5>
             <span class="flex-auto"></span>
             <button
                     pButton
                     pRipple
                     label="Nuevo"
-                    class="mb-2 mr-2"
+                    class="mr-2"
                     icon="pi pi-plus"
                     (click)="addNewCyrel()"
             ></button>
@@ -29,12 +28,12 @@
                     pButton
                     pRipple
                     label="Eliminar"
-                    class="p-button-danger mb-2 mr-2"
+                    class="p-button-danger mr-2"
                     icon="pi pi-trash"
                     (click)="deleteSelectedCirels()"
                     *ngIf="selectedCirels.length > 0"
             ></button>
-            <span class="p-input-icon-left mb-2">
+            <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input
                       pInputText
@@ -69,10 +68,10 @@
             <td>
               {{ cirel.print }}
             </td>
-            <td>
+            <td style="min-width: 12rem">
               {{ cirel.printer }}
             </td>
-            <td>
+            <td style="min-width: 15rem">
               {{ cirel.description }}
             </td>
             <td>
@@ -84,18 +83,18 @@
                       [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
               </button>
             </td>
-            <td style="min-width: 10rem">
+            <!-- <td style="min-width: 10rem">
               {{ cirel.mbLeaf }}
-            </td>
-            <td>
+            </td> -->
+            <td style="min-width: 15rem">
               {{ cirel.die?.code }} - {{ cirel.die?.name }}
             </td>
-            <td>
+            <td style="min-width: 15rem">
               {{ cirel.observation }}
             </td>
-            <td style="min-width: 10rem">
+            <!-- <td style="min-width: 10rem">
               {{ cirel.description2 }}
-            </td>
+            </td> -->
             <td>
               <div class="flex">
                 <button pButton

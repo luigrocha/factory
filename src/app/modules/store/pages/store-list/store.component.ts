@@ -61,7 +61,7 @@ export class StoreComponent implements OnInit {
   ) {
     this.breadcrumbService.setItems([
       { label: 'Pedidos' },
-      { label: 'Gestión de Pedios', routerLink: ['home/pedidos'] },
+      { label: 'Gestión de bodega', routerLink: ['home/pedidos'] },
     ]);
   }
 

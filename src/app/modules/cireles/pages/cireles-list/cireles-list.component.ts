@@ -42,10 +42,10 @@ export class CirelesListComponent implements OnInit {
     {label: 'Impresora', property: 'printer'},
     {label: 'Descripción', property: 'description'},
     {label: 'Colores', property: 'cyrelColors'},
-    {label: 'MB Lamina', property: 'mbLeaf'},
+    // {label: 'MB Lámina', property: 'mbLeaf'},
     {label: 'Troquel', property: 'die'},
-    {label: 'Observaciones', property: 'observation'},
-    {label: 'Descripción 2', property: 'description2'}
+    {label: 'Observaciones', property: 'observation'}
+    // {label: 'Descripción 2', property: 'description2'}
   ];
 
   subHeaders: TableHeader<CirelColor>[] = [

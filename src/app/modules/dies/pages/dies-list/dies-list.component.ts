@@ -51,8 +51,8 @@ export class DiesListComponent implements OnInit, AfterViewInit {
     { label: 'Ancho lámina', property: 'leafWidth' },
     { label: 'Área', property: 'area' },
     { label: 'GSMDIS', property: 'gsmdis' },
-    { label: 'DesbMúltiple', property: 'dsbMultiple' },
-    { label: 'Observaciones.', property: 'observations' },
+    // { label: 'DesbMúltiple', property: 'dsbMultiple' },
+    // { label: 'Observaciones.', property: 'observations' },
     { label: 'Estado', property: 'status' },
   ];
 

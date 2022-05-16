@@ -1,13 +1,11 @@
 <div class="p-grid table-demo">
   <div class="p-col-12">
     <div class="card">
-      <h5>Gestión de troqueles</h5>
-      <p>Lista de todos los troqueles</p>
       <p-table
         #dt
         [value]="dies"
         dataKey="id"
-        styleClass="p-datatable-gridlines"
+        styleClass="p-datatable-sm"
         [rowHover]="true"
         [rows]="pageSize"
         [paginator]="true"
@@ -19,12 +17,13 @@
       >
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
+            <h5 class="h-100 mb-0 align-self-center">Gestión de troqueles</h5>
             <span class="flex-auto"></span>
             <button
               pButton
               pRipple
               label="Nuevo"
-              class="mb-2 mr-2"
+              class="mr-2"
               icon="pi pi-plus"
               (click)="addNewDie(dt)"
             ></button>
@@ -32,12 +31,12 @@
               pButton
               pRipple
               label="Eliminar"
-              class="p-button-danger mb-2 mr-2"
+              class="p-button-danger mr-2"
               icon="pi pi-trash"
               (click)="deleteSelectedDies()"
               *ngIf="selectedDies.length > 0"
             ></button>
-            <span class="p-input-icon-left mb-2">
+            <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input
                 pInputText
@@ -68,7 +67,7 @@
             <td>
               <p-tableCheckbox [value]="die"></p-tableCheckbox>
             </td>
-            <td style="min-width: 12rem">
+            <td style="min-width: 15rem">
               {{ die.name }}
             </td>
             <td style="min-width: 8rem">
@@ -85,7 +84,7 @@
             <td style="min-width: 8rem">
               {{ die.code }}
             </td>
-            <td style="min-width: 12rem">
+            <td style="min-width: 15rem">
               {{ die.description }}
             </td>
             <td style="min-width: 8rem">
@@ -121,12 +120,12 @@
             <td style="min-width: 8rem">
               {{ die.gsmdis }}
             </td>
-            <td style="min-width: 11rem">
+            <!-- <td style="min-width: 11rem">
               {{ die.dsbMultiple }}
             </td>
             <td style="min-width: 12rem">
               {{ die.observations }}
-            </td>
+            </td> -->
             <td style="min-width: 10rem">
               <span class="die-badge"
                     appStatusHighlight

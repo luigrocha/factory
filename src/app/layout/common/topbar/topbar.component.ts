@@ -3,6 +3,7 @@ import { KeycloakTokenParsed } from 'keycloak-js';
 import { AppComponent } from 'src/app/app.component';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { LayoutComponent } from 'src/app/layout/layout.component';
+import { Status } from 'src/app/types/catalogs.types';
 
 @Component({
   selector: 'app-topbar',
@@ -13,6 +14,12 @@ export class TopbarComponent implements OnInit {
 
   userData: KeycloakTokenParsed;
   rolShow = '';
+  statusPending: Status = {
+    id: 'PEP',
+    name: 'Pendiente',
+    backgroundColor: '#FFD8B2',
+    color: '#805B36'
+  }
 
   constructor(
     public appMain: LayoutComponent,

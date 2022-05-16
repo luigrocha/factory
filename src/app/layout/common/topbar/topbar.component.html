@@ -39,7 +39,7 @@
           <div class="search-input-wrapper">
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <input type="text" pInputText placeholder="Search..." />
+              <input type="text" pInputText placeholder="Buscar..." />
             </span>
           </div>
 
@@ -50,7 +50,7 @@
                 <input
                   type="text"
                   pInputText
-                  placeholder="Search..."
+                  placeholder="Buscar..."
                   (click)="appMain.searchClick = true"
                 />
               </span>
@@ -74,33 +74,16 @@
           </a>
           <ul class="fadeInDown">
             <li class="layout-submenu-header">
-              <h6 class="header-text">Notifications</h6>
+              <h6 class="header-text">Notificaciones</h6>
               <span class="p-badge">3</span>
             </li>
             <li role="menuitem">
               <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
                 <i class="pi pi-shopping-cart"></i>
                 <div class="notifications-item">
-                  <h6>Order <span>#2254</span> is placed</h6>
-                  <span>Total Amount of<span>$34.50</span></span>
-                </div>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                <i class="pi pi-clock"></i>
-                <div class="notifications-item">
-                  <h6>Meeting with <span>AF04</span> Team</h6>
-                  <span>Google Meets</span>
-                </div>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                <i class="pi pi-th-large"></i>
-                <div class="notifications-item">
-                  <h6>Task <span>#41</span> is complete</h6>
-                  <span>9 Remaining Tasks</span>
+                  <h6>Pedido <span>#5QB2K-P106-F124</span></h6>
+                  <span>Total de unidades: <span>60.000</span></span>
+                  <h6 class="p-1"><span appStatusHighlight [status]="statusPending" class="die-badge p-1">Pendiente</span></h6>
                 </div>
               </a>
             </li>
@@ -108,8 +91,19 @@
               <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
                 <i class="pi pi-shopping-cart"></i>
                 <div class="notifications-item">
-                  <h6>Order <span>#2255</span> is placed</h6>
-                  <span>Total Amount of<span>$40.45</span></span>
+                  <h6>Pedido <span>#1QB2K-P106-F124</span></h6>
+                  <span>Total de unidades: <span>10.000</span></span>
+                  <h6 class="p-1"><span appStatusHighlight [status]="statusPending" class="die-badge p-1">Pendiente</span></h6>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
+                <i class="pi pi-shopping-cart"></i>
+                <div class="notifications-item">
+                  <h6>Pedido <span>#5QB2-P106-F124</span></h6>
+                  <span>Total de unidades: <span>6.000</span></span>
+                  <h6 class="p-1"><span appStatusHighlight [status]="statusPending" class="die-badge p-1">Pendiente</span></h6>
                 </div>
               </a>
             </li>
@@ -124,13 +118,13 @@
         >
           <a href="#" (click)="appMain.onTopbarItemClick($event, messages)">
             <span class="p-overlay-badge topbar-icon">
-              <i class="pi pi-comments" pBadge value="6"></i>
+              <i class="pi pi-info-circle" pBadge value="4"></i>
             </span>
           </a>
           <ul class="fadeInDown">
             <li class="layout-submenu-header">
-              <h6 class="header-text">Messages</h6>
-              <span class="p-badge">5</span>
+              <h6 class="header-text">Alertas</h6>
+              <span class="p-badge">4</span>
             </li>
             <li role="menuitem">
               <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
@@ -139,8 +133,8 @@
                   alt="demo"
                 />
                 <div class="messages-item">
-                  <h6>Hey! I sent the sales report</h6>
-                  <span>Dusana Semenov</span>
+                  <h6>Ha modificado el pedido #1QB2K-P106-F124</h6>
+                  <span>Wilmer Yela</span>
                 </div>
               </a>
             </li>
@@ -151,8 +145,8 @@
                   alt="demo"
                 />
                 <div class="messages-item">
-                  <h6>OK. Let’s meet at 15 pm...</h6>
-                  <span>Edward Lindgren</span>
+                  <h6>Ha creado un nuevo troquel</h6>
+                  <span>Catalina Malan</span>
                 </div>
               </a>
             </li>
@@ -167,8 +161,8 @@
                   alt="demo"
                 />
                 <div class="messages-item">
-                  <h6>Presentation is ready</h6>
-                  <span>Noell Blue</span>
+                  <h6>Ha modificado una orden de premezcla</h6>
+                  <span>Noel Salinas</span>
                 </div>
               </a>
             </li>
@@ -183,8 +177,8 @@
                   alt="demo"
                 />
                 <div class="messages-item">
-                  <h6>Faulty delivery on #959</h6>
-                  <span>Gvozden Boskovsky</span>
+                  <h6>Ha creado un nuevo cliente</h6>
+                  <span>Cristina Almeida</span>
                 </div>
               </a>
             </li>
@@ -223,26 +217,14 @@
             </li>
             <li role="menuitem">
               <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                <i class="pi pi-cog"></i>
-                <h6>Settings</h6>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                <i class="pi pi-file"></i>
-                <h6>Terms of Usage</h6>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                <i class="pi pi-compass"></i>
-                <h6>Support</h6>
+                <i class="pi pi-user"></i>
+                <h6>Mi Perfil</h6>
               </a>
             </li>
             <li role="menuitem">
               <a href="#" (click)="logout()">
                 <i class="pi pi-power-off"></i>
-                <h6>Logout</h6>
+                <h6>Cerrar Sesión</h6>
               </a>
             </li>
           </ul>
