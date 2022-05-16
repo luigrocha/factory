@@ -1,7 +1,7 @@
 /*==============================================================*/
 /* Table: CCTORD                                                */
 /*==============================================================*/
-CREATE TABLE CCTORD
+CREATE TABLE IF NOT EXISTS CCTORD
 (
     ID_CCTORD_CODE       INT NOT NULL AUTO_INCREMENT,
     XID_CATCLI_CODE      VARCHAR(16),
