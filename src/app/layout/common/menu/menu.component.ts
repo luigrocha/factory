@@ -26,6 +26,7 @@ export class MenuComponent implements OnInit {
         this.menuService.getAllItems().subscribe(
             (data => {
                 this.model = data;
-            }));
+            })
+        );
     }
 }

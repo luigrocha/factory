@@ -1,0 +1,159 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+    <div class="card">
+      <h5>Gestión de cireles</h5>
+      <p>Lista de todos los cireles</p>
+      <p-table #dt
+               [value]="cirels"
+               dataKey="id"
+               styleClass="p-datatable-gridlines"
+               [rows]="7"
+               [paginator]="true"
+               lazy="true"
+               [(selection)]="selectedCirels"
+               [rowsPerPageOptions]="rowsPerPageOptions"
+               responsiveLayout="scroll">
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <span class="flex-auto"></span>
+            <button
+                    pButton
+                    pRipple
+                    label="Nuevo"
+                    class="mb-2 mr-2"
+                    icon="pi pi-plus"
+                    (click)="addNewCyrel()"
+            ></button>
+            <button
+                    pButton
+                    pRipple
+                    label="Eliminar"
+                    class="p-button-danger mb-2 mr-2"
+                    icon="pi pi-trash"
+                    (click)="deleteSelectedCirels()"
+                    *ngIf="selectedCirels.length > 0"
+            ></button>
+            <span class="p-input-icon-left mb-2">
+              <i class="pi pi-search"></i>
+              <input
+                      pInputText
+                      type="text"
+                      (input)="dt.filterGlobal($event.target.value, 'contains')"
+                      placeholder="Buscar..."
+                      class="w-full"
+              />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th *ngFor="let header of headers">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                {{ header.label }}
+              </div>
+            </th>
+            <th class="text-center">
+              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-cirel let-expanded="expanded">
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="cirel"></p-tableCheckbox>
+            </td>
+            <td>
+              {{ cirel.print }}
+            </td>
+            <td>
+              {{ cirel.printer }}
+            </td>
+            <td>
+              {{ cirel.description }}
+            </td>
+            <td>
+              <button type="button"
+                      pButton
+                      pRipple
+                      [pRowToggler]="cirel"
+                      class="p-button-text p-button-rounded p-button-plain"
+                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+              </button>
+            </td>
+            <td style="min-width: 10rem">
+              {{ cirel.mbLeaf }}
+            </td>
+            <td>
+              {{ cirel.die?.code }} - {{ cirel.die?.name }}
+            </td>
+            <td>
+              {{ cirel.observation }}
+            </td>
+            <td style="min-width: 10rem">
+              {{ cirel.description2 }}
+            </td>
+            <td>
+              <div class="flex">
+                <button pButton
+                        pRipple
+                        icon="pi pi-pencil"
+                        class="p-button-rounded p-button-outlined p-button-success mr-2"
+                        (click)="editCirel(cirel)">
+                </button>
+                <button pButton
+                        pRipple
+                        icon="pi pi-trash"
+                        class="p-button-rounded p-button-outlined p-button-warning"
+                        (click)="deleteCirel(cirel)">
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-cirel>
+          <tr>
+            <td colspan="10">
+              <div class="p-3">
+                <p-table [value]="cirel.cyrelColors"
+                         dataKey="id"
+                         responsiveLayout="scroll">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th *ngFor="let header of subHeaders">
+                        <div class="p-d-flex p-jc-between p-ai-center">
+                          {{ header.label }}
+                        </div>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-color>
+                    <tr>
+                      <td>
+                        {{ color.colorType }}
+                      </td>
+                      <td>
+                        {{ color.index }}
+                      </td>
+                      <td>
+                        {{ color.color }}
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            Total de registros: {{ table?.totalRecords }}
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

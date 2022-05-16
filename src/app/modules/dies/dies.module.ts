@@ -7,6 +7,7 @@ import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { RippleModule } from 'primeng/ripple';
     TableModule,
     InputTextModule,
     ButtonModule,
-    RippleModule
+    RippleModule,
+    SharedModule
   ]
 })
 export class DiesModule { }

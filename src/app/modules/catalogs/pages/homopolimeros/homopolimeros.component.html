@@ -1,0 +1,102 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <div class="card">
+      <p-table #dt [value]="homos" [columns]="cols" [rows]="7" [paginator]="true"
+        [globalFilterFields]="['percentage', 'hpCode']" [(selection)]="selectedHomo" [rowHover]="true" dataKey="id"
+        styleClass="p-datatable-customers p-datatable-sm">
+        <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            <h5 class="m-0">Gestión de Homopolímeros</h5>
+
+            <div class="flex">
+              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
+              <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mr-2"
+                (click)="deleteSelectedHomo()" [disabled]="!selectedHomo || !selectedHomo.length"></button>
+              <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mr-2"
+                (click)="dt.exportCSV()"></button>
+
+              <span class="block mt-2 md:mt-0 p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                  placeholder="Buscar..." />
+              </span>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="percentage">
+              Porcentaje <p-sortIcon field="percentage"></p-sortIcon>
+            </th>
+            <th pSortableColumn="hpCode">
+              HP <p-sortIcon field="hpCode"></p-sortIcon>
+            </th>
+            <th style="
+                text-align: center;
+                display: flex;
+                justify-content: space-around;
+              ">
+              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-homo>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="homo"></p-tableCheckbox>
+            </td>
+            <td>
+              <span class="p-column-title">Porcentaje</span>
+              {{ homo.percentage }}
+            </td>
+            <td>
+              <span class="p-column-title">HP</span>
+              {{ homo.hpCode }}
+            </td>
+            <td style="display: flex; justify-content: space-evenly">
+              <button pButton pRipple icon="pi pi-pencil"
+                class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editHomo(homo)"></button>
+              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
+                (click)="deleteHomo(homo)"></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            Total de Homopolímeros:
+            {{ homos ? homos.length : 0 }}
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="homoDialog" [style]="{ width: '450px' }" header="Detalles de Homopolímero" [modal]="true"
+      styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-field">
+          <label for="percentage">Porcentaje</label>
+          <input type="text" pInputText id="percentage" [(ngModel)]="homo.percentage" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !homo.percentage">Campo porcentaje es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="hpCode">HP</label>
+          <input type="text" pInputText id="hpCode" [(ngModel)]="homo.hpCode" required />
+          <small class="p-invalid" *ngIf="submitted && !homo.hpCode">Campo hp es requerido.</small>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveHomo()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+  </div>
+</div>
