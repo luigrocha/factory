@@ -84,6 +84,12 @@ const routes: Routes = [
         data: { roles: [RoleEnum.ADMIN] },
         loadChildren: () => import('./modules/store/store.module').then(m => m.StoreModule)
       },
+      {
+        path: 'proyectos',
+        canActivate: [AuthGuard],
+        data: { roles: [RoleEnum.ADMIN] },
+        loadChildren: () => import('./modules/projects/projects.module').then(m => m.ProjectsModule)
+      }
     ]
   },
   {

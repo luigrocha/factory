@@ -1,4 +1,4 @@
-import { Priority, Status } from './catlogs.types';
+import { Priority, Status } from 'src/app/types/catalogs.types';
 import { Client } from './client.types';
 
 export interface Order {
