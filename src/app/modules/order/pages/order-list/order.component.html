@@ -119,7 +119,9 @@
               <span class="order-badge" [style.color]="order.status.color"
                 [style.backgroundColor]="order.status.backgroundColor">{{order.status.name}}</span>
             </td>
-            <td style="display: flex; justify-content: space-evenly; min-width: 8rem">
+            <td style="display: flex; justify-content: space-evenly; min-width: 10rem">
+              <button pButton pRipple icon="pi pi-search-plus" class="p-button-rounded p-button-outlined p-mr-2"
+                routerLink="/home/pedidos/status/{{order.lote}}"></button>
               <button pButton pRipple icon="pi pi-pencil"
                 class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editOrder(order)"></button>
               <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
@@ -129,7 +131,7 @@
         </ng-template>
         <ng-template pTemplate="summary">
           <div class="p-d-flex p-ai-center p-jc-between">
-            Total de Ordenes:
+            Total de Pedidos:
             {{ orders ? orders.length : 0 }}
           </div>
         </ng-template>
