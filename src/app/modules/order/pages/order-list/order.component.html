@@ -9,7 +9,7 @@
         responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 class="m-0">Gestión de Ordenes</h5>
+            <h5 class="m-0">Gestión de pedidos</h5>
 
             <div class="flex">
               <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
@@ -38,7 +38,7 @@
               Cliente <p-sortIcon field="client"></p-sortIcon>
             </th>
             <th pSortableColumn="code">
-              Codigo <p-sortIcon field="code"></p-sortIcon>
+              Código <p-sortIcon field="code"></p-sortIcon>
             </th>
             <th pSortableColumn="name">
               Nombre <p-sortIcon field="name"></p-sortIcon>
@@ -98,7 +98,7 @@
             </td>
             <td style="min-width: 10rem">
               <span class="p-column-title">Fecha Entrega</span>
-              {{ order.deliverAt }}
+              {{ order.deliverAt | date: "dd-MM-yyyy" }}
             </td>
             <td style="min-width: 8rem; text-align: center;">
               <span class="p-column-title">Prioridad</span>

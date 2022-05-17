@@ -1,13 +1,11 @@
 <div class="p-grid table-demo">
   <div class="p-col-12">
     <div class="card">
-      <h5>Troqueles</h5>
-      <p>Lista de todos los troqueles</p>
       <p-table
         #dt
         [value]="dies"
         dataKey="id"
-        styleClass="p-datatable-gridlines"
+        styleClass="p-datatable-sm"
         [rowHover]="true"
         [rows]="pageSize"
         [paginator]="true"
@@ -19,12 +17,13 @@
       >
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
+            <h5 class="h-100 mb-0 align-self-center">Gestión de troqueles</h5>
             <span class="flex-auto"></span>
             <button
               pButton
               pRipple
               label="Nuevo"
-              class="mb-2 mr-2"
+              class="mr-2"
               icon="pi pi-plus"
               (click)="addNewDie(dt)"
             ></button>
@@ -32,20 +31,12 @@
               pButton
               pRipple
               label="Eliminar"
-              class="p-button-danger mb-2 mr-2"
+              class="p-button-danger mr-2"
               icon="pi pi-trash"
               (click)="deleteSelectedDies()"
               *ngIf="selectedDies.length > 0"
             ></button>
-            <button
-              pButton
-              pRipple
-              label="Exportar"
-              class="p-button-help mb-2 mr-2"
-              icon="pi pi-file-excel"
-              (click)="exportToCSV()"
-            ></button>
-            <span class="p-input-icon-left mb-2">
+            <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input
                 pInputText
@@ -64,12 +55,9 @@
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
             <th
-              *ngFor="let header of headers"
-              [pSortableColumn]="header.property"
-            >
+              *ngFor="let header of headers">
               <div class="p-d-flex p-jc-between p-ai-center">
                 {{ header.label }}
-                <p-sortIcon [field]="header.property"></p-sortIcon>
               </div>
             </th>
           </tr>
@@ -79,11 +67,11 @@
             <td>
               <p-tableCheckbox [value]="die"></p-tableCheckbox>
             </td>
-            <td style="min-width: 12rem">
+            <td style="min-width: 15rem">
               {{ die.name }}
             </td>
             <td style="min-width: 8rem">
-              {{ die.createdDate | date: "dd/MM/yyyy" }}
+              {{ die.createdDate | date: "dd-MM-yyyy" }}
             </td>
             <td style="min-width: 10rem">
               {{ die.manufacturer }}
@@ -93,16 +81,10 @@
                 {{ machine }}
               </span>
             </td>
-            <td style="min-width: 11rem">
-              {{ die.dsbMultiple }}
-            </td>
-            <td style="min-width: 12rem">
-              {{ die.observations }}
-            </td>
             <td style="min-width: 8rem">
               {{ die.code }}
             </td>
-            <td style="min-width: 12rem">
+            <td style="min-width: 15rem">
               {{ die.description }}
             </td>
             <td style="min-width: 8rem">
@@ -138,9 +120,17 @@
             <td style="min-width: 8rem">
               {{ die.gsmdis }}
             </td>
+            <!-- <td style="min-width: 11rem">
+              {{ die.dsbMultiple }}
+            </td>
+            <td style="min-width: 12rem">
+              {{ die.observations }}
+            </td> -->
             <td style="min-width: 10rem">
-              <span [class]="'die-badge status-' + die.status">{{
-                getDieStatus(die.status)
+              <span class="die-badge"
+                    appStatusHighlight
+                    [status]="die.status">{{
+                die.status.name
               }}</span>
             </td>
           </tr>

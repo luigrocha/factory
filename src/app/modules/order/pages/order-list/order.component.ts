@@ -63,7 +63,7 @@ export class OrderComponent implements OnInit {
   ) {
     this.breadcrumbService.setItems([
       { label: 'Pedidos' },
-      { label: 'Gestión de Pedios', routerLink: ['home/pedidos'] },
+      { label: 'Gestión de Pedidos', routerLink: ['home/pedidos'] },
     ]);
   }
 
