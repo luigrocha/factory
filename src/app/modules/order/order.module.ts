@@ -12,6 +12,8 @@ import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { OrderStatusComponent } from './pages/order-status/order-status.component';
+import { TimelineModule } from 'primeng/timeline';
 
 @NgModule({
   imports: [
@@ -26,10 +28,12 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     TagModule,
     DialogModule,
     FormsModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    TimelineModule,
   ],
   declarations: [
-    OrderComponent
+    OrderComponent,
+    OrderStatusComponent,
   ]
 })
 export class OrderModule { }
