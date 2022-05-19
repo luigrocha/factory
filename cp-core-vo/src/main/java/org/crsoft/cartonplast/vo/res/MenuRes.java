@@ -26,4 +26,5 @@ public class MenuRes implements Serializable {
     private Collection<MenuRes> items;
     private Integer order;
     private Integer child;
+    private String role;
 }

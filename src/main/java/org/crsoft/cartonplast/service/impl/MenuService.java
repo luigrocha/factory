@@ -185,6 +185,7 @@ public class MenuService implements IMenuService {
                 .icon(menu.getIcon())
                 .routerLink(Collections.singleton(menu.getUrl()))
                 .order(menu.getOrder())
+                .role(menu.getRole())
                 .child(child.isPresent() ? child.get().getCode() : 0)
                 .build();
     }
