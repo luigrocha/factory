@@ -19,12 +19,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CBTPRE", schema = "carton_plast_test")
+@Table(name = "CBTPRE", schema = "cartonplast_users_test")
 public class Preferences {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "CBTPRE_CODE")
+    @Column(name = "ID_CBTPRE_CODE")
     private Integer code;
 
     @Basic

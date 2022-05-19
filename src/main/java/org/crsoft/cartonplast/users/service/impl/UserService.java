@@ -70,6 +70,7 @@ public class UserService implements IUserService {
             messageRes.setStatus(status);
 
             if (StatusKeycloakEnum.OK.getCode().equals(status)) {
+                // userRepresentation.getId();
                 createPersistenUser(user);
                 String path = response.getLocation().getPath();
                 String userId = path.substring(path.lastIndexOf("/") + 1);
@@ -233,7 +234,7 @@ public class UserService implements IUserService {
      * @throws NotFoundException Not Found Exception
      */
     private User findUserByUsername(String userName) throws NotFoundException {
-        User user = this.userRepository.findUserByUsername(userName);
+        User user = this.userRepository.findByUsername(userName);
         if (Objects.nonNull(user)) {
             return user;
         } else {
