@@ -1,0 +1,64 @@
+{
+  "properties": [
+    {
+      "name": "app.version",
+      "type": "java.lang.String",
+      "description": "Description for app.version."
+    },
+    {
+      "name": "app.title",
+      "type": "java.lang.String",
+      "description": "Description for app.title."
+    },
+    {
+      "name": "app.description",
+      "type": "java.lang.String",
+      "description": "Description for app.description."
+    },
+    {
+      "name": "app.apiTermsOfServiceUrl",
+      "type": "java.lang.String",
+      "description": "Description for app.apiTermsOfServiceUrl."
+    },
+    {
+      "name": "app.apiLicense",
+      "type": "java.lang.String",
+      "description": "Description for app.apiLicense."
+    },
+    {
+      "name": "app.apiLicenseUrl",
+      "type": "java.lang.String",
+      "description": "Description for app.apiLicenseUrl."
+    },
+    {
+      "name": "minio.endpoint",
+      "type": "java.lang.String",
+      "description": "Description for minio.endpoint."
+    },
+    {
+      "name": "minio.bucket-name.secure",
+      "type": "java.lang.String",
+      "description": "Description for minio.bucket-name.secure."
+    },
+    {
+      "name": "minio.access-key",
+      "type": "java.lang.String",
+      "description": "Description for minio.access-key."
+    },
+    {
+      "name": "minio.secret-key",
+      "type": "java.lang.String",
+      "description": "Description for minio.secret-key."
+    },
+    {
+      "name": "minio.bucket-name",
+      "type": "java.lang.String",
+      "description": "Description for minio.bucket-name."
+    },
+    {
+      "name": "minio.port",
+      "type": "java.lang.String",
+      "description": "Description for minio.port."
+    }
+  ]
+}

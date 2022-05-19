@@ -30,4 +30,9 @@ public class ClientService implements IClientService {
                 this.clientRepository.findAllValidClients()
         );
     }
+
+    @Override
+    public void saveClient(ClientRes client) {
+
+    }
 }
