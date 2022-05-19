@@ -124,6 +124,17 @@ public class MenuService implements IMenuService {
         return treeNode;
     }
 
+    @Override
+    public Menu findMenuById(Integer code) throws NotFoundException {
+        Optional<Menu> menu = this.menuRepository.findById(code);
+        if (menu.isPresent()) {
+            return menu.get();
+        } else {
+            log.info("No existe item con código {}", code);
+            throw new NotFoundException("CBTMEN, Not Found Data");
+        }
+    }
+
     private void buildItemsTreeNodeRes(Collection<TreeNodeRes> treeNodeRes, Integer code, Menu menu) {
         for (TreeNodeRes item : treeNodeRes) {
             if (item.getData().getId().equals(code)) {
@@ -164,16 +175,6 @@ public class MenuService implements IMenuService {
             } catch (Exception e) {
                 throw new UpdateException("CBTMEN", "No se pudo actualizar el orden");
             }
-        }
-    }
-
-    private Menu findMenuById(Integer code) throws NotFoundException {
-        Optional<Menu> menu = this.menuRepository.findById(code);
-        if (menu.isPresent()) {
-            return menu.get();
-        } else {
-            log.info("No existe item con código {}", code);
-            throw new NotFoundException("CBTMEN, Not Found Data");
         }
     }
 
