@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService, SelectItem, TreeNode } from 'primeng/api';
+import { ConfirmationService, MessageService, TreeNode } from 'primeng/api';
 import { MenuService } from 'src/app/core/http/menu/menu.service';
 import { RoleService } from 'src/app/core/http/roles/role.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Menu } from 'src/app/types/menu.types';
 import { Role } from 'src/app/types/role.types';
+import { IconService } from 'src/app/core/services/icon.service';
 
 @Component({
   selector: 'app-menu',
@@ -55,18 +56,25 @@ export class MenuComponent implements OnInit {
 
   roles: Role[];
 
-  roleValue: SelectItem[];
+  roleSelected: any;
 
   childSelected: number;
 
   sugederOrder: number;
+
+  iconSelected: any;
+
+  icons: any[] = [];
+
 
   constructor(
     private menuService: MenuService,
     private roleService: RoleService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private breadcrumbService: BreadcrumbService) {
+    private breadcrumbService: BreadcrumbService,
+    private iconService: IconService,
+  ) {
     this.breadcrumbService.setItems([
       { label: 'Administración' },
       { label: 'Menú', routerLink: ['/home/menu'] },
@@ -74,6 +82,7 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getIcons();
     this.cols = [
       { field: 'label', header: 'Nombre' },
       { field: 'icon', header: 'Icono' },
@@ -88,6 +97,8 @@ export class MenuComponent implements OnInit {
     this.item = {};
     this.submitted = false;
     this.childSelected = code;
+    this.iconSelected = null;
+    this.roleSelected = null;
     this.calculateOrder();
     this.menuDialog = true;
   }
@@ -96,15 +107,13 @@ export class MenuComponent implements OnInit {
     this.item = { ...item };
     this.item.data = item.label;
     this.item.url = item.routerLink[0];
+    this.iconSelected = this.icons.find(icon => icon.icon === this.item.icon);
+    this.roleSelected = this.roles.find(role => role.name === this.item.role);
     this.menuDialog = true;
   }
 
   saveItem() {
     this.submitted = true;
-
-    const role: any = this.item.role;
-    this.item.role = role.name;
-
     if (this.item.id) {
       this.menuService.updateItem(this.item.id, this.item).subscribe(
         (res => {
@@ -127,28 +136,43 @@ export class MenuComponent implements OnInit {
         }
       );
     } else {
+      this.item.url = this.childSelected === 0 ? ' ' : this.item.url;
       this.item.data = this.item.label;
       this.item.child = this.childSelected;
-      this.menuService.createItem(this.item).subscribe(
-        (res => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Item Creado',
-            life: 3000,
-          });
-          this.menu = [];
-          this.getAllItemsTree();
-        }),
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.message,
-            life: 3000,
-          });
-        }
-      );
+      this.item.icon = this.iconSelected ? this.iconSelected.icon : null;
+      this.item.role = this.roleSelected ? this.roleSelected.name : null;
+
+      if (this.isValidateToSave()) {
+        this.menuService.createItem(this.item).subscribe(
+          (res => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Item Creado',
+              life: 3000,
+            });
+            this.menu = [];
+            this.getAllItemsTree();
+          }),
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
+      } else {
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Atención',
+          detail: 'Llene todos los campos',
+          life: 3000,
+        });
+        this.menuDialog = true;
+        return;
+      }
     }
     this.menu = [...this.menu];
     this.menuDialog = false;
@@ -192,6 +216,8 @@ export class MenuComponent implements OnInit {
   hideDialog() {
     this.menuDialog = false;
     this.submitted = false;
+    this.iconSelected = null;
+    this.roleSelected = null;
     this.sugederOrder = 0;
   }
 
@@ -204,13 +230,10 @@ export class MenuComponent implements OnInit {
   }
 
   getRoles() {
-    this.roleValue = [];
+    this.roles = [];
     this.roleService.getAllRole().subscribe(
       (data => {
         this.roles = data;
-        data.forEach(element => {
-          this.roleValue.push({ label: element.name, value: { id: element.name, name: element.name } });
-        });
       })
     );
   }
@@ -236,5 +259,35 @@ export class MenuComponent implements OnInit {
         this.findLevel(item.children);
       }
     });
+  }
+
+  getIcons() {
+    this.iconService.getIcons().subscribe(data => {
+      data = data.filter(value => {
+        return value.icon.tags.indexOf('deprecate') === -1;
+      });
+
+      const icons = data;
+      icons.sort((icon1, icon2) => {
+        if (icon1.properties.name < icon2.properties.name) {
+          return -1;
+        }
+        else if (icon1.properties.name < icon2.properties.name) {
+          return 1;
+        }
+        else {
+          return 0;
+        }
+      });
+
+      icons.forEach(icon => {
+        this.icons.push({ name: icon.properties.name, icon: `pi pi-fw pi-${icon.properties.name}` });
+      });
+
+    });
+  }
+
+  isValidateToSave(): boolean {
+    return this.item.label && this.item.icon && this.item.role && this.item.order && this.item.url ? true : false;
   }
 }
