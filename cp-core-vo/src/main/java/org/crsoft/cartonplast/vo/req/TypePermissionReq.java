@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.vo.res;
+package org.crsoft.cartonplast.vo.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,20 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
- * @author jyepez on 19/5/2022
+ * @author jyepez on 20/5/2022
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermissionRes implements Serializable {
+public class TypePermissionReq implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private String role;
-    private Collection<TypePermissionRes> typePermission;
+    private Boolean flag;
 }
