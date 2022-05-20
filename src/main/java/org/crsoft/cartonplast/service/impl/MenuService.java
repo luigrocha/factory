@@ -7,10 +7,12 @@ import org.crsoft.cartonplast.exeption.UpdateException;
 import org.crsoft.cartonplast.model.Menu;
 import org.crsoft.cartonplast.repository.MenuRepository;
 import org.crsoft.cartonplast.service.IMenuService;
+import org.crsoft.cartonplast.service.IPermissionService;
 import org.crsoft.cartonplast.vo.req.MenuReq;
 import org.crsoft.cartonplast.vo.res.MenuRes;
 import org.crsoft.cartonplast.vo.res.TreeNodeRes;
 import org.keycloak.common.util.CollectionUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +27,11 @@ import java.util.stream.Collectors;
 public class MenuService implements IMenuService {
 
     private final MenuRepository menuRepository;
+    private final IPermissionService permissionService;
 
-    public MenuService(MenuRepository menuRepository) {
+    public MenuService(@Lazy MenuRepository menuRepository,@Lazy IPermissionService permissionService) {
         this.menuRepository = menuRepository;
+        this.permissionService = permissionService;
     }
 
     @Override
@@ -52,7 +56,7 @@ public class MenuService implements IMenuService {
             menu.setValidFrom(new Date());
             menu.setCreatedAt(new Date());
             this.menuRepository.save(menu);
-
+            this.permissionService.createToMenu(menu);
         } catch (Exception e) {
             log.info("No se pudo insertar item {}", menuReq.getLabel());
             throw new InsertException("CBTMEN", "No se pudo insertar item");

@@ -11,60 +11,53 @@ import java.time.LocalDateTime;
 import static javax.persistence.GenerationType.IDENTITY;
 
 /**
- * @author jyepez on 18/5/2022
+ * @author jyepez on 20/5/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CBTPER", schema = "carton_plast_test")
-public class Permission {
+@Table(name = "CBTPER_CAT", schema = "carton_plast_test")
+public class CatalogPermission {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "ID_CBTPER_CODE")
+    @Column(name = "ID_CBTPER_CAT_CODE")
     private Integer id;
 
-    @Column(name = "CBTPER_ROLE")
-    private String role;
+
+    @Column(name = "CBTPER_CAT_NAME")
+    private String name;
 
     @Column(
-            name = "CBTPER_VALID_FROM",
+            name = "CBTPER_CAT_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CBTPER_VALID_TO",
+            name = "CBTPER_CAT_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CBTPER_CREATED_BY", length = 16)
+    @Column(name = "CBTPER_CAT_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CBTPER_UPDATED_BY", length = 16)
+    @Column(name = "CBTPER_CAT_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CBTPER_CREATED_AT",
+            name = "CBTPER_CAT_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CBTPER_UPDATED_AT",
+            name = "CBTPER_CAT_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "CBTMEN_CODE",
-            referencedColumnName = "CBTMEN_CODE",
-            updatable = false
-    )
-    private Menu menu;
 
     @PrePersist
     public void prePersist() {

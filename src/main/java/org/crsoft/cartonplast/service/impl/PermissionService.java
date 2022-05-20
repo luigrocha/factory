@@ -1,5 +1,8 @@
 package org.crsoft.cartonplast.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.crsoft.cartonplast.common.service.RoleService;
 import org.crsoft.cartonplast.exeption.InsertException;
 import org.crsoft.cartonplast.exeption.NotFoundException;
 import org.crsoft.cartonplast.model.Menu;
@@ -7,6 +10,7 @@ import org.crsoft.cartonplast.model.Permission;
 import org.crsoft.cartonplast.repository.PermissionRepository;
 import org.crsoft.cartonplast.service.IMenuService;
 import org.crsoft.cartonplast.service.IPermissionService;
+import org.crsoft.cartonplast.vo.RoleVo;
 import org.crsoft.cartonplast.vo.req.PermissionReq;
 import org.crsoft.cartonplast.vo.res.PermissionRes;
 import org.keycloak.common.util.CollectionUtil;
@@ -23,10 +27,12 @@ public class PermissionService implements IPermissionService {
 
     private final PermissionRepository permissionRepository;
     private final IMenuService menuService;
+    private final RoleService roleService;
 
-    public PermissionService(PermissionRepository permissionRepository, MenuService menuService) {
+    public PermissionService(PermissionRepository permissionRepository, MenuService menuService, RoleService roleService) {
         this.permissionRepository = permissionRepository;
         this.menuService = menuService;
+        this.roleService = roleService;
     }
 
     @Override
@@ -36,6 +42,25 @@ public class PermissionService implements IPermissionService {
         }catch (Exception e){
             throw new InsertException("CBTPER","No se pudo crear");
         }
+    }
+
+    @Override
+    public void createToMenu(Menu menu) throws Exception {
+        Collection<Permission> permissions = new ArrayList<>(0);
+        ObjectMapper mapper = new ObjectMapper();
+        Collection<RoleVo> allRole = mapper.convertValue(this.roleService.findAllRole(), new TypeReference<Collection<RoleVo>>() { });
+        allRole.forEach(roleVo -> {
+            Permission permission = new Permission();
+            permission.setRole(roleVo.getName());
+            permission.setMenu(menu);
+            permissions.add(permission);
+        });
+        try {
+            this.permissionRepository.saveAll(permissions);
+        }catch (Exception e){
+            throw new InsertException("CBTPER","No se pudo crear items");
+        }
+
     }
 
     @Override
