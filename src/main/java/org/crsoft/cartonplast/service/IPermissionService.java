@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.exeption.UpdateException;
 import org.crsoft.cartonplast.model.Menu;
 import org.crsoft.cartonplast.vo.req.TypePermissionReq;
 import org.crsoft.cartonplast.vo.res.PermissionRes;
+import org.crsoft.cartonplast.vo.res.TypePermissionRes;
 
 import java.util.Collection;
 
@@ -19,4 +20,5 @@ public interface IPermissionService {
 
     void updatePermissionByMenuCode(Collection<TypePermissionReq> typePermissionReqs, Integer codeMenu, Integer codePermission) throws NotFoundException, UpdateException;
 
+    Collection<TypePermissionRes> findPermissionsPage(String url, Collection<String> roles) throws NotFoundException;
 }

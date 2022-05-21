@@ -11,6 +11,6 @@ import java.util.Collection;
  * @author jyepez on 20/5/2022
  */
 @Repository
-public interface TypePermissionRepository extends JpaRepository<TypePermission,Integer> {
+public interface TypePermissionRepository extends JpaRepository<TypePermission, Integer> {
     Collection<TypePermission> findAllByPermission(Permission permission);
 }

@@ -11,8 +11,11 @@ import java.util.Collection;
  * @author jyepez on 19/5/2022
  */
 @Repository
-public interface PermissionRepository extends JpaRepository<Permission,Integer> {
+public interface PermissionRepository extends JpaRepository<Permission, Integer> {
 
     Collection<Permission> findAllByMenu(Menu menu);
-    Permission findByMenuAndId(Menu menu,Integer code);
+
+    Permission findByMenuAndId(Menu menu, Integer code);
+
+    Permission findByMenuAndRole(Menu menu, String role);
 }

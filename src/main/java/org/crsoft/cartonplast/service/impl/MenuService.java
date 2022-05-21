@@ -30,7 +30,7 @@ public class MenuService implements IMenuService {
     private final MenuRepository menuRepository;
     private final IPermissionService permissionService;
 
-    public MenuService(@Lazy MenuRepository menuRepository,@Lazy IPermissionService permissionService) {
+    public MenuService(@Lazy MenuRepository menuRepository, @Lazy IPermissionService permissionService) {
         this.menuRepository = menuRepository;
         this.permissionService = permissionService;
     }
@@ -137,6 +137,17 @@ public class MenuService implements IMenuService {
             return menu.get();
         } else {
             log.info("No existe item con código {}", code);
+            throw new NotFoundException("CBTMEN, Not Found Data");
+        }
+    }
+
+    @Override
+    public Menu findMenuByUrl(String url) throws NotFoundException {
+        Optional<Menu> menu = this.menuRepository.findByUrlAndValidToIsNull(url);
+        if (menu.isPresent()) {
+            return menu.get();
+        } else {
+            log.info("No existe item con url {}", url);
             throw new NotFoundException("CBTMEN, Not Found Data");
         }
     }

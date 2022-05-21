@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.crsoft.cartonplast.common.service.RoleService;
+import org.crsoft.cartonplast.enums.RoleEnum;
 import org.crsoft.cartonplast.exeption.InsertException;
 import org.crsoft.cartonplast.exeption.NotFoundException;
 import org.crsoft.cartonplast.exeption.UpdateException;
@@ -53,7 +54,7 @@ public class PermissionService implements IPermissionService {
     public void createToMenu(Menu menu) throws Exception {
         Collection<Permission> permissions = new ArrayList<>(0);
         ObjectMapper mapper = new ObjectMapper();
-        Collection<RoleVo> allRole = mapper.convertValue(this.roleService.findAllRole(), new TypeReference<Collection<RoleVo>>() {
+        Collection<RoleVo> allRole = mapper.convertValue(this.roleService.findAllRole(), new TypeReference<>() {
         });
         allRole.forEach(roleVo -> {
             Permission permission = new Permission();
@@ -110,6 +111,24 @@ public class PermissionService implements IPermissionService {
         }
     }
 
+    @Override
+    public Collection<TypePermissionRes> findPermissionsPage(String url, Collection<String> roles) throws NotFoundException {
+        Menu menu = this.menuService.findMenuByUrl(url);
+        String role = getPriorityRole(roles);
+        Permission permission = this.permissionRepository.findByMenuAndRole(menu, role);
+        Collection<TypePermission> typePermissions = this.typePermissionRepository.findAllByPermission(permission);
+        return buildTypePermissionRes(typePermissions);
+    }
+
+    private String getPriorityRole(Collection<String> roles) {
+        if (roles.contains(RoleEnum.ADMIN.getRole())) {
+            return RoleEnum.ADMIN.getRole();
+        } else if (roles.contains(RoleEnum.SUPERVISOR.getRole())) {
+            return RoleEnum.SUPERVISOR.getRole();
+        }
+        return RoleEnum.USER.getRole();
+    }
+
     private Collection<Permission> getPermissionByMenuCode(Integer code) throws NotFoundException {
         Menu menu = this.menuService.findMenuById(code);
         Collection<Permission> allByMenu = this.permissionRepository.findAllByMenu(menu);
@@ -122,6 +141,14 @@ public class PermissionService implements IPermissionService {
 
     private PermissionRes buildPermissionRes(Permission permission) {
         Collection<TypePermission> typePermissions = this.typePermissionRepository.findAllByPermission(permission);
+        return PermissionRes.builder()
+                .id(permission.getId())
+                .role(permission.getRole())
+                .typePermission(buildTypePermissionRes(typePermissions))
+                .build();
+    }
+
+    private Collection<TypePermissionRes> buildTypePermissionRes(Collection<TypePermission> typePermissions) {
         Collection<TypePermissionRes> typePermissionRes = new ArrayList<>(0);
         for (TypePermission typePermission : typePermissions) {
             CatalogPermission catalogPermission = typePermission.getCatalog();
@@ -131,11 +158,6 @@ public class PermissionService implements IPermissionService {
                     .flag(typePermission.getFlag())
                     .build());
         }
-
-        return PermissionRes.builder()
-                .id(permission.getId())
-                .role(permission.getRole())
-                .typePermission(typePermissionRes)
-                .build();
+        return typePermissionRes;
     }
 }

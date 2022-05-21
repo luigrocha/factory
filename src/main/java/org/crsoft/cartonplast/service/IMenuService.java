@@ -26,4 +26,6 @@ public interface IMenuService {
     Collection<TreeNodeRes> findAllItemsTree() throws NotFoundException;
 
     Menu findMenuById(Integer code) throws NotFoundException;
+
+    Menu findMenuByUrl(String url) throws NotFoundException;
 }
