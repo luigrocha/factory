@@ -5,52 +5,54 @@ import { PreferencesService } from './core/http/preferences/preferences.service'
 
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
 
-    constructor(
-        private primengConfig: PrimeNGConfig,
-        private authService: AuthService,
-        private preferenceService: PreferencesService,
-    ) { }
+  constructor(
+    private primengConfig: PrimeNGConfig,
+    private authService: AuthService,
+    private preferenceService: PreferencesService,
+    private config: PrimeNGConfig
+  ) {
+  }
 
-    topbarTheme = 'light';
+  topbarTheme = 'light';
 
-    menuTheme = 'light';
+  menuTheme = 'light';
 
-    layoutMode = 'light';
+  layoutMode = 'light';
 
-    menuMode = 'static';
+  menuMode = 'static';
 
-    isRTL = false;
+  isRTL = false;
 
-    inputStyle = 'outlined';
+  inputStyle = 'outlined';
 
-    ripple: boolean;
+  ripple: boolean;
 
-    color = 'denim';
+  color = 'denim';
 
-    ngOnInit() {
-        this.primengConfig.ripple = true;
-        this.getPreferencesByUsername();
+  ngOnInit() {
+    this.primengConfig.ripple = true;
+    this.getPreferencesByUsername();
+  }
+
+  getPreferencesByUsername() {
+    if (this.authService.isLoggedIn()) {
+      const userName = this.authService.getLoggedUser().preferred_username;
+      this.preferenceService.getPreferencesByUsername(userName).subscribe(
+        (data) => {
+          this.topbarTheme = data.topBarMode;
+          this.menuTheme = data.menuTheme;
+          this.layoutMode = data.colorMode;
+          this.menuMode = data.menuMode;
+          this.color = data.color;
+        },
+      );
     }
-
-    getPreferencesByUsername() {
-        if (this.authService.isLoggedIn()) {
-            const userName = this.authService.getLoggedUser().preferred_username;
-            this.preferenceService.getPreferencesByUsername(userName).subscribe(
-                (data) => {
-                    this.topbarTheme = data.topBarMode;
-                    this.menuTheme = data.menuTheme;
-                    this.layoutMode = data.colorMode;
-                    this.menuMode = data.menuMode;
-                    this.color = data.color;
-                },
-            );
-        }
-    }
+  }
 
 }

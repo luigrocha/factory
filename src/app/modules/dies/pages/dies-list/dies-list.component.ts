@@ -9,20 +9,7 @@ import { debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'app-dies-list',
   templateUrl: './dies-list.component.html',
-  styleUrls: ['./dies-list.component.scss'],
-  styles: [`
-      :host ::ng-deep .p-frozen-column {
-          font-weight: bold;
-      }
-
-      :host ::ng-deep .p-datatable-frozen-tbody {
-          font-weight: bold;
-      }
-
-      :host ::ng-deep .p-progressbar {
-          height: .5rem;
-      }
-  `]
+  styleUrls: ['./dies-list.component.scss']
 })
 export class DiesListComponent implements OnInit, AfterViewInit {
   dies: Die[] = [];

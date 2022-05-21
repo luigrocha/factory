@@ -3,53 +3,30 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ClientService } from 'src/app/core/http/clients/client.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Client } from 'src/app/types/client.types';
+import { TableColumn } from 'src/app/types/table.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 
 @Component({
   selector: 'app-clients',
   templateUrl: './clients.component.html',
   styleUrls: ['./clients.component.scss'],
   styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
   ],
   providers: [MessageService, ConfirmationService],
 })
 export class ClientsComponent implements OnInit {
 
+  columns: TableColumn<Client>[];
+  pageSize: number = 10;
+  clients: Client[];
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+
   clientDialog: boolean;
 
-  selectedClient: Client[];
+  selectedClients: Client[] = [];
 
   submitted: boolean;
-
-  cols: any[];
-
-  clients: Client[];
 
   client: Client;
 
@@ -69,8 +46,8 @@ export class ClientsComponent implements OnInit {
 
   ngOnInit() {
     this.getAllClients();
-    this.cols = [
-      { field: 'color', header: 'Color' },
+    this.columns = [
+      { field: 'id', header: 'Id' },
       { field: 'name', header: 'Nombre' },
     ];
   }
@@ -147,7 +124,7 @@ export class ClientsComponent implements OnInit {
         //   );
         // })
 
-        this.selectedClient = null;
+        this.selectedClients = null;
         this.messageService.add({
           severity: 'success',
           summary: 'Correcto',
