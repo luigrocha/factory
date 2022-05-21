@@ -17,6 +17,6 @@ public interface IPermissionService {
 
     Collection<PermissionRes> findPermissionsByMenuCode(Integer code) throws NotFoundException;
 
-    void updatePermissionByMenuCode(Collection<TypePermissionReq> typePermissionReqs, Integer code) throws NotFoundException, UpdateException;
+    void updatePermissionByMenuCode(Collection<TypePermissionReq> typePermissionReqs, Integer codeMenu, Integer codePermission) throws NotFoundException, UpdateException;
 
 }

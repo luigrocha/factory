@@ -92,19 +92,20 @@ public class PermissionService implements IPermissionService {
     }
 
     @Override
-    public void updatePermissionByMenuCode(Collection<TypePermissionReq> typePermissionReqs, Integer code) throws NotFoundException, UpdateException {
-        for (Permission permission : getPermissionByMenuCode(code)) {
-            Collection<TypePermission> typePermissions = this.typePermissionRepository.findAllByPermission(permission);
-            for (TypePermissionReq typePermissionReq : typePermissionReqs) {
-                try {
-                    TypePermission type = typePermissions.stream()
-                            .filter(typePermission -> typePermission.getCatalog().getId().equals(typePermissionReq.getId()))
-                            .findAny().orElse(null);
-                    Objects.requireNonNull(type).setFlag(typePermissionReq.getFlag());
-                    this.typePermissionRepository.save(type);
-                } catch (Exception e) {
-                    throw new UpdateException("CBTPER_TYPE", "No se pudo actualizar permiso");
-                }
+    public void updatePermissionByMenuCode(Collection<TypePermissionReq> typePermissionReqs, Integer codeMenu, Integer codePermission) throws NotFoundException, UpdateException {
+        Menu menu = this.menuService.findMenuById(codeMenu);
+        Permission permission = this.permissionRepository.findByMenuAndId(menu, codePermission);
+        Collection<TypePermission> typePermissions = this.typePermissionRepository.findAllByPermission(permission);
+
+        for (TypePermissionReq typePermissionReq : typePermissionReqs) {
+            try {
+                TypePermission type = typePermissions.stream()
+                        .filter(typePermission -> typePermission.getCatalog().getId().equals(typePermissionReq.getId()))
+                        .findAny().orElse(null);
+                Objects.requireNonNull(type).setFlag(typePermissionReq.getFlag());
+                this.typePermissionRepository.save(type);
+            } catch (Exception e) {
+                throw new UpdateException("CBTPER_TYPE", "No se pudo actualizar permiso");
             }
         }
     }

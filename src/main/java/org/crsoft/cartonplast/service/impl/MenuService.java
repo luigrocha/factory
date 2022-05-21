@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,8 +54,6 @@ public class MenuService implements IMenuService {
             }
 
             menu.setOrder(menuReq.getOrder());
-            menu.setValidFrom(new Date());
-            menu.setCreatedAt(new Date());
             this.menuRepository.save(menu);
             this.permissionService.createToMenu(menu);
         } catch (Exception e) {
@@ -97,7 +96,7 @@ public class MenuService implements IMenuService {
             }
             item.setOrder(menuReq.getOrder());
 
-            item.setUpdateAt(new Date());
+            item.setUpdateAt(LocalDateTime.now());
             this.menuRepository.save(item);
         } catch (Exception e) {
             throw new UpdateException("CBTMEN", "No se pudo actualizar");
@@ -108,7 +107,9 @@ public class MenuService implements IMenuService {
     public void deleteItem(Integer code) throws NotFoundException, UpdateException {
         Menu item = findMenuById(code);
         try {
-            this.menuRepository.delete(item);
+            // this.menuRepository.delete(item);
+            item.setValidTo(LocalDateTime.now());
+            this.menuRepository.save(item);
         } catch (Exception e) {
             throw new UpdateException("CBTMEN", "No se pudo eliminar");
         }
@@ -130,7 +131,8 @@ public class MenuService implements IMenuService {
 
     @Override
     public Menu findMenuById(Integer code) throws NotFoundException {
-        Optional<Menu> menu = this.menuRepository.findById(code);
+        //Optional<Menu> menu = this.menuRepository.findById(code);
+        Optional<Menu> menu = this.menuRepository.findByCodeAndValidToIsNull(code);
         if (menu.isPresent()) {
             return menu.get();
         } else {
@@ -164,7 +166,7 @@ public class MenuService implements IMenuService {
         return TreeNodeRes.builder().data(buildMenuRes(menu)).build();
     }
 
-    private void updateOrder(Menu child, Integer order) throws UpdateException, NotFoundException {
+    private void updateOrder(Menu child, Integer order) throws UpdateException {
         Collection<Menu> allByChild = this.menuRepository.findAllByChild(child);
         Integer sequence = order;
         if (CollectionUtil.isNotEmpty(allByChild)) {
@@ -196,7 +198,8 @@ public class MenuService implements IMenuService {
     }
 
     private Collection<Menu> findAllOrderByCode() {
-        return this.menuRepository.findAll(Sort.by(Sort.Order.asc("code")));
+        //return this.menuRepository.findAll(Sort.by(Sort.Order.asc("code")));
+        return this.menuRepository.findAllByValidToIsNull(Sort.by(Sort.Order.asc("code")));
     }
 
     private void buildItemsMenuRes(Collection<MenuRes> menuRes, Integer code, Menu menu) {

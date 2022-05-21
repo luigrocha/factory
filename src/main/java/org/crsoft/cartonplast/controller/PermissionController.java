@@ -1,10 +1,8 @@
 package org.crsoft.cartonplast.controller;
 
-import org.crsoft.cartonplast.exeption.InsertException;
 import org.crsoft.cartonplast.exeption.NotFoundException;
 import org.crsoft.cartonplast.exeption.UpdateException;
 import org.crsoft.cartonplast.service.IPermissionService;
-import org.crsoft.cartonplast.vo.req.PermissionReq;
 import org.crsoft.cartonplast.vo.req.TypePermissionReq;
 import org.crsoft.cartonplast.vo.res.PermissionRes;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +34,10 @@ public class PermissionController {
         }
     }
 
-    @PatchMapping("/{code}")
-    public ResponseEntity<?> updatePermissionByMenuCode(@RequestBody Collection<TypePermissionReq> typePermissionReqs, @PathVariable("code") Integer code){
+    @PatchMapping("/{codeMenu}/{codePermission}")
+    public ResponseEntity<?> updatePermissionByMenuCode(@RequestBody Collection<TypePermissionReq> typePermissionReqs, @PathVariable("codeMenu") Integer codeMenu,@PathVariable("codePermission") Integer codePermission){
         try {
-            this.permissionService.updatePermissionByMenuCode(typePermissionReqs,code);
+            this.permissionService.updatePermissionByMenuCode(typePermissionReqs,codeMenu,codePermission);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
