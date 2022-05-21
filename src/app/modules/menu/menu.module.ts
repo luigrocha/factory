@@ -15,7 +15,8 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-
+import { CheckboxModule } from 'primeng/checkbox';
+import { DividerModule } from 'primeng/divider';
 
 @NgModule({
   imports: [
@@ -30,10 +31,10 @@ import { InputTextModule } from 'primeng/inputtext';
     FormsModule,
     ConfirmDialogModule,
     DropdownModule,
-
     ToastModule,
     InputTextModule,
-
+    CheckboxModule,
+    DividerModule,
     CommonModule
   ],
   declarations: [MenuComponent]

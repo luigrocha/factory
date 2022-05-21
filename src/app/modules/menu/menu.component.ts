@@ -4,8 +4,10 @@ import { MenuService } from 'src/app/core/http/menu/menu.service';
 import { RoleService } from 'src/app/core/http/roles/role.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Menu } from 'src/app/types/menu.types';
-import { Role } from 'src/app/types/role.types';
+import { Role, RoleType } from 'src/app/types/role.types';
 import { IconService } from 'src/app/core/services/icon.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
+import { Permission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-menu',
@@ -66,9 +68,15 @@ export class MenuComponent implements OnInit {
 
   icons: any[] = [];
 
+  permissionDialog: boolean;
+
+  permissions: Permission[];
+
+  headerPermission = 'Permisos Menu ';
 
   constructor(
     private menuService: MenuService,
+    private permissionService: PermissionService,
     private roleService: RoleService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -86,11 +94,59 @@ export class MenuComponent implements OnInit {
     this.cols = [
       { field: 'label', header: 'Nombre' },
       { field: 'icon', header: 'Icono' },
-      { field: 'routerLink', header: 'Url' }
+      { field: 'routerLink', header: 'Url' },
+      { field: 'permission', header: 'Permisos' }
     ];
 
     this.getAllItemsTree();
     this.getRoles();
+  }
+
+  getPermissions(code: string) {
+    this.permissionService.findPermissionsByMenuCode(code).subscribe(
+      (data => {
+        this.permissions = data;
+      })
+    );
+  }
+
+  openPermission(item: Menu) {
+    this.permissionDialog = true;
+    this.item = { ...item };
+    this.headerPermission = this.headerPermission + item.label;
+    this.getPermissions(item.id);
+  }
+
+  savePermisions(code: string) {
+    this.permissions.forEach(per => {
+      this.permissionService.updatePermissionByMenuCode(code, per.id, per.typePermission).subscribe(
+        (res => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Item Actualizado',
+            life: 3000,
+          });
+        }), (err => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        })
+      );
+    });
+
+  }
+
+  getRoleType(name: string): RoleType {
+    return this.roleService.getRoleType(name);
+  }
+
+  hidePermissionDialog() {
+    this.permissionDialog = false;
+    this.permissions = [];
   }
 
   openNew(code: number) {
