@@ -119,8 +119,8 @@
       </ng-template>
     </p-dialog>
 
-    <p-dialog [(visible)]="permissionDialog" [style]="{ width: '50%', height: '500px' }" [header]="headerPermission"
-      [modal]="true" styleClass="p-fluid">
+    <p-dialog [(visible)]="permissionDialog" [style]="{ width: '50%', height: '500px' }"
+      [header]="headerPermission + item?.label" [modal]="true" styleClass="p-fluid">
       <ng-template pTemplate="content">
         <div *ngFor="let per of permissions">
           <h5>{{getRoleType(per.role).name}}</h5>

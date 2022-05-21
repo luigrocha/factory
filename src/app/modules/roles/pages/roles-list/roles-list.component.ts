@@ -5,6 +5,8 @@ import { User } from 'src/app/types/user.types';
 import { RoleService } from 'src/app/core/http/roles/role.service';
 import { UsersService } from 'src/app/core/http/users/users.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { TypePermission } from 'src/app/types/permission';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 
 @Component({
   selector: 'app-roles-list',
@@ -67,24 +69,28 @@ export class RolesListComponent implements OnInit {
 
   roleName: string[];
 
+  permissionsPage: TypePermission[];
+
   constructor(
     private roleService: RoleService,
     private userService: UsersService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
-      {label: 'Administración'},
-      {label: 'Roles', routerLink: ['/home/role']},
+      { label: 'Administración' },
+      { label: 'Roles', routerLink: ['/home/role'] },
     ]);
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAllRole();
     this.cols = [
-      {field: 'name', header: 'Nombre'},
-      {field: 'description', header: 'Descripción'},
+      { field: 'name', header: 'Nombre' },
+      { field: 'description', header: 'Descripción' },
     ];
   }
 
@@ -146,8 +152,8 @@ export class RolesListComponent implements OnInit {
     const roleName = [];
     const rolesActually = [];
 
-    this.roleName.forEach(role => roleName.push({name: role}));
-    this.rolesActually.forEach(role => rolesActually.push({name: role}));
+    this.roleName.forEach(role => roleName.push({ name: role }));
+    this.rolesActually.forEach(role => rolesActually.push({ name: role }));
 
     this.roleService.addRolesUser(this.user.id, rolesActually).subscribe(
       (res) => {
@@ -189,4 +195,22 @@ export class RolesListComponent implements OnInit {
     this.roleDialog = false;
     this.user = {};
   }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      console.log(this.permissionsPage);
+
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
+  }
+
 }

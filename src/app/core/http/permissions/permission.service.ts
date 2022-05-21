@@ -1,5 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { TypeofExpr } from '@angular/compiler';
+import { Injectable, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { TreeNode } from 'primeng/api';
 import { Observable } from 'rxjs';
 import { Menu } from 'src/app/types/menu.types';
@@ -16,7 +18,9 @@ export class PermissionService {
 
   URL_PERMISSION = environment.appApiUrl + '/permission';
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  permissionsPage: TypePermission[];
+
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router) { }
 
   findPermissionsByMenuCode(code: string): Observable<Permission[]> {
     return this.http.get<Permission[]>(this.URL_PERMISSION + '/' + code, this.httpOptions);
@@ -24,6 +28,14 @@ export class PermissionService {
 
   updatePermissionByMenuCode(codeMenu: string, codePermission, data: TypePermission[]): Observable<any> {
     return this.http.patch<any>(this.URL_PERMISSION + '/' + codeMenu + '/' + codePermission, data, this.httpOptions);
+  }
+
+  findPermissionPage(): Observable<TypePermission[]> {
+    const data = {
+      url: this.router.url,
+      roles: this.authService.getRoles()
+    };
+    return this.http.post<TypePermission[]>(this.URL_PERMISSION + '/findPermissionsPage', data, this.httpOptions);
   }
 
 }

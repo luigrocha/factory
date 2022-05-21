@@ -10,7 +10,7 @@
             <h5 class="m-0">Gestión de Roles</h5>
             <div class="flex">
               <button pButton pRipple label="Añadir/Quitar rol" icon="pi pi-user-plus" class="mr-2"
-                (click)="addRoleUser()"></button>
+                (click)="addRoleUser()" *ngIf="isAllow(1)"></button>
               <span class="p-input-icon-left">
                 <i class="pi pi-search"></i>
                 <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"

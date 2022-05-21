@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ClientService } from 'src/app/core/http/clients/client.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Client } from 'src/app/types/client.types';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-clients',
@@ -55,11 +57,14 @@ export class ClientsComponent implements OnInit {
 
   loading = true;
 
+  permissionsPage: TypePermission[];
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private clientService: ClientService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Administración' },
@@ -68,6 +73,7 @@ export class ClientsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAllClients();
     this.cols = [
       { field: 'color', header: 'Color' },
@@ -224,6 +230,21 @@ export class ClientsComponent implements OnInit {
       this.clients = clients;
       this.loading = false;
     });
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 
 }

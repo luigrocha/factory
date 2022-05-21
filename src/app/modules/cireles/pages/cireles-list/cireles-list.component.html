@@ -2,46 +2,20 @@
   <div class="p-col-12">
     <p-toast></p-toast>
     <div class="card">
-      <p-table #dt
-               [value]="cirels"
-               dataKey="id"
-               styleClass="p-datatable-sm"
-               [rows]="pageSize"
-               [paginator]="true"
-               lazy="true"
-               [(selection)]="selectedCirels"
-               [rowsPerPageOptions]="rowsPerPageOptions"
-               responsiveLayout="scroll">
+      <p-table #dt [value]="cirels" dataKey="id" styleClass="p-datatable-sm" [rows]="pageSize" [paginator]="true"
+        lazy="true" [(selection)]="selectedCirels" [rowsPerPageOptions]="rowsPerPageOptions" responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 mb-0 align-self-center">Gestión de cireles</h5>
             <span class="flex-auto"></span>
-            <button
-                    pButton
-                    pRipple
-                    label="Nuevo"
-                    class="mr-2"
-                    icon="pi pi-plus"
-                    (click)="addNewCyrel()"
-            ></button>
-            <button
-                    pButton
-                    pRipple
-                    label="Eliminar"
-                    class="p-button-danger mr-2"
-                    icon="pi pi-trash"
-                    (click)="deleteSelectedCirels()"
-                    *ngIf="selectedCirels.length > 0"
-            ></button>
+            <button pButton pRipple label="Nuevo" class="mr-2" icon="pi pi-plus" (click)="addNewCyrel()"
+              *ngIf="isAllow(1)"></button>
+            <button pButton pRipple label="Eliminar" class="p-button-danger mr-2" icon="pi pi-trash"
+              (click)="deleteSelectedCirels()" *ngIf="selectedCirels.length > 0 && isAllow(4)"></button>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <input
-                      pInputText
-                      type="text"
-                      (input)="dt.filterGlobal($event.target.value, 'contains')"
-                      placeholder="Buscar..."
-                      class="w-full"
-              />
+              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Buscar..." class="w-full" />
             </span>
           </div>
         </ng-template>
@@ -75,12 +49,9 @@
               {{ cirel.description }}
             </td>
             <td>
-              <button type="button"
-                      pButton
-                      pRipple
-                      [pRowToggler]="cirel"
-                      class="p-button-text p-button-rounded p-button-plain"
-                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+              <button type="button" pButton pRipple [pRowToggler]="cirel"
+                class="p-button-text p-button-rounded p-button-plain"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
               </button>
             </td>
             <!-- <td style="min-width: 10rem">
@@ -97,17 +68,11 @@
             </td> -->
             <td>
               <div class="flex">
-                <button pButton
-                        pRipple
-                        icon="pi pi-pencil"
-                        class="p-button-rounded p-button-outlined p-button-success mr-2"
-                        (click)="editCirel(cirel)">
+                <button pButton pRipple icon="pi pi-pencil"
+                  class="p-button-rounded p-button-outlined p-button-success mr-2" (click)="editCirel(cirel)">
                 </button>
-                <button pButton
-                        pRipple
-                        icon="pi pi-trash"
-                        class="p-button-rounded p-button-outlined p-button-warning"
-                        (click)="deleteCirel(cirel)">
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
+                  (click)="deleteCirel(cirel)">
                 </button>
               </div>
             </td>
@@ -117,42 +82,40 @@
           <tr>
             <td colspan="10">
               <div class="p-3">
-                <p-table [value]="cirel.cyrelColors"
-                         dataKey="id"
-                         responsiveLayout="scroll">
+                <p-table [value]="cirel.cyrelColors" dataKey="id" responsiveLayout="scroll">
                   <ng-template pTemplate="header">
-                    <tr>
-                      <th *ngFor="let header of subHeaders">
-                        <div class="p-d-flex p-jc-between p-ai-center">
-                          {{ header.label }}
-                        </div>
-                      </th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-color>
-                    <tr>
-                      <td>
-                        {{ color.colorType }}
-                      </td>
-                      <td>
-                        {{ color.index }}
-                      </td>
-                      <td>
-                        {{ color.color }}
-                      </td>
-                    </tr>
-                  </ng-template>
-                </p-table>
+          <tr>
+            <th *ngFor="let header of subHeaders">
+              <div class="p-d-flex p-jc-between p-ai-center">
+                {{ header.label }}
               </div>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-color>
+          <tr>
+            <td>
+              {{ color.colorType }}
+            </td>
+            <td>
+              {{ color.index }}
+            </td>
+            <td>
+              {{ color.color }}
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="summary">
-          <div class="p-d-flex p-ai-center p-jc-between">
-            Total de registros: {{ table?.totalRecords }}
-          </div>
-        </ng-template>
       </p-table>
     </div>
+    </td>
+    </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        Total de registros: {{ table?.totalRecords }}
+      </div>
+    </ng-template>
+    </p-table>
   </div>
+</div>
 </div>

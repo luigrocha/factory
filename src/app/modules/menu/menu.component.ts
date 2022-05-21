@@ -113,7 +113,6 @@ export class MenuComponent implements OnInit {
   openPermission(item: Menu) {
     this.permissionDialog = true;
     this.item = { ...item };
-    this.headerPermission = this.headerPermission + item.label;
     this.getPermissions(item.id);
   }
 
@@ -127,6 +126,7 @@ export class MenuComponent implements OnInit {
             detail: 'Item Actualizado',
             life: 3000,
           });
+          this.hidePermissionDialog();
         }), (err => {
           this.messageService.add({
             severity: 'error',
