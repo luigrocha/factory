@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.exeption;
+package org.crsoft.cartonplast.common.exception;
 
 /**
  * Not Found Exception

@@ -1,9 +1,9 @@
 package org.crsoft.cartonplast.service.impl;
 
 import lombok.extern.log4j.Log4j2;
-import org.crsoft.cartonplast.exeption.InsertException;
-import org.crsoft.cartonplast.exeption.NotFoundException;
-import org.crsoft.cartonplast.exeption.UpdateException;
+import org.crsoft.cartonplast.common.exception.InsertException;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.model.Menu;
 import org.crsoft.cartonplast.repository.MenuRepository;
 import org.crsoft.cartonplast.service.IMenuService;

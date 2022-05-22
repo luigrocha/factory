@@ -1,8 +1,8 @@
 package org.crsoft.cartonplast.controller;
 
-import org.crsoft.cartonplast.exeption.InsertException;
-import org.crsoft.cartonplast.exeption.NotFoundException;
-import org.crsoft.cartonplast.exeption.UpdateException;
+import org.crsoft.cartonplast.common.exception.InsertException;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.service.IMenuService;
 import org.crsoft.cartonplast.vo.req.MenuReq;
 import org.crsoft.cartonplast.vo.res.MenuRes;
