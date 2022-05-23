@@ -1,10 +1,12 @@
 package org.crsoft.cartonplast.repository;
 
 import org.crsoft.cartonplast.model.Menu;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Menu Repository
@@ -13,5 +15,13 @@ import java.util.Collection;
  */
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Integer> {
+
     Collection<Menu> findAllByChild(Menu child);
+
+    Collection<Menu> findAllByValidToIsNull(Sort sort);
+
+    Optional<Menu> findByCodeAndValidToIsNull(Integer code);
+
+    Optional<Menu> findByUrlAndValidToIsNull(String url);
+
 }

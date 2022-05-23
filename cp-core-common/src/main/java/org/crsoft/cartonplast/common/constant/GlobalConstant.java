@@ -12,5 +12,7 @@ public class GlobalConstant {
     public static final String WEBAPP_TEST_URI = "https://webapp-test.carton-plast.com";
     public static final String CROSS_PRODUCTION = "https://webapp.carton-plast.com";
     public static final String V1_API_VERSION = "/api/v1";
+
+    public static final String URL_USER = "https://users-test.carton-plast.com";
 }
 
