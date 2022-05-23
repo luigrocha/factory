@@ -15,19 +15,21 @@ export class GlobalErrorHandler implements ErrorHandler {
       error = error.rejection; // get the error object
     }
 
-    this.zone.run(() => {
+    if (error) {
+
       let errorMessage = error.message;
 
-      if (error.status === 0) {
+      if (error?.status === 0) {
         errorMessage = 'No se pudo conectar con el servidor';
       } else {
         errorMessage = error.error ? error.error.message : error.message;
       }
 
-      this.toastService.errorHttp(
-        errorMessage,
-        error.status
-      )
-    });
+      this.zone.run(() =>
+        this.toastService.errorHttp(
+          errorMessage,
+          error.status
+        ));
+    }
   }
 }

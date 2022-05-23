@@ -9,7 +9,6 @@
                [rows]="pageSize"
                [paginator]="true"
                [globalFilterFields]="['id', 'name']"
-               [(selection)]="selectedClients"
                [rowHover]="true"
                dataKey="id"
                [showCurrentPageReport]="true"
@@ -28,15 +27,6 @@
                     icon="pi pi-plus"
                     (click)="addClient()"
             ></button>
-            <button
-                    pButton
-                    pRipple
-                    label="Eliminar"
-                    class="p-button-danger sm:mr-2 md:mr-2 lg:mr-2"
-                    icon="pi pi-trash"
-                    (click)="deleteSelectedClients()"
-                    *ngIf="selectedClients.length > 0"
-            ></button>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input pInputText
@@ -49,9 +39,6 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 3rem">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
             <th style="width: 5rem">
               Logo
             </th>
@@ -64,7 +51,6 @@
           </tr>
           <tr>
             <th></th>
-            <th></th>
             <th>
               <p-columnFilter type="text" field="id"></p-columnFilter>
             </th>
@@ -76,9 +62,6 @@
         </ng-template>
         <ng-template pTemplate="body" let-client>
           <tr>
-            <td>
-              <p-tableCheckbox [value]="client"></p-tableCheckbox>
-            </td>
             <td>
               <img *ngIf="client.imageUrl"
                    [alt]="client.name"
@@ -94,12 +77,12 @@
             </td>
             <td>
               <div class="flex justify-content-center">
-                <button pButton
-                        pRipple
-                        icon="pi pi-pencil"
-                        class="p-button-rounded p-button-outlined p-button-success mr-2"
-                        (click)="editClient(client)">
-                </button>
+<!--                <button pButton-->
+<!--                        pRipple-->
+<!--                        icon="pi pi-pencil"-->
+<!--                        class="p-button-rounded p-button-outlined p-button-success mr-2"-->
+<!--                        (click)="editClient(client)">-->
+<!--                </button>-->
                 <button pButton
                         pRipple
                         icon="pi pi-trash"
@@ -118,6 +101,8 @@
         </ng-template>
       </p-table>
     </div>
-    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+    <p-confirmDialog [style]="{ width: '450px' }"
+                     rejectButtonStyleClass="p-button-text"
+                     acceptButtonStyleClass="p-button-danger"></p-confirmDialog>
   </div>
 </div>

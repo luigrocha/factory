@@ -25,7 +25,6 @@ export class ClientsListComponent implements OnInit, OnDestroy {
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
   addDialogRef: DynamicDialogRef;
-  selectedClients: Client[] = [];
 
   constructor(
     private toastService: ToastService,
@@ -51,71 +50,20 @@ export class ClientsListComponent implements OnInit, OnDestroy {
   deleteClient(client: Client) {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar el client ' + client.name + '?',
+        'Estas seguro de eliminar el cliente ' + client.name + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.clientAService.delete(client.id).subscribe(
-        //   (res) => {
-        //     this.messageService.add({
-        //       severity: 'success',
-        //       summary: 'Éxito',
-        //       detail: 'Homopolímero Eliminado',
-        //       life: 3000,
-        //     });
-        //     this.clients = [];
-        //     this.getAllUsers();
-        //   },
-        //   (err) => {
-        //     this.messageService.add({
-        //       severity: 'error',
-        //       summary: 'Error',
-        //       detail: err.message,
-        //       life: 3000,
-        //     });
-        //   }
-        // );
-
-      },
-    });
-  }
-
-  deleteSelectedClients() {
-    this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar los clientes seleccionados?',
-      header: 'Confirmación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // this.selectedHomo.forEach(client => {
-        //   this.clientAService.delete(client.id).subscribe(
-        //     (res) => {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Éxito',
-        //         detail: 'Homopolímero Eliminado',
-        //         life: 3000,
-        //       });
-        //       this.clients = [];
-        //       this.getAllUsers();
-        //     },
-        //     (err) => {
-        //       this.messageService.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: err.message,
-        //         life: 3000,
-        //       });
-        //     }
-        //   );
-        // })
-
-        this.selectedClients = null;
-        // this.messageService.add({
-        //   severity: 'success',
-        //   summary: 'Correcto',
-        //   detail: 'Homopolímeros Elimnados',
-        //   life: 3000,
-        // });
+        this.clientService.deleteClient(client.id)
+          .subscribe(deleted => {
+            console.log(deleted);
+            if (deleted) {
+              this.toastService.success('Cliente eliminado correctamente');
+              this.getAllClients();
+            } else {
+              this.toastService.error('Error al eliminar el cliente');
+            }
+          });
       },
     });
   }
@@ -150,5 +98,8 @@ export class ClientsListComponent implements OnInit, OnDestroy {
     if (this.addDialogRef) {
       this.addDialogRef.close();
     }
+  }
+
+  editClient(client: Client): void {
   }
 }

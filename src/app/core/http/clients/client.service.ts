@@ -28,4 +28,8 @@ export class ClientService {
 
     return this.http.post<Client>(this.URL, body);
   }
+
+  deleteClient(id: string): Observable<boolean> {
+    return this.http.delete<boolean>(`${this.URL}/${id}`);
+  }
 }
