@@ -7,7 +7,6 @@ import org.crsoft.cartonplast.design.model.HomoPolymer;
 import org.crsoft.cartonplast.design.vo.res.HomoPolymerRes;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author lpillaga on 11/05/2022
@@ -22,6 +21,6 @@ public interface IHomoPolymerService {
 
     void updateHomoPolymerByCode(Integer code, HomoPolymer homoPolymer) throws NotFoundException, UpdateException;
 
-    void deleteHomoPolymerByCode(Integer code) throws NotFoundException, UpdateException;
+    void deleteHomoPolymerByCode(Integer code, String userName) throws NotFoundException, UpdateException;
 
 }

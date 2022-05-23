@@ -27,7 +27,7 @@ public class HomoPolymerController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<HomoPolymerRes>> getAllHomoPolymers(){
+    public ResponseEntity<Collection<HomoPolymerRes>> getAllHomoPolymers() {
         try {
             return ResponseEntity.ok(this.homoPolymerService.findAllValidHomopolymers());
         } catch (NotFoundException e) {
@@ -36,8 +36,9 @@ public class HomoPolymerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createHomoPolymer(@RequestBody HomoPolymer homoPolymer){
+    public ResponseEntity<?> createHomoPolymer(@RequestBody HomoPolymer homoPolymer, @RequestHeader("userName") String userName) {
         try {
+            homoPolymer.setCreatedBy(userName);
             this.homoPolymerService.createHomopolymer(homoPolymer);
             return ResponseEntity.ok().build();
         } catch (InsertException e) {
@@ -46,7 +47,7 @@ public class HomoPolymerController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<HomoPolymerRes> findHomoPolymerByCode(@PathVariable("code") Integer code){
+    public ResponseEntity<HomoPolymerRes> findHomoPolymerByCode(@PathVariable("code") Integer code) {
         try {
             return ResponseEntity.ok().body(this.homoPolymerService.findHomoPolymerByCode(code));
         } catch (NotFoundException e) {
@@ -55,9 +56,10 @@ public class HomoPolymerController {
     }
 
     @PatchMapping("/{code}")
-    public ResponseEntity<?> updateHomoPolymerByCode(@PathVariable("code") Integer code,@RequestBody HomoPolymer homoPolymer){
+    public ResponseEntity<?> updateHomoPolymerByCode(@PathVariable("code") Integer code, @RequestBody HomoPolymer homoPolymer, @RequestHeader("userName") String userName) {
         try {
-            this.homoPolymerService.updateHomoPolymerByCode(code,homoPolymer);
+            homoPolymer.setUpdatedBy(userName);
+            this.homoPolymerService.updateHomoPolymerByCode(code, homoPolymer);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -67,9 +69,9 @@ public class HomoPolymerController {
     }
 
     @DeleteMapping("/{code}")
-    public ResponseEntity<?> deleteHomoPolymerByCode(@PathVariable("code") Integer code){
+    public ResponseEntity<?> deleteHomoPolymerByCode(@PathVariable("code") Integer code, @RequestHeader("userName") String userName) {
         try {
-            this.homoPolymerService.deleteHomoPolymerByCode(code);
+            this.homoPolymerService.deleteHomoPolymerByCode(code, userName);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

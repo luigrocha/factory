@@ -17,5 +17,6 @@ public interface PrinterMapper {
     Printer printerResToPrinter(PrinterRes printerRes);
 
     PrinterShortRes printerToPrinterShortRes(Printer printer);
+
     List<PrinterRes> printersToPrintersRes(List<Printer> printers);
 }

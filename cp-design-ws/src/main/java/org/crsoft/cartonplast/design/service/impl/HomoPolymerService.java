@@ -24,10 +24,9 @@ import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
 @Slf4j
 public class HomoPolymerService implements IHomoPolymerService {
 
+    private static final String TABLE_NAME = "CATHOM";
     private final HomoPolymerRepository homoPolymerRepository;
     private final HomoPolymerMapper homoPolymerMapper;
-
-    private static final String TABLE_NAME = "CATHOM";
 
     public HomoPolymerService(
             HomoPolymerRepository homoPolymerRepository,
@@ -42,19 +41,18 @@ public class HomoPolymerService implements IHomoPolymerService {
             return this.homoPolymerMapper.homoPolymersToHomoPolymersRes(
                     homoPolymerRepository.findAllByValidToIsNullOrderByPercentageAsc()
             );
-        }catch (Exception e){
-             throw new NotFoundException(MESSAGE_NOT_FOUND);
+        } catch (Exception e) {
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
-
     }
 
     @Override
     public void createHomopolymer(HomoPolymer homoPolymer) throws InsertException {
         try {
             this.homoPolymerRepository.save(homoPolymer);
-        }catch (Exception e){
-            log.error("Error to createHomopolymer: {}",e.getMessage());
-            throw new InsertException(TABLE_NAME,MESSAGE_INSERT);
+        } catch (Exception e) {
+            log.error("Error to createHomopolymer: {}", e.getMessage());
+            throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
     }
 
@@ -69,32 +67,35 @@ public class HomoPolymerService implements IHomoPolymerService {
         try {
             homoPolymerByCode.setPercentage(homoPolymer.getPercentage());
             homoPolymerByCode.setHpCode(homoPolymer.getHpCode());
+            homoPolymerByCode.setUpdatedAt(LocalDateTime.now());
             this.homoPolymerRepository.save(homoPolymerByCode);
-        }catch (Exception e){
-            log.error("Error to updateHomoPolymerByCode: {}",e.getMessage());
-            throw new UpdateException(TABLE_NAME,MESSAGE_UPDATE);
+        } catch (Exception e) {
+            log.error("Error to updateHomoPolymerByCode: {}", e.getMessage());
+            throw new UpdateException(TABLE_NAME, MESSAGE_UPDATE);
         }
     }
 
     @Override
-    public void deleteHomoPolymerByCode(Integer code) throws NotFoundException, UpdateException {
+    public void deleteHomoPolymerByCode(Integer code, String userName) throws NotFoundException, UpdateException {
         HomoPolymer homoPolymer = getHomoPolymerByCode(code);
         try {
+            homoPolymer.setUpdatedBy(userName);
+            homoPolymer.setUpdatedAt(LocalDateTime.now());
             homoPolymer.setValidTo(LocalDateTime.now());
             this.homoPolymerRepository.save(homoPolymer);
-        }catch (Exception e){
-            log.error("Error to deleteHomoPolymerByCode: {}",e.getMessage());
-            throw new UpdateException(TABLE_NAME,MESSAGE_UPDATE);
+        } catch (Exception e) {
+            log.error("Error to deleteHomoPolymerByCode: {}", e.getMessage());
+            throw new UpdateException(TABLE_NAME, MESSAGE_DELETE);
         }
     }
 
     private HomoPolymer getHomoPolymerByCode(Integer code) throws NotFoundException {
         Optional<HomoPolymer> homoPolymer = this.homoPolymerRepository.findByIdAndValidToIsNull(code);
-        if(homoPolymer.isPresent()){
+        if (homoPolymer.isPresent()) {
             return homoPolymer.get();
         } else {
-        log.info("Error to getHomoPolymerByCode");
-        throw new NotFoundException(MESSAGE_NOT_FOUND);
+            log.info("Error to getHomoPolymerByCode {}", code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
 
