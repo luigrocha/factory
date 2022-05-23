@@ -7,7 +7,6 @@ import org.crsoft.cartonplast.design.model.Thickness;
 import org.crsoft.cartonplast.design.vo.res.ThicknessRes;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author lpillaga on 11/05/2022

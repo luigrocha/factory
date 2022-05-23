@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
 
@@ -37,7 +36,7 @@ public class ThicknessController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createThickness(@RequestBody Thickness thickness, @RequestHeader("userName") String userName){
+    public ResponseEntity<?> createThickness(@RequestBody Thickness thickness, @RequestHeader("userName") String userName) {
         try {
             thickness.setCreatedBy(userName);
             this.thicknessService.createThickness(thickness);
@@ -48,7 +47,7 @@ public class ThicknessController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<ThicknessRes> findThicknessByCode(@PathVariable("code")Integer code){
+    public ResponseEntity<ThicknessRes> findThicknessByCode(@PathVariable("code") Integer code) {
         try {
             return ResponseEntity.ok().body(this.thicknessService.findThicknessByCode(code));
         } catch (NotFoundException e) {
@@ -57,10 +56,10 @@ public class ThicknessController {
     }
 
     @PatchMapping("/{code}")
-    public ResponseEntity<?> updateThicknessByCode(@PathVariable("code") Integer code, @RequestBody Thickness thickness, @RequestHeader("userName") String userName){
+    public ResponseEntity<?> updateThicknessByCode(@PathVariable("code") Integer code, @RequestBody Thickness thickness, @RequestHeader("userName") String userName) {
         try {
             thickness.setUpdatedBy(userName);
-            this.thicknessService.updateThicknessByCode(code,thickness);
+            this.thicknessService.updateThicknessByCode(code, thickness);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -70,9 +69,9 @@ public class ThicknessController {
     }
 
     @DeleteMapping("/{code}")
-    public ResponseEntity<?> deleteThicknessByCode(@PathVariable("code") Integer code, @RequestHeader("userName") String userName){
+    public ResponseEntity<?> deleteThicknessByCode(@PathVariable("code") Integer code, @RequestHeader("userName") String userName) {
         try {
-            this.thicknessService.deleteThicknessByCode(code,userName);
+            this.thicknessService.deleteThicknessByCode(code, userName);
             return ResponseEntity.ok().build();
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();

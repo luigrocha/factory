@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
@@ -93,7 +92,7 @@ public class PrinterService implements IPrinterService {
 
     private Printer getPrinterByCode(Integer code) throws NotFoundException {
         Optional<Printer> printer = this.printerRepository.findByIdAndValidToIsNull(code);
-        if(printer.isPresent()){
+        if (printer.isPresent()) {
             return printer.get();
         } else {
             log.info("Error to getPrinterByCode {}", code);

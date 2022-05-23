@@ -7,7 +7,6 @@ import org.crsoft.cartonplast.design.model.Printer;
 import org.crsoft.cartonplast.design.vo.res.PrinterRes;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author lpillaga on 12/05/2022

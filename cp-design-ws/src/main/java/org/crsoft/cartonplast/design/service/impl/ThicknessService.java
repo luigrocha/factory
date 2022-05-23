@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
@@ -92,9 +91,9 @@ public class ThicknessService implements IThicknessService {
 
     private Thickness getThicknessByCode(Integer code) throws NotFoundException {
         Optional<Thickness> thickness = this.thicknessRepository.findByIdAndValidToIsNull(code);
-        if(thickness.isPresent()){
+        if (thickness.isPresent()) {
             return thickness.get();
-        }else{
+        } else {
             log.info("Error to getThicknessByCode {}", code);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
