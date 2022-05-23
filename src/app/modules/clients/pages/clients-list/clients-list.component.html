@@ -26,7 +26,7 @@
                     label="Nuevo"
                     class="sm:mr-2 md:mr-2 lg:mr-2"
                     icon="pi pi-plus"
-                    (click)="openNew()"
+                    (click)="addClient()"
             ></button>
             <button
                     pButton
@@ -118,25 +118,6 @@
         </ng-template>
       </p-table>
     </div>
-
-    <p-dialog [(visible)]="clientDialog" [style]="{ width: '450px' }" header="Detalles de Cliente" [modal]="true"
-      styleClass="p-fluid">
-      <ng-template pTemplate="content">
-        <div class="p-field">
-          <label for="name">Nombre</label>
-          <input type="text" pInputText id="name" [(ngModel)]="client.name" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !client.name">Campo nombre es requerido.</small>
-        </div>
-      </ng-template>
-
-      <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-          (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-          (click)="saveClient()"></button>
-      </ng-template>
-    </p-dialog>
-
     <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
   </div>
 </div>

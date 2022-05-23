@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
@@ -24,6 +24,8 @@ import { LoaderInterceptor } from 'src/app/core/interceptors/loader.interceptor'
 import { localString } from 'src/app/core/constants/date';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MessageService } from 'primeng/api';
+import { GlobalErrorHandler } from 'src/app/core/error/global-error-handler';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -75,7 +77,12 @@ export function HttpLoaderFactory(http: HttpClient) {
     {
       provide: LOCALE_ID,
       useValue: localString
-    }
+    },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler,
+    },
+    MessageService
   ],
   bootstrap: [AppComponent]
 })
