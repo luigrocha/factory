@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.client.service;
 
+import org.crsoft.cartonplast.client.vo.req.CreateClientReq;
 import org.crsoft.cartonplast.vo.res.ClientRes;
 
 import java.util.List;
@@ -10,5 +11,5 @@ import java.util.List;
 public interface IClientService {
 
     List<ClientRes> findAllValidClients();
-    void saveClient(ClientRes client);
+    ClientRes saveClient(CreateClientReq client);
 }

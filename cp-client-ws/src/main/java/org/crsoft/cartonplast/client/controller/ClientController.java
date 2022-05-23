@@ -1,16 +1,13 @@
 package org.crsoft.cartonplast.client.controller;
 
 import org.crsoft.cartonplast.client.service.impl.ClientService;
-import org.crsoft.cartonplast.common.service.impl.MinioService;
-import org.crsoft.cartonplast.common.util.FileUtil;
+import org.crsoft.cartonplast.client.vo.req.CreateClientReq;
 import org.crsoft.cartonplast.vo.res.ClientRes;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
@@ -20,11 +17,9 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
 public class ClientController {
 
     private final ClientService clientService;
-    private final MinioService minioService;
 
-    public ClientController(ClientService clientService, MinioService minioService) {
+    public ClientController(ClientService clientService) {
         this.clientService = clientService;
-        this.minioService = minioService;
     }
 
     @GetMapping
@@ -32,13 +27,18 @@ public class ClientController {
         return ResponseEntity.ok(this.clientService.findAllValidClients());
     }
 
-    @PostMapping
-    public String createClient(
-            MultipartFile file) {
-        String fileType = FileUtil.getFileType(file);
-        if (fileType != null) {
-            return minioService.putObject(file, "images", fileType);
-        }
-        return "";
+    @PostMapping(consumes = { "multipart/form-data" })
+    public ResponseEntity<ClientRes> createClient(
+            @RequestParam("id") String id,
+            @RequestParam("name") String name,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId) {
+        CreateClientReq createClientReq = CreateClientReq.builder()
+                .id(id)
+                .name(name)
+                .categoryId(categoryId)
+                .logo(file)
+                .build();
+        return ResponseEntity.ok(this.clientService.saveClient(createClientReq));
     }
 }

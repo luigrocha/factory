@@ -21,6 +21,8 @@ public interface ClientMapper {
 
     @WithoutAuditField
     @Mapping(target = "category", ignore = true)
+    @Mapping(target = "imageUrl", ignore = true)
+    @Mapping(target = "imageName", ignore = true)
     Client clientResToClient(ClientRes clientRes);
 
     List<ClientRes> clientsToClientsRes(List<Client> clients);

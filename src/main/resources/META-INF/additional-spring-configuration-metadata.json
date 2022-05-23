@@ -31,34 +31,14 @@
       "description": "Description for app.apiLicenseUrl."
     },
     {
-      "name": "minio.endpoint",
+      "name": "cp.config.ws.url",
       "type": "java.lang.String",
-      "description": "Description for minio.endpoint."
+      "description": "Description for cp.config.ws.url."
     },
     {
-      "name": "minio.bucket-name.secure",
+      "name": "minio.images.bucket-name",
       "type": "java.lang.String",
-      "description": "Description for minio.bucket-name.secure."
-    },
-    {
-      "name": "minio.access-key",
-      "type": "java.lang.String",
-      "description": "Description for minio.access-key."
-    },
-    {
-      "name": "minio.secret-key",
-      "type": "java.lang.String",
-      "description": "Description for minio.secret-key."
-    },
-    {
-      "name": "minio.bucket-name",
-      "type": "java.lang.String",
-      "description": "Description for minio.bucket-name."
-    },
-    {
-      "name": "minio.port",
-      "type": "java.lang.String",
-      "description": "Description for minio.port."
+      "description": "Description for minio.images.bucket-name."
     }
   ]
 }
