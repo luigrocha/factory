@@ -1,62 +1,49 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Die } from 'src/app/types/dies.types';
 import { DieService } from 'src/app/core/http/dies/die.service';
-import { TableHeader } from 'src/app/types/table.types';
+import { TableColumn } from 'src/app/types/table.types';
 import { Table } from 'primeng/table';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { debounceTime } from 'rxjs/operators';
+import { ConfirmationService } from 'primeng/api';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 
 @Component({
   selector: 'app-dies-list',
   templateUrl: './dies-list.component.html',
-  styleUrls: ['./dies-list.component.scss']
+  styleUrls: ['./dies-list.component.scss'],
+  providers: [
+    ConfirmationService
+  ]
 })
 export class DiesListComponent implements OnInit, AfterViewInit {
-  dies: Die[] = [];
-  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
-  globalFilterFields: string[] = ['name', 'code', 'description'];
-  selectedDies: Die[] = [];
-  initialPage: number = 0;
+
+  columns: TableColumn<Die>[];
   pageSize: number = 10;
+  dies: Die[] = [];
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+
+  globalFilterFields: string[] = ['name', 'code', 'description'];
+  initialPage: number = 0;
   actualPage: number = 0;
   query: string = null;
-  headers: TableHeader<Die>[] = [
-    { label: 'Troquel', property: 'name' },
-    { label: 'Fecha', property: 'createdDate' },
-    { label: 'Fabricante', property: 'name' },
-    { label: 'Máquina', property: 'name' },
-    { label: 'Prod', property: 'code' },
-    { label: 'Referencia', property: 'description' },
-    { label: 'Largo', property: 'length' },
-    { label: 'Ancho', property: 'width' },
-    { label: 'Cant1', property: 'quantity' },
-    { label: 'Cant. largo', property: 'quantityLength' },
-    { label: 'Sep. largo', property: 'separationLength' },
-    { label: 'Cant. ancho', property: 'quantityWidth' },
-    { label: 'Sep. ancho', property: 'separationWidth' },
-    { label: 'Largo lámina', property: 'leafLength' },
-    { label: 'Ancho lámina', property: 'leafWidth' },
-    { label: 'Área', property: 'area' },
-    { label: 'GSMDIS', property: 'gsmdis' },
-    // { label: 'DesbMúltiple', property: 'dsbMultiple' },
-    // { label: 'Observaciones.', property: 'observations' },
-    { label: 'Estado', property: 'status' },
-  ];
 
   @ViewChild('dt') table: Table;
+
   constructor(
     private dieService: DieService,
     private breadcrumbService: BreadcrumbService
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Troqueles', routerLink: ['/home/troqueles'] }
+      {label: 'Diseño'},
+      {label: 'Troqueles', routerLink: ['/home/troqueles']}
     ]);
   }
 
   ngAfterViewInit(): void {
     this.table.onPage
-      .subscribe(({ first, rows }) => {
+      .subscribe(({first, rows}) => {
         this.actualPage = first / rows
         this.pageSize = rows;
         this.getDies(this.actualPage, this.pageSize, this.query);
@@ -65,7 +52,7 @@ export class DiesListComponent implements OnInit, AfterViewInit {
       .pipe(
         debounceTime(500)
       )
-      .subscribe(({ filters }) => {
+      .subscribe(({filters}) => {
         const isEmpty = Object.keys(filters).length === 0;
         if (isEmpty) {
           this.query = null;
@@ -79,6 +66,29 @@ export class DiesListComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getDies(this.initialPage, this.pageSize, this.query);
+
+    this.columns = [
+      {header: 'Troquel', field: 'name'},
+      {header: 'Fecha', field: 'createdDate'},
+      {header: 'Fabricante', field: 'name'},
+      {header: 'Máquina', field: 'name'},
+      {header: 'Prod', field: 'code'},
+      {header: 'Referencia', field: 'description'},
+      {header: 'Largo', field: 'length'},
+      {header: 'Ancho', field: 'width'},
+      {header: 'Cant1', field: 'quantity'},
+      {header: 'Cant. largo', field: 'quantityLength'},
+      {header: 'Sep. largo', field: 'separationLength'},
+      {header: 'Cant. ancho', field: 'quantityWidth'},
+      {header: 'Sep. ancho', field: 'separationWidth'},
+      {header: 'Largo lámina', field: 'leafLength'},
+      {header: 'Ancho lámina', field: 'leafWidth'},
+      {header: 'Área', field: 'area'},
+      {header: 'GSMDIS', field: 'gsmdis'},
+      // { label: 'DesbMúltiple', field: 'dsbMultiple' },
+      // { label: 'Observaciones.', field: 'observations' },
+      {header: 'Estado', field: 'status'},
+    ];
   }
 
   private getDies(page: number, size: number, query: string): void {

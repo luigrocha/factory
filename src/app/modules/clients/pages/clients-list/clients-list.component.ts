@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TableColumn } from 'src/app/types/table.types';
 import { Client, CreateClient } from 'src/app/types/client.types';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { ClientService } from 'src/app/core/http/clients/client.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';

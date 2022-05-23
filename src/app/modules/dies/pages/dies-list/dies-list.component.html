@@ -4,15 +4,17 @@
       <p-table
         #dt
         [value]="dies"
-        dataKey="id"
-        styleClass="p-datatable-sm"
-        [rowHover]="true"
+        [columns]="columns"
         [rows]="pageSize"
         [paginator]="true"
-        lazy="true"
-        [(selection)]="selectedDies"
-        [rowsPerPageOptions]="rowsPerPageOptions"
         [globalFilterFields]="globalFilterFields"
+        [rowHover]="true"
+        dataKey="id"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="tableReportTemplate"
+        styleClass="p-datatable-sm"
+        lazy="true"
+        [rowsPerPageOptions]="rowsPerPageOptions"
         responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
@@ -25,15 +27,6 @@
               class="mr-2"
               icon="pi pi-plus"
               (click)="addNewDie(dt)"
-            ></button>
-            <button
-              pButton
-              pRipple
-              label="Eliminar"
-              class="p-button-danger mr-2"
-              icon="pi pi-trash"
-              (click)="deleteSelectedDies()"
-              *ngIf="selectedDies.length > 0"
             ></button>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
@@ -50,22 +43,13 @@
 
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 3rem">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th
-              *ngFor="let header of headers">
-              <div class="p-d-flex p-jc-between p-ai-center">
-                {{ header.label }}
-              </div>
+            <th *ngFor="let col of columns">
+              {{col.header}}
             </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-die>
           <tr class="p-selectable-row">
-            <td>
-              <p-tableCheckbox [value]="die"></p-tableCheckbox>
-            </td>
             <td style="min-width: 15rem">
               {{ die.name }}
             </td>
