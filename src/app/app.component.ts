@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { AuthService } from './core/auth/service/auth.service';
 import { PreferencesService } from './core/http/preferences/preferences.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -15,7 +16,8 @@ export class AppComponent implements OnInit {
     private primengConfig: PrimeNGConfig,
     private authService: AuthService,
     private preferenceService: PreferencesService,
-    private config: PrimeNGConfig
+    private config: PrimeNGConfig,
+    private translateService: TranslateService,
   ) {
   }
 
@@ -38,6 +40,14 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.primengConfig.ripple = true;
     this.getPreferencesByUsername();
+    this.setTranslation();
+  }
+
+  setTranslation(): void {
+    this.translateService.addLangs(['es']);
+    this.translateService.setDefaultLang('es');
+    this.translateService.use('es');
+    this.translateService.get('primeng').subscribe(res => this.config.setTranslation(res));
   }
 
   getPreferencesByUsername() {

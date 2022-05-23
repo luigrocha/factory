@@ -1,6 +1,6 @@
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import localeES from '@angular/common/locales/es-419';
 
@@ -22,6 +22,8 @@ import { LayoutModule } from 'src/app/layout/layout.module';
 import { CoreModule } from 'src/app/core/core.module';
 import { LoaderInterceptor } from 'src/app/core/interceptors/loader.interceptor';
 import { localString } from 'src/app/core/constants/date';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -30,6 +32,11 @@ FullCalendarModule.registerPlugins([
 ]);
 
 registerLocaleData(localeES, localString);
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 
 @NgModule({
@@ -43,7 +50,14 @@ registerLocaleData(localeES, localString);
 
     CoreModule,
     LayoutModule,
-    SharedModule
+    SharedModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   declarations: [
     AppComponent
