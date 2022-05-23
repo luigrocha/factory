@@ -5,6 +5,8 @@ import { TableHeader } from 'src/app/types/table.types';
 import { Table } from 'primeng/table';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { debounceTime } from 'rxjs/operators';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-dies-list',
@@ -55,11 +57,13 @@ export class DiesListComponent implements OnInit, AfterViewInit {
     // { label: 'Observaciones.', property: 'observations' },
     { label: 'Estado', property: 'status' },
   ];
+  permissionsPage: TypePermission[];
 
   @ViewChild('dt') table: Table;
   constructor(
     private dieService: DieService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -91,6 +95,7 @@ export class DiesListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.getPermissionsPage();
     this.getDies(this.initialPage, this.pageSize, this.query);
   }
 
@@ -109,4 +114,20 @@ export class DiesListComponent implements OnInit, AfterViewInit {
   deleteSelectedDies(): void {
 
   }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
+  }
+
 }

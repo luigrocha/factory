@@ -10,11 +10,13 @@
             <h5 class="m-0">Gestión de Clientes</h5>
 
             <div class="flex">
-              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
+              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"
+                *ngIf="isAllow(1)"></button>
               <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mr-2"
-                (click)="deleteSelectedClients()" [disabled]="!selectedClient || !selectedClient.length"></button>
+                (click)="deleteSelectedClients()" [disabled]="!selectedClient || !selectedClient.length"
+                *ngIf="isAllow(4)"></button>
               <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mr-2"
-                (click)="dt.exportCSV()"></button>
+                (click)="dt.exportCSV()" *ngIf="isAllow(5)"></button>
 
               <span class="block mt-2 md:mt-0 p-input-icon-left">
                 <i class="pi pi-search"></i>
@@ -52,10 +54,10 @@
             </td>
             <td style="display: flex; justify-content: space-evenly">
               <button pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-success p-mr-2"
-                (click)="editClient(client)"></button>
+                class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editClient(client)"
+                *ngIf="isAllow(2)"></button>
               <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
-                (click)="deleteClient(client)"></button>
+                (click)="deleteClient(client)" *ngIf="isAllow(4)"></button>
             </td>
           </tr>
         </ng-template>

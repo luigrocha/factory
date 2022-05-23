@@ -7,6 +7,8 @@ import { TableHeader } from 'src/app/types/table.types';
 import { Die } from 'src/app/types/dies.types';
 import { Table } from 'primeng/table';
 import { debounceTime } from 'rxjs/operators';
+import { TypePermission } from 'src/app/types/permission';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 
 @Component({
   selector: 'app-cireles-list',
@@ -38,38 +40,42 @@ export class CirelesListComponent implements OnInit {
   query: string = null;
 
   headers: TableHeader<Cirel>[] = [
-    {label: 'Impresión', property: 'print'},
-    {label: 'Impresora', property: 'printer'},
-    {label: 'Descripción', property: 'description'},
-    {label: 'Colores', property: 'cyrelColors'},
+    { label: 'Impresión', property: 'print' },
+    { label: 'Impresora', property: 'printer' },
+    { label: 'Descripción', property: 'description' },
+    { label: 'Colores', property: 'cyrelColors' },
     // {label: 'MB Lámina', property: 'mbLeaf'},
-    {label: 'Troquel', property: 'die'},
-    {label: 'Observaciones', property: 'observation'}
+    { label: 'Troquel', property: 'die' },
+    { label: 'Observaciones', property: 'observation' }
     // {label: 'Descripción 2', property: 'description2'}
   ];
 
   subHeaders: TableHeader<CirelColor>[] = [
-    {label: 'Tipo', property: 'colorType'},
-    {label: 'Número color', property: 'index'},
-    {label: 'Color', property: 'color'}
+    { label: 'Tipo', property: 'colorType' },
+    { label: 'Número color', property: 'index' },
+    { label: 'Color', property: 'color' }
   ];
 
 
   @ViewChild('dt') table: Table;
+
+  permissionsPage: TypePermission[];
 
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private cirelService: CirelService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
-      {label: 'Diseño'},
-      {label: 'Cireles', routerLink: ['/home/cireles']},
+      { label: 'Diseño' },
+      { label: 'Cireles', routerLink: ['/home/cireles'] },
     ]);
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getCirels(this.initialPage, this.pageSize, this.query);
   }
 
@@ -125,5 +131,20 @@ export class CirelesListComponent implements OnInit {
 
   private editCirel(cirel: any): void {
 
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 }

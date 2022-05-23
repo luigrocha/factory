@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Role, RoleType } from 'src/app/types/role.types';
+import { Role, RoleEnum, RoleType } from 'src/app/types/role.types';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -29,9 +29,9 @@ export class RoleService {
 
   getRoleType(name: string): RoleType {
     switch (name) {
-      case 'realm-admin':
+      case RoleEnum.ADMIN:
         return { name: 'Administrador', color: 'warning' };
-      case 'realm-supervisor':
+      case RoleEnum.SUPERVISOR:
         return { name: 'Supervisor', color: 'info' };
       default:
         return { name: 'Operador', color: 'success' };
