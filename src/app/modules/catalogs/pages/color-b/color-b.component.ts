@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ColorAService } from 'src/app/core/http/catalogs/color-a/color-a.service';
 import { ColorBService } from 'src/app/core/http/catalogs/color-b/color-b.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { ColorA } from 'src/app/types/colorA.types';
 import { ColorB } from 'src/app/types/colorB.types';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-color-b',
@@ -63,12 +65,15 @@ export class ColorBComponent implements OnInit {
 
   isEditing: boolean;
 
+  permissionsPage: TypePermission[];
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private colorBService: ColorBService,
     private colorAService: ColorAService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -78,6 +83,7 @@ export class ColorBComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAll();
     this.getColorsA();
     this.cols = [
@@ -263,6 +269,21 @@ export class ColorBComponent implements OnInit {
 
   isValidToSave(): boolean {
     return this.color.id && this.color.colorA && this.color.index && this.color.dosage && this.color.description ? true : false;
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 
 }

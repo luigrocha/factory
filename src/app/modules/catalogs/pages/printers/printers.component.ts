@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { PrinterService } from 'src/app/core/http/catalogs/printers/printer.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { TypePermission } from 'src/app/types/permission';
 import { Printer } from 'src/app/types/printer.types';
 
 @Component({
@@ -55,11 +57,14 @@ export class PrintersComponent implements OnInit {
 
   loading = true;
 
+  permissionsPage: TypePermission[];
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private printerService: PrinterService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -69,6 +74,7 @@ export class PrintersComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAll();
     this.cols = [
       { field: 'name', header: 'Nombre' },
@@ -95,27 +101,26 @@ export class PrintersComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.printerService.delete(printer.id).subscribe(
-        //   (res) => {
-        //     this.messageService.add({
-        //       severity: 'success',
-        //       summary: 'Éxito',
-        //       detail: 'Homopolímero Eliminado',
-        //       life: 3000,
-        //     });
-        //     this.printers = [];
-        //     this.getAllUsers();
-        //   },
-        //   (err) => {
-        //     this.messageService.add({
-        //       severity: 'error',
-        //       summary: 'Error',
-        //       detail: err.message,
-        //       life: 3000,
-        //     });
-        //   }
-        // );
-
+        this.printerService.delete(printer.id).subscribe(
+          (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Impresora Eliminada',
+              life: 3000,
+            });
+            this.printers = [];
+            this.getAll();
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
       },
     });
   }
@@ -126,34 +131,33 @@ export class PrintersComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.selectedHomo.forEach(printer => {
-        //   this.printerService.delete(printer.id).subscribe(
-        //     (res) => {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Éxito',
-        //         detail: 'Homopolímero Eliminado',
-        //         life: 3000,
-        //       });
-        //       this.printers = [];
-        //       this.getAllUsers();
-        //     },
-        //     (err) => {
-        //       this.messageService.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: err.message,
-        //         life: 3000,
-        //       });
-        //     }
-        //   );
-        // })
-
+        this.selectedPrinter.forEach(printer => {
+          this.printerService.delete(printer.id).subscribe(
+            (res) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Impresora Eliminada',
+                life: 3000,
+              });
+              this.printers = [];
+              this.getAll();
+            },
+            (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message,
+                life: 3000,
+              });
+            }
+          );
+        });
         this.selectedPrinter = null;
         this.messageService.add({
           severity: 'success',
           summary: 'Correcto',
-          detail: 'Homopolímeros Elimnados',
+          detail: 'Impresoras Elimnadas',
           life: 3000,
         });
       },
@@ -164,47 +168,56 @@ export class PrintersComponent implements OnInit {
     this.submitted = true;
 
     if (this.printer.id) {
-      // this.printerService.update(this.printer.id, this.printer).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Actualizado',
-      //       life: 3000,
-      //     });
-      //     this.printers = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+      this.printerService.update(this.printer.id, this.printer).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Impresora Actualizada',
+            life: 3000,
+          });
+          this.printers = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
+    } else if (this.isValidToSave()) {
+      this.printerService.create(this.printer).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Impresora Creada',
+            life: 3000,
+          });
+          this.printers = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
     } else {
-      // this.printerService.create(this.printer).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Creado',
-      //       life: 3000,
-      //     });
-      //     this.printers = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Atención',
+        detail: 'Llene todos los campos',
+        life: 3000,
+      });
+      this.printerDialog = true;
+      return;
     }
 
     this.printers = [...this.printers];
@@ -222,6 +235,25 @@ export class PrintersComponent implements OnInit {
       this.printers = printers;
       this.loading = false;
     });
+  }
+
+  isValidToSave(): boolean {
+    return this.printer.name && this.printer.numColors && this.printer.description ? true : false;
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 
 }
