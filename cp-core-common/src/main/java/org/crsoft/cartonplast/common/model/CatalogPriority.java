@@ -25,13 +25,13 @@ public class CatalogPriority {
     )
     private String id;
 
-    @Column(name = "CATPRI_NAME" ,nullable = false)
+    @Column(name = "CATPRI_NAME", nullable = false)
     private String name;
 
-    @Column(name = "CATPRI_TYPE" ,nullable = false)
+    @Column(name = "CATPRI_TYPE", nullable = false)
     private String type;
 
-    @Column(name = "CATPRI_ICON" ,nullable = false)
+    @Column(name = "CATPRI_ICON", nullable = false)
     private String icon;
 
     @Column(name = "CATPRI_COLOR")

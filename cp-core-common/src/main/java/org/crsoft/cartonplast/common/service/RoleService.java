@@ -27,16 +27,16 @@ public class RoleService {
         headers.add("Content-Type", "application/x-www-form-urlencoded");
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("grant_type","password");
-        map.add("client_id","carton-plast-frontend");
-        map.add("username","cpadmin");
-        map.add("password","Password01");
+        map.add("grant_type", "password");
+        map.add("client_id", "carton-plast-frontend");
+        map.add("username", "cpadmin");
+        map.add("password", "Password01");
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
         try {
             ResponseEntity<TokenVo> exchange = new RestTemplate().exchange(urlToken, HttpMethod.POST, entity, TokenVo.class);
-                return Objects.requireNonNull(exchange.getBody()).getAccess_token();
-        }catch (Exception e){
+            return Objects.requireNonNull(exchange.getBody()).getAccess_token();
+        } catch (Exception e) {
             throw new Exception();
         }
     }
@@ -46,15 +46,15 @@ public class RoleService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("Authorization", "Bearer "+getToken());
+            headers.add("Authorization", "Bearer " + getToken());
 
             HttpEntity request = new HttpEntity(headers);
 
             ResponseEntity<Collection> exchange = new RestTemplate().exchange(url, HttpMethod.GET, request, Collection.class);
 
-            return  exchange.getBody();
-        }catch (Exception e){
-            throw  new Exception("No data");
+            return exchange.getBody();
+        } catch (Exception e) {
+            throw new Exception("No data");
         }
     }
 }

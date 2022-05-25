@@ -1,7 +1,7 @@
 package org.crsoft.cartonplast.controller;
 
-import org.crsoft.cartonplast.exeption.NotFoundException;
-import org.crsoft.cartonplast.exeption.UpdateException;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.service.IPermissionService;
 import org.crsoft.cartonplast.vo.req.PermissionsPageReq;
 import org.crsoft.cartonplast.vo.req.TypePermissionReq;

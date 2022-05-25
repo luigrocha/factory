@@ -23,10 +23,6 @@ import java.util.stream.Collectors;
 })
 public interface DieMapper {
 
-    @Mapping(target = "manufacturer", source = "manufacturer.name")
-    @Mapping(target = "machines", source = "dieMachines", qualifiedByName = "generateMachines")
-    DieRes dieToDieRes(Die die);
-
     @Named("generateMachines")
     static List<String> generateMachines(List<DieMachine> dieMachines) {
         if (dieMachines.isEmpty()) {
@@ -36,6 +32,10 @@ public interface DieMapper {
                 .map(dieMachine -> dieMachine.getMachine().getName())
                 .collect(Collectors.toList());
     }
+
+    @Mapping(target = "manufacturer", source = "manufacturer.name")
+    @Mapping(target = "machines", source = "dieMachines", qualifiedByName = "generateMachines")
+    DieRes dieToDieRes(Die die);
 
     @Mapping(target = "manufacturer", ignore = true)
     @Mapping(target = "status", ignore = true)

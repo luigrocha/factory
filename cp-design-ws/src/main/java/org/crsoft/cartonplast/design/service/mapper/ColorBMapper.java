@@ -7,7 +7,7 @@ import org.crsoft.cartonplast.design.vo.res.ColorBShortRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author lpillaga on 11/05/2022
@@ -23,5 +23,5 @@ public interface ColorBMapper {
 
     ColorBShortRes colorBToColorBShortRes(ColorB colorB);
 
-    List<ColorBRes> colorsBToColorsBRes(List<ColorB> colorsB);
+    Collection<ColorBRes> colorsBToColorsBRes(Collection<ColorB> colorsB);
 }

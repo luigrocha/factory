@@ -6,7 +6,7 @@ import org.crsoft.cartonplast.design.vo.res.PrinterRes;
 import org.crsoft.cartonplast.design.vo.res.PrinterShortRes;
 import org.mapstruct.Mapper;
 
-import java.util.List;
+import java.util.Collection;
 
 @Mapper(componentModel = "spring")
 public interface PrinterMapper {
@@ -17,5 +17,6 @@ public interface PrinterMapper {
     Printer printerResToPrinter(PrinterRes printerRes);
 
     PrinterShortRes printerToPrinterShortRes(Printer printer);
-    List<PrinterRes> printersToPrintersRes(List<Printer> printers);
+
+    Collection<PrinterRes> printersToPrintersRes(Collection<Printer> printers);
 }

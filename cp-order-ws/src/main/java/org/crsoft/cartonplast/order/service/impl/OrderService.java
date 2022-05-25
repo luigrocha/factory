@@ -25,6 +25,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public Collection<OrderRes> findAllValidOrders() {
-        return this.orderMapper.ordersToOrdersRes(this.orderRepository.findAllInOrder());
+        return this.orderMapper.ordersToOrdersRes(this.orderRepository.findAllByValidToIsNullOrderByCreatedAtDesc());
     }
+
 }

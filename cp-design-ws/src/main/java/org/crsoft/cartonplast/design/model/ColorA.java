@@ -34,7 +34,6 @@ public class ColorA {
 
     @Column(
             name = "CATCOP_NAME",
-            updatable = false,
             nullable = false
     )
     private String name;

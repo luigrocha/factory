@@ -5,7 +5,7 @@ import org.crsoft.cartonplast.design.model.HomoPolymer;
 import org.crsoft.cartonplast.design.vo.res.HomoPolymerRes;
 import org.mapstruct.Mapper;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author lpillaga on 11/05/2022
@@ -18,5 +18,5 @@ public interface HomoPolymerMapper {
     @WithoutAuditField
     HomoPolymer homoPolymerResToHomoPolymer(HomoPolymerRes homoPolymerRes);
 
-    List<HomoPolymerRes> homoPolymersToHomoPolymersRes(List<HomoPolymer> homoPolymers);
+    Collection<HomoPolymerRes> homoPolymersToHomoPolymersRes(Collection<HomoPolymer> homoPolymers);
 }
