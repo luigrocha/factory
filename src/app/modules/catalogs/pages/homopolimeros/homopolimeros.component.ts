@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { HomopolimerosService } from 'src/app/core/http/catalogs/homopolimeros/homopolimeros.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Homopolimero } from 'src/app/types/homopolimero.types';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-homopolimeros',
@@ -55,11 +57,14 @@ export class HomopolimerosComponent implements OnInit {
 
   loading = true;
 
+  permissionsPage: TypePermission[];
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
-    private homoService: HomopolimerosService
+    private homoService: HomopolimerosService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -69,6 +74,7 @@ export class HomopolimerosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAll();
     this.cols = [
       { field: 'percent', header: 'Porcentaje' },
@@ -94,27 +100,26 @@ export class HomopolimerosComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.homoService.delete(homo.id).subscribe(
-        //   (res) => {
-        //     this.messageService.add({
-        //       severity: 'success',
-        //       summary: 'Éxito',
-        //       detail: 'Homopolímero Eliminado',
-        //       life: 3000,
-        //     });
-        //     this.homos = [];
-        //     this.getAllUsers();
-        //   },
-        //   (err) => {
-        //     this.messageService.add({
-        //       severity: 'error',
-        //       summary: 'Error',
-        //       detail: err.message,
-        //       life: 3000,
-        //     });
-        //   }
-        // );
-
+        this.homoService.delete(homo.id).subscribe(
+          (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Homopolímero Eliminado',
+              life: 3000,
+            });
+            this.homos = [];
+            this.getAll();
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
       },
     });
   }
@@ -125,29 +130,28 @@ export class HomopolimerosComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.selectedHomo.forEach(homo => {
-        //   this.homoService.delete(homo.id).subscribe(
-        //     (res) => {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Éxito',
-        //         detail: 'Homopolímero Eliminado',
-        //         life: 3000,
-        //       });
-        //       this.homos = [];
-        //       this.getAllUsers();
-        //     },
-        //     (err) => {
-        //       this.messageService.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: err.message,
-        //         life: 3000,
-        //       });
-        //     }
-        //   );
-        // })
-
+        this.selectedHomo.forEach(homo => {
+          this.homoService.delete(homo.id).subscribe(
+            (res) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Homopolímero Eliminado',
+                life: 3000,
+              });
+              this.homos = [];
+              this.getAll();
+            },
+            (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message,
+                life: 3000,
+              });
+            }
+          );
+        });
         this.selectedHomo = null;
         this.messageService.add({
           severity: 'success',
@@ -161,49 +165,57 @@ export class HomopolimerosComponent implements OnInit {
 
   saveHomo() {
     this.submitted = true;
-
     if (this.homo.id) {
-      // this.homoService.update(this.homo.id, this.homo).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Actualizado',
-      //       life: 3000,
-      //     });
-      //     this.homos = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+      this.homoService.update(this.homo.id, this.homo).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Homopolímero Actualizado',
+            life: 3000,
+          });
+          this.homos = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
+    } else if (this.isValidToSave()) {
+      this.homoService.create(this.homo).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Homopolímero Creado',
+            life: 3000,
+          });
+          this.homos = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
     } else {
-      // this.homoService.create(this.homo).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Creado',
-      //       life: 3000,
-      //     });
-      //     this.homos = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Atención',
+        detail: 'Llene todos los campos',
+        life: 3000,
+      });
+      this.homoDialog = true;
+      return;
     }
 
     this.homos = [...this.homos];
@@ -221,6 +233,25 @@ export class HomopolimerosComponent implements OnInit {
       this.homos = homos;
       this.loading = false;
     });
+  }
+
+  isValidToSave(): boolean {
+    return this.homo.percentage && this.homo.hpCode ? true : false;
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 
 }

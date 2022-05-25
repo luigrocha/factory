@@ -36,6 +36,10 @@
               <div *ngIf="col.field == 'icon'">
                 <i class="{{ rowData[col.field] }}"></i>
               </div>
+              <div *ngIf="col.field == 'permission'">
+                <button pButton pRipple icon="pi pi-user-edit" class="p-button-rounded p-button-outlined"
+                  (click)="openPermission(rowData)"></button>
+              </div>
             </td>
             <td style="text-align: center">
               <button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-outlined mr-2"
@@ -112,6 +116,31 @@
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
           (click)="hideDialog()"></button>
         <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="permissionDialog" [style]="{ width: '50%', height: '500px' }"
+      [header]="headerPermission + item?.label" [modal]="true" styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <div *ngFor="let per of permissions">
+          <h5>{{getRoleType(per.role).name}}</h5>
+          <div class="grid">
+            <div class="col-6 md:col-2" *ngFor="let item of per.typePermission">
+              <div class="field-checkbox">
+                <p-checkbox name="item.name" [value]="item.name" [(ngModel)]="item.flag" binary="true"></p-checkbox>
+                <label>{{item.name}}</label>
+              </div>
+            </div>
+          </div>
+          <p-divider></p-divider>
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hidePermissionDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+          (click)="savePermisions(item.id)"></button>
       </ng-template>
     </p-dialog>
 

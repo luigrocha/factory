@@ -5,6 +5,8 @@ import { RoleType } from 'src/app/types/role.types';
 import { RoleService } from 'src/app/core/http/roles/role.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { UsersService } from 'src/app/core/http/users/users.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-users-list',
@@ -57,12 +59,15 @@ export class UsersListComponent implements OnInit {
 
   loading = true;
 
+  permissionsPage: TypePermission[];
+
   constructor(
     private userService: UsersService,
     private roleService: RoleService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Administración' },
@@ -71,6 +76,7 @@ export class UsersListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAllUsers();
     this.cols = [
       { field: 'userName', header: 'Usuario' },
@@ -271,4 +277,20 @@ export class UsersListComponent implements OnInit {
   getRoleType(name: string): RoleType {
     return this.roleService.getRoleType(name);
   }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
+  }
+
 }

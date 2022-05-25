@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ThicknessService } from 'src/app/core/http/catalogs/thickness/thickness.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { TypePermission } from 'src/app/types/permission';
 import { Thickness } from 'src/app/types/thickness.types';
 
 @Component({
@@ -55,11 +57,14 @@ export class ThicknessComponent implements OnInit {
 
   loading = true;
 
+  permissionsPage: TypePermission[];
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private thicknessService: ThicknessService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -69,6 +74,7 @@ export class ThicknessComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAll();
     this.cols = [
       { field: 'weight', header: 'Peso' },
@@ -95,27 +101,26 @@ export class ThicknessComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.thicknessService.delete(thicknes.id).subscribe(
-        //   (res) => {
-        //     this.messageService.add({
-        //       severity: 'success',
-        //       summary: 'Éxito',
-        //       detail: 'Homopolímero Eliminado',
-        //       life: 3000,
-        //     });
-        //     this.thickness = [];
-        //     this.getAllUsers();
-        //   },
-        //   (err) => {
-        //     this.messageService.add({
-        //       severity: 'error',
-        //       summary: 'Error',
-        //       detail: err.message,
-        //       life: 3000,
-        //     });
-        //   }
-        // );
-
+        this.thicknessService.delete(thicknes.id).subscribe(
+          (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Grosor Eliminado',
+              life: 3000,
+            });
+            this.thickness = [];
+            this.getAll();
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
       },
     });
   }
@@ -126,34 +131,34 @@ export class ThicknessComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.selectedHomo.forEach(thicknes => {
-        //   this.thicknessService.delete(thicknes.id).subscribe(
-        //     (res) => {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Éxito',
-        //         detail: 'Homopolímero Eliminado',
-        //         life: 3000,
-        //       });
-        //       this.thickness = [];
-        //       this.getAllUsers();
-        //     },
-        //     (err) => {
-        //       this.messageService.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: err.message,
-        //         life: 3000,
-        //       });
-        //     }
-        //   );
-        // })
+        this.selectedThicknes.forEach(thicknes => {
+          this.thicknessService.delete(thicknes.id).subscribe(
+            (res) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Grosor Eliminado',
+                life: 3000,
+              });
+              this.thickness = [];
+              this.getAll();
+            },
+            (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message,
+                life: 3000,
+              });
+            }
+          );
+        });
 
         this.selectedThicknes = null;
         this.messageService.add({
           severity: 'success',
           summary: 'Correcto',
-          detail: 'Homopolímeros Elimnados',
+          detail: 'Grosores Elimnados',
           life: 3000,
         });
       },
@@ -164,48 +169,58 @@ export class ThicknessComponent implements OnInit {
     this.submitted = true;
 
     if (this.thicknes.id) {
-      // this.thicknessService.update(this.thicknes.id, this.thicknes).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Actualizado',
-      //       life: 3000,
-      //     });
-      //     this.thickness = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+      this.thicknessService.update(this.thicknes.id, this.thicknes).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Grosor Actualizado',
+            life: 3000,
+          });
+          this.thickness = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
+    } else if (this.isValidToSave()) {
+      this.thicknessService.create(this.thicknes).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Grosor Creado',
+            life: 3000,
+          });
+          this.thickness = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
     } else {
-      // this.thicknessService.create(this.thicknes).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Creado',
-      //       life: 3000,
-      //     });
-      //     this.thickness = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Atención',
+        detail: 'Llene todos los campos',
+        life: 3000,
+      });
+      this.thicknesDialog = true;
+      return;
     }
+
 
     this.thickness = [...this.thickness];
     this.thicknesDialog = false;
@@ -222,6 +237,25 @@ export class ThicknessComponent implements OnInit {
       this.thickness = thickness;
       this.loading = false;
     });
+  }
+
+  isValidToSave(): boolean {
+    return this.thicknes.weight && this.thicknes.thickness && this.thicknes.usd ? true : false;
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 
 }
