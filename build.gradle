@@ -2,10 +2,12 @@ plugins {
 	id 'org.springframework.boot' version '2.7.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'jacoco'
+	id 'org.sonarqube' version '3.3'
 }
 
 group = 'org.crsoft.cartonplast'
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 sourceCompatibility = '11'
 
 configurations {
@@ -14,22 +16,36 @@ configurations {
 	}
 }
 
+jar {
+	enabled = false
+}
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.flywaydb:flyway-core'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.0'
+	implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.0'
+	implementation 'org.flywaydb:flyway-core:8.0.5'
+	implementation 'io.minio:minio:8.4.1'
+	implementation 'cn.hutool:hutool-all:5.8.1'
+	implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+	compileOnly 'org.projectlombok:lombok:1.18.24'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.0'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.7.0'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+	}
 }
