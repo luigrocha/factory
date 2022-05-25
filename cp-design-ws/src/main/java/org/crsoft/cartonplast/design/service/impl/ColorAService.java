@@ -88,8 +88,8 @@ public class ColorAService implements IColorAService {
         }
     }
 
-
-    private ColorA getColorAById(String id) throws NotFoundException {
+    @Override
+    public ColorA getColorAById(String id) throws NotFoundException {
         Optional<ColorA> color = this.colorARepository.findByIdAndValidToIsNull(id);
         if (color.isPresent()) {
             return color.get();

@@ -15,7 +15,7 @@ public interface IColorBService {
 
     Collection<ColorBRes> findAllValidColors() throws NotFoundException;
 
-    void createColorB(ColorB colorB) throws InsertException;
+    void createColorB(ColorB colorB) throws InsertException, NotFoundException;
 
     ColorBRes findColorBByCode(String code) throws NotFoundException;
 

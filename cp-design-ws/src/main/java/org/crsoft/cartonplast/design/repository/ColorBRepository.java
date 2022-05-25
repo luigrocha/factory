@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ColorBRepository extends JpaRepository<ColorB, String> {
 
-    Collection<ColorB> findAllByValidToIsNullOrderByIndexAsc();
+    Collection<ColorB> findAllByValidToIsNullOrderByIdAsc();
 
     Optional<ColorB> findByIdAndValidToIsNull(String code);
 

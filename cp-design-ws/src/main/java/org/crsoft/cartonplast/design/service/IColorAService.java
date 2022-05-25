@@ -22,4 +22,6 @@ public interface IColorAService {
     void updateColorAByCode(String code, ColorA color) throws NotFoundException, UpdateException;
 
     void deleteColorAByCode(String code, String userName) throws NotFoundException, UpdateException;
+
+    ColorA getColorAById(String id) throws NotFoundException;
 }
