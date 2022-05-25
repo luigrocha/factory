@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ColorAService } from 'src/app/core/http/catalogs/color-a/color-a.service';
 import { ColorBService } from 'src/app/core/http/catalogs/color-b/color-b.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { ColorA } from 'src/app/types/colorA.types';
 import { ColorB } from 'src/app/types/colorB.types';
 
 @Component({
@@ -55,11 +57,18 @@ export class ColorBComponent implements OnInit {
 
   loading = true;
 
+  colorsA: ColorA[];
+
+  colorASelected: any;
+
+  isEditing: boolean;
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private colorBService: ColorBService,
+    private colorAService: ColorAService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -70,6 +79,7 @@ export class ColorBComponent implements OnInit {
 
   ngOnInit() {
     this.getAll();
+    this.getColorsA();
     this.cols = [
       { field: 'color', header: 'Color' },
       { field: 'colorA', header: 'Color Primario' },
@@ -88,6 +98,7 @@ export class ColorBComponent implements OnInit {
   editColor(color: ColorB) {
     this.color = { ...color };
     this.colorDialog = true;
+    this.isEditing = true;
   }
 
   deleteColor(color: ColorB) {
@@ -97,26 +108,26 @@ export class ColorBComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.colorBService.delete(color.id).subscribe(
-        //   (res) => {
-        //     this.messageService.add({
-        //       severity: 'success',
-        //       summary: 'Éxito',
-        //       detail: 'Homopolímero Eliminado',
-        //       life: 3000,
-        //     });
-        //     this.colors = [];
-        //     this.getAllUsers();
-        //   },
-        //   (err) => {
-        //     this.messageService.add({
-        //       severity: 'error',
-        //       summary: 'Error',
-        //       detail: err.message,
-        //       life: 3000,
-        //     });
-        //   }
-        // );
+        this.colorBService.delete(color.id).subscribe(
+          (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Color B Eliminado',
+              life: 3000,
+            });
+            this.colors = [];
+            this.getAll();
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
 
       },
     });
@@ -128,34 +139,34 @@ export class ColorBComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.selectedHomo.forEach(color => {
-        //   this.colorBService.delete(color.id).subscribe(
-        //     (res) => {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Éxito',
-        //         detail: 'Homopolímero Eliminado',
-        //         life: 3000,
-        //       });
-        //       this.colors = [];
-        //       this.getAllUsers();
-        //     },
-        //     (err) => {
-        //       this.messageService.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: err.message,
-        //         life: 3000,
-        //       });
-        //     }
-        //   );
-        // })
+        this.selectedColor.forEach(color => {
+          this.colorBService.delete(color.id).subscribe(
+            (res) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Color Eliminado',
+                life: 3000,
+              });
+              this.colors = [];
+              this.getAll();
+            },
+            (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message,
+                life: 3000,
+              });
+            }
+          );
+        })
 
         this.selectedColor = null;
         this.messageService.add({
           severity: 'success',
           summary: 'Correcto',
-          detail: 'Homopolímeros Elimnados',
+          detail: 'Colores Elimnados',
           life: 3000,
         });
       },
@@ -165,48 +176,58 @@ export class ColorBComponent implements OnInit {
   saveColor() {
     this.submitted = true;
 
-    if (this.color.id) {
-      // this.colorBService.update(this.color.color, this.color).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Actualizado',
-      //       life: 3000,
-      //     });
-      //     this.colors = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+    if (this.isEditing) {
+      this.colorBService.update(this.color.id, this.color).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Color B Actualizado',
+            life: 3000,
+          });
+          this.colors = [];
+          this.getAll();
+          this.isEditing = false;
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
+    } else if (this.isValidToSave()) {
+      this.colorBService.create(this.color).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Color B Creado',
+            life: 3000,
+          });
+          this.colors = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
     } else {
-      // this.colorBService.create(this.color).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Creado',
-      //       life: 3000,
-      //     });
-      //     this.colors = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Atención',
+        detail: 'Llene todos los campos',
+        life: 3000,
+      });
+      this.colorDialog = true;
+      return;
     }
 
     this.colors = [...this.colors];
@@ -224,6 +245,24 @@ export class ColorBComponent implements OnInit {
       this.colors = colors;
       this.loading = false;
     });
+  }
+
+  getColorsA() {
+    this.colorAService.getAll().subscribe((colorsA) => {
+      this.colorsA = colorsA;
+    });
+  }
+
+  onColorASelected(e: any) {
+    const value = e.value;
+    const filter = this.colors.filter(color => color.colorA.id === value.id);
+    const numIndex = filter.length + 1;
+    this.color.id = value.id + numIndex;
+    this.color.index = numIndex;
+  }
+
+  isValidToSave(): boolean {
+    return this.color.id && this.color.colorA && this.color.index && this.color.dosage && this.color.description ? true : false;
   }
 
 }

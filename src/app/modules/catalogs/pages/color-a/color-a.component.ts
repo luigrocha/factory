@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ColorAService } from 'src/app/core/http/catalogs/color-a/color-a.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { ColorA } from 'src/app/types/colorA.types';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-color-a',
@@ -55,11 +57,16 @@ export class ColorAComponent implements OnInit {
 
   loading = true;
 
+  isEdit: boolean;
+
+  permissionsPage: TypePermission[];
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private colorAService: ColorAService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -69,6 +76,7 @@ export class ColorAComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAll();
     this.cols = [
       { field: 'color', header: 'Color' },
@@ -85,6 +93,7 @@ export class ColorAComponent implements OnInit {
   editColor(color: ColorA) {
     this.color = { ...color };
     this.colorDialog = true;
+    this.isEdit = true;
   }
 
   deleteColor(color: ColorA) {
@@ -94,26 +103,26 @@ export class ColorAComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.colorAService.delete(color.id).subscribe(
-        //   (res) => {
-        //     this.messageService.add({
-        //       severity: 'success',
-        //       summary: 'Éxito',
-        //       detail: 'Homopolímero Eliminado',
-        //       life: 3000,
-        //     });
-        //     this.colors = [];
-        //     this.getAllUsers();
-        //   },
-        //   (err) => {
-        //     this.messageService.add({
-        //       severity: 'error',
-        //       summary: 'Error',
-        //       detail: err.message,
-        //       life: 3000,
-        //     });
-        //   }
-        // );
+        this.colorAService.delete(color.id).subscribe(
+          (res) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Color A Eliminado',
+              life: 3000,
+            });
+            this.colors = [];
+            this.getAll();
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.message,
+              life: 3000,
+            });
+          }
+        );
 
       },
     });
@@ -125,28 +134,28 @@ export class ColorAComponent implements OnInit {
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        // this.selectedHomo.forEach(color => {
-        //   this.colorAService.delete(color.id).subscribe(
-        //     (res) => {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Éxito',
-        //         detail: 'Homopolímero Eliminado',
-        //         life: 3000,
-        //       });
-        //       this.colors = [];
-        //       this.getAllUsers();
-        //     },
-        //     (err) => {
-        //       this.messageService.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: err.message,
-        //         life: 3000,
-        //       });
-        //     }
-        //   );
-        // })
+        this.selectedColor.forEach(color => {
+          this.colorAService.delete(color.id).subscribe(
+            (res) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Color Eliminado',
+                life: 3000,
+              });
+              this.colors = [];
+              this.getAll();
+            },
+            (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.message,
+                life: 3000,
+              });
+            }
+          );
+        });
 
         this.selectedColor = null;
         this.messageService.add({
@@ -161,49 +170,58 @@ export class ColorAComponent implements OnInit {
 
   saveColor() {
     this.submitted = true;
-
-    if (this.color.id) {
-      // this.colorAService.update(this.color.color, this.color).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Actualizado',
-      //       life: 3000,
-      //     });
-      //     this.colors = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+    if (this.isEdit) {
+      this.colorAService.update(this.color.id, this.color).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Color A Actualizado',
+            life: 3000,
+          });
+          this.colors = [];
+          this.getAll();
+          this.isEdit = false;
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
+    } else if (this.isValidToSave()) {
+      this.colorAService.create(this.color).subscribe(
+        (res) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Color A Creado',
+            life: 3000,
+          });
+          this.colors = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.message,
+            life: 3000,
+          });
+        }
+      );
     } else {
-      // this.colorAService.create(this.color).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Creado',
-      //       life: 3000,
-      //     });
-      //     this.colors = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.message,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Atención',
+        detail: 'Llene todos los campos',
+        life: 3000,
+      });
+      this.colorDialog = true;
+      return;
     }
 
     this.colors = [...this.colors];
@@ -221,6 +239,25 @@ export class ColorAComponent implements OnInit {
       this.colors = colors;
       this.loading = false;
     });
+  }
+
+  isValidToSave(): boolean {
+    return this.color.id && this.color.name ? true : false;
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 
 }

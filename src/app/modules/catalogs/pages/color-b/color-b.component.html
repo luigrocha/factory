@@ -10,12 +10,14 @@
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
             <h5 class="m-0">Gestión de Colores B</h5>
 
-            <div class="flex">
-              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
-              <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mr-2"
-                (click)="deleteSelectedColors()" [disabled]="!selectedColor || !selectedColor.length"></button>
-              <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mr-2"
-                (click)="dt.exportCSV()"></button>
+            <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
+              <button pButton pRipple label="Nuevo" icon="pi pi-plus"
+                class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-0" (click)="openNew()"></button>
+              <button pButton pRipple label="Eliminar" icon="pi pi-trash"
+                class="buttons-manage p-button-danger mb-2 md:mr-2 md:mb-0" (click)="deleteSelectedColors()"
+                [disabled]="!selectedColor || !selectedColor.length"></button>
+              <button pButton pRipple label="Export" icon="pi pi-upload"
+                class="buttons-manage p-button-help mb-2 md:mr-2 md:mb-0" (click)="dt.exportCSV()"></button>
 
               <span class="block mt-2 md:mt-0 p-input-icon-left">
                 <i class="pi pi-search"></i>
@@ -101,26 +103,39 @@
       <ng-template pTemplate="content">
         <div class="p-field">
           <label for="id">ID</label>
-          <input type="text" pInputText id="id" [(ngModel)]="color.id" required autofocus />
+          <input type="text" pInputText id="id" [(ngModel)]="color.id" style="text-transform: uppercase" disabled
+            required />
           <small class="p-invalid" *ngIf="submitted && !color.id">Campo id es requerido.</small>
         </div>
-        <!-- <div class="p-field">
-          <label for="role">Color Primario</label>
-          <p-dropdown id="role" [options]="roleValue" [(ngModel)]="color.colorA"></p-dropdown>
-        </div> -->
+        <div class="p-field">
+          <label for="colorA">Color Primario</label>
+          <p-dropdown id="colorA" [options]="colorsA" [(ngModel)]="color.colorA" placeholder="Selecciona color primario"
+            (onChange)='onColorASelected($event)' autofocus>
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="color.colorA">
+                {{ color.colorA.id }} - {{ color.colorA.name }}
+              </div>
+            </ng-template>
+            <ng-template let-colA pTemplate="item">
+              {{ colA.id }} - {{ colA.name }}
+            </ng-template>
+          </p-dropdown>
+          <small class="p-invalid" *ngIf="submitted && !color.colorA">Campo color primario es requerido.</small>
+        </div>
         <div class="p-field">
           <label for="index">Indice</label>
-          <input type="number" pInputText id="index" [(ngModel)]="color.index" required autofocus />
+          <input type="number" pInputText id="index" [(ngModel)]="color.index" disabled required />
           <small class="p-invalid" *ngIf="submitted && !color.index">Campo indice es requerido.</small>
         </div>
         <div class="p-field">
           <label for="dosage">Dosis</label>
-          <input type="number" pInputText id="dosage" [(ngModel)]="color.dosage" required autofocus />
+          <input type="number" pInputText id="dosage" [(ngModel)]="color.dosage" required />
           <small class="p-invalid" *ngIf="submitted && !color.dosage">Campo dosis es requerido.</small>
         </div>
         <div class="p-field">
           <label for="description">Descripción</label>
-          <input type="text" pInputText id="description" [(ngModel)]="color.description" required autofocus />
+          <input type="text" pInputText id="description" [(ngModel)]="color.description"
+            style="text-transform: uppercase" required />
           <small class="p-invalid" *ngIf="submitted && !color.description">Campo descripción es requerido.</small>
         </div>
       </ng-template>
