@@ -7,7 +7,7 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author lpillaga on 11/05/2022
@@ -22,5 +22,5 @@ public interface ThicknessMapper {
     @WithoutAuditField
     Thickness thicknessResToThickness(ThicknessRes thicknessRes);
 
-    List<ThicknessRes> thicknessesToThicknessesRes(List<Thickness> thicknesses);
+    Collection<ThicknessRes> thicknessesToThicknessesRes(Collection<Thickness> thicknesses);
 }

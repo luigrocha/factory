@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -60,11 +60,11 @@ public class Menu {
 
     @Basic
     @Column(name = "CBTMEN_VALID_FROM")
-    private Date validFrom;
+    private LocalDateTime validFrom;
 
     @Basic
     @Column(name = "CBTMEN_VALID_TO")
-    private Date validTo;
+    private LocalDateTime validTo;
 
     @Basic
     @Column(name = "CBTMEN_CREATED_BY")
@@ -76,13 +76,19 @@ public class Menu {
 
     @Basic
     @Column(name = "CBTMEN_CREATED_AT")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @Basic
     @Column(name = "CBTMEN_UPDATED_AT")
-    private Date updateAt;
+    private LocalDateTime updateAt;
 
     @ManyToOne
     @JoinColumn(name = "CBT_CBTMEN_CODE")
     private Menu child;
+
+    @PrePersist
+    public void prePersist() {
+        this.validFrom = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+    }
 }

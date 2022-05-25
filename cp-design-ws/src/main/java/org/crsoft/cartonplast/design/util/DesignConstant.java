@@ -5,8 +5,8 @@ package org.crsoft.cartonplast.design.util;
  */
 public class DesignConstant {
 
+    public static final String DATE_FORMAT = "dd/MM/yyyy";
+
     private DesignConstant() {
     }
-
-    public static final String DATE_FORMAT = "dd/MM/yyyy";
 }

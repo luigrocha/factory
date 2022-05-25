@@ -1,19 +1,22 @@
 package org.crsoft.cartonplast.service.impl;
 
 import lombok.extern.log4j.Log4j2;
-import org.crsoft.cartonplast.exeption.InsertException;
-import org.crsoft.cartonplast.exeption.NotFoundException;
-import org.crsoft.cartonplast.exeption.UpdateException;
+import org.crsoft.cartonplast.common.exception.InsertException;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.model.Menu;
 import org.crsoft.cartonplast.repository.MenuRepository;
 import org.crsoft.cartonplast.service.IMenuService;
+import org.crsoft.cartonplast.service.IPermissionService;
 import org.crsoft.cartonplast.vo.req.MenuReq;
 import org.crsoft.cartonplast.vo.res.MenuRes;
 import org.crsoft.cartonplast.vo.res.TreeNodeRes;
 import org.keycloak.common.util.CollectionUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,9 +28,11 @@ import java.util.stream.Collectors;
 public class MenuService implements IMenuService {
 
     private final MenuRepository menuRepository;
+    private final IPermissionService permissionService;
 
-    public MenuService(MenuRepository menuRepository) {
+    public MenuService(@Lazy MenuRepository menuRepository, @Lazy IPermissionService permissionService) {
         this.menuRepository = menuRepository;
+        this.permissionService = permissionService;
     }
 
     @Override
@@ -49,10 +54,8 @@ public class MenuService implements IMenuService {
             }
 
             menu.setOrder(menuReq.getOrder());
-            menu.setValidFrom(new Date());
-            menu.setCreatedAt(new Date());
             this.menuRepository.save(menu);
-
+            this.permissionService.createToMenu(menu);
         } catch (Exception e) {
             log.info("No se pudo insertar item {}", menuReq.getLabel());
             throw new InsertException("CBTMEN", "No se pudo insertar item");
@@ -93,7 +96,7 @@ public class MenuService implements IMenuService {
             }
             item.setOrder(menuReq.getOrder());
 
-            item.setUpdateAt(new Date());
+            item.setUpdateAt(LocalDateTime.now());
             this.menuRepository.save(item);
         } catch (Exception e) {
             throw new UpdateException("CBTMEN", "No se pudo actualizar");
@@ -104,7 +107,9 @@ public class MenuService implements IMenuService {
     public void deleteItem(Integer code) throws NotFoundException, UpdateException {
         Menu item = findMenuById(code);
         try {
-            this.menuRepository.delete(item);
+            // this.menuRepository.delete(item);
+            item.setValidTo(LocalDateTime.now());
+            this.menuRepository.save(item);
         } catch (Exception e) {
             throw new UpdateException("CBTMEN", "No se pudo eliminar");
         }
@@ -122,6 +127,29 @@ public class MenuService implements IMenuService {
             }
         }
         return treeNode;
+    }
+
+    @Override
+    public Menu findMenuById(Integer code) throws NotFoundException {
+        //Optional<Menu> menu = this.menuRepository.findById(code);
+        Optional<Menu> menu = this.menuRepository.findByCodeAndValidToIsNull(code);
+        if (menu.isPresent()) {
+            return menu.get();
+        } else {
+            log.info("No existe item con código {}", code);
+            throw new NotFoundException("CBTMEN, Not Found Data");
+        }
+    }
+
+    @Override
+    public Menu findMenuByUrl(String url) throws NotFoundException {
+        Optional<Menu> menu = this.menuRepository.findByUrlAndValidToIsNull(url);
+        if (menu.isPresent()) {
+            return menu.get();
+        } else {
+            log.info("No existe item con url {}", url);
+            throw new NotFoundException("CBTMEN, Not Found Data");
+        }
     }
 
     private void buildItemsTreeNodeRes(Collection<TreeNodeRes> treeNodeRes, Integer code, Menu menu) {
@@ -149,7 +177,7 @@ public class MenuService implements IMenuService {
         return TreeNodeRes.builder().data(buildMenuRes(menu)).build();
     }
 
-    private void updateOrder(Menu child, Integer order) throws UpdateException, NotFoundException {
+    private void updateOrder(Menu child, Integer order) throws UpdateException {
         Collection<Menu> allByChild = this.menuRepository.findAllByChild(child);
         Integer sequence = order;
         if (CollectionUtil.isNotEmpty(allByChild)) {
@@ -167,16 +195,6 @@ public class MenuService implements IMenuService {
         }
     }
 
-    private Menu findMenuById(Integer code) throws NotFoundException {
-        Optional<Menu> menu = this.menuRepository.findById(code);
-        if (menu.isPresent()) {
-            return menu.get();
-        } else {
-            log.info("No existe item con código {}", code);
-            throw new NotFoundException("CBTMEN, Not Found Data");
-        }
-    }
-
     private MenuRes buildMenuRes(Menu menu) {
         Optional<Menu> child = Optional.ofNullable(menu.getChild());
         return MenuRes.builder()
@@ -191,7 +209,8 @@ public class MenuService implements IMenuService {
     }
 
     private Collection<Menu> findAllOrderByCode() {
-        return this.menuRepository.findAll(Sort.by(Sort.Order.asc("code")));
+        //return this.menuRepository.findAll(Sort.by(Sort.Order.asc("code")));
+        return this.menuRepository.findAllByValidToIsNull(Sort.by(Sort.Order.asc("code")));
     }
 
     private void buildItemsMenuRes(Collection<MenuRes> menuRes, Integer code, Menu menu) {

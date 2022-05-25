@@ -1,8 +1,9 @@
 package org.crsoft.cartonplast.service;
 
-import org.crsoft.cartonplast.exeption.InsertException;
-import org.crsoft.cartonplast.exeption.NotFoundException;
-import org.crsoft.cartonplast.exeption.UpdateException;
+import org.crsoft.cartonplast.common.exception.InsertException;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.UpdateException;
+import org.crsoft.cartonplast.model.Menu;
 import org.crsoft.cartonplast.vo.req.MenuReq;
 import org.crsoft.cartonplast.vo.res.MenuRes;
 import org.crsoft.cartonplast.vo.res.TreeNodeRes;
@@ -23,4 +24,8 @@ public interface IMenuService {
     void deleteItem(Integer code) throws NotFoundException, UpdateException;
 
     Collection<TreeNodeRes> findAllItemsTree() throws NotFoundException;
+
+    Menu findMenuById(Integer code) throws NotFoundException;
+
+    Menu findMenuByUrl(String url) throws NotFoundException;
 }

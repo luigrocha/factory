@@ -84,9 +84,7 @@ public class ColorB {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "XID_CATCOP_CODE",
-            referencedColumnName = "ID_CATCOP_CODE",
-            insertable = false,
-            updatable = false
+            referencedColumnName = "ID_CATCOP_CODE"
     )
     private ColorA colorA;
 

@@ -6,7 +6,7 @@ import org.crsoft.cartonplast.design.vo.res.ColorARes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author lpillaga on 11/05/2022
@@ -20,5 +20,5 @@ public interface ColorAMapper {
     @Mapping(target = "colorsB", ignore = true)
     ColorA colorAResToColorA(ColorARes colorARes);
 
-    List<ColorARes> colorsAToColorsARes(List<ColorA> colorsA);
+    Collection<ColorARes> colorsAToColorsARes(Collection<ColorA> colorsA);
 }

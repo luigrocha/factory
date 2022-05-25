@@ -14,10 +14,6 @@ import java.util.Collection;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
 
-    Collection<Order> findAllByValidToIsNullOrValidToAfter(LocalDateTime to);
-
-    @Query("SELECT c FROM Order c " +
-            "ORDER BY c.createdAt DESC")
-    Collection<Order> findAllInOrder();
+    Collection<Order> findAllByValidToIsNullOrderByCreatedAtDesc();
 
 }
