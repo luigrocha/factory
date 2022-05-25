@@ -12,4 +12,6 @@ public interface IClientService {
 
     List<ClientRes> findAllValidClients();
     ClientRes saveClient(CreateClientReq client);
+
+    boolean deleteClient(String clientId);
 }

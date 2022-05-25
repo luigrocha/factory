@@ -16,6 +16,8 @@ import org.crsoft.cartonplast.vo.res.UploadFileRes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -87,5 +89,15 @@ public class ClientService implements IClientService {
         return this.clientMapper.clientToClientRes(
                 this.clientRepository.save(client)
         );
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteClient(String clientId) {
+        return this.clientRepository.findById(clientId)
+                .map(client -> {
+                    client.setValidTo(LocalDateTime.now());
+                    return true;
+                }).orElse(false);
     }
 }

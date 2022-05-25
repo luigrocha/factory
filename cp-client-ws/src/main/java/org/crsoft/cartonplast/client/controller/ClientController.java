@@ -41,4 +41,10 @@ public class ClientController {
                 .build();
         return ResponseEntity.ok(this.clientService.saveClient(createClientReq));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteClient(
+            @PathVariable("id") String id) {
+        return ResponseEntity.ok(this.clientService.deleteClient(id));
+    }
 }
