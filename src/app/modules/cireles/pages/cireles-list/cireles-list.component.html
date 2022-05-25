@@ -1,33 +1,49 @@
 <div class="p-grid">
   <div class="p-col-12">
     <p-toast></p-toast>
+
     <div class="card">
-      <p-table #dt [value]="cirels" dataKey="id" styleClass="p-datatable-sm" [rows]="pageSize" [paginator]="true"
-        lazy="true" [(selection)]="selectedCirels" [rowsPerPageOptions]="rowsPerPageOptions" responsiveLayout="scroll">
+      <p-table #dt
+               [value]="cirels"
+               [columns]="columns"
+               [rows]="pageSize"
+               [paginator]="true"
+               [globalFilterFields]="['print', 'description']"
+               [rowHover]="true"
+               dataKey="id"
+               [showCurrentPageReport]="true"
+               [currentPageReportTemplate]="tableReportTemplate"
+               styleClass="p-datatable-sm"
+               lazy="true"
+               [rowsPerPageOptions]="rowsPerPageOptions"
+               responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 mb-0 align-self-center">Gestión de cireles</h5>
             <span class="flex-auto"></span>
-            <button pButton pRipple label="Nuevo" class="mr-2" icon="pi pi-plus" (click)="addNewCyrel()"
-              *ngIf="isAllow(1)"></button>
-            <button pButton pRipple label="Eliminar" class="p-button-danger mr-2" icon="pi pi-trash"
-              (click)="deleteSelectedCirels()" *ngIf="selectedCirels.length > 0 && isAllow(4)"></button>
+            <button
+                    pButton
+                    pRipple
+                    label="Nuevo"
+                    class="mr-2"
+                    icon="pi pi-plus"
+                    (click)="addNewCyrel()"
+            ></button>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
-                placeholder="Buscar..." class="w-full" />
+              <input pInputText
+                     type="text"
+                     (input)="dt.filterGlobal($event.target.value, 'contains')"
+                     placeholder="Buscar..."
+                     class="w-full"
+              />
             </span>
           </div>
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 3rem">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
-            <th *ngFor="let header of headers">
-              <div class="p-d-flex p-jc-between p-ai-center">
-                {{ header.label }}
-              </div>
+            <th *ngFor="let col of columns">
+              {{col.header}}
             </th>
             <th class="text-center">
               <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
@@ -36,9 +52,6 @@
         </ng-template>
         <ng-template pTemplate="body" let-cirel let-expanded="expanded">
           <tr>
-            <td>
-              <p-tableCheckbox [value]="cirel"></p-tableCheckbox>
-            </td>
             <td>
               {{ cirel.print }}
             </td>
@@ -49,9 +62,12 @@
               {{ cirel.description }}
             </td>
             <td>
-              <button type="button" pButton pRipple [pRowToggler]="cirel"
-                class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+              <button type="button"
+                      pButton
+                      pRipple
+                      [pRowToggler]="cirel"
+                      class="p-button-text p-button-rounded p-button-plain"
+                      [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
               </button>
             </td>
             <!-- <td style="min-width: 10rem">
@@ -68,11 +84,17 @@
             </td> -->
             <td>
               <div class="flex">
-                <button pButton pRipple icon="pi pi-pencil"
-                  class="p-button-rounded p-button-outlined p-button-success mr-2" (click)="editCirel(cirel)">
+                <button pButton
+                        pRipple
+                        icon="pi pi-pencil"
+                        class="p-button-rounded p-button-outlined p-button-success mr-2"
+                        (click)="editCirel(cirel)">
                 </button>
-                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
-                  (click)="deleteCirel(cirel)">
+                <button pButton
+                        pRipple
+                        icon="pi pi-trash"
+                        class="p-button-rounded p-button-outlined p-button-warning"
+                        (click)="deleteCirel(cirel)">
                 </button>
               </div>
             </td>
@@ -82,7 +104,9 @@
           <tr>
             <td colspan="10">
               <div class="p-3">
-                <p-table [value]="cirel.cyrelColors" dataKey="id" responsiveLayout="scroll">
+                <p-table [value]="cirel.cyrelColors"
+                         dataKey="id"
+                         responsiveLayout="scroll">
                   <ng-template pTemplate="header">
           <tr>
             <th *ngFor="let header of subHeaders">

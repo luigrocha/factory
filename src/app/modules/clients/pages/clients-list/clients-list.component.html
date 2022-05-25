@@ -1,0 +1,109 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <div class="card">
+      <p-table #dt
+               [value]="clients"
+               [columns]="columns"
+               [rows]="pageSize"
+               [paginator]="true"
+               [globalFilterFields]="['id', 'name']"
+               [rowHover]="true"
+               dataKey="id"
+               [showCurrentPageReport]="true"
+               [currentPageReportTemplate]="tableReportTemplate"
+               [rowsPerPageOptions]="rowsPerPageOptions"
+               styleClass="p-datatable-sm"
+               responsiveLayout="scroll">
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <h5 class="h-100 mb-0 align-self-center">Gestión de clientes</h5>
+            <span class="flex-auto"></span>
+            <button
+                    pButton
+                    pRipple
+                    label="Nuevo"
+                    class="sm:mr-2 md:mr-2 lg:mr-2"
+                    icon="pi pi-plus"
+                    (click)="addClient()"
+            ></button>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText
+                     type="text"
+                     (input)="dt.filterGlobal($event.target.value, 'contains')"
+                     placeholder="Buscar..."
+                     class="w-full"/>
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5rem">
+              Logo
+            </th>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+              {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th class="text-center">
+              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+            </th>
+          </tr>
+          <tr>
+            <th></th>
+            <th>
+              <p-columnFilter type="text" field="id"></p-columnFilter>
+            </th>
+            <th>
+              <p-columnFilter type="text" field="name"></p-columnFilter>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-client>
+          <tr>
+            <td>
+              <img *ngIf="client.imageUrl"
+                   [alt]="client.name"
+                   [src]="client.imageUrl"
+                   width="50"/>
+              <img *ngIf="!client.imageUrl"
+                   [alt]="client.name"
+                   src="assets/img/logo-placeholder.png"
+                   width="50">
+            </td>
+            <td *ngFor="let col of columns">
+              {{client[col.field]}}
+            </td>
+            <td>
+              <div class="flex justify-content-center">
+<!--                <button pButton-->
+<!--                        pRipple-->
+<!--                        icon="pi pi-pencil"-->
+<!--                        class="p-button-rounded p-button-outlined p-button-success mr-2"-->
+<!--                        (click)="editClient(client)">-->
+<!--                </button>-->
+                <button pButton
+                        pRipple
+                        icon="pi pi-trash"
+                        class="p-button-rounded p-button-outlined p-button-warning"
+                        (click)="deleteClient(client)">
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            Total de Clientes:
+            {{ clients ? clients.length : 0 }}
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+    <p-confirmDialog [style]="{ width: '450px' }"
+                     rejectButtonStyleClass="p-button-text"
+                     acceptButtonStyleClass="p-button-danger"></p-confirmDialog>
+  </div>
+</div>
