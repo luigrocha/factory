@@ -1,6 +1,6 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
-import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
+import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Printer;
 import org.crsoft.cartonplast.design.vo.res.PrinterRes;
 import org.crsoft.cartonplast.design.vo.res.PrinterShortRes;

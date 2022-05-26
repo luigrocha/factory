@@ -3,7 +3,7 @@ package org.crsoft.cartonplast.client.service.mapper;
 import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.vo.res.ClientRes;
 import org.crsoft.cartonplast.client.vo.res.ClientShortRes;
-import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
+import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

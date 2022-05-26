@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * @author jyepez on 14/5/2022
@@ -22,7 +23,7 @@ public class OrderRes implements Serializable {
     private String lote;
     private ClientRes client;
     private Integer amount;
-    private LocalDate deliverAt;
+    private Date deliverAt;
     private Integer order;
     private String observation;
     private Integer difference;
