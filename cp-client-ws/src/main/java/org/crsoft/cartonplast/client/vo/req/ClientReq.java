@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.client.vo.res;
+package org.crsoft.cartonplast.client.vo.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,18 +6,13 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-/**
- * @author lpillaga on 12/05/2022
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientShortRes implements Serializable {
+public class ClientReq implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private String id;
     private String name;
-    private String imageUrl;
-    private String imageName;
 }

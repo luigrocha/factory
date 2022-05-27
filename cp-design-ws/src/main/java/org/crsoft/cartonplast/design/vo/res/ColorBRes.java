@@ -22,4 +22,5 @@ public class ColorBRes implements Serializable {
     private String description;
     private String colorCode;
     private ColorARes colorA;
+    private String observation;
 }

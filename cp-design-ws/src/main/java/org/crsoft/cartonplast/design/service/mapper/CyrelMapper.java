@@ -1,6 +1,6 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
-import org.crsoft.cartonplast.common.mapper.WithoutAuditField;
+import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Cyrel;
 import org.crsoft.cartonplast.design.vo.res.CyrelRes;
 import org.mapstruct.Mapper;
@@ -25,6 +25,8 @@ public interface CyrelMapper {
     @WithoutAuditField
     @Mapping(target = "printer", ignore = true)
     @Mapping(target = "cyrelColors", ignore = true)
+    @Mapping(target = "mbLeaf", ignore = true)
+    @Mapping(target = "die", ignore = true)
     Cyrel cyrelResToCyrel(CyrelRes cyrelRes);
 
     List<CyrelRes> cyrelsToCyrelsRes(List<Cyrel> cyrels);

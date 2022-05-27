@@ -50,6 +50,7 @@ public class ColorAService implements IColorAService {
     @Override
     public void createColorA(ColorA color) throws InsertException {
         try {
+            color.setId(color.getId().toUpperCase());
             this.colorARepository.save(color);
         } catch (Exception e) {
             log.error("Error to createColorA: {}", e.getMessage());

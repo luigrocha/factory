@@ -49,6 +49,7 @@ public class HomoPolymerService implements IHomoPolymerService {
     @Override
     public void createHomopolymer(HomoPolymer homoPolymer) throws InsertException {
         try {
+            homoPolymer.setHpCode(homoPolymer.getHpCode().toUpperCase());
             this.homoPolymerRepository.save(homoPolymer);
         } catch (Exception e) {
             log.error("Error to createHomopolymer: {}", e.getMessage());

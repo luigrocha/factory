@@ -1,6 +1,7 @@
 package org.crsoft.cartonplast.client.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "CATCLI")
 public class Client {
 
@@ -29,6 +31,18 @@ public class Client {
             length = 64
     )
     private String name;
+
+    @Column(
+            name = "CATCLI_IMAGE_URL",
+            length = 128
+    )
+    private String imageUrl;
+
+    @Column(
+            name = "CATCLI_IMAGE_NAME",
+            length = 128
+    )
+    private String imageName;
 
     @Column(
             name = "CATCLI_VALID_FROM",
