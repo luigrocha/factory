@@ -4,6 +4,7 @@ import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.ColorA;
 import org.crsoft.cartonplast.design.vo.res.ColorARes;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.Collection;
 
@@ -16,6 +17,7 @@ public interface ColorAMapper {
     ColorARes colorAtoColorARes(ColorA colorA);
 
     @WithoutAuditField
+    @Mapping(target = "colorsB", ignore = true)
     ColorA colorAResToColorA(ColorARes colorARes);
 
     Collection<ColorARes> colorsAToColorsARes(Collection<ColorA> colorsA);
