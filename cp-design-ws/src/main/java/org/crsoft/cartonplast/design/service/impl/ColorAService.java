@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
@@ -65,8 +66,9 @@ public class ColorAService implements IColorAService {
     public void updateColorAByCode(String code, ColorA color) throws NotFoundException, UpdateException {
         ColorA colorAById = getColorAById(code);
         try {
-            colorAById.setName(color.getName());
-            color.setUpdatedAt(LocalDateTime.now());
+            colorAById.setName(color.getName().toLowerCase());
+            colorAById.setUpdatedAt(LocalDateTime.now());
+            colorAById.setColorCode(color.getColorCode());
             this.colorARepository.save(colorAById);
         } catch (Exception e) {
             log.error("Error to updateColorAByCode: {}", e.getMessage());

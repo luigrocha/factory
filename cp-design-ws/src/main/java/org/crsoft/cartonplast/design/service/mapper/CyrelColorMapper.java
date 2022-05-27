@@ -14,6 +14,7 @@ public interface CyrelColorMapper {
 
     @Mapping(target = "color", source = "color.name")
     @Mapping(target = "colorType", source = "colorType.name")
+    @Mapping(target = "colorCode", source = "color.colorCode")
     CyrelColorRes cyrelColorToCyrelColorRes(CyrelColor cyrelColor);
 
     @WithoutAuditField

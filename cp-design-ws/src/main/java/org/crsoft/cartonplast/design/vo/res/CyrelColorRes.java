@@ -20,4 +20,5 @@ public class CyrelColorRes implements Serializable {
     private Integer index;
     private String color;
     private String colorType;
+    private String colorCode;
 }

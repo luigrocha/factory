@@ -36,6 +36,12 @@ public class ColorCatalog {
     private String name;
 
     @Column(
+            name = "CATCATCOL_COLOR_CODE",
+            nullable = false
+    )
+    private String colorCode;
+
+    @Column(
             name = "CATCATCOL_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )

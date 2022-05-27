@@ -46,6 +46,12 @@ public class ColorB {
     private String description;
 
     @Column(
+            name = "CATCOL_COLOR_CODE",
+            nullable = false
+    )
+    private String colorCode;
+
+    @Column(
             name = "CATCOL_OBSERVATION",
             length = 255
     )

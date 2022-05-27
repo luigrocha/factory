@@ -18,4 +18,5 @@ public class ColorCatalogRes implements Serializable {
 
     private Integer id;
     private String name;
+    private String colorCode;
 }

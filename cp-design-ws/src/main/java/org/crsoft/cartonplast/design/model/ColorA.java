@@ -39,6 +39,12 @@ public class ColorA {
     private String name;
 
     @Column(
+            name = "CATCOP_COLOR_CODE",
+            nullable = false
+    )
+    private String colorCode;
+
+    @Column(
             name = "CATCOP_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )

@@ -18,4 +18,5 @@ public class ColorARes implements Serializable {
 
     private String id;
     private String name;
+    private String colorCode;
 }

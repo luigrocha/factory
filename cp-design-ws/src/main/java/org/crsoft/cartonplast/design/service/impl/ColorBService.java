@@ -77,6 +77,7 @@ public class ColorBService implements IColorBService {
             color.setColorA(colorA);
             color.setIndex(colorB.getIndex());
             color.setDosage(colorB.getDosage());
+            color.setColorCode(colorB.getColorCode());
             color.setDescription(colorB.getDescription());
             color.setUpdatedAt(LocalDateTime.now());
             this.colorBRepository.save(color);

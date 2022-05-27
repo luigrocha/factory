@@ -20,5 +20,6 @@ public class ColorBRes implements Serializable {
     private Integer index;
     private Double dosage;
     private String description;
+    private String colorCode;
     private ColorARes colorA;
 }
