@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
