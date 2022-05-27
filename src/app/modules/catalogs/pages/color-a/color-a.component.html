@@ -39,6 +39,9 @@
             <th pSortableColumn="name">
               Nombre <p-sortIcon field="name"></p-sortIcon>
             </th>
+            <th>
+              Color
+            </th>
             <th style="
                 text-align: center;
                 display: flex;
@@ -60,6 +63,10 @@
             <td>
               <span class="p-column-title">Nombre</span>
               {{ color.name }}
+            </td>
+            <td>
+              <p-avatar [style]="{'background-color': color.colorCode}" shape="circle">
+              </p-avatar>
             </td>
             <td style="display: flex; justify-content: space-evenly">
               <button pButton pRipple icon="pi pi-pencil"
@@ -92,6 +99,11 @@
           <label for="name">Nombre</label>
           <input type="text" pInputText id="name" [(ngModel)]="color.name" style="text-transform: uppercase" required />
           <small class="p-invalid" *ngIf="submitted && !color.name">Campo nombre es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="colorCode">Color</label>
+          <input type="color" pInputText class="input-color" id="colorCode" [(ngModel)]="color.colorCode" required />
+          <small class="p-invalid" *ngIf="submitted && !color.colorCode">Campo color es requerido.</small>
         </div>
       </ng-template>
 
