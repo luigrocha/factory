@@ -37,7 +37,7 @@ public class MaterialService implements IMaterialService {
     @Override
     public Collection<MaterialRes> findAllCatalogCellarByType(Integer id) throws NotFoundException {
         TypeMaterial typeMaterial = this.typeCellarService.findCellarById(id);
-        Collection<Material> materials = this.materialRepository.findAllByTypeCellarAndValidToIsNullOrderByNameAsc(typeMaterial);
+        Collection<Material> materials = this.materialRepository.findAllByTypeMaterialAndValidToIsNullOrderByNameAsc(typeMaterial);
         if (CollectionUtil.isNotEmpty(materials)) {
             return this.materialMapper.materialCollectionToMaterialResCollection(materials);
         } else {

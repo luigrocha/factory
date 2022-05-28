@@ -14,15 +14,6 @@ import java.util.Collection;
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Integer> {
 
-
-    Collection<Material> findAllByTypeCellarAndValidToIsNullOrderByNameAsc(TypeMaterial typeMaterial);
-
-    @Query("SELECT c FROM Material c " +
-            "WHERE ((c.validTo IS NULL " +
-            "OR c.validTo > CURRENT_TIMESTAMP)) AND " +
-            "c.getTypeMaterial.id = :id " +
-            "ORDER BY c.name DESC")
-    Collection<Material> findAllByType(Integer id);
-
+    Collection<Material> findAllByTypeMaterialAndValidToIsNullOrderByNameAsc(TypeMaterial typeMaterial);
 
 }

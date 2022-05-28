@@ -16,7 +16,7 @@ import java.util.Collection;
  * @author jyepez on 27/5/2022
  */
 @RestController
-@RequestMapping(GlobalConstant.V1_API_VERSION + "/catalogCellar")
+@RequestMapping(GlobalConstant.V1_API_VERSION + "/material")
 public class MaterialController {
 
     private final IMaterialService catalogCellarService;

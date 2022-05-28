@@ -15,7 +15,7 @@ import java.util.Collection;
  * @author jyepez on 27/5/2022
  */
 @RestController
-@RequestMapping(GlobalConstant.V1_API_VERSION + "/typeCellar")
+@RequestMapping(GlobalConstant.V1_API_VERSION + "/typeMaterial")
 public class TypeMaterialController {
 
     private final ITypeMaterialService typeCellarService;

@@ -20,5 +20,5 @@ public class MaterialRes implements Serializable {
 
     private Integer id;
     private String name;
-    private TypeMaterialRes typeCellar;
+    private TypeMaterialRes typeMaterial;
 }
