@@ -1,8 +1,9 @@
-package org.crsoft.cartonplast.common.controller;
+package org.crsoft.cartonplast.celler.controller;
 
+import org.crsoft.cartonplast.celler.service.ITypeMaterialService;
+import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.service.ITypeCellarService;
-import org.crsoft.cartonplast.vo.res.TypeCellarRes;
+import org.crsoft.cartonplast.vo.res.TypeMaterialRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,23 +11,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 
-import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
-
 /**
  * @author jyepez on 27/5/2022
  */
 @RestController
-@RequestMapping(V1_API_VERSION + "/typeCellar")
-public class TypeCellarController {
+@RequestMapping(GlobalConstant.V1_API_VERSION + "/typeCellar")
+public class TypeMaterialController {
 
-    private final ITypeCellarService typeCellarService;
+    private final ITypeMaterialService typeCellarService;
 
-    public TypeCellarController(ITypeCellarService typeCellarService) {
+    public TypeMaterialController(ITypeMaterialService typeCellarService) {
         this.typeCellarService = typeCellarService;
     }
 
     @GetMapping
-    private ResponseEntity<Collection<TypeCellarRes>> findAllTypeCellar() {
+    private ResponseEntity<Collection<TypeMaterialRes>> findAllTypeCellar() {
         try {
             return ResponseEntity.ok().body(this.typeCellarService.findAllTypeCellar());
         } catch (NotFoundException e) {

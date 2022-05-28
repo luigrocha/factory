@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.common.model;
+package org.crsoft.cartonplast.celler.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "CDTCAT")
-public class CatalogCellar {
+public class Material {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "ID_CDTCAT_ID",
+            name = "ID_CDTCAT_CODE",
             updatable = false,
             nullable = false
     )
@@ -64,7 +64,7 @@ public class CatalogCellar {
             name = "XID_CDTTIP_ID",
             referencedColumnName = "ID_CDTTIP_ID"
     )
-    private TypeCellar typeCellar;
+    private TypeMaterial typeMaterial;
 
     @PrePersist
     public void prePersist() {

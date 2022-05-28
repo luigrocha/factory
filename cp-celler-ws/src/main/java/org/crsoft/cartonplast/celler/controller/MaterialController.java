@@ -1,8 +1,9 @@
-package org.crsoft.cartonplast.common.controller;
+package org.crsoft.cartonplast.celler.controller;
 
+import org.crsoft.cartonplast.celler.service.IMaterialService;
+import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.service.ICatalogCellarService;
-import org.crsoft.cartonplast.vo.res.CatalogCellarRes;
+import org.crsoft.cartonplast.vo.res.MaterialRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,23 +12,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 
-import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
-
 /**
  * @author jyepez on 27/5/2022
  */
 @RestController
-@RequestMapping(V1_API_VERSION + "/catalogCellar")
-public class CatalogCellarController {
+@RequestMapping(GlobalConstant.V1_API_VERSION + "/catalogCellar")
+public class MaterialController {
 
-    private final ICatalogCellarService catalogCellarService;
+    private final IMaterialService catalogCellarService;
 
-    public CatalogCellarController(ICatalogCellarService catalogCellarService) {
+    public MaterialController(IMaterialService catalogCellarService) {
         this.catalogCellarService = catalogCellarService;
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<Collection<CatalogCellarRes>> findAllCatalogCellarByType(@PathVariable("id") Integer id) {
+    private ResponseEntity<Collection<MaterialRes>> findAllCatalogCellarByType(@PathVariable("id") Integer id) {
         try {
             return ResponseEntity.ok().body(this.catalogCellarService.findAllCatalogCellarByType(id));
         } catch (NotFoundException e) {

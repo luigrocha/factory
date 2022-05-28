@@ -14,11 +14,11 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CatalogCellarRes implements Serializable {
+public class MaterialRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer id;
     private String name;
-    private TypeCellarRes typeCellar;
+    private TypeMaterialRes typeCellar;
 }

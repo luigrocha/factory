@@ -4,4 +4,5 @@ include 'cp-core-vo'
 include 'cp-core-common'
 include 'cp-client-ws'
 include 'cp-order-ws'
+include 'cp-celler-ws'
 

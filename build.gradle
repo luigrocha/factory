@@ -89,4 +89,5 @@ dependencies {
     implementation project(":cp-design-ws")
     implementation project(":cp-client-ws")
     implementation project(":cp-order-ws")
+    implementation project(":cp-celler-ws")
 }

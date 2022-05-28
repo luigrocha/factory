@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TypeCellarRes implements Serializable {
+public class TypeMaterialRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
