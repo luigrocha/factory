@@ -7,7 +7,7 @@ import org.crsoft.cartonplast.design.vo.res.ColorCatalogRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author lpillaga on 14/05/2022
@@ -21,5 +21,5 @@ public interface ColorCatalogMapper {
 
     ColorCatalogRes colorCatalogToColorCatalogRes(ColorCatalog colorCatalog);
 
-    List<ColorCatalogRes> colorCatalogListToColorCatalogResList(List<ColorCatalog> colorCatalogList);
+    Collection<ColorCatalogRes> colorCatalogListToColorCatalogResList(Collection<ColorCatalog> colorCatalogList);
 }
