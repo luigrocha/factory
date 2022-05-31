@@ -6,7 +6,6 @@ import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.design.model.ColorA;
 import org.crsoft.cartonplast.design.model.ColorB;
-import org.crsoft.cartonplast.design.repository.ColorARepository;
 import org.crsoft.cartonplast.design.repository.ColorBRepository;
 import org.crsoft.cartonplast.design.service.IColorBService;
 import org.crsoft.cartonplast.design.service.mapper.ColorBMapper;

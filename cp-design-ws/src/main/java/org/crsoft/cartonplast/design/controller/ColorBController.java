@@ -27,59 +27,33 @@ public class ColorBController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<ColorBRes>> getAllColorsB() {
-        try {
+    public ResponseEntity<Collection<ColorBRes>> getAllColorsB() throws NotFoundException {
             return ResponseEntity.ok(this.colorBService.findAllValidColors());
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @PostMapping
-    public ResponseEntity<?> createColorB(@RequestBody ColorB colorB, @RequestHeader("userName") String userName) {
-        try {
+    public ResponseEntity<?> createColorB(@RequestBody ColorB colorB, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
             colorB.setCreatedBy(userName);
             this.colorBService.createColorB(colorB);
             return ResponseEntity.ok().build();
-        } catch (InsertException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<ColorBRes> findColorBByCode(@PathVariable("code") String code) {
-        try {
+    public ResponseEntity<ColorBRes> findColorBByCode(@PathVariable("code") String code) throws NotFoundException {
             return ResponseEntity.ok().body(this.colorBService.findColorBByCode(code));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @PatchMapping("/{code}")
-    public ResponseEntity<?> updateColorBByCode(@PathVariable("code") String code, @RequestBody ColorB color, @RequestHeader("userName") String userName) {
-        try {
+    public ResponseEntity<?> updateColorBByCode(@PathVariable("code") String code, @RequestBody ColorB color, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
             color.setUpdatedBy(userName);
             this.colorBService.updateColorBByCode(code, color);
             return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @DeleteMapping("{code}")
-    public ResponseEntity<?> deleteColorBByCode(@PathVariable("code") String code, @RequestHeader("userName") String userName) {
-        try {
+    public ResponseEntity<?> deleteColorBByCode(@PathVariable("code") String code, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
             this.colorBService.deleteColorBByCode(code, userName);
             return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
 }

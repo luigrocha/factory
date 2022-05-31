@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.common.model;
+package org.crsoft.cartonplast.celler.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "CDTTIP")
-public class TypeCellar {
+public class TypeMaterial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
