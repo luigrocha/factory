@@ -6,7 +6,6 @@ import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -18,18 +17,18 @@ import org.springframework.web.context.request.WebRequest;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> handleNotFoundException(NotFoundException exception, WebRequest request){
-        return new ResponseEntity<>(exception.getMessage(),new HttpHeaders(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> handleNotFoundException(NotFoundException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InsertException.class)
-    public ResponseEntity<?> handleInsertException(InsertException exception, WebRequest request){
-        return new ResponseEntity<>(exception.getMessage(),new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> handleInsertException(InsertException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UpdateException.class)
-    public ResponseEntity<?> handleUpdateException(UpdateException exception, WebRequest request){
-        return new ResponseEntity<>(exception.getMessage(),new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> handleUpdateException(UpdateException exception, WebRequest request) {
+        return new ResponseEntity<>(exception.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
 }

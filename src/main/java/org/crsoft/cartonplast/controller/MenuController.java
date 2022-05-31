@@ -30,58 +30,34 @@ public class MenuController {
 
     @PostMapping("/createItem")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<?> createItem(@RequestBody MenuReq menuReq) {
-        try {
-            this.menuService.createItem(menuReq);
-            return ResponseEntity.ok().build();
-        } catch (InsertException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<?> createItem(@RequestBody MenuReq menuReq) throws InsertException {
+        this.menuService.createItem(menuReq);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/findAllItems")
     @RolesAllowed({"backend-admin", "backend-supervisor", "backend-user"})
-    public ResponseEntity<Collection<MenuRes>> findAllItems(@RequestBody Collection<String> roles) {
-        try {
-            return ResponseEntity.ok().body(this.menuService.findAllItems(roles));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Collection<MenuRes>> findAllItems(@RequestBody Collection<String> roles) throws NotFoundException {
+        return ResponseEntity.ok().body(this.menuService.findAllItems(roles));
     }
 
     @PutMapping("/updateItem/{code}")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<?> updateItem(@PathVariable("code") Integer code, @RequestBody MenuReq menuReq) {
-        try {
-            this.menuService.updateItem(code, menuReq);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<?> updateItem(@PathVariable("code") Integer code, @RequestBody MenuReq menuReq) throws NotFoundException, UpdateException {
+        this.menuService.updateItem(code, menuReq);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/deleteItem/{code}")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<?> deleteItem(@PathVariable("code") Integer code) {
-        try {
-            this.menuService.deleteItem(code);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<?> deleteItem(@PathVariable("code") Integer code) throws NotFoundException, UpdateException {
+        this.menuService.deleteItem(code);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/findAllItemsTree")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<Collection<TreeNodeRes>> findAllItemsTree() {
-        try {
-            return ResponseEntity.ok().body(this.menuService.findAllItemsTree());
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Collection<TreeNodeRes>> findAllItemsTree() throws NotFoundException {
+        return ResponseEntity.ok().body(this.menuService.findAllItemsTree());
     }
 }

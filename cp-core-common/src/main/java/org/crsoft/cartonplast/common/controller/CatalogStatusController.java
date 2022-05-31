@@ -27,11 +27,7 @@ public class CatalogStatusController {
     }
 
     @GetMapping("/{type}")
-    private ResponseEntity<Collection<CatalogStatusRes>> findAllStatusByType(@PathVariable("type") String type) {
-        try {
-            return ResponseEntity.ok().body(this.catalogStatusService.findAllStatusByType(type));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    private ResponseEntity<Collection<CatalogStatusRes>> findAllStatusByType(@PathVariable("type") String type) throws NotFoundException {
+        return ResponseEntity.ok().body(this.catalogStatusService.findAllStatusByType(type));
     }
 }

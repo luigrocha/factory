@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.List;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
@@ -27,7 +26,7 @@ public class ClientController {
         return ResponseEntity.ok(this.clientService.findAllValidClients());
     }
 
-    @PostMapping(consumes = { "multipart/form-data" })
+    @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ClientRes> createClient(
             @RequestParam("id") String id,
             @RequestParam("name") String name,

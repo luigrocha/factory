@@ -28,32 +28,32 @@ public class ColorBController {
 
     @GetMapping
     public ResponseEntity<Collection<ColorBRes>> getAllColorsB() throws NotFoundException {
-            return ResponseEntity.ok(this.colorBService.findAllValidColors());
+        return ResponseEntity.ok(this.colorBService.findAllValidColors());
     }
 
     @PostMapping
     public ResponseEntity<?> createColorB(@RequestBody ColorB colorB, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
-            colorB.setCreatedBy(userName);
-            this.colorBService.createColorB(colorB);
-            return ResponseEntity.ok().build();
+        colorB.setCreatedBy(userName);
+        this.colorBService.createColorB(colorB);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{code}")
     public ResponseEntity<ColorBRes> findColorBByCode(@PathVariable("code") String code) throws NotFoundException {
-            return ResponseEntity.ok().body(this.colorBService.findColorBByCode(code));
+        return ResponseEntity.ok().body(this.colorBService.findColorBByCode(code));
     }
 
     @PatchMapping("/{code}")
     public ResponseEntity<?> updateColorBByCode(@PathVariable("code") String code, @RequestBody ColorB color, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-            color.setUpdatedBy(userName);
-            this.colorBService.updateColorBByCode(code, color);
-            return ResponseEntity.ok().build();
+        color.setUpdatedBy(userName);
+        this.colorBService.updateColorBByCode(code, color);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("{code}")
     public ResponseEntity<?> deleteColorBByCode(@PathVariable("code") String code, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-            this.colorBService.deleteColorBByCode(code, userName);
-            return ResponseEntity.ok().build();
+        this.colorBService.deleteColorBByCode(code, userName);
+        return ResponseEntity.ok().build();
     }
 
 }

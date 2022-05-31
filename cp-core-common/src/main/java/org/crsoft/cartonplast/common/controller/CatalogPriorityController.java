@@ -27,11 +27,7 @@ public class CatalogPriorityController {
     }
 
     @GetMapping("/{type}")
-    private ResponseEntity<Collection<CatalogPriorityRes>> getAllPrioritiesByType(@PathVariable("type") String type) {
-        try {
-            return ResponseEntity.ok().body(this.catalogPriorityService.findAllPriorityByType(type));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    private ResponseEntity<Collection<CatalogPriorityRes>> getAllPrioritiesByType(@PathVariable("type") String type) throws NotFoundException {
+        return ResponseEntity.ok().body(this.catalogPriorityService.findAllPriorityByType(type));
     }
 }

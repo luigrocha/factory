@@ -2,11 +2,11 @@ package org.crsoft.cartonplast.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.crsoft.cartonplast.common.service.RoleService;
-import org.crsoft.cartonplast.enums.RoleEnum;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.exception.UpdateException;
+import org.crsoft.cartonplast.common.service.RoleService;
+import org.crsoft.cartonplast.enums.RoleEnum;
 import org.crsoft.cartonplast.model.CatalogPermission;
 import org.crsoft.cartonplast.model.Menu;
 import org.crsoft.cartonplast.model.Permission;

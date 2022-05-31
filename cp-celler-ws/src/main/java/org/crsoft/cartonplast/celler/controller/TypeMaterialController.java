@@ -26,6 +26,6 @@ public class TypeMaterialController {
 
     @GetMapping
     private ResponseEntity<Collection<TypeMaterialRes>> findAllTypeCellar() throws NotFoundException {
-            return ResponseEntity.ok().body(this.typeCellarService.findAllTypeCellar());
+        return ResponseEntity.ok().body(this.typeCellarService.findAllTypeCellar());
     }
 }

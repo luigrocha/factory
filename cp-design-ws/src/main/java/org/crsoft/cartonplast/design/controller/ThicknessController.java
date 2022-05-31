@@ -27,57 +27,33 @@ public class ThicknessController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<ThicknessRes>> getAllThicknesses() {
-        try {
-            return ResponseEntity.ok(this.thicknessService.findAllValidThickness());
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Collection<ThicknessRes>> getAllThicknesses() throws NotFoundException {
+        return ResponseEntity.ok(this.thicknessService.findAllValidThickness());
     }
 
     @PostMapping
-    public ResponseEntity<?> createThickness(@RequestBody Thickness thickness, @RequestHeader("userName") String userName) {
-        try {
-            thickness.setCreatedBy(userName);
-            this.thicknessService.createThickness(thickness);
-            return ResponseEntity.ok().build();
-        } catch (InsertException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<?> createThickness(@RequestBody Thickness thickness, @RequestHeader("userName") String userName) throws InsertException {
+        thickness.setCreatedBy(userName);
+        this.thicknessService.createThickness(thickness);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<ThicknessRes> findThicknessByCode(@PathVariable("code") Integer code) {
-        try {
-            return ResponseEntity.ok().body(this.thicknessService.findThicknessByCode(code));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ThicknessRes> findThicknessByCode(@PathVariable("code") Integer code) throws NotFoundException {
+        return ResponseEntity.ok().body(this.thicknessService.findThicknessByCode(code));
     }
 
     @PatchMapping("/{code}")
-    public ResponseEntity<?> updateThicknessByCode(@PathVariable("code") Integer code, @RequestBody Thickness thickness, @RequestHeader("userName") String userName) {
-        try {
-            thickness.setUpdatedBy(userName);
-            this.thicknessService.updateThicknessByCode(code, thickness);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<?> updateThicknessByCode(@PathVariable("code") Integer code, @RequestBody Thickness thickness, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
+        thickness.setUpdatedBy(userName);
+        this.thicknessService.updateThicknessByCode(code, thickness);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{code}")
-    public ResponseEntity<?> deleteThicknessByCode(@PathVariable("code") Integer code, @RequestHeader("userName") String userName) {
-        try {
-            this.thicknessService.deleteThicknessByCode(code, userName);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<?> deleteThicknessByCode(@PathVariable("code") Integer code, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
+        this.thicknessService.deleteThicknessByCode(code, userName);
+        return ResponseEntity.ok().build();
     }
 
 }

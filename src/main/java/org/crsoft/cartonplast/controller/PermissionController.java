@@ -28,32 +28,18 @@ public class PermissionController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<Collection<PermissionRes>> findPermissionsByMenuCode(@PathVariable("code") Integer code) {
-        try {
-            return ResponseEntity.ok().body(this.permissionService.findPermissionsByMenuCode(code));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Collection<PermissionRes>> findPermissionsByMenuCode(@PathVariable("code") Integer code) throws NotFoundException {
+        return ResponseEntity.ok().body(this.permissionService.findPermissionsByMenuCode(code));
     }
 
     @PatchMapping("/{codeMenu}/{codePermission}")
-    public ResponseEntity<?> updatePermissionByMenuCode(@RequestBody Collection<TypePermissionReq> typePermissionReqs, @PathVariable("codeMenu") Integer codeMenu, @PathVariable("codePermission") Integer codePermission) {
-        try {
-            this.permissionService.updatePermissionByMenuCode(typePermissionReqs, codeMenu, codePermission);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<?> updatePermissionByMenuCode(@RequestBody Collection<TypePermissionReq> typePermissionReqs, @PathVariable("codeMenu") Integer codeMenu, @PathVariable("codePermission") Integer codePermission) throws NotFoundException, UpdateException {
+        this.permissionService.updatePermissionByMenuCode(typePermissionReqs, codeMenu, codePermission);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/findPermissionsPage")
-    public ResponseEntity<Collection<TypePermissionRes>> findPermissionsPage(@RequestBody PermissionsPageReq permissionsPageReq) {
-        try {
-            return ResponseEntity.ok().body(permissionService.findPermissionsPage(permissionsPageReq.getUrl(), permissionsPageReq.getRoles()));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Collection<TypePermissionRes>> findPermissionsPage(@RequestBody PermissionsPageReq permissionsPageReq) throws NotFoundException {
+        return ResponseEntity.ok().body(permissionService.findPermissionsPage(permissionsPageReq.getUrl(), permissionsPageReq.getRoles()));
     }
 }

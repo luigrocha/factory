@@ -28,19 +28,19 @@ public class ColorAController {
 
     @GetMapping
     public ResponseEntity<Collection<ColorARes>> getAllColorsA() throws NotFoundException {
-            return ResponseEntity.ok(this.colorAService.findAllValidColors());
+        return ResponseEntity.ok(this.colorAService.findAllValidColors());
     }
 
     @PostMapping
     public ResponseEntity<?> createColorA(@RequestBody ColorA colorA, @RequestHeader("userName") String userName) throws InsertException {
-            colorA.setCreatedBy(userName);
-            this.colorAService.createColorA(colorA);
-            return ResponseEntity.ok().build();
+        colorA.setCreatedBy(userName);
+        this.colorAService.createColorA(colorA);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{code}")
     public ResponseEntity<ColorARes> findColorAByCode(@PathVariable("code") String code) throws NotFoundException {
-            return ResponseEntity.ok(this.colorAService.findColorAByCode(code));
+        return ResponseEntity.ok(this.colorAService.findColorAByCode(code));
     }
 
     @PatchMapping("/{code}")
@@ -48,16 +48,16 @@ public class ColorAController {
             @PathVariable("code") String code,
             @RequestBody ColorA colorA,
             @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-            colorA.setUpdatedBy(userName);
-            this.colorAService.updateColorAByCode(code, colorA);
-            return ResponseEntity.ok().build();
+        colorA.setUpdatedBy(userName);
+        this.colorAService.updateColorAByCode(code, colorA);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{code}")
     public ResponseEntity<?> deleteColorAByCode(@PathVariable("code") String code, @RequestHeader("userName") String userName)
             throws NotFoundException, UpdateException {
-            this.colorAService.deleteColorAByCode(code, userName);
-            return ResponseEntity.ok().build();
+        this.colorAService.deleteColorAByCode(code, userName);
+        return ResponseEntity.ok().build();
     }
 
 }
