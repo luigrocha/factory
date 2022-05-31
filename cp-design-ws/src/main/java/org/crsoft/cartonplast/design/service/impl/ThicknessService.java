@@ -68,6 +68,7 @@ public class ThicknessService implements IThicknessService {
             thicknessByCode.setWeight(thickness.getWeight());
             thicknessByCode.setThick(thickness.getThick());
             thicknessByCode.setUpdatedAt(LocalDateTime.now());
+            thicknessByCode.setUpdatedBy(thickness.getUpdatedBy());
             this.thicknessRepository.save(thicknessByCode);
         } catch (Exception e) {
             log.error("Error to updateThicknessByCode: {}", e.getMessage());

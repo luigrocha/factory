@@ -78,6 +78,7 @@ public class ColorBService implements IColorBService {
             color.setColorCode(colorB.getColorCode());
             color.setDescription(colorB.getDescription());
             color.setUpdatedAt(LocalDateTime.now());
+            color.setUpdatedBy(colorB.getUpdatedBy());
             this.colorBRepository.save(color);
         } catch (Exception e) {
             log.error("Error to updateColorBByCode: {}", e.getMessage());

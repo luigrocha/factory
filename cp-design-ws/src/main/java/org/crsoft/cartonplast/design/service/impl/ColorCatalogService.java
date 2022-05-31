@@ -65,6 +65,7 @@ public class ColorCatalogService implements IColorCatalogService {
         try {
             colorCatalogByCode.setName(colorCatalog.getName());
             colorCatalogByCode.setColorCode(colorCatalog.getColorCode());
+            colorCatalogByCode.setUpdatedBy(colorCatalog.getUpdatedBy());
             colorCatalogByCode.setUpdatedAt(LocalDateTime.now());
             this.colorCatalogRepository.save(colorCatalogByCode);
         } catch (Exception e) {

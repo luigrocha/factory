@@ -69,6 +69,7 @@ public class ColorAService implements IColorAService {
             colorAById.setName(color.getName().toLowerCase());
             colorAById.setUpdatedAt(LocalDateTime.now());
             colorAById.setColorCode(color.getColorCode());
+            colorAById.setUpdatedBy(color.getUpdatedBy());
             this.colorARepository.save(colorAById);
         } catch (Exception e) {
             log.error("Error to updateColorAByCode: {}", e.getMessage());
