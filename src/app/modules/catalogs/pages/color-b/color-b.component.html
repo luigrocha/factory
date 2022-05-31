@@ -49,6 +49,9 @@
             <th pSortableColumn="description">
               Descripción <p-sortIcon field="description"></p-sortIcon>
             </th>
+            <th>
+              Color
+            </th>
             <th style="
                 text-align: center;
                 display: flex;
@@ -82,6 +85,10 @@
             <td>
               <span class="p-column-title">Descripción</span>
               {{ color.description }}
+            </td>
+            <td>
+              <p-avatar [style]="{'background-color': color.colorCode, border: '1px solid #edf4fa'}" shape="circle">
+              </p-avatar>
             </td>
             <td style="display: flex; justify-content: space-evenly">
               <button pButton pRipple icon="pi pi-pencil"
@@ -140,6 +147,11 @@
           <input type="text" pInputText id="description" [(ngModel)]="color.description"
             style="text-transform: uppercase" required />
           <small class="p-invalid" *ngIf="submitted && !color.description">Campo descripción es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="colorCode">Color</label>
+          <input type="color" pInputText class="input-color" id="colorCode" [(ngModel)]="color.colorCode" required />
+          <small class="p-invalid" *ngIf="submitted && !color.colorCode">Campo color es requerido.</small>
         </div>
       </ng-template>
 

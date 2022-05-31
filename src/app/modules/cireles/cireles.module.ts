@@ -12,6 +12,7 @@ import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { AvatarModule } from 'primeng/avatar';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     TagModule,
     DialogModule,
     FormsModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    AvatarModule,
   ],
   declarations: [
     CirelesListComponent

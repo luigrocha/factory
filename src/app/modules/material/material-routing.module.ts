@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ClientsListComponent } from 'src/app/modules/clients/pages/clients-list/clients-list.component';
+import { MaterialComponent } from './material.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: ClientsListComponent,
+    component: MaterialComponent,
   }
 ];
 
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ClientsRoutingModule { }
+export class MaterialRoutingModule { }

@@ -1,13 +1,12 @@
-<div class="p-grid">
-  <div class="p-col-12">
-    <p-toast></p-toast>
-
-    <div class="card">
-      <p-table #dt [value]="colors" [columns]="cols" [rows]="7" [paginator]="true" [globalFilterFields]="['id', 'name']"
-        [(selection)]="selectedColor" [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
+<div class="card">
+  <p-tabView orientation="left" *ngIf="typeMaterials" [scrollable]="true" (onChange)="onChangeTab($event)">
+    <p-tabPanel *ngFor="let type of typeMaterials; let i = index" [selected]="i == 0" header="{{type.name}}"
+      class="line-height-3 m-0">
+      <p-table #dt [value]="materials" [columns]="cols" [rows]="6" [paginator]="true" [globalFilterFields]="['name']"
+        [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 class="m-0">Gestión de Colores A</h5>
+            <h5 class="m-0">Gestión Materia Prima</h5>
 
             <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
               <button pButton pRipple label="Nuevo" icon="pi pi-plus"
@@ -28,19 +27,14 @@
             </div>
           </div>
         </ng-template>
+
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 3rem">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th pSortableColumn="id">
-              ID <p-sortIcon field="id"></p-sortIcon>
-            </th>
             <th pSortableColumn="name">
               Nombre <p-sortIcon field="name"></p-sortIcon>
-            </th>
-            <th>
-              Color
             </th>
             <th style="
                 text-align: center;
@@ -57,16 +51,8 @@
               <p-tableCheckbox [value]="color"></p-tableCheckbox>
             </td>
             <td>
-              <span class="p-column-title">ID</span>
-              {{ color.id }}
-            </td>
-            <td>
               <span class="p-column-title">Nombre</span>
               {{ color.name }}
-            </td>
-            <td>
-              <p-avatar [style]="{'background-color': color.colorCode, border: '1px solid #edf4fa'}" shape="circle">
-              </p-avatar>
             </td>
             <td style="display: flex; justify-content: space-evenly">
               <button pButton pRipple icon="pi pi-pencil"
@@ -79,41 +65,11 @@
         </ng-template>
         <ng-template pTemplate="summary">
           <div class="p-d-flex p-ai-center p-jc-between">
-            Total de Colores:
-            {{ colors ? colors.length : 0 }}
+            Total de {{type.name}}:
+            {{ materials ? materials.length : 0 }}
           </div>
         </ng-template>
       </p-table>
-    </div>
-
-    <p-dialog [(visible)]="colorDialog" [style]="{ width: '450px' }" header="Detalles de Colores A" [modal]="true"
-      styleClass="p-fluid">
-      <ng-template pTemplate="content">
-        <div class="p-field">
-          <label for="id">ID</label>
-          <input type="text" pInputText id="id" [(ngModel)]="color.id" style="text-transform: uppercase" required
-            autofocus />
-          <small class="p-invalid" *ngIf="submitted && !color.id">Campo id es requerido.</small>
-        </div>
-        <div class="p-field">
-          <label for="name">Nombre</label>
-          <input type="text" pInputText id="name" [(ngModel)]="color.name" style="text-transform: uppercase" required />
-          <small class="p-invalid" *ngIf="submitted && !color.name">Campo nombre es requerido.</small>
-        </div>
-        <div class="p-field">
-          <label for="colorCode">Color</label>
-          <input type="color" pInputText class="input-color" id="colorCode" [(ngModel)]="color.colorCode" required />
-          <small class="p-invalid" *ngIf="submitted && !color.colorCode">Campo color es requerido.</small>
-        </div>
-      </ng-template>
-
-      <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-          (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveColor()"></button>
-      </ng-template>
-    </p-dialog>
-
-    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
-  </div>
+    </p-tabPanel>
+  </p-tabView>
 </div>

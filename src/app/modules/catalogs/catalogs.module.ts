@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ThicknessComponent } from './pages/thickness/thickness.component';
 import { DropdownModule } from 'primeng/dropdown';
+import { AvatarModule } from 'primeng/avatar';
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { DropdownModule } from 'primeng/dropdown';
     FormsModule,
     ConfirmDialogModule,
     DropdownModule,
+    AvatarModule,
   ],
   declarations: [
     ColorAComponent,

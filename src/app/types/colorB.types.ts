@@ -6,4 +6,5 @@ export interface ColorB {
     index?: number;
     dosage?: number;
     description?: string;
+    colorCode?: string;
 }

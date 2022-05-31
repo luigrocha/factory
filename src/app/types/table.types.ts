@@ -4,3 +4,8 @@ export interface TableHeader<T> {
   cssClasses?: string[];
   frozen?: boolean;
 }
+
+export interface TableColumn<T> {
+  field: keyof T | string;
+  header: string;
+}
