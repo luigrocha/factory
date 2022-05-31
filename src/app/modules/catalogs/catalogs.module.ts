@@ -18,6 +18,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ThicknessComponent } from './pages/thickness/thickness.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { AvatarModule } from 'primeng/avatar';
+import { ColorCComponent } from './pages/color-c/color-c.component';
 
 @NgModule({
   imports: [
@@ -39,6 +40,7 @@ import { AvatarModule } from 'primeng/avatar';
   declarations: [
     ColorAComponent,
     ColorBComponent,
+    ColorCComponent,
     HomopolimerosComponent,
     PrintersComponent,
     ThicknessComponent
