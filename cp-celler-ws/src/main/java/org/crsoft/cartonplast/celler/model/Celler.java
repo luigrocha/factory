@@ -106,5 +106,5 @@ public class Celler {
         this.validFrom = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
     }
-            
+
 }
