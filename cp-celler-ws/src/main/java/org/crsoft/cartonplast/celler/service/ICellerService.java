@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.celler.service;
 
+import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 
@@ -12,4 +13,7 @@ public interface ICellerService {
 
     Collection<CellerRes> findAllCeller() throws NotFoundException;
 
+    Celler getCellarByCode(Integer code) throws NotFoundException;
+
+    Collection<CellerRes> findCellerByMaterialCode(Integer id) throws NotFoundException;
 }

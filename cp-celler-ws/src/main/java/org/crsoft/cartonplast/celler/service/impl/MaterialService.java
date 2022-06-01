@@ -13,6 +13,9 @@ import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
+
+import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
 
 
 /**
@@ -42,7 +45,18 @@ public class MaterialService implements IMaterialService {
             return this.materialMapper.materialCollectionToMaterialResCollection(materials);
         } else {
             log.error("Error to findAllCatalogCellarByType");
-            throw new NotFoundException(MessagesConstant.MESSAGE_NOT_FOUND);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Material getMaterialByCode(Integer code) throws NotFoundException {
+        Optional<Material> material = this.materialRepository.findByIdAndValidToIsNull(code);
+        if(material.isPresent()){
+            return material.get();
+        }else {
+            log.error("Error to getMaterialByCode {}",code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
 }

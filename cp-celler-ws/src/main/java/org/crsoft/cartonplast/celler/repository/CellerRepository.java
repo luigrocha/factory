@@ -1,6 +1,7 @@
 package org.crsoft.cartonplast.celler.repository;
 
 import org.crsoft.cartonplast.celler.model.Celler;
+import org.crsoft.cartonplast.celler.model.Material;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +17,9 @@ public interface CellerRepository extends JpaRepository<Celler, Integer> {
     Collection<Celler> findAllByValidToIsNullOrderByCreatedAtDesc();
 
     Optional<Celler> findByIdAndValidToIsNull(Integer code);
+
+    Collection<Celler> findAllByMaterialAndValidToIsNullOrderByCreatedAtDesc(Material material);
+
+    Optional<Celler> findDistinctTopByMaterialAndValidToIsNullOrderByCreatedAtDesc(Material material);
 
 }
