@@ -27,9 +27,8 @@ export class CirelesListComponent implements OnInit {
   query: string = null;
 
   subHeaders: TableHeader<CirelColor>[] = [
-    {label: 'Tipo', property: 'colorType'},
-    {label: 'Número color', property: 'index'},
-    {label: 'Color', property: 'color'}
+    { label: 'Tipo', property: 'colorType' },
+    { label: 'Color', property: 'color' }
   ];
 
 
@@ -42,26 +41,26 @@ export class CirelesListComponent implements OnInit {
     private cirelService: CirelService,
   ) {
     this.breadcrumbService.setItems([
-      {label: 'Diseño'},
-      {label: 'Cireles', routerLink: ['/home/cireles']},
+      { label: 'Diseño' },
+      { label: 'Cireles', routerLink: ['/home/cireles'] },
     ]);
   }
 
   ngOnInit() {
     this.getCirels(this.initialPage, this.pageSize, this.query);
     this.columns = [
-      {field: 'print', header: 'Impresión'},
-      {field: 'printer', header: 'Impresora'},
-      {field: 'description', header: 'Descripción'},
-      {field: 'cyrelColors', header: 'Colores'},
-      {field: 'die', header: 'Troquel'},
-      {field: 'observation', header: 'Observaciones'},
+      { field: 'print', header: 'Impresión' },
+      { field: 'printer', header: 'Impresora' },
+      { field: 'description', header: 'Descripción' },
+      { field: 'cyrelColors', header: 'Colores' },
+      { field: 'die', header: 'Troquel' },
+      { field: 'observation', header: 'Observaciones' },
     ];
   }
 
   ngAfterViewInit(): void {
     this.table.onPage
-      .subscribe(({first, rows}) => {
+      .subscribe(({ first, rows }) => {
         this.actualPage = first / rows
         this.pageSize = rows;
         this.getCirels(this.actualPage, this.pageSize, this.query);
@@ -70,7 +69,7 @@ export class CirelesListComponent implements OnInit {
       .pipe(
         debounceTime(500)
       )
-      .subscribe(({filters}) => {
+      .subscribe(({ filters }) => {
         const isEmpty = Object.keys(filters).length === 0;
         if (isEmpty) {
           this.query = null;

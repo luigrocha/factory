@@ -79,8 +79,9 @@ export class ColorAComponent implements OnInit {
     this.getPermissionsPage();
     this.getAll();
     this.cols = [
-      { field: 'color', header: 'Color' },
+      { field: 'color', header: 'ID' },
       { field: 'name', header: 'Nombre' },
+      { field: 'colorCode', header: 'Color' },
     ];
   }
 
@@ -155,14 +156,6 @@ export class ColorAComponent implements OnInit {
               });
             }
           );
-        });
-
-        this.selectedColor = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Homopolímeros Elimnados',
-          life: 3000,
         });
       },
     });
@@ -242,7 +235,7 @@ export class ColorAComponent implements OnInit {
   }
 
   isValidToSave(): boolean {
-    return this.color.id && this.color.name ? true : false;
+    return this.color.id && this.color.name && this.color.colorCode ? true : false;
   }
 
   getPermissionsPage() {

@@ -22,4 +22,5 @@ export interface CirelColor {
   index: number;
   color: string;
   colorType: string;
+  colorCode?: string;
 }
