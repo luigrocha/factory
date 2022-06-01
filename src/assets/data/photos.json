@@ -1,0 +1,16 @@
+{
+    "data":[
+        {
+            "itemImageSrc": "assets/img/background/b1.jpg",
+            "thumbnailImageSrc": "assets/img/background/b1.jpg",
+            "alt": "Carton Plast 1",
+            "title": "Carton Plast 1"
+        },
+        {
+            "itemImageSrc": "assets/img/background/b2.jpg",
+            "thumbnailImageSrc": "assets/img/background/b2.jpg",
+            "alt": "Carton Plast 2",
+            "title": "Carton Plast 2"
+        }
+    ]
+}

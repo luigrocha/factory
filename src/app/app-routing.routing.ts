@@ -89,6 +89,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: [RoleEnum.ADMIN] },
         loadChildren: () => import('./modules/projects/projects.module').then(m => m.ProjectsModule)
+      },
+      {
+        path: 'perfil',
+        canActivate: [AuthGuard],
+        loadChildren: () => import('./modules/profile/profile.module').then(m => m.ProfileModule)
       }
     ]
   },

@@ -192,10 +192,15 @@
           }"
         >
           <a href="#" (click)="appMain.onTopbarItemClick($event, profile)">
-            <img
-              class="profile-image"
-              src="assets/layout/images/avatar-profile.png"
-              alt="demo"
+            <img *ngIf="!imageUrl"
+              class="profile-image circle-image"
+              src="assets/img/avatars/avatar.png"
+              alt="user-logo"
+            />
+            <img *ngIf="imageUrl"
+                 class="profile-image circle-image"
+                 [src]="imageUrl"
+                 alt="user-logo"
             />
             <div class="profile-info">
               <h6>{{ userData.name }}</h6>
@@ -205,10 +210,15 @@
 
           <ul class="fadeInDown">
             <li class="layout-submenu-header">
-              <img
-                class="profile-image"
-                src="assets/layout/images/avatar-profile.png"
-                alt="demo"
+              <img *ngIf="!imageUrl"
+                   class="profile-image circle-image"
+                   src="assets/img/avatars/avatar.png"
+                   alt="user-logo"
+              />
+              <img *ngIf="imageUrl"
+                   class="profile-image circle-image"
+                   [src]="imageUrl"
+                   alt="user-logo"
               />
               <div class="profile-info">
                 <h6>{{ userData.name }}</h6>
@@ -216,7 +226,7 @@
               </div>
             </li>
             <li role="menuitem">
-              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
+              <a [routerLink]="['perfil', 'mi-perfil']" (click)="appMain.onTopbarSubItemClick($event)">
                 <i class="pi pi-user"></i>
                 <h6>Mi Perfil</h6>
               </a>
