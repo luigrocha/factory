@@ -308,12 +308,7 @@ public class UserService implements IUserService {
         try {
             User user = new User();
             user.setUsername(userReq.getUserName());
-            user.setPhoto("");
-            user.setPhone("");
-            user.setAddress("");
-            user.setValidFrom(new Timestamp(System.currentTimeMillis()));
             user.setCreatedBy(userReq.getUserName());
-            user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
             user.setPreferences(buildDefaultPreference());
             this.userRepository.save(user);
         } catch (Exception e) {
