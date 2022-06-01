@@ -1,0 +1,24 @@
+<div class="card">
+  <h5 class="p-3">Mis actividades</h5>
+  <p-timeline [value]="events1" align="alternate" styleClass="customized-timeline">
+    <ng-template pTemplate="marker">
+      <p-chip label="Abril 29" styleClass="w-8rem text-center" icon="pi pi-calendar"></p-chip>
+    </ng-template>
+    <ng-template pTemplate="content" let-event>
+      <p-card [subheader]="event.date">   <p>{{event.description}}</p>
+        <div class="flex flex-row justify-content-center align-items-center">
+          <app-user-avatar styleClasses="mr-4"></app-user-avatar>
+          <p class="flex-auto">Ha modificado un troquel</p>
+        </div>
+      </p-card>
+      <br>
+      <p-card [subheader]="event.date">   <p>{{event.description}}</p>
+        <div class="flex flex-row justify-content-center align-items-center">
+          <app-user-avatar styleClasses="mr-4"></app-user-avatar>
+          <p class="flex-auto">Ha registrado un nuevo proyecto</p>
+        </div>
+      </p-card>
+      <br>
+    </ng-template>
+  </p-timeline>
+</div>

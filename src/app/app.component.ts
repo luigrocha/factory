@@ -3,6 +3,8 @@ import { PrimeNGConfig } from 'primeng/api';
 import { AuthService } from './core/auth/service/auth.service';
 import { PreferencesService } from './core/http/preferences/preferences.service';
 import { TranslateService } from '@ngx-translate/core';
+import { PersonService } from 'src/app/core/http/persons/person.service';
+import { UserImageService } from 'src/app/core/services/user-image.service';
 
 
 @Component({
@@ -18,6 +20,8 @@ export class AppComponent implements OnInit {
     private preferenceService: PreferencesService,
     private config: PrimeNGConfig,
     private translateService: TranslateService,
+    private personService: PersonService,
+    private userImageService: UserImageService
   ) {
   }
 
@@ -39,8 +43,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.primengConfig.ripple = true;
-    this.getPreferencesByUsername();
     this.setTranslation();
+    this.getPreferencesByUsername();
+    this.getUserImage();
   }
 
   setTranslation(): void {
@@ -65,4 +70,14 @@ export class AppComponent implements OnInit {
     }
   }
 
+  getUserImage() {
+    if (this.authService.isLoggedIn()) {
+      const userName = this.authService.getLoggedUser().preferred_username;
+      this.personService.getUserImage(userName).subscribe(image => {
+        if (image) {
+          this.userImageService.setUserImage(image.imageUrl);
+        }
+      })
+    }
+  }
 }

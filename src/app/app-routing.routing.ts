@@ -91,6 +91,11 @@ const routes: Routes = [
         loadChildren: () => import('./modules/projects/projects.module').then(m => m.ProjectsModule)
       },
       {
+        path: 'perfil',
+        canActivate: [AuthGuard],
+        loadChildren: () => import('./modules/profile/profile.module').then(m => m.ProfileModule)
+      },
+      {
         path: 'material',
         canActivate: [AuthGuard],
         data: { roles: [RoleEnum.SUPERVISOR] },
