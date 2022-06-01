@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "cp.config.ws.url",
+      "type": "java.lang.String",
+      "description": "Description for cp.config.ws.url."
+    },
+    {
+      "name": "minio.images.bucket-name",
+      "type": "java.lang.String",
+      "description": "Description for minio.images.bucket-name."
+    }
+  ]
+}

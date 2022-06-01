@@ -19,7 +19,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CBTPRE", schema = "cartonplast_users_test")
+@Table(name = "CBTPRE")
 public class Preferences {
 
     @Id

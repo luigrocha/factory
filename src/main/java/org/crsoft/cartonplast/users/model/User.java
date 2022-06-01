@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * User Model
@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CBTUSE", schema = "cartonplast_users_test")
+@Table(name = "CBTUSE")
 public class User {
 
     @Id
@@ -26,20 +26,11 @@ public class User {
     @Column(name = "CBTUSE_USERNAME")
     private String username;
 
-    @Column(name = "CBTUSE_PHOTO")
-    private String photo;
-
-    @Column(name = "CBTUSE_PHONE")
-    private String phone;
-
-    @Column(name = "CBTUSE_ADDRESS")
-    private String address;
-
     @Column(name = "CBTUSE_VALID_FROM")
-    private Timestamp validFrom;
+    private LocalDateTime validFrom;
 
     @Column(name = "CBTUSE_VALID_TO")
-    private Timestamp validTo;
+    private LocalDateTime validTo;
 
     @Column(name = "CBTUSE_CREATED_BY")
     private String createdBy;
@@ -48,12 +39,25 @@ public class User {
     private String updatedBy;
 
     @Column(name = "CBTUSE_CREATED_AT")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "CBTUSE_UPDATED_AT")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "XID_CBTPRE_CODE", referencedColumnName = "ID_CBTPRE_CODE", nullable = false)
     private Preferences preferences;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CBTPERSON_CODE",
+            referencedColumnName = "ID_CBTPERSON_CODE"
+    )
+    private Person person;
+
+    @PrePersist
+    public void prePersist() {
+        this.validFrom = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+    }
 }
