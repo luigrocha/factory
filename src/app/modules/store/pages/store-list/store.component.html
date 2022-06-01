@@ -11,11 +11,12 @@
             <h5 class="m-0">Gestión de bodega</h5>
 
             <div class="flex">
-              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2"
-                [routerLink]="['/home/bodega/nuevo']"></button>
+              <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" *ngIf="isAllow(1)"
+                (click)="menuDocuments.toggle($event)"></button>
+              <p-menu #menuDocuments [popup]="true" [model]="documentsMenu" appendTo="body">
+              </p-menu>
               <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mr-2"
-                (click)="dt.exportCSV()"></button>
-
+                (click)="dt.exportCSV()" *ngIf="isAllow(5)"></button>
               <span class="block mt-2 md:mt-0 p-input-icon-left">
                 <i class="pi pi-search"></i>
                 <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
@@ -124,16 +125,16 @@
             </td>
             <td style="display: flex; justify-content: space-evenly; min-width: 8rem">
               <button pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-success p-mr-2"
-                (click)="editceller(celler)"></button>
+                class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editCeller(celler)"
+                *ngIf="isAllow(2)"></button>
               <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
-                (click)="deleteceller(celler)"></button>
+                (click)="deleteCeller(celler)" *ngIf="isAllow(4)"></button>
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary">
           <div class="p-d-flex p-ai-center p-jc-between">
-            Total de Ordenes:
+            Total de Items Bodega:
             {{ cellers ? cellers.length : 0 }}
           </div>
         </ng-template>

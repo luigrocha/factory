@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler } from 'src/app/types/celler.types';
+import { Celler, Document } from 'src/app/types/celler.types';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-store',
@@ -55,20 +57,29 @@ export class StoreComponent implements OnInit {
 
   loading = true;
 
+  documents: Document[];
+
+  documentsMenu: MenuItem[];
+
+  permissionsPage: TypePermission[];
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private cellerService: CellerService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Pedidos' },
-      { label: 'Gestión de bodega', routerLink: ['home/pedidos'] },
+      { label: 'Bodega' },
+      { label: 'Gestión de bodega', routerLink: ['bodega'] },
     ]);
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAll();
+    this.getAllDocuments();
     this.cols = [
       { field: 'lote', header: 'Lote' },
       { field: 'amount', header: 'Cantidad' },
@@ -229,6 +240,30 @@ export class StoreComponent implements OnInit {
       this.cellers = cellers;
       this.loading = false;
     });
+  }
+
+  getAllDocuments() {
+    this.documentsMenu = [];
+    this.cellerService.getAllDocument().subscribe((documents) => {
+      documents.forEach(document => {
+        this.documentsMenu.push({ label: document.description, routerLink: '/home/bodega/' + document.name });
+      });
+    });
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 
 }

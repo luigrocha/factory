@@ -16,6 +16,10 @@ import { StoreCreateComponent } from './pages/store-create/store-create.componen
 
 import localeEs from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
+import { MenuModule } from 'primeng/menu';
+import { StoreCebComponent } from './pages/store-ceb/store-ceb.component';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
 
 registerLocaleData(localeEs, 'es');
 
@@ -33,11 +37,14 @@ registerLocaleData(localeEs, 'es');
     DialogModule,
     FormsModule,
     ConfirmDialogModule,
-    ButtonModule
+    MenuModule,
+    DataViewModule,
+    DropdownModule,
   ],
   declarations: [
     StoreComponent,
     StoreCreateComponent,
+    StoreCebComponent,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'es' }]
 })

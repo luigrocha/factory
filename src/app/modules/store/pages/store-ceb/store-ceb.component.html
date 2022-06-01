@@ -1,0 +1,82 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <div class="card">
+      <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+        <h5 class="m-0">Comprobante Egreso de Materiales</h5>
+        <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
+      </div>
+      <p-dataView #dv [value]="cellers" layout="list" *ngIf="cellers">
+        <ng-template pTemplate="header">
+          <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
+            <h6>Items Seleccionados</h6>
+          </div>
+        </ng-template>
+        <ng-template let-celler pTemplate="listItem">
+          <div class="p-col-12">
+            {{celler | json}}
+          </div>
+        </ng-template>
+      </p-dataView>
+    </div>
+
+
+    <p-dialog [(visible)]="itemDialog" [style]="{ width: '450px' , height: '500px'}" header="Nuevo Item CEB"
+      [modal]="true" styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-field">
+          <label for="type">Tipo</label>
+          <p-dropdown id="type" [options]="typeMaterials" [(ngModel)]="typeMaterial" placeholder="Selecciona tipo"
+            (onChange)='onTypeSelected($event)' autofocus>
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="typeMaterial.name">
+                {{ typeMaterial.name }}
+              </div>
+            </ng-template>
+            <ng-template let-type pTemplate="item">
+              {{ type.name }}
+            </ng-template>
+          </p-dropdown>
+          <small class="p-invalid" *ngIf="submitted && !typeMaterial.name">Campo tipo es requerido.</small>
+        </div>
+
+        <div class="p-field" *ngIf="typeMaterial">
+          <label for="product">Producto / Envase</label>
+          <p-dropdown id="product" [options]="materials" [(ngModel)]="material" placeholder="Selecciona producto/envase"
+            (onChange)='onProductSelected($event)'>
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="material.name">
+                {{ material.name }}
+              </div>
+            </ng-template>
+            <ng-template let-product pTemplate="item">
+              {{ product.name }}
+            </ng-template>
+          </p-dropdown>
+          <small class="p-invalid" *ngIf="submitted && !material.name">Campo producto es requerido.</small>
+        </div>
+
+        <div class="p-field" *ngIf="material">
+          <label for="lote">Lote</label>
+          <p-dropdown id="lote" [options]="cellers" [(ngModel)]="celler" placeholder="Selecciona Lote">
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="celler.lote">
+                {{ celler.lote }}
+              </div>
+            </ng-template>
+            <ng-template let-lote pTemplate="item">
+              {{ lote.lote }}
+            </ng-template>
+          </p-dropdown>
+          <small class="p-invalid" *ngIf="submitted && !celler.lote">Campo lote es requerido.</small>
+        </div>
+
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveColor()"></button>
+      </ng-template>
+    </p-dialog>
+  </div>
+</div>
