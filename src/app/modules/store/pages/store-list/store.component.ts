@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { Celler } from 'src/app/types/celler.types';
 
 @Component({
   selector: 'app-store',
@@ -39,17 +41,17 @@ import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 })
 export class StoreComponent implements OnInit {
 
-  orderDialog: boolean;
+  cellerDialog: boolean;
 
-  // selectedOrder: Order[];
+  selectedCeller: Celler[];
 
   submitted: boolean;
 
   cols: any[];
 
-  // orders: Order[];
+  cellers: Celler[];
 
-  // order: Order;
+  celler: Celler;
 
   loading = true;
 
@@ -57,7 +59,7 @@ export class StoreComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
-    // private orderService: OrderService,
+    private cellerService: CellerService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Pedidos' },
@@ -66,18 +68,19 @@ export class StoreComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.getAll();
+    this.getAll();
     this.cols = [
       { field: 'lote', header: 'Lote' },
-      { field: 'client', header: 'Cliente' },
-      { field: 'code', header: 'Codigo' },
-      { field: 'name', header: 'Nombre' },
       { field: 'amount', header: 'Cantidad' },
-      { field: 'deliverAt', header: 'Fecha Entrega' },
+      { field: 'balance', header: 'Saldos' },
+      { field: 'coat', header: 'Sacos' },
+      { field: 'pallets', header: 'Pallets' },
+      { field: 'weight', header: 'Peso Kg' },
+      { field: 'date', header: 'Fecha' },
       { field: 'observation', header: 'Observación' },
-      { field: 'difference', header: 'Diferencia' },
-      { field: 'priority', header: 'Prioriodad' },
-      { field: 'status', header: 'Estado' },
+      { field: 'material', header: 'Producto' },
+      { field: 'location', header: 'Ubicación' },
+      { field: 'document', header: 'Documento' },
     ];
   }
 
@@ -217,15 +220,15 @@ export class StoreComponent implements OnInit {
   // }
 
   hideDialog() {
-    this.orderDialog = false;
+    this.cellerDialog = false;
     this.submitted = false;
   }
 
-  // getAll() {
-  //   this.orderService.getAll().subscribe((orders) => {
-  //     this.orders = orders;
-  //     this.loading = false;
-  //   });
-  // }
+  getAll() {
+    this.cellerService.getAll().subscribe((cellers) => {
+      this.cellers = cellers;
+      this.loading = false;
+    });
+  }
 
 }
