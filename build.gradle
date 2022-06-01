@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.0'
+    id 'org.springframework.boot' version '2.6.7'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
 }
@@ -23,15 +23,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.0'
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.7.0'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.7.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.7'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.7'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools:2.7.0'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.7'
     annotationProcessor 'org.projectlombok:lombok'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.0.4'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.0'
-    testImplementation 'org.springframework.security:spring-security-test:2.7.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
+    testImplementation 'org.springframework.security:spring-security-test:2.6.7'
 
     implementation group: 'org.keycloak.bom', name: 'keycloak-adapter-bom', version: '18.0.0', ext: 'pom'
     implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '18.0.0'
@@ -39,7 +39,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:8.0.5'
     implementation 'org.mapstruct:mapstruct:1.4.2.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.7.0'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.6.7'
 }
 
 tasks.named('test') {
