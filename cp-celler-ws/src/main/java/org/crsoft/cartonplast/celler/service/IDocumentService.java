@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.celler.service;
 
+import org.crsoft.cartonplast.celler.model.Document;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.DocumentRes;
 
@@ -12,4 +13,5 @@ public interface IDocumentService {
 
     Collection<DocumentRes> findAllDocument() throws NotFoundException;
 
+    Document getDocumentById(Integer code) throws NotFoundException;
 }

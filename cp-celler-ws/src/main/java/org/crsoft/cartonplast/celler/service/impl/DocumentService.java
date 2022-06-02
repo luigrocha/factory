@@ -11,6 +11,7 @@ import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
 
@@ -36,6 +37,17 @@ public class DocumentService implements IDocumentService {
             return this.documentMapper.documentCollectionToDocumentResCollection(documents);
         } else {
             log.error("Error to findAllDocument");
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Document getDocumentById(Integer code) throws NotFoundException {
+        Optional<Document> document = this.documentRepository.findByIdAndValidToIsNull(code);
+        if (document.isPresent()) {
+            return document.get();
+        } else {
+            log.error("Error to getDocumentById {}", code);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
