@@ -5,6 +5,6 @@ export interface Material {
 }
 
 export interface TypeMaterial {
-    id?: string;
+    id?: number;
     name?: string;
 }

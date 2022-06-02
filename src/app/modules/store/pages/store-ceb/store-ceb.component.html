@@ -1,22 +1,86 @@
 <div class="p-grid">
   <div class="p-col-12">
+    <p-toast></p-toast>
+
     <div class="card">
+      <h5 class="m-0 mb-5">Comprobante Egreso de Materiales CEB-{{numDocument}}</h5>
       <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-        <h5 class="m-0">Comprobante Egreso de Materiales</h5>
-        <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
+        <div class="field flex flex-column">
+          <label for="option">Motivo</label>
+          <p-dropdown id="option" [options]="optionDocuments" [(ngModel)]="optionDocument"
+            placeholder="Selecciona motivo">
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="optionDocument.name">
+                {{ optionDocument.name }}
+              </div>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+              {{ option.name }}
+            </ng-template>
+          </p-dropdown>
+        </div>
+
+        <div class="field flex flex-column" *ngIf="optionDocument">
+          <label for="coat">Observación</label>
+          <input type="text" pInputText id="observation" [(ngModel)]="observation" />
+        </div>
+
+        <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="mr-2" (click)="openNew()"
+          *ngIf="observation"></button>
+
+        <div class="card" *ngIf="!optionDocument">
+          <i class="pi pi-info-circle mr-2" style="font-size: 18px"></i> Selecciona un motivo y llena la observación
+          para ingresar items
+        </div>
       </div>
-      <p-dataView #dv [value]="cellers" layout="list" *ngIf="cellers">
+      <p-dataView #dv [value]="newCellers" layout="list">
         <ng-template pTemplate="header">
           <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
             <h6>Items Seleccionados</h6>
           </div>
         </ng-template>
         <ng-template let-celler pTemplate="listItem">
-          <div class="p-col-12">
-            {{celler | json}}
+          <div class="col-12 flex">
+            <div class="col-10 flex justify-content-between flex-wrap ">
+              <div class="flex flex-column col-6 md:col-3">
+                <label class="font-semibold">Tipo</label> {{celler.document.name}}
+              </div>
+              <div class="flex flex-column col-6 md:col-3">
+                <label class="font-semibold"> Producto</label> {{celler.material.name}}
+              </div>
+              <div class="flex flex-column col-6 md:col-3">
+                <label class="font-semibold">Lote</label> {{celler.lote}}
+              </div>
+              <div class="flex flex-column col-6 md:col-3">
+                <label class="font-semibold">Ubicación</label> {{celler.location.description}}
+              </div>
+              <div class="flex flex-column col-6 md:col-3">
+                <label class="font-semibold">Saldos</label> {{celler.balance}}
+              </div>
+              <div class="flex flex-column col-6 md:col-3">
+                <label class="font-semibold">Sacos</label> {{celler.coat}}
+              </div>
+              <div class="flex flex-column col-6 md:col-3">
+                <label class="font-semibold">Pallets</label> {{celler.pallets}}
+              </div>
+              <div class="flex flex-column col-6 md:col-3">
+                <label class="font-semibold">Peso</label> {{celler.weight}}
+              </div>
+            </div>
+            <div
+              class="col-2 align-self-center flex flex-column align-items-center justify-content-between md:flex-row">
+              <button pButton pRipple icon="pi pi-pencil"
+                class="p-button-rounded p-button-outlined p-button-warning p-mr-2" (click)="editItem(celler)"></button>
+              <button pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-outlined p-button-danger"
+                (click)="deleteItem(celler)"></button>
+            </div>
           </div>
         </ng-template>
       </p-dataView>
+      <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
+        <button pButton pRipple label="Guardar" icon="pi pi-plus"
+          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" *ngIf="newCellers"></button>
+      </div>
     </div>
 
 
@@ -38,7 +102,6 @@
           </p-dropdown>
           <small class="p-invalid" *ngIf="submitted && !typeMaterial.name">Campo tipo es requerido.</small>
         </div>
-
         <div class="p-field" *ngIf="typeMaterial">
           <label for="product">Producto / Envase</label>
           <p-dropdown id="product" [options]="materials" [(ngModel)]="material" placeholder="Selecciona producto/envase"
@@ -54,10 +117,10 @@
           </p-dropdown>
           <small class="p-invalid" *ngIf="submitted && !material.name">Campo producto es requerido.</small>
         </div>
-
         <div class="p-field" *ngIf="material">
           <label for="lote">Lote</label>
-          <p-dropdown id="lote" [options]="cellers" [(ngModel)]="celler" placeholder="Selecciona Lote">
+          <p-dropdown id="lote" [options]="lotes" [(ngModel)]="celler" placeholder="Selecciona Lote"
+            (onChange)='onLoteSelected($event)'>
             <ng-template pTemplate="selectedItem">
               <div *ngIf="celler.lote">
                 {{ celler.lote }}
@@ -70,12 +133,65 @@
           <small class="p-invalid" *ngIf="submitted && !celler.lote">Campo lote es requerido.</small>
         </div>
 
+        <div *ngIf="celler">
+          <div class="formgroup-inline">
+            <div style="width: 50%">
+              <label for="location">Ubicación</label>
+              <input type="text" pInputText id="location" [(ngModel)]="celler.location.description" disabled />
+            </div>
+            <div style="width: 50%">
+              <label for="weight">Disponible</label>
+              <span class="p-inputgroup">
+                <input type="number" pInputText id="weight" [(ngModel)]="weightTotal" disabled />
+                <span class="p-inputgroup-addon">Kg</span>
+              </span>
+            </div>
+          </div>
+          <div *ngIf="weightTotal>0">
+            <div class="formgroup-inline">
+              <div style="width: 50%">
+                <label for="balance">Saldos(1Kg)</label>
+                <span class="p-inputgroup">
+                  <input type="number" pInputText id="balance" [(ngModel)]="newCeller.balance"
+                    (ngModelChange)="calculateWeight()" min="0" />
+                  <span class="p-inputgroup-addon">Kg</span>
+                </span>
+              </div>
+              <div style="width: 50%">
+                <label for="coat">Sacos(25Kg)</label>
+                <span class="p-inputgroup">
+                  <input type="number" pInputText id="coat" [(ngModel)]="newCeller.coat"
+                    (ngModelChange)="calculateWeight()" min="0" />
+                  <span class="p-inputgroup-addon">Kg</span>
+                </span>
+              </div>
+            </div>
+            <div class="formgroup-inline">
+              <div style="width: 50%">
+                <label for="pallets">Pallets(55)</label>
+                <span class="p-inputgroup">
+                  <input type="number" pInputText id="pallets" [(ngModel)]="newCeller.pallets"
+                    (ngModelChange)="calculateWeight()" min="0" />
+                  <span class="p-inputgroup-addon">Kg</span>
+                </span>
+              </div>
+              <div style="width: 50%">
+                <label for="weight">Peso Total</label>
+                <span class="p-inputgroup">
+                  <input type="number" pInputText id="weight" [(ngModel)]="newCeller.weight" disabled />
+                  <span class="p-inputgroup-addon">Kg</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </ng-template>
 
       <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
           (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveColor()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveItem()"
+          *ngIf="weightTotal>0 && newCeller.weight>0 && newCeller.weight<=weightTotal"></button>
       </ng-template>
     </p-dialog>
   </div>

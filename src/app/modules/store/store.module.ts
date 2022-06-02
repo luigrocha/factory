@@ -20,6 +20,7 @@ import { MenuModule } from 'primeng/menu';
 import { StoreCebComponent } from './pages/store-ceb/store-ceb.component';
 import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 registerLocaleData(localeEs, 'es');
 
@@ -40,6 +41,7 @@ registerLocaleData(localeEs, 'es');
     MenuModule,
     DataViewModule,
     DropdownModule,
+    InputNumberModule,
   ],
   declarations: [
     StoreComponent,
