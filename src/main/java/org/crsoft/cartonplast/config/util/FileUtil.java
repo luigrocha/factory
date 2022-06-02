@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * @author lpillaga on 19/05/2022
@@ -83,5 +84,16 @@ public class FileUtil {
             return MediaType.TEXT_PLAIN;
         }
         return MediaType.APPLICATION_OCTET_STREAM;
+    }
+
+    public static String getFileExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    public static String getFileName(String originalFileName, String name) {
+        if (name == null || name.isBlank()) {
+            return UUID.randomUUID().toString() + "." + getFileExtension(originalFileName);
+        }
+        return name + "." + getFileExtension(originalFileName);
     }
 }

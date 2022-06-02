@@ -1,6 +1,5 @@
 package org.crsoft.cartonplast.config.service.impl;
 
-import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.config.configuration.MinioConfig;
@@ -72,7 +71,7 @@ public class MinioService implements IMinioService {
             String generatedFileName = UUID.randomUUID().toString();
 
             if (originalFilename != null) {
-                generatedFileName = this.generateFileName(originalFilename);
+                generatedFileName = FileUtil.getFileName(originalFilename, request.getName());
             }
 
             String objectName = this.generateObjectName(request.getDirectory(), generatedFileName);
@@ -108,11 +107,6 @@ public class MinioService implements IMinioService {
         }
 
         return stream;
-    }
-
-    private String generateFileName(String fileName) {
-        return UUID.randomUUID().toString().replace("-", "") +
-                fileName.substring(fileName.lastIndexOf("."));
     }
 
     private String generateObjectName(List<String> directories, String fileName) {

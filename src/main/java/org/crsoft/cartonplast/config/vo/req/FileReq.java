@@ -22,6 +22,8 @@ public class FileReq implements Serializable {
 
     private static final long serialVersionUID = 232836038145089522L;
 
+    private String name;
+
     @NotEmpty
     private String bucketName;
 
