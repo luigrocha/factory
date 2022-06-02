@@ -16,4 +16,6 @@ public interface ICellerService {
     Celler getCellarByCode(Integer code) throws NotFoundException;
 
     Collection<CellerRes> findCellerByMaterialCode(Integer id) throws NotFoundException;
+
+    long countByDocumentCode(Integer code) throws NotFoundException;
 }

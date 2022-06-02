@@ -26,6 +26,9 @@ public class Celler {
     )
     private Integer id;
 
+    @Column(name = "CDTCELL_NUM_DOC", nullable = false)
+    private String numberDocument;
+
     @Column(name = "CDTCELL_LOTE", nullable = false)
     private String lote;
 

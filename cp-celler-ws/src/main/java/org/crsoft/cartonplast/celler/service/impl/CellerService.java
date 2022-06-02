@@ -2,6 +2,7 @@ package org.crsoft.cartonplast.celler.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.celler.model.Celler;
+import org.crsoft.cartonplast.celler.model.Document;
 import org.crsoft.cartonplast.celler.model.Material;
 import org.crsoft.cartonplast.celler.repository.CellerRepository;
 import org.crsoft.cartonplast.celler.service.ICellerService;
@@ -26,11 +27,13 @@ public class CellerService implements ICellerService {
     private final CellerRepository cellerRepository;
     private final CellerMapper cellerMapper;
     private final MaterialService materialService;
+    private final DocumentService documentService;
 
-    public CellerService(CellerRepository cellerRepository, CellerMapper cellerMapper, MaterialService materialService) {
+    public CellerService(CellerRepository cellerRepository, CellerMapper cellerMapper, MaterialService materialService, DocumentService documentService) {
         this.cellerRepository = cellerRepository;
         this.cellerMapper = cellerMapper;
         this.materialService = materialService;
+        this.documentService = documentService;
     }
 
     @Override
@@ -65,6 +68,12 @@ public class CellerService implements ICellerService {
             log.error("Error to findCellerByMaterialCode {}", id);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
+    }
+
+    @Override
+    public long countByDocumentCode(Integer code) throws NotFoundException {
+        Document document = this.documentService.getDocumentById(code);
+        return this.cellerRepository.countAllByDocumentAndValidToIsNull(document);
     }
 
 }

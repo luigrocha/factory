@@ -34,4 +34,9 @@ public class CellerController {
     public ResponseEntity<Collection<CellerRes>> findCellerByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
         return ResponseEntity.ok(this.cellerService.findCellerByMaterialCode(code));
     }
+
+    @GetMapping("/countByDocumentCode/{code}")
+    public ResponseEntity<Long> countByDocumentCode(@PathVariable("code")Integer code) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerService.countByDocumentCode(code));
+    }
 }

@@ -19,6 +19,7 @@ public class CellerRes implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
+    private String numberDocument;
     private String lote;
     private Integer amount;
     private Integer balance;
