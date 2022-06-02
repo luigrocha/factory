@@ -36,12 +36,6 @@ public class Thickness {
     private Double thick;
 
     @Column(
-            name = "CATTHI_USD",
-            nullable = false
-    )
-    private Double usd;
-
-    @Column(
             name = "CATTHI_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
