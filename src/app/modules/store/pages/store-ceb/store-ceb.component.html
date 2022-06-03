@@ -3,7 +3,7 @@
     <p-toast></p-toast>
 
     <div class="card">
-      <h5 class="m-0 mb-5">Comprobante Egreso de Materiales CEB-{{numDocument}}</h5>
+      <h5 class="m-0 mb-5">Comprobante Egreso de Materiales {{numDocument.numDocument}}</h5>
       <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-5">
         <div class="field flex flex-column">
           <label for="option">Motivo</label>
@@ -39,7 +39,7 @@
         </div>
 
         <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="mr-2" (click)="openNew()"
-          *ngIf="observation"></button>
+          *ngIf="observation && date"></button>
 
         <div *ngIf="!optionDocument">
           <p-messages [value]="msgInfo"></p-messages>
@@ -127,7 +127,8 @@
       </p-table>
       <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
         <button pButton pRipple label="Guardar" icon="pi pi-plus"
-          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" *ngIf="newCellers.length > 0"></button>
+          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" *ngIf="newCellers.length > 0"
+          (click)="saveCeb()"></button>
       </div>
     </div>
 

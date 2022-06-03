@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
-import { Celler, Document, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, Document, OptionDocument } from 'src/app/types/celler.types';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -39,8 +39,8 @@ export class CellerService {
     return this.http.get<OptionDocument[]>(this.URL_OPTION_DOCUMENT + '/' + id, this.httpOptions);
   }
 
-  countByDocumentCode(id: number): Observable<number> {
-    return this.http.get<number>(this.URL_CELLER + '/countByDocumentCode/' + id, this.httpOptions);
+  getNewCodeDocumentByDocumentCode(id: number): Observable<CodeDocument> {
+    return this.http.get<CodeDocument>(this.URL_CELLER + '/findNewCodeDocumentByDocumentCode/' + id, this.httpOptions);
   }
 
 }

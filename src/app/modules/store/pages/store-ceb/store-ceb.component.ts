@@ -4,7 +4,7 @@ import { DOCUMENT_CONSTANT } from 'src/app/core/constants/document';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, DocumentEnum, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, DocumentEnum, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 
 @Component({
@@ -75,7 +75,7 @@ export class StoreCebComponent implements OnInit {
   //newCellers: Celler[] = [JSON.parse('{ "balance": 0, "coat": 2, "pallets": 0, "weight": 50, "lote": "M240221", "numberDocument": "CEB-3", "material": { "id": 60, "name": "MB AOX 5", "typeMaterial": { "id": 3, "name": "MAB" } }, "location": { "id": 37, "location": "Z-D", "description": "Zona D" }, "document": { "id": 4, "name": "TM3", "description": "TRASLADO DE MATERIALES" } }')];
   newCellers: Celler[] = [];
 
-  numDocument: number;
+  numDocument: CodeDocument;
 
   isEditing: boolean;
 
@@ -106,7 +106,7 @@ export class StoreCebComponent implements OnInit {
   ngOnInit() {
     this.getAllTypeMaterial();
     this.getAllOptionsByDocumentCode(DocumentEnum.CEB);
-    this.countByDocumentCode(DocumentEnum.CEB);
+    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
   }
 
   openNew() {
@@ -147,11 +147,13 @@ export class StoreCebComponent implements OnInit {
       this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
       this.isEditing = false;
     } else if (this.isValidToSave()) {
-      this.newCeller.numberDocument = DOCUMENT_CONSTANT.ceb + this.numDocument;
+      this.newCeller.numberDocument = this.numDocument.numDocument;
       this.newCeller.observation = this.observation;
       this.newCeller.material = this.material;
       this.newCeller.location = this.celler.location; // *
       this.newCeller.document = this.celler.document;
+      this.newCeller.date = this.date;
+      this.newCeller.createdAt = this.createdAt;
       this.newCellers.push(this.newCeller);
       this.weightTotal -= this.newCeller.weight;
     } else {
@@ -262,14 +264,18 @@ export class StoreCebComponent implements OnInit {
       (cellers => {
         this.cellers = cellers;
         this.lotes = this.deleteCellerDuplicate(cellers);
-      })
+      }),
+      (err) => {
+        this.cellers = [];
+        this.lotes = [];
+      }
     );
   }
 
-  countByDocumentCode(id: number) {
-    this.cellerService.countByDocumentCode(id).subscribe(
-      (count => {
-        this.numDocument = count + 1;
+  getNewCodeDocumentByDocumentCode(id: number) {
+    this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
+      (numDocument => {
+        this.numDocument = numDocument;
       })
     );
   }
@@ -284,6 +290,10 @@ export class StoreCebComponent implements OnInit {
 
   isValidToSave(): boolean {
     return this.newCeller.lote ? true : false;
+  }
+
+  saveCeb() {
+    // save
   }
 
 }

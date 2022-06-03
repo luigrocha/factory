@@ -29,6 +29,12 @@ export interface Document {
     description?: string;
 }
 
+export interface CodeDocument {
+    document?: string;
+    number?: number;
+    numDocument?: string;
+}
+
 export enum DocumentEnum {
     CIB = 1,
     CEB = 2,
