@@ -21,6 +21,9 @@ import { StoreCebComponent } from './pages/store-ceb/store-ceb.component';
 import { DataViewModule } from 'primeng/dataview';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { CalendarModule } from 'primeng/calendar';
+import { MessagesModule } from 'primeng/messages';
+import { SliderModule } from 'primeng/slider';
 
 registerLocaleData(localeEs, 'es');
 
@@ -42,6 +45,9 @@ registerLocaleData(localeEs, 'es');
     DataViewModule,
     DropdownModule,
     InputNumberModule,
+    CalendarModule,
+    MessagesModule,
+    SliderModule,
   ],
   declarations: [
     StoreComponent,

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { DOCUMENT_CONSTANT } from 'src/app/core/constants/document';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -72,11 +73,22 @@ export class StoreCebComponent implements OnInit {
   newCeller: Celler;
 
   //newCellers: Celler[] = [JSON.parse('{ "balance": 0, "coat": 2, "pallets": 0, "weight": 50, "lote": "M240221", "numberDocument": "CEB-3", "material": { "id": 60, "name": "MB AOX 5", "typeMaterial": { "id": 3, "name": "MAB" } }, "location": { "id": 37, "location": "Z-D", "description": "Zona D" }, "document": { "id": 4, "name": "TM3", "description": "TRASLADO DE MATERIALES" } }')];
-  newCellers: Celler[];
+  newCellers: Celler[] = [];
 
   numDocument: number;
 
   isEditing: boolean;
+
+  createdAt: Date = new Date();
+
+  date: Date;
+
+  numberCoat = 25;
+
+  msgInfo: any = [{
+    severity: 'info',
+    summary: 'Selecciona un motivo y llena la observación para ingresar items'
+  }];
 
   constructor(
     private messageService: MessageService,
@@ -127,13 +139,15 @@ export class StoreCebComponent implements OnInit {
     this.hideDialog();
   }
 
+  //unidades -> lamina, producto terminado y respuestos
+
   saveItem() {
     this.submitted = true;
     if (this.isEditing) {
       this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
       this.isEditing = false;
     } else if (this.isValidToSave()) {
-      this.newCeller.numberDocument = 'CEB-' + this.numDocument;
+      this.newCeller.numberDocument = DOCUMENT_CONSTANT.ceb + this.numDocument;
       this.newCeller.observation = this.observation;
       this.newCeller.material = this.material;
       this.newCeller.location = this.celler.location; // *
@@ -203,7 +217,7 @@ export class StoreCebComponent implements OnInit {
 
   calculateWeight() {
     const balance = this.newCeller.balance ? this.newCeller.balance : 0;
-    const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * 25;
+    const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * this.numberCoat;
     const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * 1375;
     this.newCeller.weight = balance + coat + pallets;
 

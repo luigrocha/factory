@@ -10,6 +10,7 @@ export interface Celler {
     pallets?: number;
     weight?: number;
     date?: Date;
+    createdAt?: Date;
     observation?: string;
     material?: Material;
     location?: Location;
