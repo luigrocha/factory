@@ -27,6 +27,7 @@ public class CellerRes implements Serializable {
     private Integer pallets;
     private Integer weight;
     private LocalDateTime date;
+    private LocalDateTime createdAt;
     private String observation;
     private MaterialRes material;
     private LocationRes location;
