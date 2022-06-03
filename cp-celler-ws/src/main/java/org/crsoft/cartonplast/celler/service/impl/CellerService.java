@@ -9,6 +9,7 @@ import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerMapper;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerRes;
+import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
 import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 
@@ -71,9 +72,21 @@ public class CellerService implements ICellerService {
     }
 
     @Override
-    public long countByDocumentCode(Integer code) throws NotFoundException {
+    public CodeDocumentRes findNewCodeDocumentByDocumentCode(Integer code) throws NotFoundException {
         Document document = this.documentService.getDocumentById(code);
-        return this.cellerRepository.countAllByDocumentAndValidToIsNull(document);
+        Optional<Celler> celler = this.cellerRepository.findDistinctTopByDocumentAndValidToIsNullOrderByCreatedAtDesc(document);
+        if(celler.isPresent()){
+            String numDocument = celler.get().getNumberDocument();
+            int number = Integer.parseInt(numDocument.split("-")[1]);
+            return CodeDocumentRes.builder()
+                    .document(document.getName())
+                    .number(number)
+                    .numDocument(document.getName()+"-"+(number+1))
+                    .build();
+        }else {
+            log.error("Error to findNewCodeDocumentByDocumentCode {}", code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
     }
 
 }

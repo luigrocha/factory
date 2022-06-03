@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.celler.service;
 import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerRes;
+import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
 
 import java.util.Collection;
 
@@ -17,5 +18,5 @@ public interface ICellerService {
 
     Collection<CellerRes> findCellerByMaterialCode(Integer id) throws NotFoundException;
 
-    long countByDocumentCode(Integer code) throws NotFoundException;
+    CodeDocumentRes findNewCodeDocumentByDocumentCode(Integer code) throws NotFoundException;
 }

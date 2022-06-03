@@ -4,6 +4,7 @@ import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerRes;
+import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,8 +36,8 @@ public class CellerController {
         return ResponseEntity.ok(this.cellerService.findCellerByMaterialCode(code));
     }
 
-    @GetMapping("/countByDocumentCode/{code}")
-    public ResponseEntity<Long> countByDocumentCode(@PathVariable("code")Integer code) throws NotFoundException {
-        return ResponseEntity.ok(this.cellerService.countByDocumentCode(code));
+    @GetMapping("/findNewCodeDocumentByDocumentCode/{code}")
+    public ResponseEntity<CodeDocumentRes> findNewCodeDocumentByDocumentCode(@PathVariable("code")Integer code) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerService.findNewCodeDocumentByDocumentCode(code));
     }
 }

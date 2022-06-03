@@ -23,6 +23,6 @@ public interface CellerRepository extends JpaRepository<Celler, Integer> {
 
     Optional<Celler> findDistinctTopByMaterialAndValidToIsNullOrderByCreatedAtDesc(Material material);
 
-    long countAllByDocumentAndValidToIsNull(Document document);
+    Optional<Celler> findDistinctTopByDocumentAndValidToIsNullOrderByCreatedAtDesc(Document document);
 
 }
