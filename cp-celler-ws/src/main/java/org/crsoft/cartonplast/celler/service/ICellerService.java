@@ -1,6 +1,7 @@
 package org.crsoft.cartonplast.celler.service;
 
 import org.crsoft.cartonplast.celler.model.Celler;
+import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
@@ -19,4 +20,6 @@ public interface ICellerService {
     Collection<CellerRes> findCellerByMaterialCode(Integer id) throws NotFoundException;
 
     CodeDocumentRes findNewCodeDocumentByDocumentCode(Integer code) throws NotFoundException;
+
+    void createCeller(Collection<Celler> celler) throws NotFoundException, InsertException;
 }
