@@ -60,7 +60,6 @@ public class ColorBService implements IColorBService {
             log.error("Error to createColorB: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
-
     }
 
     @Override
@@ -79,6 +78,7 @@ public class ColorBService implements IColorBService {
             color.setColorCode(colorB.getColorCode());
             color.setDescription(colorB.getDescription());
             color.setUpdatedAt(LocalDateTime.now());
+            color.setUpdatedBy(colorB.getUpdatedBy());
             this.colorBRepository.save(color);
         } catch (Exception e) {
             log.error("Error to updateColorBByCode: {}", e.getMessage());
@@ -95,7 +95,7 @@ public class ColorBService implements IColorBService {
             color.setValidTo(LocalDateTime.now());
             this.colorBRepository.save(color);
         } catch (Exception e) {
-            log.error("Error to deleteHomoPolymerByCode: {}", e.getMessage());
+            log.error("Error to deleteColorBByCode: {}", e.getMessage());
             throw new UpdateException(TABLE_NAME, MESSAGE_DELETE);
         }
     }

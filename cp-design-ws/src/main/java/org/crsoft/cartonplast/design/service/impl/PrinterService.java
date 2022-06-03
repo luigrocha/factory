@@ -69,6 +69,7 @@ public class PrinterService implements IPrinterService {
             printerByCode.setNumColors(printer.getNumColors());
             printerByCode.setDescription(printer.getDescription());
             printerByCode.setUpdatedAt(LocalDateTime.now());
+            printerByCode.setUpdatedBy(printer.getUpdatedBy());
             this.printerRepository.save(printerByCode);
         } catch (Exception e) {
             log.error("Error to updatePrinterByCode: {}", e.getMessage());

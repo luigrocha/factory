@@ -69,6 +69,7 @@ public class HomoPolymerService implements IHomoPolymerService {
             homoPolymerByCode.setPercentage(homoPolymer.getPercentage());
             homoPolymerByCode.setHpCode(homoPolymer.getHpCode());
             homoPolymerByCode.setUpdatedAt(LocalDateTime.now());
+            homoPolymerByCode.setUpdatedBy(homoPolymer.getUpdatedBy());
             this.homoPolymerRepository.save(homoPolymerByCode);
         } catch (Exception e) {
             log.error("Error to updateHomoPolymerByCode: {}", e.getMessage());
