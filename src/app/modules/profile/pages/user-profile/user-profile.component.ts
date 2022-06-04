@@ -5,7 +5,11 @@ import { Image } from 'src/app/types/image.types';
 import { MenuItem } from 'primeng/api';
 import { TabMenu } from 'primeng/tabmenu';
 import { PersonService } from 'src/app/core/http/persons/person.service';
+import { Observable } from 'rxjs';
+import { UserImage } from 'src/app/types/user.types';
+import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { UserImageService } from 'src/app/core/services/user-image.service';
+import { KeycloakTokenParsed } from 'keycloak-js';
 
 @Component({
   selector: 'app-user-profile',
@@ -18,6 +22,7 @@ export class UserProfileComponent implements OnInit, OnChanges {
   activeItem: MenuItem;
   tabIndex: number = 0;
   userImageUrl: string;
+  userData: KeycloakTokenParsed;
 
   responsiveOptions:any[] = [
     {
@@ -41,12 +46,14 @@ export class UserProfileComponent implements OnInit, OnChanges {
   constructor(
     private breadcrumbService: BreadcrumbService,
     private photoService: PhotoService,
-    private imageUserService: UserImageService
+    private imageUserService: UserImageService,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
     this.breadcrumbService.setItems([]);
     this.userImageUrl = this.imageUserService.userImage;
+    this.userData = this.authService.getLoggedUser();
     this.items = [
       {
         label: 'Mi Perfil',

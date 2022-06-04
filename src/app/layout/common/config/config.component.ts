@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AppComponent } from 'src/app/app.component';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { Preferences } from 'src/app/types/preferences.types';
 import { LayoutComponent } from '../../layout.component';
-import { PreferencesService } from '../../../core/http/preferences/preferences.service';
+import { PreferencesService } from 'src/app/core/http/preferences/preferences.service';
+import { LayoutService } from 'src/app/core/services/layout.service';
+import { Config } from 'src/app/types/config.types';
 
 @Component({
   selector: 'app-config',
@@ -18,11 +19,13 @@ export class ConfigComponent implements OnInit {
 
   refreshTrafficChart = 'refreshTrafficChart';
 
+  config: Config;
+
   constructor(
-    public app: AppComponent,
     public appMain: LayoutComponent,
     private authService: AuthService,
-    private preferenceService: PreferencesService
+    private preferenceService: PreferencesService,
+    private layoutService: LayoutService
   ) { }
 
   get userName(): string {
@@ -30,6 +33,10 @@ export class ConfigComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.layoutService.config$
+      .subscribe(config => {
+        this.config = config;
+      });
     this.themes = [
       { name: 'denim', color: '#2f8ee5' },
       { name: 'sea-green', color: '#30A059' },
@@ -41,21 +48,22 @@ export class ConfigComponent implements OnInit {
   }
 
   onLayoutModeChange(event) {
-    this.app.menuTheme = this.app.layoutMode;
-    this.app.topbarTheme = this.app.layoutMode;
-    this.theme = this.app.color;
+    this.config.menuTheme = this.config.layoutMode;
+    this.config.topbarTheme = this.config.layoutMode;
+    this.layoutService.setConfig(this.config);
+    this.theme = this.config.color;
 
     const layoutLink: HTMLLinkElement = document.getElementById(
       'layout-css'
     ) as HTMLLinkElement;
     const layoutHref =
-      'assets/layout/css/layout-' + this.app.layoutMode + '.css';
+      'assets/layout/css/layout-' + this.config.layoutMode + '.css';
     this.replaceLink(layoutLink, layoutHref);
 
     const themeLink = document.getElementById('theme-css');
     const urlTokens = themeLink.getAttribute('href').split('/');
     urlTokens[urlTokens.length - 1] =
-      'theme-' + this.app.layoutMode + '.css';
+      'theme-' + this.config.layoutMode + '.css';
     urlTokens[2] = this.theme;
     const newURL = urlTokens.join('/');
 
@@ -72,7 +80,7 @@ export class ConfigComponent implements OnInit {
       'theme-css'
     ) as HTMLLinkElement;
     const themeHref =
-      'assets/theme/' + theme + '/theme-' + this.app.layoutMode + '.css';
+      'assets/theme/' + theme + '/theme-' + this.config.layoutMode + '.css';
     this.replaceLink(
       themeLink,
       themeHref,
@@ -124,16 +132,16 @@ export class ConfigComponent implements OnInit {
   }
 
   onUpdatePreferences() {
-    this.updatePreferencesByUsername(this.userName, this.app);
+    this.updatePreferencesByUsername(this.userName);
     this.onConfig();
   }
 
-  updatePreferencesByUsername(userName: string, app: AppComponent) {
+  updatePreferencesByUsername(userName: string) {
     const prefernces: Preferences = {
-      colorMode: app.layoutMode,
-      menuMode: app.menuMode,
-      menuTheme: app.menuTheme,
-      topBarMode: app.topbarTheme,
+      colorMode: this.config.layoutMode,
+      menuMode: this.config.menuMode,
+      menuTheme: this.config.menuTheme,
+      topBarMode: this.config.topbarTheme,
       color: this.theme
     };
     this.preferenceService

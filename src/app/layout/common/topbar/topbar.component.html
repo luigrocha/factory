@@ -186,20 +186,20 @@
         </li>
         <li
           #profile
+          *ngIf="image"
           class="topbar-item user-profile"
           [ngClass]="{
             'active-topmenuitem': appMain.activeTopbarItem === profile
-          }"
-        >
+          }">
           <a href="#" (click)="appMain.onTopbarItemClick($event, profile)">
-            <img *ngIf="!imageUrl"
+            <img *ngIf="!image"
               class="profile-image circle-image"
               src="assets/img/avatars/avatar.png"
               alt="user-logo"
             />
-            <img *ngIf="imageUrl"
+            <img *ngIf="image"
                  class="profile-image circle-image"
-                 [src]="imageUrl"
+                 [src]="image.imageUrl"
                  alt="user-logo"
             />
             <div class="profile-info">
@@ -210,14 +210,14 @@
 
           <ul class="fadeInDown">
             <li class="layout-submenu-header">
-              <img *ngIf="!imageUrl"
+              <img *ngIf="!image"
                    class="profile-image circle-image"
                    src="assets/img/avatars/avatar.png"
                    alt="user-logo"
               />
-              <img *ngIf="imageUrl"
+              <img *ngIf="image"
                    class="profile-image circle-image"
-                   [src]="imageUrl"
+                   [src]="image.imageUrl"
                    alt="user-logo"
               />
               <div class="profile-info">

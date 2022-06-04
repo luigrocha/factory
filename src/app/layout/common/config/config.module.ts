@@ -5,6 +5,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { FormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ButtonModule } from 'primeng/button';
+import { RippleModule } from 'primeng/ripple';
 
 
 
@@ -20,7 +21,8 @@ import { ButtonModule } from 'primeng/button';
     RadioButtonModule,
     FormsModule,
     InputSwitchModule,
-    ButtonModule
+    ButtonModule,
+    RippleModule
   ]
 })
 export class ConfigModule { }

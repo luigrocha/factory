@@ -12,34 +12,34 @@ import { environment } from 'src/environments/environment';
 })
 export class UsersService {
 
-  httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
+  httpOptions = {headers: new HttpHeaders({'Content-type': 'application/json'})};
 
-  URL_USER = environment.userApi + '/user';
+  URL_USER = environment.userApi + '/users';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.URL_USER + '/findAllUsers', this.httpOptions);
+    return this.http.get<User[]>(this.URL_USER, this.httpOptions);
   }
 
   getUserById(id: string): Observable<User> {
-    return this.http.get<User>(this.URL_USER + '/findUserById/' + id, this.httpOptions);
+    return this.http.get<User>(this.URL_USER + '/' + id, this.httpOptions);
   }
 
   createUser(user: User): Observable<any> {
-    return this.http.post<any>(this.URL_USER + '/createUser', user, this.httpOptions);
+    return this.http.post<any>(this.URL_USER, user, this.httpOptions);
   }
 
   updateUserById(id: string, user: User): Observable<any> {
-    return this.http.put<any>(this.URL_USER + '/updateUserById/' + id, user, this.httpOptions);
+    return this.http.put<any>(this.URL_USER + '/' + id, user, this.httpOptions);
   }
 
   deleteUserById(id: string) {
-    return this.http.delete<any>(this.URL_USER + '/deleteUserById/' + id, this.httpOptions);
+    return this.http.delete<any>(this.URL_USER + '/' + id, this.httpOptions);
   }
 
   getUserByUserName(userNane: string) {
     return this.http.get<User>(this.URL_USER + '/findUserByUserName/' + userNane, this.httpOptions);
   }
-
 }
