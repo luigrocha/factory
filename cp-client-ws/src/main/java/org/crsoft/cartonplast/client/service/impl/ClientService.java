@@ -65,23 +65,21 @@ public class ClientService implements IClientService {
                     .orElse(null);
         }
 
-        String logoUrl = null;
         String logoName = null;
         if (createClientReq.getLogo() != null) {
             UploadFileReq uploadFileReq = UploadFileReq.builder()
+                    .name(createClientReq.getId())
                     .bucketName(this.imagesBucketName)
                     .directory(GlobalConstant.CLIENTS_IMAGES_DIRECTORY)
                     .file(createClientReq.getLogo())
                     .build();
             UploadFileRes uploadFileRes = minioClient.uploadFile(uploadFileReq);
-            logoUrl = uploadFileRes.getFileUrl();
             logoName = uploadFileRes.getFileName();
         }
 
         Client client = Client.builder()
                 .id(createClientReq.getId())
                 .name(createClientReq.getName())
-                .imageUrl(logoUrl)
                 .imageName(logoName)
                 .category(clientCategory)
                 .build();
