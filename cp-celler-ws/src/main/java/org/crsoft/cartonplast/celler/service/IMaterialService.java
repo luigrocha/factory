@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.celler.service;
 
+import org.crsoft.cartonplast.celler.model.Material;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.MaterialRes;
 
@@ -11,5 +12,7 @@ import java.util.Collection;
 public interface IMaterialService {
 
     Collection<MaterialRes> findAllCatalogCellarByType(Integer id) throws NotFoundException;
+
+    Material getMaterialByCode(Integer code) throws NotFoundException;
 
 }

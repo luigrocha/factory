@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * @author jyepez on 27/5/2022
@@ -14,5 +15,7 @@ import java.util.Collection;
 public interface MaterialRepository extends JpaRepository<Material, Integer> {
 
     Collection<Material> findAllByTypeMaterialAndValidToIsNullOrderByNameAsc(TypeMaterial typeMaterial);
+
+    Optional<Material> findByIdAndValidToIsNull(Integer code);
 
 }
