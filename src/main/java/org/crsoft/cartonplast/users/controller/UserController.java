@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
-import static org.crsoft.cartonplast.users.util.Constants.*;
+import static org.crsoft.cartonplast.users.constant.GlobalConstant.V1_API_VERSION;
 
 /**
  * User Controller
@@ -21,8 +21,7 @@ import static org.crsoft.cartonplast.users.util.Constants.*;
  * @author jyepez
  */
 @RestController
-@RequestMapping("/user")
-@CrossOrigin(origins = {CROSS_LOCAL, CROSS_DEVELOP, CROSS_PRODUCTION})
+@RequestMapping(V1_API_VERSION + "/users")
 public class UserController {
 
     private final IUserService userService;
@@ -37,7 +36,7 @@ public class UserController {
      * @param user user
      * @return void
      */
-    @PostMapping("/createUser")
+    @PostMapping("")
     @RolesAllowed("backend-admin")
     public ResponseEntity<MessageRes> createUser(@RequestBody UserReq user) {
         try {
@@ -52,7 +51,7 @@ public class UserController {
      *
      * @return Collection User
      */
-    @GetMapping("/findAllUsers")
+    @GetMapping("")
     @RolesAllowed("backend-admin")
     public ResponseEntity<Collection<UserRes>> findAllUsers() {
         try {
@@ -68,7 +67,7 @@ public class UserController {
      * @param id id
      * @return User
      */
-    @GetMapping("/findUserById/{id}")
+    @GetMapping("/{id}")
     @RolesAllowed("backend-admin")
     public ResponseEntity<UserRes> findUserById(@PathVariable("id") String id) {
         try {
@@ -85,7 +84,7 @@ public class UserController {
      * @param user user
      * @return void
      */
-    @PutMapping("/updateUserById/{id}")
+    @PutMapping("/{id}")
     @RolesAllowed("backend-admin")
     public ResponseEntity<?> updateUserById(@PathVariable("id") String id, @RequestBody UserReq user) {
         try {
@@ -104,7 +103,7 @@ public class UserController {
      * @param id id
      * @return void
      */
-    @DeleteMapping("/deleteUserById/{id}")
+    @DeleteMapping("/{id}")
     @RolesAllowed("backend-admin")
     public ResponseEntity<?> deleteUserById(@PathVariable("id") String id) {
         try {

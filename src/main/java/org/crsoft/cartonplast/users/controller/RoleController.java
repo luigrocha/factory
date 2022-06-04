@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
-import static org.crsoft.cartonplast.users.util.Constants.*;
+import static org.crsoft.cartonplast.users.constant.GlobalConstant.V1_API_VERSION;
 
 /**
  * Role Controller
@@ -19,8 +19,7 @@ import static org.crsoft.cartonplast.users.util.Constants.*;
  * @author jyepez on 28/4/2022
  */
 @RestController
-@RequestMapping("/role")
-@CrossOrigin(origins = {CROSS_LOCAL, CROSS_DEVELOP, CROSS_PRODUCTION})
+@RequestMapping(V1_API_VERSION + "/roles")
 public class RoleController {
 
     private final IRoleService roleService;
@@ -34,7 +33,7 @@ public class RoleController {
      *
      * @return Collection Role
      */
-    @GetMapping("/findAllRole")
+    @GetMapping("")
     @RolesAllowed("backend-admin")
     public ResponseEntity<Collection<Role>> findAllRole() {
         return ResponseEntity.ok().body(this.roleService.findAllRole());
