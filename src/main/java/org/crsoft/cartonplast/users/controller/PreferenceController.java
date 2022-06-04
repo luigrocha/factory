@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 
-import static org.crsoft.cartonplast.users.util.Constants.*;
+import static org.crsoft.cartonplast.users.constant.GlobalConstant.V1_API_VERSION;
+
 
 /**
  * Preference Controller
@@ -19,8 +20,7 @@ import static org.crsoft.cartonplast.users.util.Constants.*;
  * @author jyepez on 2/5/2022
  */
 @RestController
-@RequestMapping("/preference")
-@CrossOrigin(origins = {CROSS_LOCAL, CROSS_DEVELOP, CROSS_PRODUCTION})
+@RequestMapping(V1_API_VERSION + "/preferences")
 public class PreferenceController {
 
     private final IUserService userService;
