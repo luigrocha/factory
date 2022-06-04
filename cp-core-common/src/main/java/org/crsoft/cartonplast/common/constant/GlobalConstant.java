@@ -14,6 +14,8 @@ public class GlobalConstant {
     public static final List<String> CLIENTS_IMAGES_DIRECTORY = List.of("clients");
     public static final String URL_USER = "https://users-test.carton-plast.com";
 
+    public static final String FILES_PATH = "files";
+
     private GlobalConstant() {
     }
 }

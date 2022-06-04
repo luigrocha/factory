@@ -33,12 +33,6 @@ public class Client {
     private String name;
 
     @Column(
-            name = "CATCLI_IMAGE_URL",
-            length = 128
-    )
-    private String imageUrl;
-
-    @Column(
             name = "CATCLI_IMAGE_NAME",
             length = 128
     )
