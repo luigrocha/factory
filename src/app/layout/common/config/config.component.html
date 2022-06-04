@@ -15,10 +15,8 @@
   <div class="layout-config-content">
     <div class="layout-config-form" id="config-form">
       <div class="layout-config-header">
-        <h5>Theme Customization</h5>
-        <span
-          >Poseidon offers different themes for layout, topbar, menu etc.</span
-        >
+        <h5>Personalizar tema</h5>
+        <span>En esta sección puede personalizar los colores y estilos según su preferencia.</span>
       </div>
 
       <div id="lightdark-panel" class="layout-config-section options">
@@ -28,7 +26,7 @@
             <p-radioButton
               name="layoutMode"
               value="light"
-              [(ngModel)]="app.layoutMode"
+              [(ngModel)]="config.layoutMode"
               inputId="layoutMode1"
               (onClick)="onLayoutModeChange($event)"
             ></p-radioButton>
@@ -38,7 +36,7 @@
             <p-radioButton
               name="layoutMode"
               value="dark"
-              [(ngModel)]="app.layoutMode"
+              [(ngModel)]="config.layoutMode"
               inputId="layoutMode2"
               (onClick)="onLayoutModeChange($event)"
             ></p-radioButton>
@@ -48,7 +46,7 @@
             <p-radioButton
               name="layoutMode"
               value="dim"
-              [(ngModel)]="app.layoutMode"
+              [(ngModel)]="config.layoutMode"
               inputId="layoutMode3"
               (onClick)="onLayoutModeChange($event)"
             ></p-radioButton>
@@ -64,7 +62,7 @@
             <p-radioButton
               name="menuMode"
               value="static"
-              [(ngModel)]="app.menuMode"
+              [(ngModel)]="config.menuMode"
               inputId="menuMode1"
             ></p-radioButton>
             <label for="menuMode1" class="ml-2">Static</label>
@@ -73,7 +71,7 @@
             <p-radioButton
               name="menuMode"
               value="horizontal"
-              [(ngModel)]="app.menuMode"
+              [(ngModel)]="config.menuMode"
               inputId="menuMode3"
             ></p-radioButton>
             <label for="menuMode3" class="ml-2">Horizontal</label>
@@ -87,9 +85,9 @@
           <div class="flex align-items-center">
             <p-radioButton
               name="menuTheme"
-              [disabled]="app.layoutMode !== 'light'"
+              [disabled]="config.layoutMode !== 'light'"
               value="light"
-              [(ngModel)]="app.menuTheme"
+              [(ngModel)]="config.menuTheme"
               inputId="menuTheme1"
             ></p-radioButton>
             <label for="menuTheme1" class="ml-2">Light</label>
@@ -97,9 +95,9 @@
           <div class="flex align-items-center">
             <p-radioButton
               name="menuTheme"
-              [disabled]="app.layoutMode !== 'light'"
+              [disabled]="config.layoutMode !== 'light'"
               value="dark"
-              [(ngModel)]="app.menuTheme"
+              [(ngModel)]="config.menuTheme"
               inputId="menuTheme2"
             ></p-radioButton>
             <label for="menuTheme2" class="ml-2">Dark</label>
@@ -107,9 +105,9 @@
           <div class="flex align-items-center">
             <p-radioButton
               name="menuTheme"
-              [disabled]="app.layoutMode !== 'light'"
+              [disabled]="config.layoutMode !== 'light'"
               value="dim"
-              [(ngModel)]="app.menuTheme"
+              [(ngModel)]="config.menuTheme"
               inputId="menuTheme3"
             ></p-radioButton>
             <label for="menuTheme3" class="ml-2">Dim</label>
@@ -123,9 +121,9 @@
           <div class="flex align-items-center">
             <p-radioButton
               name="topbarTheme"
-              [disabled]="app.layoutMode !== 'light'"
+              [disabled]="config.layoutMode !== 'light'"
               value="light"
-              [(ngModel)]="app.topbarTheme"
+              [(ngModel)]="config.topbarTheme"
               inputId="topbarTheme1"
             ></p-radioButton>
             <label for="topbarTheme1" class="ml-2">Light</label>
@@ -133,9 +131,9 @@
           <div class="flex align-items-center">
             <p-radioButton
               name="topbarTheme"
-              [disabled]="app.layoutMode !== 'light'"
+              [disabled]="config.layoutMode !== 'light'"
               value="dark"
-              [(ngModel)]="app.topbarTheme"
+              [(ngModel)]="config.topbarTheme"
               inputId="topbarTheme2"
             ></p-radioButton>
             <label for="topbarTheme2" class="ml-2">Dark</label>
@@ -143,9 +141,9 @@
           <div class="flex align-items-center">
             <p-radioButton
               name="topbarTheme"
-              [disabled]="app.layoutMode !== 'light'"
+              [disabled]="config.layoutMode !== 'light'"
               value="dim"
-              [(ngModel)]="app.topbarTheme"
+              [(ngModel)]="config.topbarTheme"
               inputId="topbarTheme3"
             ></p-radioButton>
             <label for="topbarTheme3" class="ml-2">Dim</label>

@@ -40,7 +40,7 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 5rem">
+            <th style="width: 8rem">
               Logo
             </th>
             <th *ngFor="let col of columns" [pSortableColumn]="col.field">
@@ -67,11 +67,13 @@
               <img *ngIf="client.imageUrl"
                    [alt]="client.name"
                    [src]="client.imageUrl"
-                   width="50"/>
+                   class="pr-4 pl-4"
+                   width="120"/>
               <img *ngIf="!client.imageUrl"
                    [alt]="client.name"
                    src="assets/img/logo-placeholder.png"
-                   width="50">
+                   class="pr-4 pl-4"
+                   width="120">
             </td>
             <td *ngFor="let col of columns">
               {{client[col.field]}}

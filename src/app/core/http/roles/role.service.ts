@@ -9,14 +9,15 @@ import { environment } from 'src/environments/environment';
 })
 export class RoleService {
 
-  httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
+  httpOptions = {headers: new HttpHeaders({'Content-type': 'application/json'})};
 
-  URL_ROL = environment.userApi + '/role';
+  URL_ROL = environment.userApi + '/roles';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getAllRole(): Observable<Role[]> {
-    return this.http.get<Role[]>(this.URL_ROL + '/findAllRole', this.httpOptions);
+    return this.http.get<Role[]>(this.URL_ROL, this.httpOptions);
   }
 
   addRolesUser(id: string, data: string[]): Observable<any> {
@@ -30,13 +31,12 @@ export class RoleService {
   getRoleType(name: string): RoleType {
     switch (name) {
       case RoleEnum.ADMIN:
-        return { name: 'Administrador', color: 'warning' };
+        return {name: 'Administrador', color: 'warning'};
       case RoleEnum.SUPERVISOR:
-        return { name: 'Supervisor', color: 'info' };
+        return {name: 'Supervisor', color: 'info'};
       default:
-        return { name: 'Operador', color: 'success' };
+        return {name: 'Operador', color: 'success'};
     }
   }
-
 }
 
