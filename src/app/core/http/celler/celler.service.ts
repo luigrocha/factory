@@ -43,4 +43,8 @@ export class CellerService {
     return this.http.get<CodeDocument>(this.URL_CELLER + '/findNewCodeDocumentByDocumentCode/' + id, this.httpOptions);
   }
 
+  create(celler: Celler[]): Observable<any> {
+    return this.http.post<any>(this.URL_CELLER + '', celler, this.httpOptions);
+  }
+
 }

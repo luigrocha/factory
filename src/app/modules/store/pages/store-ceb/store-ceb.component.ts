@@ -72,7 +72,6 @@ export class StoreCebComponent implements OnInit {
 
   newCeller: Celler;
 
-  //newCellers: Celler[] = [JSON.parse('{ "balance": 0, "coat": 2, "pallets": 0, "weight": 50, "lote": "M240221", "numberDocument": "CEB-3", "material": { "id": 60, "name": "MB AOX 5", "typeMaterial": { "id": 3, "name": "MAB" } }, "location": { "id": 37, "location": "Z-D", "description": "Zona D" }, "document": { "id": 4, "name": "TM3", "description": "TRASLADO DE MATERIALES" } }')];
   newCellers: Celler[] = [];
 
   numDocument: CodeDocument;
@@ -151,7 +150,7 @@ export class StoreCebComponent implements OnInit {
       this.newCeller.observation = this.observation;
       this.newCeller.material = this.material;
       this.newCeller.location = this.celler.location; // *
-      this.newCeller.document = this.celler.document;
+      this.newCeller.document = { id: DocumentEnum.CEB };
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
       this.newCellers.push(this.newCeller);
@@ -293,7 +292,15 @@ export class StoreCebComponent implements OnInit {
   }
 
   saveCeb() {
-    // save
+    this.cellerService.create(this.newCellers).subscribe(
+      (data) => {
+        console.log("ok");
+      },
+      (err) => {
+        console.log(err);
+
+      }
+    );
   }
 
 }
