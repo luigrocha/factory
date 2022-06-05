@@ -4,6 +4,7 @@ import { PermissionService } from 'src/app/core/http/permissions/permission.serv
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 import { TypePermission } from 'src/app/types/permission';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-material',
@@ -11,6 +12,8 @@ import { TypePermission } from 'src/app/types/permission';
   styleUrls: ['./material.component.scss']
 })
 export class MaterialComponent implements OnInit {
+
+  items: MenuItem[];
 
   typeMaterials: TypeMaterial[];
 
@@ -23,7 +26,7 @@ export class MaterialComponent implements OnInit {
   constructor(
     private breadcrumbService: BreadcrumbService,
     private materialService: MaterialService,
-    private permissionService: PermissionService,
+    private permissionService: PermissionService
   ) {
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
@@ -37,6 +40,25 @@ export class MaterialComponent implements OnInit {
     this.getAllMaterialByType(1);
     this.cols = [
       { field: 'name', header: 'Nombre' },
+    ];
+    this.getMenuItems();
+  }
+
+  getMenuItems() {
+    this.items = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil'
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash'
+      },
+      {
+        label: 'Comprobante',
+        icon: 'pi pi-file-pdf',
+        command: () => this.generatePDF()
+      }
     ];
   }
 
@@ -77,4 +99,7 @@ export class MaterialComponent implements OnInit {
     return false;
   }
 
+  generatePDF(): void {
+    console.log('Generando PDF');
+  }
 }
