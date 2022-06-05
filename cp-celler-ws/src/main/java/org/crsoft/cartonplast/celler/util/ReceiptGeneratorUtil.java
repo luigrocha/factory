@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.celler.util;
 
+import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
@@ -9,12 +10,12 @@ import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.constant.ReceiptConstant;
 import org.crsoft.cartonplast.common.exception.ReceiptGeneratorException;
 import org.crsoft.cartonplast.common.util.DateUtil;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,14 +23,17 @@ import java.util.Map;
  * @author lpillaga on 05/06/2022
  */
 @Component
+@RequiredArgsConstructor
 public class ReceiptGeneratorUtil {
+
+    private final ResourceLoader resourceLoader;
 
     public JasperReport getReportFromResources(String fileName) {
         try {
-            File file = ResourceUtils.getFile(ReceiptConstant.RECEIPT_RESOURCES_PATH + fileName);
-            return JasperCompileManager.compileReport(file.getAbsolutePath());
-        }
-        catch (FileNotFoundException | JRException e) {
+            Resource resource = resourceLoader.getResource(ReceiptConstant.RECEIPT_RESOURCES_PATH + fileName);
+            InputStream stream = resource.getInputStream();
+            return JasperCompileManager.compileReport(stream);
+        } catch (JRException | IOException e) {
             throw new ReceiptGeneratorException(e.getMessage());
         }
     }
