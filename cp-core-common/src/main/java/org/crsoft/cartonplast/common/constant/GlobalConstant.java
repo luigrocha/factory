@@ -16,6 +16,12 @@ public class GlobalConstant {
 
     public static final String FILES_PATH = "files";
 
+    public static final String LOGO_CP_PATH = "classpath:images/cp-logo.png";
+
+    public static final String EC_CODE = "EC";
+
+    public static final String ES_LANG_CODE = "es";
+
     private GlobalConstant() {
     }
 }

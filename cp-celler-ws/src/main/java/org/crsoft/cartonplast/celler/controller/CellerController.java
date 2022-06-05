@@ -2,14 +2,18 @@ package org.crsoft.cartonplast.celler.controller;
 
 import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.celler.service.ICellerService;
+import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.util.HttpUtil;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 /**
@@ -47,5 +51,16 @@ public class CellerController {
         });
         this.cellerService.createCeller(cellers);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(value = "/generate-receipt", produces = "application/pdf")
+    public ResponseEntity<byte[]> generateReceipt(
+            @Valid @RequestBody GenerateReceiptReq generateReceiptReq,
+            @RequestParam("documentId") Integer documentId) {
+        byte[] pdf = cellerService.generateReceipt(generateReceiptReq, documentId);
+        return new ResponseEntity<>(
+                pdf,
+                HttpUtil.getDefaultPDFHeaders(generateReceiptReq.getReceiptNumber()),
+                HttpStatus.OK);
     }
 }

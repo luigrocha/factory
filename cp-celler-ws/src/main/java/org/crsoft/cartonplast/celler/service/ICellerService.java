@@ -1,6 +1,7 @@
 package org.crsoft.cartonplast.celler.service;
 
 import org.crsoft.cartonplast.celler.model.Celler;
+import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerRes;
@@ -22,4 +23,6 @@ public interface ICellerService {
     CodeDocumentRes findNewCodeDocumentByDocumentCode(Integer code) throws NotFoundException;
 
     void createCeller(Collection<Celler> celler) throws NotFoundException, InsertException;
+
+    byte[] generateReceipt(GenerateReceiptReq generateReceiptReq, Integer documentId);
 }
