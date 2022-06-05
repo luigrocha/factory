@@ -1,9 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
-import { Celler, CodeDocument, Document, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, Document, GenerateReceipt, OptionDocument } from 'src/app/types/celler.types';
 import { environment } from 'src/environments/environment';
+import { getFileFromResponse } from 'src/app/core/utils/http-extract-file';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +47,21 @@ export class CellerService {
 
   create(celler: Celler[]): Observable<any> {
     return this.http.post<any>(this.URL_CELLER + '', celler, this.httpOptions);
+  }
+
+  generateReceipt(documentId: number, body: GenerateReceipt) {
+    let params = new HttpParams()
+      .set('documentId', documentId);
+
+    const url = this.URL_CELLER + '/generate-receipt';
+
+    return this.http.post(url, body, {
+      params: params,
+      responseType: 'blob',
+      observe: 'response'
+    }).pipe(
+      map( response => getFileFromResponse(response))
+    );
   }
 
 }

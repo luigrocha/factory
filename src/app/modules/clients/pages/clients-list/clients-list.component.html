@@ -80,17 +80,11 @@
             </td>
             <td>
               <div class="flex justify-content-center">
-<!--                <button pButton-->
-<!--                        pRipple-->
-<!--                        icon="pi pi-pencil"-->
-<!--                        class="p-button-rounded p-button-outlined p-button-success mr-2"-->
-<!--                        (click)="editClient(client)">-->
-<!--                </button>-->
-                <button pButton
-                        pRipple
-                        icon="pi pi-trash"
-                        class="p-button-rounded p-button-outlined p-button-warning"
-                        (click)="deleteClient(client)">
+                <button type="button"
+                        pButton
+                        icon="pi pi-ellipsis-v"
+                        class="p-button-secondary p-button-outlined"
+                        (click)="selectedClient = client; menu1.toggle($event)">
                 </button>
               </div>
             </td>
@@ -109,3 +103,4 @@
                      acceptButtonStyleClass="p-button-danger"></p-confirmDialog>
   </div>
 </div>
+<p-menu #menu1 [popup]="true" [model]="menuItems"></p-menu>

@@ -42,9 +42,6 @@ export class ConfigComponent implements OnInit {
       { name: 'sea-green', color: '#30A059' },
       { name: 'amber', color: '#D49341' },
     ];
-    setTimeout(() => {
-      this.onLayoutModeChange(null);
-    }, 300);
   }
 
   onLayoutModeChange(event) {

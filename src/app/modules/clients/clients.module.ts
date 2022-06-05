@@ -16,6 +16,7 @@ import { AddClientComponent } from './components/add-client/add-client.component
 import { DialogService } from 'primeng/dynamicdialog';
 import { FileUploadModule } from 'primeng/fileupload';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     ReactiveFormsModule,
     FileUploadModule,
     SharedModule,
+    MenuModule,
   ],
   declarations: [
     ClientsListComponent,

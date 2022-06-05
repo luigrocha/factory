@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TableColumn } from 'src/app/types/table.types';
 import { Client, CreateClient } from 'src/app/types/client.types';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { ClientService } from 'src/app/core/http/clients/client.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -25,6 +25,8 @@ export class ClientsListComponent implements OnInit, OnDestroy {
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
   addDialogRef: DynamicDialogRef;
+  menuItems: MenuItem[];
+  selectedClient: Client;
 
   constructor(
     private toastService: ToastService,
@@ -41,20 +43,31 @@ export class ClientsListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getAllClients();
+    this.getMenuItems();
     this.columns = [
       {field: 'id', header: 'Id'},
       {field: 'name', header: 'Nombre'},
     ];
   }
 
-  deleteClient(client: Client) {
+  getMenuItems(): void {
+    this.menuItems = [
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: () => this.deleteClient()
+      }
+    ];
+  }
+
+  deleteClient() {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar el cliente ' + client.name + '?',
+        'Estas seguro de eliminar el cliente ' + this.selectedClient.name + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.clientService.deleteClient(client.id)
+        this.clientService.deleteClient(this.selectedClient.id)
           .subscribe(deleted => {
             console.log(deleted);
             if (deleted) {

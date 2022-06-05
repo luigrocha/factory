@@ -3,7 +3,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, Document } from 'src/app/types/celler.types';
+import { Celler, Document, GenerateReceipt } from 'src/app/types/celler.types';
 import { TypePermission } from 'src/app/types/permission';
 
 @Component({
@@ -249,6 +249,33 @@ export class StoreComponent implements OnInit {
         this.documentsMenu.push({ label: document.description, routerLink: '/home/bodega/' + document.name });
       });
     });
+  }
+
+  generateReceipt(documentId: number, body: GenerateReceipt): void {
+    const mock = {
+      receiptNumber: "CIB123",
+      receiptDate: new Date(),
+      reason: "Producción de",
+      reasonObservation: "Observacion de produccion",
+      observations: "It compiles well  witho",
+      deliveredBy: "Luis Antonio Pillaga Zhagnay",
+      receivedBy: null,
+      items: [
+        {
+          productType: "HPO",
+          productName: "EXPORT PP PT100 GLOBALENE",
+          lot: "M14784",
+          units: 12,
+          bags1KG: null,
+          bags25KG: 2,
+          pallets55: null,
+          totalWeight: 50.00,
+          location: "Zona 02"
+        }
+      ]
+    };
+    this.cellerService.generateReceipt(documentId, mock)
+      .subscribe();
   }
 
   getPermissionsPage() {
