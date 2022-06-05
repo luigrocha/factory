@@ -13,7 +13,6 @@ import org.crsoft.cartonplast.common.util.DateUtil;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.util.HashMap;
@@ -41,7 +40,9 @@ public class ReceiptGeneratorUtil {
     public Map<String, Object> getReportCommonData(GenerateReceiptReq generateReceiptReq) {
         final Map<String, Object> parameters = new HashMap<>();
         try {
-            parameters.put("cpLogo", new FileInputStream(ResourceUtils.getFile(GlobalConstant.LOGO_CP_PATH)));
+            Resource resource = resourceLoader.getResource(GlobalConstant.LOGO_CP_PATH);
+
+            parameters.put("cpLogo", resource.getInputStream());
             parameters.put("receiptNumber", generateReceiptReq.getReceiptNumber());
             parameters.put("documentDate", DateUtil.generateReceiptDateTime(generateReceiptReq.getReceiptDate()));
             parameters.put("reason", generateReceiptReq.getReason());
@@ -50,7 +51,7 @@ public class ReceiptGeneratorUtil {
             parameters.put("deliveredBy", generateReceiptReq.getDeliveredBy());
             parameters.put("receivedBy", generateReceiptReq.getReceivedBy());
             parameters.put("itemsDataSource", new JRBeanCollectionDataSource(generateReceiptReq.getItems()));
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new ReceiptGeneratorException("No se pudo encontrar el logo de Carton Plast");
         }
         return parameters;
