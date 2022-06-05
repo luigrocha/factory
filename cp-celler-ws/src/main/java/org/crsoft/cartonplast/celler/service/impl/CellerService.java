@@ -1,14 +1,18 @@
 package org.crsoft.cartonplast.celler.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.celler.model.Document;
 import org.crsoft.cartonplast.celler.model.Location;
 import org.crsoft.cartonplast.celler.model.Material;
 import org.crsoft.cartonplast.celler.repository.CellerRepository;
+import org.crsoft.cartonplast.celler.repository.DocumentRepository;
 import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerMapper;
+import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
+import org.crsoft.cartonplast.common.exception.NotExistException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
@@ -27,6 +31,7 @@ import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NO
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CellerService implements ICellerService {
 
     private static final String TABLE_NAME = "CATCELL";
@@ -35,14 +40,7 @@ public class CellerService implements ICellerService {
     private final MaterialService materialService;
     private final DocumentService documentService;
     private final LocationService locationService;
-
-    public CellerService(CellerRepository cellerRepository, CellerMapper cellerMapper, MaterialService materialService, DocumentService documentService, LocationService locationService) {
-        this.cellerRepository = cellerRepository;
-        this.cellerMapper = cellerMapper;
-        this.materialService = materialService;
-        this.documentService = documentService;
-        this.locationService = locationService;
-    }
+    private final DocumentRepository documentRepository;
 
     @Override
     public Collection<CellerRes> findAllCeller() throws NotFoundException {
@@ -114,6 +112,19 @@ public class CellerService implements ICellerService {
             log.error("Error to createCeller: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
+    }
+
+    @Override
+    public byte[] generateReceipt(GenerateReceiptReq generateReceiptReq, Integer documentId) {
+        Optional<Document> optionalDocument = this.documentRepository.findById(documentId);
+
+        if (optionalDocument.isEmpty()) {
+            log.error("Error to generateReceipt: Document not found");
+            throw new NotExistException("No se pudo generar el comprobante, el tipo de documento no existe");
+        }
+
+        Document document = optionalDocument.get();
+        return ReceiptServiceFactory.getService(document.getName()).generateReceipt(generateReceiptReq);
     }
 
 }

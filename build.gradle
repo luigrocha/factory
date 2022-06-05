@@ -37,6 +37,9 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven {
+            url "https://jaspersoft.jfrog.io/artifactory/third-party-ce-artifacts/"
+        }
     }
 
     dependencies {
@@ -53,6 +56,7 @@ allprojects {
         implementation group: 'org.keycloak.bom', name: 'keycloak-adapter-bom', version: '18.0.0', ext: 'pom'
         implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '18.0.0'
         implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+        implementation 'net.sf.jasperreports:jasperreports:6.19.1'
         annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor:2.6.7'
         testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
