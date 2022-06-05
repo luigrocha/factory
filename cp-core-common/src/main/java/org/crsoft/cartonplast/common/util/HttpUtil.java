@@ -13,7 +13,7 @@ public class HttpUtil {
     public static HttpHeaders getDefaultPDFHeaders(String fileName) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/pdf");
-        headers.set("Content-Disposition", "inline; filename=\"" + fileName + ".pdf" + "\"");
+        headers.set("Content-Disposition", "inline; filename=" + fileName + ".pdf");
         return headers;
     }
 }
