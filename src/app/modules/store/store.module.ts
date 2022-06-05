@@ -24,6 +24,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { MessagesModule } from 'primeng/messages';
 import { SliderModule } from 'primeng/slider';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 registerLocaleData(localeEs, 'es');
 
@@ -48,6 +49,7 @@ registerLocaleData(localeEs, 'es');
     CalendarModule,
     MessagesModule,
     SliderModule,
+    InputTextareaModule,
   ],
   declarations: [
     StoreComponent,

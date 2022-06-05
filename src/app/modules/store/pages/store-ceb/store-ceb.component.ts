@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DOCUMENT_CONSTANT } from 'src/app/core/constants/document';
+import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CodeDocument, DocumentEnum, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 
 @Component({
@@ -84,6 +84,12 @@ export class StoreCebComponent implements OnInit {
 
   numberCoat = 25;
 
+  observations: string;
+
+  locations: Location[];
+
+  location: Location;
+
   msgInfo: any = [{
     severity: 'info',
     summary: 'Selecciona un motivo y llena la observación para ingresar items'
@@ -94,6 +100,7 @@ export class StoreCebComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private materialService: MaterialService,
     private cellerService: CellerService,
+    private authService: AuthService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
@@ -149,7 +156,7 @@ export class StoreCebComponent implements OnInit {
       this.newCeller.numberDocument = this.numDocument.numDocument;
       this.newCeller.observation = this.observation;
       this.newCeller.material = this.material;
-      this.newCeller.location = this.celler.location; // *
+      this.newCeller.location = this.location;
       this.newCeller.document = { id: DocumentEnum.CEB };
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
@@ -204,6 +211,17 @@ export class StoreCebComponent implements OnInit {
   onLoteSelected(e: any) {
     const lote = e.value;
     this.newCeller.lote = lote.lote;
+    this.calculateWeightAvailable(this.newCeller.lote);
+
+    this.location = this.celler.location;
+    this.locations = [];
+    const locationsFilter: Celler[] = this.deleteCellerDuplicateByLocation(this.cellers, this.newCeller.lote);
+    locationsFilter.forEach(loc => { this.locations.push(loc.location); });
+  }
+
+  onLocationSelected(e: any) {
+    const loc = e.value;
+    this.newCeller.lote = this.cellers.find(celler => celler.location.location === loc).lote;
     this.calculateWeightAvailable(this.newCeller.lote);
   }
 
@@ -262,7 +280,7 @@ export class StoreCebComponent implements OnInit {
     this.cellerService.getCellerByMaterialCode(id).subscribe(
       (cellers => {
         this.cellers = cellers;
-        this.lotes = this.deleteCellerDuplicate(cellers);
+        this.lotes = this.deleteCellerDuplicateByLote(cellers);
       }),
       (err) => {
         this.cellers = [];
@@ -279,11 +297,18 @@ export class StoreCebComponent implements OnInit {
     );
   }
 
-  deleteCellerDuplicate(cellers: any) {
+  deleteCellerDuplicateByLote(cellers: any) {
     const cellersMap = cellers.map(celler => {
       return [celler.lote, celler];
     });
+    return [...new Map(cellersMap).values()];
+  }
 
+  deleteCellerDuplicateByLocation(cellers: any, lote: string) {
+    const cellerByLote = cellers.filter(celler => celler.lote === lote);
+    const cellersMap = cellerByLote.map(celler => {
+      return [celler.location.id, celler];
+    });
     return [...new Map(cellersMap).values()];
   }
 
@@ -301,6 +326,38 @@ export class StoreCebComponent implements OnInit {
 
       }
     );
+  }
+
+  generateReceipt() {
+    console.log(this.authService.getLoggedUser());
+
+    const receiptItems: GenerateReceiptItem[] = [];
+
+    this.newCellers.forEach(celler => {
+      receiptItems.push({
+        productType: celler.material.typeMaterial.name,
+        productName: celler.material.name,
+        lot: celler.lote,
+        units: celler.amount,
+        bags1KG: celler.balance,
+        bags25KG: celler.coat,
+        pallets55: celler.pallets,
+        totalWeight: celler.weight,
+        location: celler.location.description
+      });
+    });
+
+    const receipt: GenerateReceipt = {
+      receiptNumber: this.newCellers[0].numberDocument,
+      receiptDate: this.newCellers[0].date,
+      reason: this.optionDocument.name,
+      reasonObservation: this.observation.toUpperCase(),
+      observations: this.observations.toUpperCase(),
+      deliveredBy: this.authService.getLoggedUser().name,
+      receivedBy: null,
+      items: receiptItems
+    };
+    this.cellerService.generateReceipt(DocumentEnum.CEB, receipt).subscribe();
   }
 
 }
