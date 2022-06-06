@@ -25,6 +25,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { MessagesModule } from 'primeng/messages';
 import { SliderModule } from 'primeng/slider';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { StoreCibComponent } from './pages/store-cib/store-cib.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -50,11 +52,13 @@ registerLocaleData(localeEs, 'es');
     MessagesModule,
     SliderModule,
     InputTextareaModule,
+    NgxExtendedPdfViewerModule,
   ],
   declarations: [
     StoreComponent,
     StoreCreateComponent,
     StoreCebComponent,
+    StoreCibComponent,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'es' }]
 })
