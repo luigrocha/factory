@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
-import { Celler, CodeDocument, Document, GenerateReceipt, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, Document, GenerateReceipt, Location, OptionDocument } from 'src/app/types/celler.types';
 import { environment } from 'src/environments/environment';
 import { getFileFromResponse } from 'src/app/core/utils/http-extract-file';
 import { map } from 'rxjs/operators';
@@ -22,6 +22,7 @@ export class CellerService {
   URL_CELLER = environment.appApiUrl + '/celler';
   URL_DOCUMENT = environment.appApiUrl + '/document';
   URL_OPTION_DOCUMENT = environment.appApiUrl + '/optionDocument';
+  URL_LOCATION = environment.appApiUrl + '/location';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
@@ -45,6 +46,10 @@ export class CellerService {
     return this.http.get<CodeDocument>(this.URL_CELLER + '/findNewCodeDocumentByDocumentCode/' + id, this.httpOptions);
   }
 
+  getAllLocation(): Observable<Location[]> {
+    return this.http.get<Location[]>(this.URL_LOCATION + '', this.httpOptions);
+  }
+
   create(celler: Celler[]): Observable<any> {
     return this.http.post<any>(this.URL_CELLER + '', celler, this.httpOptions);
   }
@@ -60,7 +65,7 @@ export class CellerService {
       responseType: 'blob',
       observe: 'response'
     }).pipe(
-      map( response => getFileFromResponse(response))
+      map(response => getFileFromResponse(response))
     );
   }
 

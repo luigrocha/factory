@@ -8,9 +8,9 @@ import { Celler, CodeDocument, DocumentEnum, Location, OptionDocument } from 'sr
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 
 @Component({
-  selector: 'app-store-ceb',
-  templateUrl: './store-ceb.component.html',
-  styleUrls: ['./store-ceb.component.scss'],
+  selector: 'app-store-cib',
+  templateUrl: './store-cib.component.html',
+  styleUrls: ['./store-cib.component.scss'],
   styles: [
     `
         :host ::ng-deep .p-dialog .product-image {
@@ -42,11 +42,10 @@ import { Material, TypeMaterial } from 'src/app/types/material.types';
   ],
   providers: [MessageService, ConfirmationService],
 })
-export class StoreCebComponent implements OnInit {
+export class StoreCibComponent implements OnInit {
 
   cellers: Celler[];
 
-  celler: Celler;
 
   itemDialog: boolean;
 
@@ -107,14 +106,15 @@ export class StoreCebComponent implements OnInit {
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
-      { label: 'CEB', routerLink: ['bodega/CEB'] },
+      { label: 'CIB', routerLink: ['bodega/CIB'] },
     ]);
   }
 
   ngOnInit() {
     this.getAllTypeMaterial();
-    this.getAllOptionsByDocumentCode(DocumentEnum.CEB);
-    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
+    this.getAllOptionsByDocumentCode(DocumentEnum.CIB);
+    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CIB);
+    this.getAllLocation();
   }
 
   openNew() {
@@ -137,8 +137,7 @@ export class StoreCebComponent implements OnInit {
     this.getAllMaterialByType(this.typeMaterial.id);
     this.getCellerByMaterialCode(this.material.id);
     setTimeout(() => {
-      this.celler = this.lotes.find(cell => cell.lote === this.newCeller.lote);
-      this.calculateWeightAvailable(this.newCeller.lote);
+      this.calculateWeightAvailable(this.newCeller.lote, this.location);
     }, 1000);
     this.isEditing = true;
     this.itemDialog = true;
@@ -149,23 +148,22 @@ export class StoreCebComponent implements OnInit {
     this.hideDialog();
   }
 
-  //unidades -> lamina, producto terminado y respuestos
-
   saveItem() {
     this.submitted = true;
     if (this.isEditing) {
       this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
       this.isEditing = false;
     } else if (this.isValidToSave()) {
+      this.newCeller.lote = this.newCeller.lote.toUpperCase();
       this.newCeller.numberDocument = this.numDocument.numDocument;
       this.newCeller.observation = this.observation;
       this.newCeller.material = this.material;
       this.newCeller.location = this.location;
-      this.newCeller.document = { id: DocumentEnum.CEB };
+      this.newCeller.document = { id: DocumentEnum.CIB };
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
       this.newCellers.push(this.newCeller);
-      this.weightTotal -= this.newCeller.weight;
+      this.weightTotal += this.newCeller.weight;
     } else {
       this.messageService.add({
         severity: 'warn',
@@ -187,7 +185,6 @@ export class StoreCebComponent implements OnInit {
     this.newCeller = {};
     this.typeMaterial = null;
     this.material = null;
-    this.celler = null;
     this.location = null;
     this.weightTotal = 0;
   }
@@ -213,27 +210,15 @@ export class StoreCebComponent implements OnInit {
     this.getCellerByMaterialCode(product.id);
   }
 
-  onLoteSelected(e: any) {
-    const lote = e.value;
-    this.newCeller.lote = lote.lote;
-    this.calculateWeightAvailable(this.newCeller.lote);
-
-    this.location = this.celler.location;
-    this.locations = [];
-    const locationsFilter: Celler[] = this.deleteCellerDuplicateByLocation(this.cellers, this.newCeller.lote);
-    locationsFilter.forEach(loc => { this.locations.push(loc.location); });
-  }
-
   onLocationSelected(e: any) {
     const loc = e.value;
-    this.newCeller.lote = this.cellers.find(celler => celler.location.location === loc).lote;
-    this.calculateWeightAvailable(this.newCeller.lote);
+    this.calculateWeightAvailable(this.newCeller.lote, loc);
   }
 
-  calculateWeightAvailable(lote: string) {
+  calculateWeightAvailable(lote: string, loc: Location) {
     this.weightTotal = 0;
     this.cellers.forEach(celler => {
-      if (celler.lote === lote) {
+      if (celler.lote === lote && celler.location.location === loc.location) {
         this.weightTotal += celler.weight;
       }
     });
@@ -244,15 +229,6 @@ export class StoreCebComponent implements OnInit {
     const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * this.numberCoat;
     const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * 1375;
     this.newCeller.weight = balance + coat + pallets;
-
-    if (this.newCeller.weight > this.weightTotal) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'No se dispone la cantidad seleccionada',
-        life: 3000,
-      });
-    }
   }
 
   getAllTypeMaterial() {
@@ -302,17 +278,17 @@ export class StoreCebComponent implements OnInit {
     );
   }
 
+  getAllLocation() {
+    this.cellerService.getAllLocation().subscribe(
+      (locations => {
+        this.locations = locations;
+      })
+    );
+  }
+
   deleteCellerDuplicateByLote(cellers: any) {
     const cellersMap = cellers.map(celler => {
       return [celler.lote, celler];
-    });
-    return [...new Map(cellersMap).values()];
-  }
-
-  deleteCellerDuplicateByLocation(cellers: any, lote: string) {
-    const cellerByLote = cellers.filter(celler => celler.lote === lote);
-    const cellersMap = cellerByLote.map(celler => {
-      return [celler.location.id, celler];
     });
     return [...new Map(cellersMap).values()];
   }
@@ -321,15 +297,7 @@ export class StoreCebComponent implements OnInit {
     return this.newCeller.lote ? true : false;
   }
 
-  saveCeb() {
-    this.newCellers.forEach(celler => {
-      celler.amount *= -1;
-      celler.balance *= -1;
-      celler.coat *= -1;
-      celler.pallets *= -1;
-      celler.weight *= -1;
-    });
-
+  saveCib() {
     this.cellerService.create(this.newCellers).subscribe(
       (data) => {
         this.messageService.add({
@@ -345,7 +313,7 @@ export class StoreCebComponent implements OnInit {
         this.observation = null;
         this.observations = null;
         this.date = null;
-        this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
+        this.getNewCodeDocumentByDocumentCode(DocumentEnum.CIB);
         this.hideDialog();
 
       },
@@ -390,12 +358,11 @@ export class StoreCebComponent implements OnInit {
     //   receivedBy: null,
     //   items: receiptItems
     // };
-    // this.cellerService.generateReceipt(DocumentEnum.CEB, receipt).subscribe(
+    // this.cellerService.generateReceipt(DocumentEnum.CIB, receipt).subscribe(
     //   (data) => {
     //     console.log(data);
     //   }
     // );
 
   }
-
 }

@@ -8,8 +8,8 @@ export const environment = {
 
   appApiUrl: 'http://localhost:8080/api/v1',
   // appApiUrl: 'https://webapp-test-api.carton-plast.com/api/v1',
-  userApi: 'http://localhost:8081/api/v1',
-  // userApi: 'https://users-test.carton-plast.com/api/v1',
+  // userApi: 'http://localhost:8081/api/v1',
+  userApi: 'https://users-test.carton-plast.com/api/v1',
   configApiUrl: 'http://localhost:9090/api/v1',
   imagesBucketName: 'images-test',
   keycloak: {

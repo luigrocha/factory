@@ -51,24 +51,24 @@ export interface OptionDocument {
 }
 
 export interface GenerateReceipt {
-  receiptNumber: string,
-  receiptDate: Date,
-  reason: string,
-  reasonObservation: string,
-  observations: string
-  deliveredBy?: string,
-  receivedBy?: string,
-  items: GenerateReceiptItem[]
+  receiptNumber: string;
+  receiptDate: Date;
+  reason: string;
+  reasonObservation: string;
+  observations: string;
+  deliveredBy?: string;
+  receivedBy?: string;
+  items: GenerateReceiptItem[];
 }
 
 export interface GenerateReceiptItem {
-  productType: string,
-  productName: string,
-  lot: string,
-  units: number,
-  bags1KG: number,
-  bags25KG: number,
-  pallets55: number,
-  totalWeight: number,
-  location: string,
+  productType: string;
+  productName: string;
+  lot: string;
+  units: number;
+  bags1KG: number;
+  bags25KG: number;
+  pallets55: number;
+  totalWeight: number;
+  location: string;
 }
