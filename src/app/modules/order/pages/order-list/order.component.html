@@ -4,7 +4,7 @@
 
     <div class="card">
       <p-table #dt [value]="orders" [columns]="cols" [rows]="7" [paginator]="true"
-        [globalFilterFields]="['lote', 'client','code','name','amount','deliverAt','observation','difference','priority','status']"
+        [globalFilterFields]="['lote','client.name','code','name','amount','deliverAt','observation','difference','priority','status']"
         [(selection)]="selectedOrder" [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm"
         responsiveLayout="scroll">
         <ng-template pTemplate="caption">
@@ -12,6 +12,8 @@
             <h5 class="m-0">Gestión de Pedidos</h5>
 
             <div class="flex">
+              <button pButton pRipple label="Limpiar" icon="pi pi-filter-slash" class="p-button-outlined mr-2"
+                (click)="clear(dt)"></button>
               <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="openNew()"></button>
               <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mr-2"
                 (click)="deleteSelectedOrders()" [disabled]="!selectedOrder || !selectedOrder.length"></button>
@@ -20,7 +22,7 @@
 
               <span class="block mt-2 md:mt-0 p-input-icon-left">
                 <i class="pi pi-search"></i>
-                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                <input pInputText #filter type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
                   placeholder="Buscar..." />
               </span>
             </div>
@@ -31,26 +33,43 @@
             <th style="width: 3rem">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th pSortableColumn="lote">
-              Lote <p-sortIcon field="lote"></p-sortIcon>
+            <th>
+              Lote <p-columnFilter type="text" field="lote" display="menu" placeholder="Buscar por nombre">
+              </p-columnFilter>
             </th>
-            <th pSortableColumn="client">
-              Cliente <p-sortIcon field="client"></p-sortIcon>
+            <th>
+              Cliente <p-columnFilter type="text" field="client.name" display="menu" placeholder="Buscar por cliente">
+              </p-columnFilter>
             </th>
-            <th pSortableColumn="code">
-              Código <p-sortIcon field="code"></p-sortIcon>
+            <!-- <th>
+              Código
             </th>
-            <th pSortableColumn="name">
-              Nombre <p-sortIcon field="name"></p-sortIcon>
-            </th>
+            <th>
+              Nombre
+            </th> -->
             <th>
               Cantidad
             </th>
-            <th pSortableColumn="deliverAt">
-              Fecha Entrega <p-sortIcon field="deliverAt"></p-sortIcon>
+            <th>
+              Fecha Entrega <p-columnFilter type="date" field="deliverAt" display="menu" placeholder="dd-mm-aaaa">
+              </p-columnFilter>
             </th>
-            <th pSortableColumn="priority">
-              Prioridad <p-sortIcon field="priority"></p-sortIcon>
+            <th>
+              Prioridad
+              <p-columnFilter type="status" field="priority.name" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [ngModel]="value" [options]="priorities" (onChange)="filter($event.value.name)"
+                    placeholder="{{ value ?  value : 'Selecciona prioridad' }}" [style]="{'min-width': '12rem'}">
+                    <ng-template let-option pTemplate="item">
+                      <div class="flex align-items-center">
+                        <button pButton pRipple type="button" icon="pi {{option.icon}}"
+                          class="p-button-rounded p-button-text" [ngClass]="option.color ? option.color:''"></button>
+                        {{option.name}}
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
             </th>
             <th>
               Observación
@@ -58,8 +77,19 @@
             <th>
               Diferencia
             </th>
-            <th pSortableColumn="status">
-              Estado <p-sortIcon field="status"></p-sortIcon>
+            <th>
+              Estado
+              <p-columnFilter type="status" field="status.name" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [ngModel]="value" [options]="status" (onChange)="filter($event.value.name)"
+                    placeholder="{{ value ?  value : 'Selecciona Estado' }}" [style]="{'min-width': '12rem'}">
+                    <ng-template let-option pTemplate="item">
+                      <span class="order-badge" [style.color]="option.color"
+                        [style.backgroundColor]="option.backgroundColor">{{option.name}}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
             </th>
             <th style="
                 min-height: 34.5px;
@@ -84,19 +114,19 @@
               <span class="p-column-title">Cliente</span>
               {{ order.client.name }}
             </td>
-            <td style="min-width: 10rem">
+            <!-- <td style="min-width: 10rem">
               <span class="p-column-title">Codigo</span>
 
             </td>
             <td style="min-width: 12rem">
               <span class="p-column-title">Nombre</span>
 
-            </td>
+            </td> -->
             <td>
               <span class="p-column-title">Cantidad</span>
               {{ order.amount }}
             </td>
-            <td style="min-width: 10rem">
+            <td style="min-width: 11rem">
               <span class="p-column-title">Fecha Entrega</span>
               {{ order.deliverAt | date: "dd-MM-yyyy" }}
             </td>

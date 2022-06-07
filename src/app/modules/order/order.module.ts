@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { OrderStatusComponent } from './pages/order-status/order-status.component';
 import { TimelineModule } from 'primeng/timeline';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { TimelineModule } from 'primeng/timeline';
     FormsModule,
     ConfirmDialogModule,
     TimelineModule,
+    DropdownModule,
   ],
   declarations: [
     OrderComponent,

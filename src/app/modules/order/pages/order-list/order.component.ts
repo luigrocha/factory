@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Table } from 'primeng/table';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { PriorityService } from 'src/app/core/http/catalogs/priority/priority.service';
+import { StatusService } from 'src/app/core/http/catalogs/status/status.service';
 import { OrderService } from 'src/app/core/http/orders/order.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { Priority, Status } from 'src/app/types/catalogs.types';
 import { Order } from 'src/app/types/order.types';
 
 @Component({
@@ -55,11 +59,21 @@ export class OrderComponent implements OnInit {
 
   loading = true;
 
+  priorities: Priority[];
+
+  status: Status[];
+
+  @ViewChild('dt') table: Table;
+
+  @ViewChild('filter') filter: ElementRef;
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private orderService: OrderService,
+    private priorityService: PriorityService,
+    private statusService: StatusService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Pedidos' },
@@ -69,6 +83,8 @@ export class OrderComponent implements OnInit {
 
   ngOnInit() {
     this.getAll();
+    this.getPriorities();
+    this.getStatus();
     this.cols = [
       { field: 'lote', header: 'Lote' },
       { field: 'client', header: 'Cliente' },
@@ -224,10 +240,30 @@ export class OrderComponent implements OnInit {
   }
 
   getAll() {
+    this.priorities = [];
     this.orderService.getAll().subscribe((orders) => {
       this.orders = orders;
+      this.orders.forEach(order => order.deliverAt = new Date(order.deliverAt));
       this.loading = false;
     });
   }
+
+  getPriorities() {
+    this.priorityService.getAllByType('P').subscribe((priorities) => {
+      this.priorities = priorities;
+    });
+  }
+
+  getStatus() {
+    this.statusService.getAllByType('P').subscribe((status) => {
+      this.status = status;
+    });
+  }
+
+  clear(table: Table) {
+    table.clear();
+    this.filter.nativeElement.value = '';
+  }
+
 
 }
