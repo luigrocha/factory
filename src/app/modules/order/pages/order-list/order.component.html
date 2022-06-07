@@ -41,12 +41,12 @@
               Cliente <p-columnFilter type="text" field="client.name" display="menu" placeholder="Buscar por cliente">
               </p-columnFilter>
             </th>
-            <th>
+            <!-- <th>
               Código
             </th>
             <th>
               Nombre
-            </th>
+            </th> -->
             <th>
               Cantidad
             </th>
@@ -58,8 +58,8 @@
               Prioridad
               <p-columnFilter type="status" field="priority.name" display="menu">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [ngModel]="value" [options]="priorities" (onChange)="filter($event.value)"
-                    placeholder="Selecciona Prioridad" [style]="{'min-width': '12rem'}">
+                  <p-dropdown [ngModel]="value" [options]="priorities" (onChange)="filter($event.value.name)"
+                    placeholder="{{ value ?  value : 'Selecciona prioridad' }}" [style]="{'min-width': '12rem'}">
                     <ng-template let-option pTemplate="item">
                       <div class="flex align-items-center">
                         <button pButton pRipple type="button" icon="pi {{option.icon}}"
@@ -81,8 +81,8 @@
               Estado
               <p-columnFilter type="status" field="status.name" display="menu">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [ngModel]="value" [options]="status" (onChange)="filter($event.value)"
-                    placeholder="Selecciona Estado" [style]="{'min-width': '12rem'}">
+                  <p-dropdown [ngModel]="value" [options]="status" (onChange)="filter($event.value.name)"
+                    placeholder="{{ value ?  value : 'Selecciona Estado' }}" [style]="{'min-width': '12rem'}">
                     <ng-template let-option pTemplate="item">
                       <span class="order-badge" [style.color]="option.color"
                         [style.backgroundColor]="option.backgroundColor">{{option.name}}</span>
@@ -114,14 +114,14 @@
               <span class="p-column-title">Cliente</span>
               {{ order.client.name }}
             </td>
-            <td style="min-width: 10rem">
+            <!-- <td style="min-width: 10rem">
               <span class="p-column-title">Codigo</span>
 
             </td>
             <td style="min-width: 12rem">
               <span class="p-column-title">Nombre</span>
 
-            </td>
+            </td> -->
             <td>
               <span class="p-column-title">Cantidad</span>
               {{ order.amount }}
