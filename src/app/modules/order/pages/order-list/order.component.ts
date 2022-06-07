@@ -132,7 +132,7 @@ export class OrderComponent implements OnInit {
         //     this.messageService.add({
         //       severity: 'error',
         //       summary: 'Error',
-        //       detail: err.message,
+        //       detail: err.error,
         //       life: 3000,
         //     });
         //   }
@@ -164,7 +164,7 @@ export class OrderComponent implements OnInit {
         //       this.messageService.add({
         //         severity: 'error',
         //         summary: 'Error',
-        //         detail: err.message,
+        //         detail: err.error,
         //         life: 3000,
         //       });
         //     }
@@ -201,7 +201,7 @@ export class OrderComponent implements OnInit {
       //     this.messageService.add({
       //       severity: 'error',
       //       summary: 'Error',
-      //       detail: err.message,
+      //       detail: err.error,
       //       life: 3000,
       //     });
       //   }
@@ -222,7 +222,7 @@ export class OrderComponent implements OnInit {
       //     this.messageService.add({
       //       severity: 'error',
       //       summary: 'Error',
-      //       detail: err.message,
+      //       detail: err.error,
       //       life: 3000,
       //     });
       //   }

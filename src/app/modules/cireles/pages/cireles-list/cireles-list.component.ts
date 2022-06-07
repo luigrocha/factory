@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { CirelService } from 'src/app/core/http/cirel/cirel.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Cirel, CirelColor } from 'src/app/types/cirel.types';
@@ -25,6 +25,8 @@ export class CirelesListComponent implements OnInit {
   initialPage: number = 0;
   actualPage: number = 0;
   query: string = null;
+  menuItems: MenuItem[];
+  selectedCirel: Cirel;
 
   subHeaders: TableHeader<CirelColor>[] = [
     { label: 'Tipo', property: 'colorType' },
@@ -47,6 +49,7 @@ export class CirelesListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getMenuItems();
     this.getCirels(this.initialPage, this.pageSize, this.query);
     this.columns = [
       { field: 'print', header: 'Impresión' },
@@ -55,6 +58,20 @@ export class CirelesListComponent implements OnInit {
       { field: 'cyrelColors', header: 'Colores' },
       { field: 'die', header: 'Troquel' },
       { field: 'observation', header: 'Observaciones' },
+    ];
+  }
+
+  getMenuItems(): void {
+    this.menuItems = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil'
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: () => this.deleteCirel()
+      }
     ];
   }
 
@@ -89,26 +106,13 @@ export class CirelesListComponent implements OnInit {
       });
   }
 
-  // private expandAll() {
-  //   if (!this.isExpanded) {
-  //     this.products.forEach(product => this.expandedRows[product.name] = true);
-  //   } else {
-  //     this.expandedRows = {};
-  //   }
-  //   this.isExpanded = !this.isExpanded;
-  // }
-
   addNewCyrel(): void {
 
   }
 
-  deleteSelectedCirels(): void {
+  deleteCirel(): void {
   }
 
-  deleteCirel(cirel: any): void {
-  }
-
-  editCirel(cirel: any): void {
-
+  editCirel(): void {
   }
 }

@@ -1,17 +1,17 @@
 <app-loading></app-loading>
 
 <div class="layout-wrapper" [ngClass]="{
-        'p-input-filled': app.inputStyle === 'filled',
-        'p-ripple-disabled': !app.ripple,
+        'p-input-filled': config.inputStyle === 'filled',
+        'p-ripple-disabled': !config.ripple,
         'layout-static': isStatic(),
         'layout-overlay': isOverlay(),
         'layout-overlay-active': overlayMenuActive && isOverlay(),
         'layout-horizontal': isHorizontal(),
         'layout-static-active': !staticMenuDesktopInactive && isStatic(),
         'layout-mobile-active': staticMenuMobileActive,
-        'layout-rtl': app.isRTL,
+        'layout-rtl': config.isRTL,
         'layout-rightpanel-active': rightPanelActive
-    }" [class]="'layout-menu-' + app.menuTheme + ' layout-topbar-' + app.topbarTheme">
+    }"  [class]="'layout-menu-' + config.menuTheme + ' layout-topbar-' + config.topbarTheme">
   <app-topbar></app-topbar>
 
   <app-rightpanel></app-rightpanel>

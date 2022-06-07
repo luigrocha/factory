@@ -79,7 +79,6 @@ export class ThicknessComponent implements OnInit {
     this.cols = [
       { field: 'weight', header: 'Peso' },
       { field: 'thickness', header: 'Grosor' },
-      { field: 'usd', header: 'USD' },
     ];
   }
 
@@ -116,7 +115,7 @@ export class ThicknessComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: err.message,
+              detail: err.error,
               life: 3000,
             });
           }
@@ -147,7 +146,7 @@ export class ThicknessComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: err.message,
+                detail: err.error,
                 life: 3000,
               });
             }
@@ -184,7 +183,7 @@ export class ThicknessComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: err.message,
+            detail: err.error,
             life: 3000,
           });
         }
@@ -205,7 +204,7 @@ export class ThicknessComponent implements OnInit {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: err.message,
+            detail: err.error,
             life: 3000,
           });
         }

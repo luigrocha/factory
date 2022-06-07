@@ -18,7 +18,7 @@
                responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
-            <h5 class="h-100 mb-0 align-self-center">Gestión de clientes</h5>
+            <h5 class="h-100 mb-0 align-self-center">Gestión de Clientes</h5>
             <span class="flex-auto"></span>
             <button
                     pButton
@@ -40,7 +40,7 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 5rem">
+            <th style="width: 8rem">
               Logo
             </th>
             <th *ngFor="let col of columns" [pSortableColumn]="col.field">
@@ -67,28 +67,24 @@
               <img *ngIf="client.imageUrl"
                    [alt]="client.name"
                    [src]="client.imageUrl"
-                   width="50"/>
+                   class="pr-4 pl-4"
+                   width="120"/>
               <img *ngIf="!client.imageUrl"
                    [alt]="client.name"
                    src="assets/img/logo-placeholder.png"
-                   width="50">
+                   class="pr-4 pl-4"
+                   width="120">
             </td>
             <td *ngFor="let col of columns">
               {{client[col.field]}}
             </td>
             <td>
               <div class="flex justify-content-center">
-<!--                <button pButton-->
-<!--                        pRipple-->
-<!--                        icon="pi pi-pencil"-->
-<!--                        class="p-button-rounded p-button-outlined p-button-success mr-2"-->
-<!--                        (click)="editClient(client)">-->
-<!--                </button>-->
-                <button pButton
-                        pRipple
-                        icon="pi pi-trash"
-                        class="p-button-rounded p-button-outlined p-button-warning"
-                        (click)="deleteClient(client)">
+                <button type="button"
+                        pButton
+                        icon="pi pi-ellipsis-v"
+                        class="p-button-secondary p-button-outlined"
+                        (click)="selectedClient = client; menu1.toggle($event)">
                 </button>
               </div>
             </td>
@@ -107,3 +103,4 @@
                      acceptButtonStyleClass="p-button-danger"></p-confirmDialog>
   </div>
 </div>
+<p-menu #menu1 [popup]="true" [model]="menuItems"></p-menu>

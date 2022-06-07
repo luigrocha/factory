@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { CellerService } from 'src/app/core/http/celler/celler.service';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { Celler, Document, GenerateReceipt } from 'src/app/types/celler.types';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-store',
@@ -39,45 +43,55 @@ import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 })
 export class StoreComponent implements OnInit {
 
-  orderDialog: boolean;
+  cellerDialog: boolean;
 
-  // selectedOrder: Order[];
+  selectedCeller: Celler[];
 
   submitted: boolean;
 
   cols: any[];
 
-  // orders: Order[];
+  cellers: Celler[];
 
-  // order: Order;
+  celler: Celler;
 
   loading = true;
+
+  documents: Document[];
+
+  documentsMenu: MenuItem[];
+
+  permissionsPage: TypePermission[];
 
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
-    // private orderService: OrderService,
+    private cellerService: CellerService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Pedidos' },
-      { label: 'Gestión de bodega', routerLink: ['home/pedidos'] },
+      { label: 'Bodega' },
+      { label: 'Gestión de bodega', routerLink: ['bodega'] },
     ]);
   }
 
   ngOnInit() {
-    // this.getAll();
+    this.getPermissionsPage();
+    this.getAll();
+    this.getAllDocuments();
     this.cols = [
       { field: 'lote', header: 'Lote' },
-      { field: 'client', header: 'Cliente' },
-      { field: 'code', header: 'Codigo' },
-      { field: 'name', header: 'Nombre' },
       { field: 'amount', header: 'Cantidad' },
-      { field: 'deliverAt', header: 'Fecha Entrega' },
+      { field: 'balance', header: 'Saldos' },
+      { field: 'coat', header: 'Sacos' },
+      { field: 'pallets', header: 'Pallets' },
+      { field: 'weight', header: 'Peso Kg' },
+      { field: 'date', header: 'Fecha' },
       { field: 'observation', header: 'Observación' },
-      { field: 'difference', header: 'Diferencia' },
-      { field: 'priority', header: 'Prioriodad' },
-      { field: 'status', header: 'Estado' },
+      { field: 'material', header: 'Producto' },
+      { field: 'location', header: 'Ubicación' },
+      { field: 'document', header: 'Documento' },
     ];
   }
 
@@ -114,7 +128,7 @@ export class StoreComponent implements OnInit {
   //       //     this.messageService.add({
   //       //       severity: 'error',
   //       //       summary: 'Error',
-  //       //       detail: err.message,
+  //       //       detail: err.error,
   //       //       life: 3000,
   //       //     });
   //       //   }
@@ -146,7 +160,7 @@ export class StoreComponent implements OnInit {
   //       //       this.messageService.add({
   //       //         severity: 'error',
   //       //         summary: 'Error',
-  //       //         detail: err.message,
+  //       //         detail: err.error,
   //       //         life: 3000,
   //       //       });
   //       //     }
@@ -183,7 +197,7 @@ export class StoreComponent implements OnInit {
   //     //     this.messageService.add({
   //     //       severity: 'error',
   //     //       summary: 'Error',
-  //     //       detail: err.message,
+  //     //       detail: err.error,
   //     //       life: 3000,
   //     //     });
   //     //   }
@@ -204,7 +218,7 @@ export class StoreComponent implements OnInit {
   //     //     this.messageService.add({
   //     //       severity: 'error',
   //     //       summary: 'Error',
-  //     //       detail: err.message,
+  //     //       detail: err.error,
   //     //       life: 3000,
   //     //     });
   //     //   }
@@ -217,15 +231,66 @@ export class StoreComponent implements OnInit {
   // }
 
   hideDialog() {
-    this.orderDialog = false;
+    this.cellerDialog = false;
     this.submitted = false;
   }
 
-  // getAll() {
-  //   this.orderService.getAll().subscribe((orders) => {
-  //     this.orders = orders;
-  //     this.loading = false;
-  //   });
-  // }
+  getAll() {
+    this.cellerService.getAll().subscribe((cellers) => {
+      this.cellers = cellers;
+      this.loading = false;
+    });
+  }
+
+  getAllDocuments() {
+    this.documentsMenu = [];
+    this.cellerService.getAllDocument().subscribe((documents) => {
+      documents.forEach(document => {
+        this.documentsMenu.push({ label: document.description, routerLink: '/home/bodega/' + document.name });
+      });
+    });
+  }
+
+  generateReceipt(documentId: number, body: GenerateReceipt): void {
+    const mock = {
+      receiptNumber: "CIB123",
+      receiptDate: new Date(),
+      reason: "Producción de",
+      reasonObservation: "Observacion de produccion",
+      observations: "It compiles well  witho",
+      deliveredBy: "Luis Antonio Pillaga Zhagnay",
+      receivedBy: null,
+      items: [
+        {
+          productType: "HPO",
+          productName: "EXPORT PP PT100 GLOBALENE",
+          lot: "M14784",
+          units: 12,
+          bags1KG: null,
+          bags25KG: 2,
+          pallets55: null,
+          totalWeight: 50.00,
+          location: "Zona 02"
+        }
+      ]
+    };
+    this.cellerService.generateReceipt(documentId, mock)
+      .subscribe();
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
+  }
 
 }

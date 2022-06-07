@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
     RippleModule,
     InputTextModule,
     TooltipModule,
+    MenuModule,
   ],
   declarations: [
     MaterialComponent

@@ -1,14 +1,15 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
-import { AppComponent } from 'src/app/app.component';
 import { MenuService } from 'src/app/core/services/menu.service';
+import { Config } from 'src/app/types/config.types';
+import { LayoutService } from 'src/app/core/services/layout.service';
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
-export class LayoutComponent implements OnDestroy {
+export class LayoutComponent implements OnInit, OnDestroy {
 
   rotateMenuButton: boolean;
 
@@ -26,7 +27,6 @@ export class LayoutComponent implements OnDestroy {
 
   activeTopbarItem: any;
 
-
   documentClickListener: () => void;
 
   configActive: boolean;
@@ -43,8 +43,22 @@ export class LayoutComponent implements OnDestroy {
 
   search = false;
 
-  constructor(public renderer: Renderer2, private menuService: MenuService, private primengConfig: PrimeNGConfig,
-    public app: AppComponent) { }
+  config: Config;
+
+  constructor(
+    public renderer: Renderer2,
+    private menuService: MenuService,
+    private primengConfig: PrimeNGConfig,
+    private layoutService: LayoutService
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.layoutService.config$
+      .subscribe(config => {
+        this.config = config;
+      })
+  }
 
   ngAfterViewInit() {
     // hides the horizontal submenus or top menu if outside is clicked
@@ -95,7 +109,7 @@ export class LayoutComponent implements OnDestroy {
     this.topbarMenuActive = false;
     this.menuClick = true;
 
-    if (this.app.menuMode === 'overlay' && !this.isMobile()) {
+    if (this.config.menuMode === 'overlay' && !this.isMobile()) {
       this.overlayMenuActive = !this.overlayMenuActive;
     }
 
@@ -139,11 +153,11 @@ export class LayoutComponent implements OnDestroy {
   }
 
   onRTLChange(event) {
-    this.app.isRTL = event.checked;
+    this.config.isRTL = event.checked;
   }
 
   onRippleChange(event) {
-    this.app.ripple = event.checked;
+    this.config.ripple = event.checked;
     this.primengConfig.ripple = event.checked;
   }
 
@@ -175,15 +189,15 @@ export class LayoutComponent implements OnDestroy {
   }
 
   isOverlay() {
-    return this.app.menuMode === 'overlay';
+    return this.config.menuMode === 'overlay';
   }
 
   isStatic() {
-    return this.app.menuMode === 'static';
+    return this.config.menuMode === 'static';
   }
 
   isHorizontal() {
-    return this.app.menuMode === 'horizontal';
+    return this.config.menuMode === 'horizontal';
   }
 
   blockBodyScroll(): void {

@@ -6,10 +6,12 @@
 export const environment = {
   production: false,
 
-  appApiUrl: 'http://localhost:8080/api/v1',
-  // appApiUrl: 'https://webapp-test-api.carton-plast.com/api/v1',
-  // userApi: 'http://localhost:8081',
-  userApi: 'https://users-test.carton-plast.com',
+  // appApiUrl: 'http://localhost:8080/api/v1',
+  appApiUrl: 'https://webapp-test-api.carton-plast.com/api/v1',
+  // userApi: 'http://localhost:8081/api/v1',
+  userApi: 'https://users-test.carton-plast.com/api/v1',
+  configApiUrl: 'http://localhost:9090/api/v1',
+  imagesBucketName: 'images-test',
   keycloak: {
     url: 'https://auth-test.carton-plast.com',
     realm: 'carton-plast',

@@ -6,7 +6,7 @@
         [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 class="m-0">Gestión Materia Prima</h5>
+            <h5 class="m-0">Gestión de Materia Prima</h5>
 
             <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
               <button pButton pRipple label="Nuevo" icon="pi pi-plus"
@@ -36,11 +36,7 @@
             <th pSortableColumn="name">
               Nombre <p-sortIcon field="name"></p-sortIcon>
             </th>
-            <th style="
-                text-align: center;
-                display: flex;
-                justify-content: space-around;
-              ">
+            <th class="text-center">
               <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
           </tr>
@@ -54,12 +50,15 @@
               <span class="p-column-title">Nombre</span>
               {{ color.name }}
             </td>
-            <td style="display: flex; justify-content: space-evenly">
-              <button pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-success p-mr-2" (click)="editColor(color)"
-                *ngIf="isAllow(2)"></button>
-              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
-                (click)="deleteColor(color)" *ngIf="isAllow(4)"></button>
+            <td>
+              <div class="flex justify-content-evenly">
+                <button type="button"
+                        pButton
+                        icon="pi pi-ellipsis-v"
+                        class="p-button-secondary p-button-outlined"
+                        (click)="menu1.toggle($event)">
+                </button>
+              </div>
             </td>
           </tr>
         </ng-template>
@@ -73,3 +72,4 @@
     </p-tabPanel>
   </p-tabView>
 </div>
+<p-menu #menu1 [popup]="true" [model]="items"></p-menu>

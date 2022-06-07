@@ -4,6 +4,10 @@ import { AppComponent } from 'src/app/app.component';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { LayoutComponent } from 'src/app/layout/layout.component';
 import { Status } from 'src/app/types/catalogs.types';
+import { Observable } from 'rxjs';
+import { PersonService } from 'src/app/core/http/persons/person.service';
+import { UserImage } from 'src/app/types/user.types';
+import { UserImageService } from 'src/app/core/services/user-image.service';
 
 @Component({
   selector: 'app-topbar',
@@ -13,6 +17,7 @@ import { Status } from 'src/app/types/catalogs.types';
 export class TopbarComponent implements OnInit {
 
   userData: KeycloakTokenParsed;
+  image: UserImage;
   rolShow = '';
   statusPending: Status = {
     id: 'PEP',
@@ -24,13 +29,24 @@ export class TopbarComponent implements OnInit {
   constructor(
     public appMain: LayoutComponent,
     public app: AppComponent,
-    private authService: AuthService
+    private authService: AuthService,
+    private personService: PersonService,
+    private imageUserService: UserImageService
   ) {
   }
 
   ngOnInit() {
     this.userData = this.authService.getLoggedUser();
     this.buildShowRol();
+    if (this.authService.isLoggedIn()) {
+      this.personService.getUserImage()
+        .subscribe(image => {
+          if (image) {
+            this.image = image;
+            this.imageUserService.setUserImage(image.imageUrl);
+          }
+        });
+    }
   }
 
   buildShowRol() {

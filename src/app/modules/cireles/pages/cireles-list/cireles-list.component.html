@@ -9,7 +9,7 @@
         [rowsPerPageOptions]="rowsPerPageOptions" responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
-            <h5 class="h-100 mb-0 align-self-center">Gestión de cireles</h5>
+            <h5 class="h-100 mb-0 align-self-center">Gestión de Cireles</h5>
             <span class="flex-auto"></span>
             <button pButton pRipple label="Nuevo" class="mr-2" icon="pi pi-plus" (click)="addNewCyrel()"></button>
             <span class="p-input-icon-left">
@@ -59,12 +59,12 @@
               {{ cirel.description2 }}
             </td> -->
             <td>
-              <div class="flex">
-                <button pButton pRipple icon="pi pi-pencil"
-                  class="p-button-rounded p-button-outlined p-button-success mr-2" (click)="editCirel(cirel)">
-                </button>
-                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
-                  (click)="deleteCirel(cirel)">
+              <div class="flex justify-content-center">
+                <button type="button"
+                        pButton
+                        icon="pi pi-ellipsis-v"
+                        class="p-button-secondary p-button-outlined"
+                        (click)="selectedCirel = cirel; menu1.toggle($event)">
                 </button>
               </div>
             </td>
@@ -110,3 +110,4 @@
   </div>
 </div>
 </div>
+<p-menu #menu1 [popup]="true" [model]="menuItems"></p-menu>
