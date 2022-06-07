@@ -4,7 +4,7 @@
 
     <div class="card">
       <p-table #dt [value]="thickness" [columns]="cols" [rows]="7" [paginator]="true"
-        [globalFilterFields]="['id', 'weight','thickness','usd']" [(selection)]="selectedThicknes" [rowHover]="true"
+        [globalFilterFields]="['id', 'weight','thickness']" [(selection)]="selectedThicknes" [rowHover]="true"
         dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -40,9 +40,6 @@
             <th pSortableColumn="thickness">
               Grosor <p-sortIcon field="thickness"></p-sortIcon>
             </th>
-            <th pSortableColumn="usd">
-              USD <p-sortIcon field="usd"></p-sortIcon>
-            </th>
             <th style="
                 text-align: center;
                 display: flex;
@@ -64,10 +61,6 @@
             <td>
               <span class="p-column-title">Grosor</span>
               {{ thicknes.thickness }}
-            </td>
-            <td>
-              <span class="p-column-title">USD</span>
-              ${{ thicknes.usd }}
             </td>
             <td style="display: flex; justify-content: space-evenly">
               <button pButton pRipple icon="pi pi-pencil"
