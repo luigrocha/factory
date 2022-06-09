@@ -7,6 +7,7 @@ import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { UsersService } from 'src/app/core/http/users/users.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { TypePermission } from 'src/app/types/permission';
+import { PermissionEnum } from 'src/app/core/constants/permisions';
 
 @Component({
   selector: 'app-users-list',
@@ -61,7 +62,7 @@ export class UsersListComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
-  items: MenuItem[];
+  items: MenuItem[] = [];
 
   userSelect: User;
 
@@ -82,6 +83,9 @@ export class UsersListComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAllUsers();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
     this.cols = [
       { field: 'userName', header: 'Usuario' },
       { field: 'firstName', header: 'Nombre' },
@@ -89,22 +93,23 @@ export class UsersListComponent implements OnInit {
       { field: 'email', header: 'Email' },
       { field: 'roles', header: 'Roles' },
     ];
-    this.getMenuItems();
   }
 
   getMenuItems() {
-    this.items = [
-      {
+    if (this.isAllow(PermissionEnum.UPDATE)) {
+      this.items.push({
         label: 'Editar',
         icon: 'pi pi-pencil',
         command: (e) => this.editUser(this.userSelect)
-      },
-      {
+      });
+    }
+    if (this.isAllow(PermissionEnum.DELETE)) {
+      this.items.push({
         label: 'Eliminar',
         icon: 'pi pi-trash',
         command: (e) => this.deleteUser(this.userSelect)
-      }
-    ];
+      });
+    }
   }
 
   openNew() {

@@ -31,10 +31,7 @@
             <td *ngFor="let col of columns; let i = index">
               <div *ngIf="col.field != 'icon'">
                 <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
-                {{ rowData[col.field] }}
-              </div>
-              <div *ngIf="col.field == 'icon'">
-                <i class="{{ rowData[col.field] }}"></i>
+                <i *ngIf="col.field == 'label'" class="{{ rowData['icon'] }}"></i> {{ rowData[col.field] }}
               </div>
               <div *ngIf="col.field == 'permission'">
                 <button pButton pRipple icon="pi pi-user-edit" class="p-button-rounded p-button-outlined"

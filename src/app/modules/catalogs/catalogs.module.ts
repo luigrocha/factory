@@ -20,6 +20,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { AvatarModule } from 'primeng/avatar';
 import { ColorCComponent } from './pages/color-c/color-c.component';
 import { LocationComponent } from './pages/location/location.component';
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { LocationComponent } from './pages/location/location.component';
     ConfirmDialogModule,
     DropdownModule,
     AvatarModule,
+    MenuModule,
   ],
   declarations: [
     ColorAComponent,

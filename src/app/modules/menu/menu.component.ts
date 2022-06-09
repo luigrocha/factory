@@ -93,7 +93,6 @@ export class MenuComponent implements OnInit {
     this.getIcons();
     this.cols = [
       { field: 'label', header: 'Nombre' },
-      { field: 'icon', header: 'Icono' },
       { field: 'routerLink', header: 'Url' },
       { field: 'permission', header: 'Permisos' }
     ];

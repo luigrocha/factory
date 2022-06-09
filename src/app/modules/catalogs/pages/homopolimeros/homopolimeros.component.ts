@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { HomopolimerosService } from 'src/app/core/http/catalogs/homopolimeros/homopolimeros.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -59,6 +60,10 @@ export class HomopolimerosComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
+  items: MenuItem[];
+
+  homoSelect: Homopolimero;
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -79,6 +84,22 @@ export class HomopolimerosComponent implements OnInit {
     this.cols = [
       { field: 'percent', header: 'Porcentaje' },
       { field: 'hp', header: 'HP' },
+    ];
+    this.getMenuItems();
+  }
+
+  getMenuItems() {
+    this.items = [
+      this.isAllow(PermissionEnum.UPDATE) ? {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editHomo(this.homoSelect)
+      } : null,
+      this.isAllow(PermissionEnum.DELETE) ? {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteHomo(this.homoSelect)
+      } : null
     ];
   }
 
