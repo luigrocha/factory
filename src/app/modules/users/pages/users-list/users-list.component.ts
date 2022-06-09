@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/types/user.types';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { RoleType } from 'src/app/types/role.types';
 import { RoleService } from 'src/app/core/http/roles/role.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -61,6 +61,10 @@ export class UsersListComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
+  items: MenuItem[];
+
+  userSelect: User;
+
   constructor(
     private userService: UsersService,
     private roleService: RoleService,
@@ -84,6 +88,22 @@ export class UsersListComponent implements OnInit {
       { field: 'lastName', header: 'Apellido' },
       { field: 'email', header: 'Email' },
       { field: 'roles', header: 'Roles' },
+    ];
+    this.getMenuItems();
+  }
+
+  getMenuItems() {
+    this.items = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editUser(this.userSelect)
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteUser(this.userSelect)
+      }
     ];
   }
 
