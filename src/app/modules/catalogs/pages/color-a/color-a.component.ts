@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { ColorAService } from 'src/app/core/http/catalogs/color-a/color-a.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -61,6 +62,10 @@ export class ColorAComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
+  items: MenuItem[] = [];
+
+  colorSelect: ColorA;
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -78,11 +83,31 @@ export class ColorAComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAll();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
     this.cols = [
       { field: 'color', header: 'ID' },
       { field: 'name', header: 'Nombre' },
       { field: 'colorCode', header: 'Color' },
     ];
+  }
+
+  getMenuItems() {
+    if (this.isAllow(PermissionEnum.UPDATE)) {
+      this.items.push({
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editColor(this.colorSelect)
+      });
+    }
+    if (this.isAllow(PermissionEnum.DELETE)) {
+      this.items.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteColor(this.colorSelect)
+      });
+    }
   }
 
   openNew() {

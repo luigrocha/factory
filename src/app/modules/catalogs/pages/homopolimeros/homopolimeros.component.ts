@@ -60,7 +60,7 @@ export class HomopolimerosComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
-  items: MenuItem[];
+  items: MenuItem[] = [];
 
   homoSelect: Homopolimero;
 
@@ -81,26 +81,30 @@ export class HomopolimerosComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAll();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
     this.cols = [
       { field: 'percent', header: 'Porcentaje' },
       { field: 'hp', header: 'HP' },
     ];
-    this.getMenuItems();
   }
 
   getMenuItems() {
-    this.items = [
-      this.isAllow(PermissionEnum.UPDATE) ? {
+    if (this.isAllow(PermissionEnum.UPDATE)) {
+      this.items.push({
         label: 'Editar',
         icon: 'pi pi-pencil',
         command: (e) => this.editHomo(this.homoSelect)
-      } : null,
-      this.isAllow(PermissionEnum.DELETE) ? {
+      });
+    }
+    if (this.isAllow(PermissionEnum.DELETE)) {
+      this.items.push({
         label: 'Eliminar',
         icon: 'pi pi-trash',
         command: (e) => this.deleteHomo(this.homoSelect)
-      } : null
-    ];
+      });
+    }
   }
 
   openNew() {
