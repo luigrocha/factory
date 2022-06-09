@@ -141,10 +141,10 @@
     </div>
 
 
-    <p-dialog [(visible)]="itemDialog" [style]="{ width: '450px' , height: '535px'}" header="Nuevo Item CIB"
-      [modal]="true" styleClass="p-fluid">
+    <p-dialog [(visible)]="itemDialog" [style]="{ width: '70%' , height: '90vh'}" header="Nuevo Item CIB" [modal]="true"
+      styleClass="p-fluid">
       <ng-template pTemplate="content">
-        <div class="p-field">
+        <div class="field">
           <label for="type">Tipo</label>
           <p-dropdown id="type" [options]="typeMaterials" [(ngModel)]="typeMaterial" placeholder="Selecciona tipo"
             (onChange)='onTypeSelected($event)' autofocus>
@@ -159,7 +159,7 @@
           </p-dropdown>
           <small class="p-invalid" *ngIf="submitted && !typeMaterial.name">Campo tipo es requerido.</small>
         </div>
-        <div class="p-field" *ngIf="typeMaterial">
+        <div class="field" *ngIf="typeMaterial">
           <label for="product">Producto / Envase</label>
           <p-dropdown id="product" [options]="materials" [(ngModel)]="material" placeholder="Selecciona producto/envase"
             (onChange)='onProductSelected($event)'>
@@ -174,14 +174,14 @@
           </p-dropdown>
           <small class="p-invalid" *ngIf="submitted && !material.name">Campo producto es requerido.</small>
         </div>
-        <div class="p-field" *ngIf="material">
+        <div class="field" *ngIf="material">
           <label for="lote">Lote</label>
           <input type="text" pInputText id="lote" [(ngModel)]="newCeller.lote" />
           <small class="p-invalid" *ngIf="submitted && !newCeller.lote">Campo lote es requerido.</small>
         </div>
 
-        <div class="formgroup-inline" *ngIf="newCeller.lote">
-          <div style="width: 50%">
+        <div class="p-formgrid grid" *ngIf="newCeller.lote">
+          <div class="field col">
             <label for="location">Ubicación</label>
             <p-dropdown id="location" [options]="locations" [(ngModel)]="location" placeholder="Selecciona Ubicación"
               (onChange)='onLocationSelected($event)'>
@@ -195,7 +195,7 @@
               </ng-template>
             </p-dropdown>
           </div>
-          <div style="width: 50%">
+          <div class="field col">
             <label for="weight">Disponible</label>
             <span class="p-inputgroup">
               <input type="number" pInputText id="weight" [(ngModel)]="weightTotal" disabled />
@@ -205,12 +205,12 @@
         </div>
 
         <div *ngIf="location">
-          <div class="p-field mt-3 mb-3" *ngIf="typeMaterial.name == 'PEL'">
+          <div class="field" *ngIf="typeMaterial.name == 'PEL'">
             <label class="mb-2" for="weight">Cantidad de sacos: {{numberCoat}}</label>
             <p-slider [(ngModel)]="numberCoat"></p-slider>
           </div>
-          <div class="formgroup-inline">
-            <div style="width: 50%">
+          <div class="p-formgrid grid">
+            <div class="field col">
               <label for="balance">Saldos(1Kg)</label>
               <span class="p-inputgroup">
                 <input type="number" pInputText id="balance" [(ngModel)]="newCeller.balance"
@@ -218,7 +218,7 @@
                 <span class="p-inputgroup-addon">Kg</span>
               </span>
             </div>
-            <div style="width: 50%">
+            <div class="field col">
               <label for="coat">Sacos({{numberCoat}}Kg)</label>
               <span class="p-inputgroup">
                 <input type="number" pInputText id="coat" [(ngModel)]="newCeller.coat"
@@ -227,8 +227,8 @@
               </span>
             </div>
           </div>
-          <div class="formgroup-inline">
-            <div style="width: 50%">
+          <div class="p-formgrid grid">
+            <div class="field col">
               <label for="pallets">Pallets(55)</label>
               <span class="p-inputgroup">
                 <input type="number" pInputText id="pallets" [(ngModel)]="newCeller.pallets"
@@ -236,7 +236,7 @@
                 <span class="p-inputgroup-addon">Kg</span>
               </span>
             </div>
-            <div style="width: 50%">
+            <div class="field col">
               <label for="weight">Peso Total</label>
               <span class="p-inputgroup">
                 <input type="number" pInputText id="weight" [(ngModel)]="newCeller.weight" disabled />

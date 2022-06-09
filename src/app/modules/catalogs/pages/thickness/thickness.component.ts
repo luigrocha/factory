@@ -239,7 +239,7 @@ export class ThicknessComponent implements OnInit {
   }
 
   isValidToSave(): boolean {
-    return this.thicknes.weight && this.thicknes.thickness && this.thicknes.usd ? true : false;
+    return this.thicknes.weight && this.thicknes.thickness ? true : false;
   }
 
   getPermissionsPage() {

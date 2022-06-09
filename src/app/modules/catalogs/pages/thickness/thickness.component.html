@@ -93,11 +93,6 @@
           <input type="number" pInputText id="thickness" [(ngModel)]="thicknes.thickness" required />
           <small class="p-invalid" *ngIf="submitted && !thicknes.thickness">Campo grosor es requerido.</small>
         </div>
-        <div class="p-field">
-          <label for="usd">USD</label>
-          <input type="number" pInputText id="usd" [(ngModel)]="thicknes.usd" required />
-          <small class="p-invalid" *ngIf="submitted && !thicknes.usd">Campo usd es requerido.</small>
-        </div>
       </ng-template>
 
       <ng-template pTemplate="footer">
