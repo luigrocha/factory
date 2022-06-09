@@ -19,6 +19,7 @@ import { ThicknessComponent } from './pages/thickness/thickness.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { AvatarModule } from 'primeng/avatar';
 import { ColorCComponent } from './pages/color-c/color-c.component';
+import { LocationComponent } from './pages/location/location.component';
 
 @NgModule({
   imports: [
@@ -43,7 +44,8 @@ import { ColorCComponent } from './pages/color-c/color-c.component';
     ColorCComponent,
     HomopolimerosComponent,
     PrintersComponent,
-    ThicknessComponent
+    ThicknessComponent,
+    LocationComponent,
   ]
 })
 export class CatalogsModule { }

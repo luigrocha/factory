@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ThicknessService } from 'src/app/core/http/catalogs/thickness/thickness.service';
+import { LocationService } from 'src/app/core/http/catalogs/location/location.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { Location } from 'src/app/types/celler.types';
 import { TypePermission } from 'src/app/types/permission';
-import { Thickness } from 'src/app/types/thickness.types';
 
 @Component({
-  selector: 'app-thickness',
-  templateUrl: './thickness.component.html',
-  styleUrls: ['./thickness.component.scss'],
+  selector: 'app-location',
+  templateUrl: './location.component.html',
+  styleUrls: ['./location.component.scss'],
   styles: [
     `
         :host ::ng-deep .p-dialog .product-image {
@@ -41,19 +41,19 @@ import { Thickness } from 'src/app/types/thickness.types';
   ],
   providers: [MessageService, ConfirmationService],
 })
-export class ThicknessComponent implements OnInit {
+export class LocationComponent implements OnInit {
 
-  thicknesDialog: boolean;
+  locationDialog: boolean;
 
-  selectedThicknes: Thickness[];
+  selectedlocation: Location[];
 
   submitted: boolean;
 
   cols: any[];
 
-  thickness: Thickness[];
+  locations: Location[];
 
-  thicknes: Thickness;
+  location: Location;
 
   loading = true;
 
@@ -63,13 +63,13 @@ export class ThicknessComponent implements OnInit {
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
-    private thicknessService: ThicknessService,
+    private locationService: LocationService,
     private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
       { label: 'Catálogos' },
-      { label: 'Grosor', routerLink: ['home/catalogs/grosor'] },
+      { label: 'Ubicaciones', routerLink: ['home/catalogs/ubicacion'] },
     ]);
   }
 
@@ -77,38 +77,38 @@ export class ThicknessComponent implements OnInit {
     this.getPermissionsPage();
     this.getAll();
     this.cols = [
-      { field: 'weight', header: 'Peso' },
-      { field: 'thickness', header: 'Grosor' },
+      { field: 'location', header: 'Ubicación' },
+      { field: 'description', header: 'Descripción' },
     ];
   }
 
   openNew() {
-    this.thicknes = {};
+    this.location = {};
     this.submitted = false;
-    this.thicknesDialog = true;
+    this.locationDialog = true;
   }
 
-  editThickness(thicknes: Thickness) {
-    this.thicknes = { ...thicknes };
-    this.thicknesDialog = true;
+  editHomo(location: Location) {
+    this.location = { ...location };
+    this.locationDialog = true;
   }
 
-  deleteThickness(thicknes: Thickness) {
+  deleteHomo(location: Location) {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar el item ' + thicknes.weight + '?',
+        'Estas seguro de eliminar la ubicación ' + location.location + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.thicknessService.delete(thicknes.id).subscribe(
+        this.locationService.delete(location.id).subscribe(
           (res) => {
             this.messageService.add({
               severity: 'success',
               summary: 'Éxito',
-              detail: 'Grosor Eliminado',
+              detail: 'Homopolímero Eliminado',
               life: 3000,
             });
-            this.thickness = [];
+            this.locations = [];
             this.getAll();
           },
           (err) => {
@@ -124,22 +124,22 @@ export class ThicknessComponent implements OnInit {
     });
   }
 
-  deleteSelectedThicknesss() {
+  deleteSelectedHomo() {
     this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar los colores seleccionados?',
+      message: 'Estás seguro de eliminar las ubicaciones seleccionados?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.selectedThicknes.forEach(thicknes => {
-          this.thicknessService.delete(thicknes.id).subscribe(
+        this.selectedlocation.forEach(location => {
+          this.locationService.delete(location.id).subscribe(
             (res) => {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Éxito',
-                detail: 'Grosor Eliminado',
+                detail: 'Ubicación Eliminada',
                 life: 3000,
               });
-              this.thickness = [];
+              this.locations = [];
               this.getAll();
             },
             (err) => {
@@ -152,31 +152,29 @@ export class ThicknessComponent implements OnInit {
             }
           );
         });
-
-        this.selectedThicknes = null;
+        this.selectedlocation = null;
         this.messageService.add({
           severity: 'success',
           summary: 'Correcto',
-          detail: 'Grosores Elimnados',
+          detail: 'Ubicaciones Elimnadas',
           life: 3000,
         });
       },
     });
   }
 
-  saveThickness() {
+  saveHomo() {
     this.submitted = true;
-
-    if (this.thicknes.id) {
-      this.thicknessService.update(this.thicknes.id, this.thicknes).subscribe(
+    if (this.location.id) {
+      this.locationService.update(this.location.id, this.location).subscribe(
         (res) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Éxito',
-            detail: 'Grosor Actualizado',
+            detail: 'Ubicación Actualizada',
             life: 3000,
           });
-          this.thickness = [];
+          this.locations = [];
           this.getAll();
         },
         (err) => {
@@ -189,15 +187,15 @@ export class ThicknessComponent implements OnInit {
         }
       );
     } else if (this.isValidToSave()) {
-      this.thicknessService.create(this.thicknes).subscribe(
+      this.locationService.create(this.location).subscribe(
         (res) => {
           this.messageService.add({
             severity: 'success',
             summary: 'Éxito',
-            detail: 'Grosor Creado',
+            detail: 'Ubicación Creada',
             life: 3000,
           });
-          this.thickness = [];
+          this.locations = [];
           this.getAll();
         },
         (err) => {
@@ -216,30 +214,29 @@ export class ThicknessComponent implements OnInit {
         detail: 'Llene todos los campos',
         life: 3000,
       });
-      this.thicknesDialog = true;
+      this.locationDialog = true;
       return;
     }
 
-
-    this.thickness = [...this.thickness];
-    this.thicknesDialog = false;
-    this.thicknes = {};
+    this.locations = [...this.locations];
+    this.locationDialog = false;
+    this.location = {};
   }
 
   hideDialog() {
-    this.thicknesDialog = false;
+    this.locationDialog = false;
     this.submitted = false;
   }
 
   getAll() {
-    this.thicknessService.getAll().subscribe((thickness) => {
-      this.thickness = thickness;
+    this.locationService.getAll().subscribe((locations) => {
+      this.locations = locations;
       this.loading = false;
     });
   }
 
   isValidToSave(): boolean {
-    return this.thicknes.weight && this.thicknes.thickness ? true : false;
+    return this.location.location && this.location.description ? true : false;
   }
 
   getPermissionsPage() {
