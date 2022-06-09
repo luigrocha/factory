@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.URL_USER;
+import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION_USER;
 
 /**
  * @author jyepez on 19/5/2022
@@ -42,7 +43,7 @@ public class RoleService {
     }
 
     public Collection<RoleVo> findAllRole() throws Exception {
-        String url = URL_USER.concat("/role/findAllRole");
+        String url = URL_USER.concat(V1_API_VERSION_USER).concat("/roles");
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -54,7 +55,7 @@ public class RoleService {
 
             return exchange.getBody();
         } catch (Exception e) {
-            throw new Exception("No data");
+            throw new Exception("No data findAllRole");
         }
     }
 }

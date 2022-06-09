@@ -13,6 +13,7 @@ public class GlobalConstant {
     public static final String V1_API_VERSION = "/api/v1";
     public static final List<String> CLIENTS_IMAGES_DIRECTORY = List.of("clients");
     public static final String URL_USER = "https://users-test.carton-plast.com";
+    public static final String V1_API_VERSION_USER = "/api/v1";
 
     public static final String FILES_PATH = "files";
 
