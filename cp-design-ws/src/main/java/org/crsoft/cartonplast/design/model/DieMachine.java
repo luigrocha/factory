@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.crsoft.cartonplast.design.model.pk.DieMachineId;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +17,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "CATMAQ_TRO")
 public class DieMachine {
@@ -25,6 +29,7 @@ public class DieMachine {
             name = "CATMAQ_TRO_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime validFrom;
 
     @Column(
@@ -43,12 +48,14 @@ public class DieMachine {
             name = "CATMAQ_TRO_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
             name = "CATMAQ_TRO_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -68,10 +75,4 @@ public class DieMachine {
     )
     @MapsId("dieId")
     private Die die;
-
-    @PrePersist
-    public void prePersist() {
-        this.validFrom = LocalDateTime.now();
-        this.createdAt = LocalDateTime.now();
-    }
 }

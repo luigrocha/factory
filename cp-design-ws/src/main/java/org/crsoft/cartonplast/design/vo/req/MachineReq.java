@@ -15,8 +15,6 @@ public class MachineReq implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
-
     @NotEmpty
     private String name;
 

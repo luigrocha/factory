@@ -3,6 +3,9 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "CATCOL")
 public class ColorB {
 
@@ -61,6 +65,7 @@ public class ColorB {
             name = "CATCOL_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime validFrom;
 
     @Column(
@@ -79,12 +84,14 @@ public class ColorB {
             name = "CATCOL_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
             name = "CATCOL_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -99,10 +106,4 @@ public class ColorB {
             fetch = FetchType.LAZY
     )
     private List<Cyrel> cyrels = new ArrayList<>();
-
-    @PrePersist
-    public void prePersist() {
-        this.validFrom = LocalDateTime.now();
-        this.createdAt = LocalDateTime.now();
-    }
 }

@@ -3,6 +3,9 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(
         name = "CATMAQ",
         indexes = {
@@ -56,6 +60,7 @@ public class Machine {
             name = "CATMAQ_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime validFrom;
 
     @Column(
@@ -74,12 +79,14 @@ public class Machine {
             name = "CATMAQ_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
             name = "CATMAQ_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @OneToMany(
@@ -87,10 +94,4 @@ public class Machine {
             mappedBy = "machine"
     )
     private List<DieMachine> dieMachines = new ArrayList<>();
-
-    @PrePersist
-    public void prePersist() {
-        this.validFrom = LocalDateTime.now();
-        this.createdAt = LocalDateTime.now();
-    }
 }
