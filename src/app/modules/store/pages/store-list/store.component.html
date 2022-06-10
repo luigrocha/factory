@@ -4,7 +4,7 @@
 
     <div class="card">
       <p-table #dt [value]="cellers" [columns]="cols" [rows]="7" [paginator]="true"
-        [globalFilterFields]="['lote', 'amount','balance','coat','pallets','weight','date','observation','material.name','location.location','document.name']"
+        [globalFilterFields]="['lote', 'amount','balance','coat','pallets','weight','date','observation','numberDocument','material.name','location.description','document.name','material.typeMaterial.name']"
         [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [rowHover]="true" dataKey="id"
         styleClass="p-datatable-customers p-datatable-sm" responsiveLayout="scroll">
         <ng-template pTemplate="caption">
@@ -31,12 +31,26 @@
             </th>
             <th>
               Tipo
+              <p-columnFilter type="status" field="material.typeMaterial.name" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [ngModel]="value" [options]="types" (onChange)="filter($event.value.name)"
+                    placeholder="{{ value ?  value : 'Selecciona prioridad' }}" [style]="{'min-width': '12rem'}">
+                    <ng-template let-option pTemplate="item">
+                      {{option.name}}
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
             </th>
             <th>
               Producto
+              <p-columnFilter type="text" field="material.name" display="menu" placeholder="Buscar por material">
+              </p-columnFilter>
             </th>
             <th>
               Lote
+              <p-columnFilter type="text" field="lote" display="menu" placeholder="Buscar por lote">
+              </p-columnFilter>
             </th>
             <th>
               Cantidad
@@ -55,12 +69,26 @@
             </th>
             <th>
               Ubicación
+              <p-columnFilter type="status" field="location.description" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [ngModel]="value" [options]="locations" (onChange)="filter($event.value.description)"
+                    placeholder="{{ value ?  value : 'Selecciona prioridad' }}" [style]="{'min-width': '12rem'}">
+                    <ng-template let-option pTemplate="item">
+                      {{option.description}}
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
             </th>
             <th>
               Documento
+              <p-columnFilter type="text" field="numberDocument" display="menu" placeholder="Buscar por Documento">
+              </p-columnFilter>
             </th>
             <th>
               Fecha
+              <p-columnFilter type="date" field="date" display="menu" placeholder="dd-mm-aaaa">
+              </p-columnFilter>
             </th>
             <th style="              
                 text-align: center;
@@ -109,11 +137,11 @@
               <span class="p-column-title">Peso Kg</span>
               {{celler.weight }} Kg
             </td>
-            <td style="min-width: 6rem">
+            <td style="min-width: 8rem">
               <span class="p-column-title">Ubicación</span>
               {{celler.location.description}}
             </td>
-            <td>
+            <td style="min-width: 9rem">
               <span class="p-column-title">Documento</span>
               {{celler.numberDocument}}
             </td>
