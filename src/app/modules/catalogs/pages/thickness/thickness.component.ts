@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { ThicknessService } from 'src/app/core/http/catalogs/thickness/thickness.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -59,6 +60,10 @@ export class ThicknessComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
+  items: MenuItem[] = [];
+
+  thicknesSelect: Thickness;
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -76,10 +81,30 @@ export class ThicknessComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAll();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
     this.cols = [
       { field: 'weight', header: 'Peso' },
       { field: 'thickness', header: 'Grosor' },
     ];
+  }
+
+  getMenuItems() {
+    if (this.isAllow(PermissionEnum.UPDATE)) {
+      this.items.push({
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editThickness(this.thicknesSelect)
+      });
+    }
+    if (this.isAllow(PermissionEnum.DELETE)) {
+      this.items.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteThickness(this.thicknesSelect)
+      });
+    }
   }
 
   openNew() {
