@@ -1,12 +1,16 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { PriorityService } from 'src/app/core/http/catalogs/priority/priority.service';
 import { StatusService } from 'src/app/core/http/catalogs/status/status.service';
 import { OrderService } from 'src/app/core/http/orders/order.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Priority, Status } from 'src/app/types/catalogs.types';
 import { Order } from 'src/app/types/order.types';
+import { TypePermission } from 'src/app/types/permission';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
+import { PermissionEnum } from 'src/app/core/constants/permisions';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-order',
@@ -67,6 +71,12 @@ export class OrderComponent implements OnInit {
 
   @ViewChild('filter') filter: ElementRef;
 
+  permissionsPage: TypePermission[];
+
+  items: MenuItem[] = [];
+
+  orderSelect: Order;
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -74,17 +84,23 @@ export class OrderComponent implements OnInit {
     private orderService: OrderService,
     private priorityService: PriorityService,
     private statusService: StatusService,
+    private permissionService: PermissionService,
+    private route: Router
   ) {
     this.breadcrumbService.setItems([
       { label: 'Pedidos' },
-      { label: 'Gestión de Pedidos', routerLink: ['home/pedidos'] },
+      { label: 'Gestión de Pedidos', routerLink: ['pedidos'] },
     ]);
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getAll();
     this.getPriorities();
     this.getStatus();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
     this.cols = [
       { field: 'lote', header: 'Lote' },
       { field: 'client', header: 'Cliente' },
@@ -97,6 +113,29 @@ export class OrderComponent implements OnInit {
       { field: 'priority', header: 'Prioriodad' },
       { field: 'status', header: 'Estado' },
     ];
+  }
+
+  getMenuItems() {
+    if (this.isAllow(PermissionEnum.UPDATE)) {
+      this.items.push({
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editOrder(this.orderSelect)
+      });
+    }
+    if (this.isAllow(PermissionEnum.DELETE)) {
+      this.items.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteOrder(this.orderSelect)
+      });
+    }
+    this.items.push({
+      label: 'Ver Estado',
+      icon: 'pi pi-search-plus',
+      command: (e) => this.route.navigate(['/home/pedidos/status/' + this.orderSelect.lote])
+    });
+
   }
 
   openNew() {
@@ -263,6 +302,21 @@ export class OrderComponent implements OnInit {
   clear(table: Table) {
     table.clear();
     this.filter.nativeElement.value = '';
+  }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
   }
 
 
