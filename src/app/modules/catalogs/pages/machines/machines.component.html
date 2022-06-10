@@ -4,11 +4,11 @@
 
     <div class="card">
       <p-table #dt
-               [value]="clients"
+               [value]="machines"
                [columns]="columns"
                [rows]="pageSize"
                [paginator]="true"
-               [globalFilterFields]="['id', 'name']"
+               [globalFilterFields]="['name']"
                [rowHover]="true"
                dataKey="id"
                [showCurrentPageReport]="true"
@@ -18,7 +18,7 @@
                responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
-            <h5 class="h-100 mb-0 align-self-center">Gestión de Clientes</h5>
+            <h5 class="h-100 mb-0 align-self-center">Gestión de Máquinas</h5>
             <span class="flex-auto"></span>
             <button
                     pButton
@@ -26,7 +26,7 @@
                     label="Nuevo"
                     class="sm:mr-2 md:mr-2 lg:mr-2"
                     icon="pi pi-plus"
-                    (click)="addClient()"
+                    (click)="addMachine()"
             ></button>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
@@ -40,9 +40,6 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 8rem">
-              Logo
-            </th>
             <th *ngFor="let col of columns" [pSortableColumn]="col.field">
               {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
             </th>
@@ -50,33 +47,19 @@
               <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
           </tr>
-          <tr>
-            <th></th>
-            <th>
-              <p-columnFilter type="text" field="id"></p-columnFilter>
-            </th>
-            <th>
-              <p-columnFilter type="text" field="name"></p-columnFilter>
-            </th>
-            <th></th>
-          </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-client>
+        <ng-template pTemplate="body" let-machine>
           <tr>
-            <td>
-              <img *ngIf="client.imageUrl"
-                   [alt]="client.name"
-                   [src]="client.imageUrl"
-                   class="pr-4 pl-4"
-                   width="120"/>
-              <img *ngIf="!client.imageUrl"
-                   [alt]="client.name"
-                   src="assets/img/logo-placeholder.png"
-                   class="pr-4 pl-4"
-                   width="120">
-            </td>
             <td *ngFor="let col of columns">
-              {{client[col.field]}}
+              <ng-container *ngIf="col.field === 'hasDesb'; else textContent">
+                <div class="field-checkbox">
+                  <p-checkbox disabled [(ngModel)]="machine[col.field]" [binary]="true" id="hasDesb" inputId="hasDesb"></p-checkbox>
+                  <label for="hasDesb">{{getDesbMessage(machine[col.field])}}</label>
+                </div>
+              </ng-container>
+              <ng-template #textContent>
+                {{machine[col.field]}}
+              </ng-template>
             </td>
             <td>
               <div class="flex justify-content-center">
@@ -84,7 +67,7 @@
                         pButton
                         icon="pi pi-ellipsis-v"
                         class="p-button-secondary p-button-outlined"
-                        (click)="selectedClient = client; menu1.toggle($event)">
+                        (click)="selectedMachine = machine; menu1.toggle($event)">
                 </button>
               </div>
             </td>
@@ -92,8 +75,8 @@
         </ng-template>
         <ng-template pTemplate="summary">
           <div class="p-d-flex p-ai-center p-jc-between">
-            Total de Clientes:
-            {{ clients ? clients.length : 0 }}
+            Total de Máquinas:
+            {{ machines ? machines.length : 0 }}
           </div>
         </ng-template>
       </p-table>

@@ -63,7 +63,7 @@ export class ClientsListComponent implements OnInit, OnDestroy {
   deleteClient() {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar el cliente ' + this.selectedClient.name + '?',
+        '¿Estas seguro de eliminar el cliente ' + this.selectedClient.name + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

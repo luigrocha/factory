@@ -13,13 +13,18 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ThicknessComponent } from './pages/thickness/thickness.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { AvatarModule } from 'primeng/avatar';
 import { ColorCComponent } from './pages/color-c/color-c.component';
 import { LocationComponent } from './pages/location/location.component';
+import { MachinesComponent } from './pages/machines/machines.component';
+import { MenuModule } from 'primeng/menu';
+import { CheckboxModule } from 'primeng/checkbox';
+import { MachineModalComponent } from './components/machine-modal/machine-modal.component';
+import { DialogService } from "primeng/dynamicdialog";
 
 @NgModule({
   imports: [
@@ -37,6 +42,9 @@ import { LocationComponent } from './pages/location/location.component';
     ConfirmDialogModule,
     DropdownModule,
     AvatarModule,
+    MenuModule,
+    CheckboxModule,
+    ReactiveFormsModule,
   ],
   declarations: [
     ColorAComponent,
@@ -46,6 +54,12 @@ import { LocationComponent } from './pages/location/location.component';
     PrintersComponent,
     ThicknessComponent,
     LocationComponent,
+    MachinesComponent,
+    MachineModalComponent,
+  ],
+  providers: [
+    DialogService
   ]
 })
-export class CatalogsModule { }
+export class CatalogsModule {
+}
