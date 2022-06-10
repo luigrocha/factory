@@ -93,8 +93,9 @@
             <th style="              
                 text-align: center;
                 display: flex;
-                justify-content: space-around;
-                min-height: 36.5px;
+                justify-content: center;
+                align-items: center;
+                min-height: 42.5px;
               ">
               <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
@@ -105,7 +106,7 @@
             <td>
               <p-tableCheckbox [value]="celler"></p-tableCheckbox>
             </td>
-            <td>
+            <td style="min-width: 6rem">
               <span class="p-column-title">Tipo</span>
               {{celler.material.typeMaterial.name}}
             </td>
