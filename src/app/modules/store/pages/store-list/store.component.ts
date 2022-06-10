@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
+import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, Document, GenerateReceipt } from 'src/app/types/celler.types';
+import { Celler, Document, GenerateReceipt, Location } from 'src/app/types/celler.types';
+import { TypeMaterial } from 'src/app/types/material.types';
 import { TypePermission } from 'src/app/types/permission';
 
 @Component({
@@ -68,12 +70,17 @@ export class StoreComponent implements OnInit {
 
   cellerSelect: Celler;
 
+  types: TypeMaterial[];
+
+  locations: Location[];
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private cellerService: CellerService,
     private permissionService: PermissionService,
+    private materialService: MaterialService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
@@ -85,6 +92,8 @@ export class StoreComponent implements OnInit {
     this.getPermissionsPage();
     this.getAll();
     this.getAllDocuments();
+    this.getAllTypeMaterial();
+    this.getAllLocation();
     setTimeout(() => {
       this.getMenuItems();
     }, 500);
@@ -264,6 +273,7 @@ export class StoreComponent implements OnInit {
     this.cellerService.getAll().subscribe((cellers) => {
       this.cellers = cellers;
       this.loading = false;
+      this.cellers.forEach(celler => celler.date = new Date(celler.date));
     });
   }
 
@@ -273,6 +283,18 @@ export class StoreComponent implements OnInit {
       documents.forEach(document => {
         this.documentsMenu.push({ label: document.description, routerLink: '/home/bodega/' + document.name });
       });
+    });
+  }
+
+  getAllTypeMaterial() {
+    this.materialService.getAllTypeMaterial().subscribe((types) => {
+      this.types = types;
+    });
+  }
+
+  getAllLocation() {
+    this.cellerService.getAllLocation().subscribe((locations) => {
+      this.locations = locations;
     });
   }
 
