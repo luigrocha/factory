@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/types/user.types';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { RoleType } from 'src/app/types/role.types';
 import { RoleService } from 'src/app/core/http/roles/role.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { UsersService } from 'src/app/core/http/users/users.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { TypePermission } from 'src/app/types/permission';
+import { PermissionEnum } from 'src/app/core/constants/permisions';
 
 @Component({
   selector: 'app-users-list',
@@ -61,6 +62,10 @@ export class UsersListComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
+  items: MenuItem[] = [];
+
+  userSelect: User;
+
   constructor(
     private userService: UsersService,
     private roleService: RoleService,
@@ -78,6 +83,9 @@ export class UsersListComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAllUsers();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
     this.cols = [
       { field: 'userName', header: 'Usuario' },
       { field: 'firstName', header: 'Nombre' },
@@ -85,6 +93,23 @@ export class UsersListComponent implements OnInit {
       { field: 'email', header: 'Email' },
       { field: 'roles', header: 'Roles' },
     ];
+  }
+
+  getMenuItems() {
+    if (this.isAllow(PermissionEnum.UPDATE)) {
+      this.items.push({
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editUser(this.userSelect)
+      });
+    }
+    if (this.isAllow(PermissionEnum.DELETE)) {
+      this.items.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteUser(this.userSelect)
+      });
+    }
   }
 
   openNew() {

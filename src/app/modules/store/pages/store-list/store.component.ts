@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -63,6 +64,10 @@ export class StoreComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
+  items: MenuItem[] = [];
+
+  cellerSelect: Celler;
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -80,6 +85,9 @@ export class StoreComponent implements OnInit {
     this.getPermissionsPage();
     this.getAll();
     this.getAllDocuments();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
     this.cols = [
       { field: 'lote', header: 'Lote' },
       { field: 'amount', header: 'Cantidad' },
@@ -93,6 +101,23 @@ export class StoreComponent implements OnInit {
       { field: 'location', header: 'Ubicación' },
       { field: 'document', header: 'Documento' },
     ];
+  }
+
+  getMenuItems() {
+    if (this.isAllow(PermissionEnum.UPDATE)) {
+      this.items.push({
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        // command: (e) => this.editUser(this.cellerSelect)
+      });
+    }
+    if (this.isAllow(PermissionEnum.DELETE)) {
+      this.items.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        // command: (e) => this.deleteUser(this.cellerSelect)
+      });
+    }
   }
 
   // openNew() {

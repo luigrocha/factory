@@ -6,17 +6,16 @@
       <p-table #dt [value]="roles" [columns]="cols" [rows]="7" [paginator]="true" [globalFilterFields]="['name']"
         [(selection)]="selectedRoles" [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
-          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 class="m-0">Gestión de Roles</h5>
-            <div class="flex">
-              <button pButton pRipple label="Añadir/Quitar rol" icon="pi pi-user-plus" class="mr-2"
-                (click)="addRoleUser()" *ngIf="isAllow(1)"></button>
-              <span class="p-input-icon-left">
-                <i class="pi pi-search"></i>
-                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
-                  placeholder="Buscar..." />
-              </span>
-            </div>
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <h5 class="h-100 align-self-center mb-2 md:mb-0">Gestión de Roles</h5>
+            <span class="flex-auto"></span>
+            <button pButton pRipple label="Añadir/Quitar rol" icon="pi pi-user-plus" class="mb-2 md:mb-0"
+              (click)="addRoleUser()" *ngIf="isAllow(1)"></button>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Buscar..." class="w-full" />
+            </span>
           </div>
         </ng-template>
         <ng-template pTemplate="header">

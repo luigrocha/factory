@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { PrinterService } from 'src/app/core/http/catalogs/printers/printer.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -59,6 +60,10 @@ export class PrintersComponent implements OnInit {
 
   permissionsPage: TypePermission[];
 
+  items: MenuItem[] = [];
+
+  printerSelect: Printer;
+
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
@@ -76,11 +81,31 @@ export class PrintersComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAll();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
     this.cols = [
       { field: 'name', header: 'Nombre' },
       { field: 'numColors', header: 'N° Colores' },
       { field: 'description', header: 'Descripción' },
     ];
+  }
+
+  getMenuItems() {
+    if (this.isAllow(PermissionEnum.UPDATE)) {
+      this.items.push({
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editPrinter(this.printerSelect)
+      });
+    }
+    if (this.isAllow(PermissionEnum.DELETE)) {
+      this.items.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deletePrinter(this.printerSelect)
+      });
+    }
   }
 
   openNew() {

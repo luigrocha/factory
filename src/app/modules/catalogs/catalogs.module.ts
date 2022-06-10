@@ -24,7 +24,7 @@ import { MachinesComponent } from './pages/machines/machines.component';
 import { MenuModule } from 'primeng/menu';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MachineModalComponent } from './components/machine-modal/machine-modal.component';
-import { DialogService } from "primeng/dynamicdialog";
+import { DialogService } from 'primeng/dynamicdialog';
 
 @NgModule({
   imports: [
