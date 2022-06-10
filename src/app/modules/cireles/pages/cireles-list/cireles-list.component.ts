@@ -7,6 +7,8 @@ import { TableColumn, TableHeader } from 'src/app/types/table.types';
 import { Table } from 'primeng/table';
 import { debounceTime } from 'rxjs/operators';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
+import { TypePermission } from 'src/app/types/permission';
 
 @Component({
   selector: 'app-cireles-list',
@@ -33,14 +35,16 @@ export class CirelesListComponent implements OnInit {
     { label: 'Color', property: 'color' }
   ];
 
-
   @ViewChild('dt') table: Table;
+
+  permissionsPage: TypePermission[];
 
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private cirelService: CirelService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -49,6 +53,7 @@ export class CirelesListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPermissionsPage();
     this.getMenuItems();
     this.getCirels(this.initialPage, this.pageSize, this.query);
     this.columns = [
@@ -115,4 +120,20 @@ export class CirelesListComponent implements OnInit {
 
   editCirel(): void {
   }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
+  }
+
 }

@@ -1,42 +1,20 @@
 <div class="p-grid table-demo">
   <div class="p-col-12">
     <div class="card">
-      <p-table
-        #dt
-        [value]="dies"
-        [columns]="columns"
-        [rows]="pageSize"
-        [paginator]="true"
-        [globalFilterFields]="globalFilterFields"
-        [rowHover]="true"
-        dataKey="id"
-        [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="tableReportTemplate"
-        styleClass="p-datatable-sm"
-        lazy="true"
-        [rowsPerPageOptions]="rowsPerPageOptions"
-        responsiveLayout="scroll">
+      <p-table #dt [value]="dies" [columns]="columns" [rows]="pageSize" [paginator]="true"
+        [globalFilterFields]="globalFilterFields" [rowHover]="true" dataKey="id" [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="tableReportTemplate" styleClass="p-datatable-sm" lazy="true"
+        [rowsPerPageOptions]="rowsPerPageOptions" responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 mb-0 align-self-center">Gestión de Troqueles</h5>
             <span class="flex-auto"></span>
-            <button
-              pButton
-              pRipple
-              label="Nuevo"
-              class="mr-2"
-              icon="pi pi-plus"
-              (click)="addNewDie(dt)"
-            ></button>
+            <button pButton pRipple label="Nuevo" class="mr-2" icon="pi pi-plus" *ngIf="isAllow(1)"
+              (click)="addNewDie(dt)"></button>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <input
-                pInputText
-                type="text"
-                (input)="dt.filterGlobal($event.target.value, 'contains')"
-                placeholder="Buscar..."
-                class="w-full"
-              />
+              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Buscar..." class="w-full" />
             </span>
           </div>
         </ng-template>
@@ -116,20 +94,16 @@
               {{ die.observations }}
             </td> -->
             <td style="min-width: 10rem">
-              <span class="die-badge"
-                    appStatusHighlight
-                    [status]="die.status">{{
+              <span class="die-badge" appStatusHighlight [status]="die.status">{{
                 die.status.name
-              }}</span>
+                }}</span>
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
             <td colspan="19">
-              <span class="pt-4 pb-4 font-bold"
-                >No se pudo encontrar resultados.</span
-              >
+              <span class="pt-4 pb-4 font-bold">No se pudo encontrar resultados.</span>
             </td>
           </tr>
         </ng-template>

@@ -5,7 +5,8 @@
     <div class="card">
       <p-table #dt [value]="cellers" [columns]="cols" [rows]="7" [paginator]="true"
         [globalFilterFields]="['lote', 'amount','balance','coat','pallets','weight','date','observation','material.name','location.location','document.name']"
-        [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm" responsiveLayout="scroll">
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [rowHover]="true" dataKey="id"
+        styleClass="p-datatable-customers p-datatable-sm" responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 align-self-center mb-2 md:mb-0">Gestión de Bodega</h5>

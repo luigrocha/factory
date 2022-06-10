@@ -7,6 +7,8 @@ import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { debounceTime } from 'rxjs/operators';
 import { ConfirmationService } from 'primeng/api';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { TypePermission } from 'src/app/types/permission';
+import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 
 @Component({
   selector: 'app-dies-list',
@@ -31,19 +33,22 @@ export class DiesListComponent implements OnInit, AfterViewInit {
 
   @ViewChild('dt') table: Table;
 
+  permissionsPage: TypePermission[];
+
   constructor(
     private dieService: DieService,
-    private breadcrumbService: BreadcrumbService
+    private breadcrumbService: BreadcrumbService,
+    private permissionService: PermissionService,
   ) {
     this.breadcrumbService.setItems([
-      {label: 'Diseño'},
-      {label: 'Troqueles', routerLink: ['/home/troqueles']}
+      { label: 'Diseño' },
+      { label: 'Troqueles', routerLink: ['/home/troqueles'] }
     ]);
   }
 
   ngAfterViewInit(): void {
     this.table.onPage
-      .subscribe(({first, rows}) => {
+      .subscribe(({ first, rows }) => {
         this.actualPage = first / rows
         this.pageSize = rows;
         this.getDies(this.actualPage, this.pageSize, this.query);
@@ -52,7 +57,7 @@ export class DiesListComponent implements OnInit, AfterViewInit {
       .pipe(
         debounceTime(500)
       )
-      .subscribe(({filters}) => {
+      .subscribe(({ filters }) => {
         const isEmpty = Object.keys(filters).length === 0;
         if (isEmpty) {
           this.query = null;
@@ -65,31 +70,32 @@ export class DiesListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.getPermissionsPage();
     this.getDies(this.initialPage, this.pageSize, this.query);
 
     this.columns = [
-      {header: 'Troquel', field: 'name'},
-      {header: 'Fecha', field: 'createdDate'},
-      {header: 'Fabricante', field: 'name'},
-      {header: 'Máquina', field: 'name'},
-      {header: 'Prod', field: 'code'},
-      {header: 'Referencia', field: 'description'},
-      {header: 'Largo (mm)', field: 'length'},
-      {header: 'Ancho (mm)', field: 'width'},
-      {header: 'Cant1 (u)', field: 'quantity'},
-      {header: 'Cant. largo (u)', field: 'quantityLength'},
-      {header: 'Sep. largo (u)', field: 'separationLength'},
-      {header: 'Cant. ancho (u)', field: 'quantityWidth'},
-      {header: 'Sep. ancho (u)', field: 'separationWidth'},
-      {header: 'Bordes largo (mm)', field: 'borderLength'},
-      {header: 'Bordes ancho (mm)', field: 'borderWidth'},
-      {header: 'Largo lámina (mm)', field: 'leafLength'},
-      {header: 'Ancho lámina (mm)', field: 'leafWidth'},
-      {header: 'Área', field: 'area'},
-      {header: 'GSMDIS', field: 'gsmdis'},
+      { header: 'Troquel', field: 'name' },
+      { header: 'Fecha', field: 'createdDate' },
+      { header: 'Fabricante', field: 'name' },
+      { header: 'Máquina', field: 'name' },
+      { header: 'Prod', field: 'code' },
+      { header: 'Referencia', field: 'description' },
+      { header: 'Largo (mm)', field: 'length' },
+      { header: 'Ancho (mm)', field: 'width' },
+      { header: 'Cant1 (u)', field: 'quantity' },
+      { header: 'Cant. largo (u)', field: 'quantityLength' },
+      { header: 'Sep. largo (u)', field: 'separationLength' },
+      { header: 'Cant. ancho (u)', field: 'quantityWidth' },
+      { header: 'Sep. ancho (u)', field: 'separationWidth' },
+      { header: 'Bordes largo (mm)', field: 'borderLength' },
+      { header: 'Bordes ancho (mm)', field: 'borderWidth' },
+      { header: 'Largo lámina (mm)', field: 'leafLength' },
+      { header: 'Ancho lámina (mm)', field: 'leafWidth' },
+      { header: 'Área', field: 'area' },
+      { header: 'GSMDIS', field: 'gsmdis' },
       // { label: 'DesbMúltiple', field: 'dsbMultiple' },
       // { label: 'Observaciones.', field: 'observations' },
-      {header: 'Estado', field: 'status'},
+      { header: 'Estado', field: 'status' },
     ];
   }
 
@@ -108,4 +114,20 @@ export class DiesListComponent implements OnInit, AfterViewInit {
   deleteSelectedDies(): void {
 
   }
+
+  getPermissionsPage() {
+    this.permissionService.findPermissionPage().subscribe(
+      (data) => {
+        this.permissionsPage = data;
+      }
+    );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissionsPage) {
+      return this.permissionsPage.find(permission => permission.id === id).flag;
+    }
+    return false;
+  }
+
 }

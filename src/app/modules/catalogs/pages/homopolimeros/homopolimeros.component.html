@@ -3,9 +3,9 @@
     <p-toast></p-toast>
 
     <div class="card">
-      <p-table #dt [value]="homos" [columns]="cols" [rows]="7" [paginator]="true"
-        [globalFilterFields]="['percentage', 'hpCode']" [(selection)]="selectedHomo" [rowHover]="true" dataKey="id"
-        styleClass="p-datatable-customers p-datatable-sm">
+      <p-table #dt [value]="homos" [columns]="cols" [rows]="7" [paginator]="true" [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[10,25,50]" [globalFilterFields]="['percentage', 'hpCode']" [(selection)]="selectedHomo"
+        [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 align-self-center mb-2 md:mb-0">Gestión de Homopolímeros</h5>

@@ -5,7 +5,8 @@
     <div class="card">
       <p-table #dt [value]="users" [columns]="cols" [rows]="7" [paginator]="true"
         [globalFilterFields]="['userName', 'firstName', 'lastName', 'roles']" [(selection)]="selectedUsers"
-        [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" [rowHover]="true" dataKey="id"
+        styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 align-self-center mb-2 md:mb-0">Gestión de Usuarios</h5>

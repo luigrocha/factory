@@ -11,7 +11,8 @@
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 mb-0 align-self-center">Gestión de Cireles</h5>
             <span class="flex-auto"></span>
-            <button pButton pRipple label="Nuevo" class="mr-2" icon="pi pi-plus" (click)="addNewCyrel()"></button>
+            <button pButton pRipple label="Nuevo" class="mr-2" icon="pi pi-plus" (click)="addNewCyrel()"
+              *ngIf="isAllow(1)"></button>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
@@ -60,11 +61,8 @@
             </td> -->
             <td>
               <div class="flex justify-content-center">
-                <button type="button"
-                        pButton
-                        icon="pi pi-ellipsis-v"
-                        class="p-button-secondary p-button-outlined"
-                        (click)="selectedCirel = cirel; menu1.toggle($event)">
+                <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
+                  (click)="selectedCirel = cirel; menu1.toggle($event)">
                 </button>
               </div>
             </td>

@@ -5,6 +5,7 @@
     <div class="card">
       <p-table #dt [value]="colors" [columns]="cols" [rows]="7" [paginator]="true"
         [globalFilterFields]="['color', 'name']" [(selection)]="selectedColor" [rowHover]="true" dataKey="id"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]"
         styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">

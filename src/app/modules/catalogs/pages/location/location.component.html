@@ -5,7 +5,8 @@
     <div class="card">
       <p-table #dt [value]="locations" [columns]="cols" [rows]="7" [paginator]="true"
         [globalFilterFields]="['location', 'description']" [(selection)]="selectedlocation" [rowHover]="true"
-        dataKey="id" styleClass="p-datatable-customers p-datatable-sm">
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" dataKey="id"
+        styleClass="p-datatable-customers p-datatable-sm">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 align-self-center mb-2 md:mb-0">Gestión de Ubicaciones</h5>
@@ -17,7 +18,6 @@
               *ngIf="isAllow(4)"></button>
             <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mb-2 md:mr-2 md:mb-0"
               (click)="dt.exportCSV()" *ngIf="isAllow(5)"></button>
-
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
