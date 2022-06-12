@@ -293,9 +293,12 @@ export class StoreCebComponent implements OnInit {
     this.cellerService.getCellerByMaterialCode(id).subscribe(
       (cellers => {
         this.cellers = cellers;
-        this.lotes = this.deleteCellerDuplicateByLote(cellers);
+        const lotes = this.deleteCellerDuplicateByLote(cellers);
+        this.lotes = lotes.filter((lote: Celler) => lote.weight > 0);
+
       }),
       (err) => {
+        this.celler = null;
         this.cellers = [];
         this.lotes = [];
       }
