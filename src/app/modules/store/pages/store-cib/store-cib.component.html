@@ -141,7 +141,7 @@
     </div>
 
 
-    <p-dialog [(visible)]="itemDialog" [style]="{ width: '70%' , height: '90vh'}" header="Nuevo Item CIB" [modal]="true"
+    <p-dialog [(visible)]="itemDialog" [style]="{ width: '70%' , height: '95vh'}" header="Nuevo Item CIB" [modal]="true"
       styleClass="p-fluid">
       <ng-template pTemplate="content">
         <div class="field">
@@ -205,9 +205,19 @@
         </div>
 
         <div *ngIf="location">
-          <div class="field" *ngIf="typeMaterial.name == 'PEL'">
-            <label class="mb-2" for="weight">Cantidad de sacos: {{numberCoat}}</label>
-            <p-slider [(ngModel)]="numberCoat"></p-slider>
+          <div class="p-formgrid grid">
+            <div class="field col" *ngIf="typeMaterial.name == 'PEL'">
+              <label class="mb-2" for="numberCoat">Cantidad de sacos: {{numberCoat}}</label>
+              <p-dropdown id="numberCoat" [options]="itemsCoat" [(ngModel)]="numberCoat" [editable]="true"
+                placeholder="Selecciona cantidad de sacos">
+              </p-dropdown>
+            </div>
+            <div class="field col">
+              <label class="mb-2" for="numberPallet">Cantidad de sacos en pallet: {{numberPallet}}</label>
+              <p-dropdown id="numberPallet" [options]="itemsPallets" [(ngModel)]="numberPallet" [editable]="true"
+                placeholder="Selecciona cantidad de sacos en pallet">
+              </p-dropdown>
+            </div>
           </div>
           <div class="p-formgrid grid">
             <div class="field col">
@@ -229,11 +239,11 @@
           </div>
           <div class="p-formgrid grid">
             <div class="field col">
-              <label for="pallets">Pallets(55)</label>
+              <label for="pallets">Pallets({{numberPallet}})</label>
               <span class="p-inputgroup">
                 <input type="number" pInputText id="pallets" [(ngModel)]="newCeller.pallets"
                   (ngModelChange)="calculateWeight()" min="0" />
-                <span class="p-inputgroup-addon">Kg</span>
+                <span class="p-inputgroup-addon">Pall</span>
               </span>
             </div>
             <div class="field col">
