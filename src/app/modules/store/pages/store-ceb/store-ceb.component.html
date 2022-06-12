@@ -216,9 +216,19 @@
           </div>
 
           <div *ngIf="weightTotal>0">
-            <div class="field" *ngIf="typeMaterial.name == 'PEL'">
-              <label class="mb-2" for="weight">Cantidad de sacos: {{numberCoat}}</label>
-              <p-slider [(ngModel)]="numberCoat"></p-slider>
+            <div class="p-formgrid grid">
+              <div class="field col" *ngIf="typeMaterial.name == 'PEL'">
+                <label class="mb-2" for="numberCoat">Cantidad de sacos: {{numberCoat}}</label>
+                <p-dropdown id="numberCoat" [options]="itemsCoat" [(ngModel)]="numberCoat" [editable]="true"
+                  placeholder="Selecciona cantidad de sacos">
+                </p-dropdown>
+              </div>
+              <div class="field col">
+                <label class="mb-2" for="numberPallet">Cantidad de sacos en pallet: {{numberPallet}}</label>
+                <p-dropdown id="numberPallet" [options]="itemsPallets" [(ngModel)]="numberPallet" [editable]="true"
+                  placeholder="Selecciona cantidad de sacos en pallet">
+                </p-dropdown>
+              </div>
             </div>
             <div class="p-formgrid grid">
               <div class="field col">

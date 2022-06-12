@@ -84,6 +84,8 @@ export class StoreCebComponent implements OnInit {
 
   numberCoat = 25;
 
+  numberPallet = 55;
+
   observations: string;
 
   locations: Location[];
@@ -96,6 +98,10 @@ export class StoreCebComponent implements OnInit {
     severity: 'info',
     summary: 'Selecciona un motivo y llena la observación para ingresar items'
   }];
+
+  itemsCoat: number[];
+
+  itemsPallets: number[];
 
   constructor(
     private messageService: MessageService,
@@ -115,6 +121,8 @@ export class StoreCebComponent implements OnInit {
     this.getAllTypeMaterial();
     this.getAllOptionsByDocumentCode(DocumentEnum.CEB);
     this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
+    this.itemsCoat = [10, 15, 20, 25, 30, 35, 40];
+    this.itemsPallets = [50, 55, 60, 65, 70, 75, 100];
   }
 
   openNew() {
@@ -242,7 +250,7 @@ export class StoreCebComponent implements OnInit {
   calculateWeight() {
     const balance = this.newCeller.balance ? this.newCeller.balance : 0;
     const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * this.numberCoat;
-    const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * 1375;
+    const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * this.numberCoat * this.numberPallet;
     this.newCeller.weight = balance + coat + pallets;
 
     if (this.newCeller.weight > this.weightTotal) {
