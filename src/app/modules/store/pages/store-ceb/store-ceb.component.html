@@ -250,11 +250,11 @@
             </div>
             <div class="p-formgrid grid">
               <div class="field col">
-                <label for="pallets">Pallets(55)</label>
+                <label for="pallets">Pallets({{numberPallet}})</label>
                 <span class="p-inputgroup">
                   <input type="number" pInputText id="pallets" [(ngModel)]="newCeller.pallets"
                     (ngModelChange)="calculateWeight()" min="0" />
-                  <span class="p-inputgroup-addon">Kg</span>
+                  <span class="p-inputgroup-addon">Pall</span>
                 </span>
               </div>
               <div class="field col">

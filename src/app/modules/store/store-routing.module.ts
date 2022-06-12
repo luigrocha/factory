@@ -4,6 +4,7 @@ import { StoreCebComponent } from './pages/store-ceb/store-ceb.component';
 import { StoreCibComponent } from './pages/store-cib/store-cib.component';
 import { StoreCreateComponent } from './pages/store-create/store-create.component';
 import { StoreComponent } from './pages/store-list/store.component';
+import { StoreMovComponent } from './pages/store-mov/store-mov.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'CIB',
     component: StoreCibComponent,
+  },
+  {
+    path: 'MOV',
+    component: StoreMovComponent,
   },
 ];
 
