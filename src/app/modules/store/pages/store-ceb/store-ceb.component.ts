@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
+import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -82,10 +83,6 @@ export class StoreCebComponent implements OnInit {
 
   date: Date;
 
-  numberCoat = 25;
-
-  numberPallet = 55;
-
   observations: string;
 
   locations: Location[];
@@ -99,9 +96,13 @@ export class StoreCebComponent implements OnInit {
     summary: 'Selecciona un motivo y llena la observación para ingresar items'
   }];
 
-  itemsCoat: number[];
+  numberCoat = DEFAULT_COAT;
 
-  itemsPallets: number[];
+  numberPallet = DEFAULT_PALLETS;
+
+  itemsCoat = DEFAULT_TYPE_COAT;
+
+  itemsPallets = DEFAULT_TYPE_PALLETS;
 
   constructor(
     private messageService: MessageService,
@@ -121,8 +122,6 @@ export class StoreCebComponent implements OnInit {
     this.getAllTypeMaterial();
     this.getAllOptionsByDocumentCode(DocumentEnum.CEB);
     this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
-    this.itemsCoat = [10, 15, 20, 25, 30, 35, 40];
-    this.itemsPallets = [50, 55, 60, 65, 70, 75, 100];
   }
 
   openNew() {
