@@ -39,7 +39,9 @@ export enum DocumentEnum {
   CIB = 1,
   CEB = 2,
   MOV = 3,
-  TM3 = 4
+  TM1 = 4,
+  TM5 = 5,
+  CEP = 6,
 }
 
 

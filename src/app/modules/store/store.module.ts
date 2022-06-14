@@ -28,6 +28,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { StoreCibComponent } from './pages/store-cib/store-cib.component';
 import { StoreMovComponent } from './pages/store-mov/store-mov.component';
+import { StoreCepComponent } from './pages/store-cep/store-cep.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -61,6 +62,7 @@ registerLocaleData(localeEs, 'es');
     StoreCebComponent,
     StoreCibComponent,
     StoreMovComponent,
+    StoreCepComponent
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'es' }]
 })
