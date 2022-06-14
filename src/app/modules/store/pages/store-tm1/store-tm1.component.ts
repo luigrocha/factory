@@ -9,9 +9,9 @@ import { Celler, CodeDocument, DocumentEnum, Location, OptionDocument } from 'sr
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 
 @Component({
-  selector: 'app-store-cib',
-  templateUrl: './store-cib.component.html',
-  styleUrls: ['./store-cib.component.scss'],
+  selector: 'app-store-tm1',
+  templateUrl: './store-tm1.component.html',
+  styleUrls: ['./store-tm1.component.scss'],
   styles: [
     `
         :host ::ng-deep .p-dialog .product-image {
@@ -43,7 +43,7 @@ import { Material, TypeMaterial } from 'src/app/types/material.types';
   ],
   providers: [MessageService, ConfirmationService],
 })
-export class StoreCibComponent implements OnInit {
+export class StoreTm1Component implements OnInit {
 
   cellers: Celler[];
 
@@ -112,14 +112,14 @@ export class StoreCibComponent implements OnInit {
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
-      { label: 'CIB', routerLink: ['bodega/CIB'] },
+      { label: 'TM1', routerLink: ['bodega/TM1'] },
     ]);
   }
 
   ngOnInit() {
     this.getAllTypeMaterial();
-    this.getAllOptionsByDocumentCode(DocumentEnum.CIB);
-    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CIB);
+    this.getAllOptionsByDocumentCode(DocumentEnum.TM1);
+    this.getNewCodeDocumentByDocumentCode(DocumentEnum.TM1);
     this.getAllLocation();
   }
 
@@ -165,7 +165,7 @@ export class StoreCibComponent implements OnInit {
       this.newCeller.observation = this.observation;
       this.newCeller.material = this.material;
       this.newCeller.location = this.location;
-      this.newCeller.document = { id: DocumentEnum.CIB };
+      this.newCeller.document = { id: DocumentEnum.TM1 };
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
       this.newCellers.push(this.newCeller);
@@ -319,7 +319,7 @@ export class StoreCibComponent implements OnInit {
         this.observation = null;
         this.observations = null;
         this.date = null;
-        this.getNewCodeDocumentByDocumentCode(DocumentEnum.CIB);
+        this.getNewCodeDocumentByDocumentCode(DocumentEnum.TM1);
         this.hideDialog();
 
       },
@@ -364,11 +364,12 @@ export class StoreCibComponent implements OnInit {
     //   receivedBy: null,
     //   items: receiptItems
     // };
-    // this.cellerService.generateReceipt(DocumentEnum.CIB, receipt).subscribe(
+    // this.cellerService.generateReceipt(DocumentEnum.TM1, receipt).subscribe(
     //   (data) => {
     //     console.log(data);
     //   }
     // );
 
   }
+
 }

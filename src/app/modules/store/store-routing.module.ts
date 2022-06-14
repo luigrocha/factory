@@ -6,6 +6,7 @@ import { StoreCibComponent } from './pages/store-cib/store-cib.component';
 import { StoreCreateComponent } from './pages/store-create/store-create.component';
 import { StoreComponent } from './pages/store-list/store.component';
 import { StoreMovComponent } from './pages/store-mov/store-mov.component';
+import { StoreTm1Component } from './pages/store-tm1/store-tm1.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: 'CEP',
     component: StoreCepComponent,
+  },
+  {
+    path: 'TM1',
+    component: StoreTm1Component,
   },
 ];
 

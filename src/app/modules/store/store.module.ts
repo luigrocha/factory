@@ -29,6 +29,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { StoreCibComponent } from './pages/store-cib/store-cib.component';
 import { StoreMovComponent } from './pages/store-mov/store-mov.component';
 import { StoreCepComponent } from './pages/store-cep/store-cep.component';
+import { StoreTm1Component } from './pages/store-tm1/store-tm1.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -62,7 +63,8 @@ registerLocaleData(localeEs, 'es');
     StoreCebComponent,
     StoreCibComponent,
     StoreMovComponent,
-    StoreCepComponent
+    StoreCepComponent,
+    StoreTm1Component
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'es' }]
 })
