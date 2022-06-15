@@ -265,12 +265,15 @@ export class StoreMovComponent implements OnInit {
     this.locationsOrigin = [];
     const locationsFilter: Celler[] = this.deleteCellerDuplicateByLocation(this.cellers, this.newCeller.lote);
     locationsFilter.forEach(loc => { this.locationsOrigin.push(loc.location); });
+    this.getAllLocation();
   }
 
   onLocationSelected(e: any) {
     const loc = e.value;
-    this.newCeller.lote = this.cellers.find(celler => celler.location.location === loc).lote;
+    this.locationOrigin = loc;
+    this.newCeller.lote = this.cellers.find(celler => celler.location.id === loc.id).lote;
     this.calculateWeightAvailable(this.newCeller.lote);
+    this.getAllLocation();
   }
 
   calculateWeightAvailable(lote: string) {
@@ -348,9 +351,11 @@ export class StoreMovComponent implements OnInit {
   }
 
   getAllLocation() {
+    this.locationsDestiny = [];
     this.cellerService.getAllLocation().subscribe(
       (locations => {
-        this.locationsDestiny = locations;
+        // this.locationsDestiny = locations;
+        this.locationsDestiny = locations.filter(location => this.locationOrigin.id !== location.id);
       })
     );
   }

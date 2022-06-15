@@ -233,7 +233,7 @@ export class StoreCebComponent implements OnInit {
 
   onLocationSelected(e: any) {
     const loc = e.value;
-    this.newCeller.lote = this.cellers.find(celler => celler.location.location === loc).lote;
+    this.newCeller.lote = this.cellers.find(celler => celler.location.id === loc.id).lote;
     this.calculateWeightAvailable(this.newCeller.lote);
   }
 
