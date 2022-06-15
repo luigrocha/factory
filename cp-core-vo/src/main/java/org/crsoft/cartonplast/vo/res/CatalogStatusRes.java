@@ -21,4 +21,6 @@ public class CatalogStatusRes implements Serializable {
     private String color;
     private String backgroundColor;
     private String type;
+    private Boolean isVisible;
+    private Boolean isDefault;
 }

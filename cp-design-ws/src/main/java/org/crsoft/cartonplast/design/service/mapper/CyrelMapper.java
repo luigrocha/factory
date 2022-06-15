@@ -26,7 +26,6 @@ public interface CyrelMapper {
     @Mapping(target = "printer", ignore = true)
     @Mapping(target = "cyrelColors", ignore = true)
     @Mapping(target = "mbLeaf", ignore = true)
-    @Mapping(target = "die", ignore = true)
     Cyrel cyrelResToCyrel(CyrelRes cyrelRes);
 
     List<CyrelRes> cyrelsToCyrelsRes(List<Cyrel> cyrels);

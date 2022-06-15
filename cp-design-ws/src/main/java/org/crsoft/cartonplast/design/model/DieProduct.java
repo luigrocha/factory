@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.common.model.CatalogStatus;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author lpillaga on 12/05/2022
+ * @author lpillaga on 12/06/2022
  */
 @Data
 @AllArgsConstructor
@@ -21,76 +22,76 @@ import java.util.List;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(
-        name = "CATCIR",
+        name = "CATPRODTRO",
         indexes = {
-                @Index(name = "CAICIR_PRINT", columnList = "CATCIR_PRINT"),
+                @Index(name = "CAIPRODTRO_PTROQ", columnList = "CATPRODTRO_PTROQ")
         }
 )
-public class Cyrel {
+public class DieProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "ID_CATCIR_CODE",
+            name = "ID_CATPRODTRO_CODE",
             updatable = false,
             nullable = false
     )
     private Integer id;
 
     @Column(
-            name = "CATCIR_PRINT",
+            name = "CATPRODTRO_PTROQ",
             nullable = false,
             length = 8
     )
-    private String print;
+    private String code;
 
     @Column(
-            name = "CATCIR_DESCRIPTION",
+            name = "CATPRODTRO_NAME",
             nullable = false,
             length = 128
     )
-    private String description;
+    private String name;
+
+    @Column(name = "CATPRODTRO_AREA")
+    private Double area;
+
+    @Column(name = "CATPRODTRO_LENGTH")
+    private Double length;
+
+    @Column(name = "CATPRODTRO_WIDTH")
+    private Double width;
+
+    @Column(name = "CATPRODTRO_GSMDIS")
+    private Double gsmdis;
 
     @Column(
-            name = "CATCIR_DESCRIPTION2",
-            length = 128
-    )
-    private String description2;
-
-    @Column(
-            name = "CATCIR_OBSERVATION",
-            length = 128
-    )
-    private String observation;
-
-    @Column(
-            name = "CATCIR_VALID_FROM",
+            name = "CATPRODTRO_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
     @CreatedDate
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CATCIR_VALID_TO",
+            name = "CATPRODTRO_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CATCIR_CREATED_BY", length = 16)
+    @Column(name = "CATPRODTRO_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CATCIR_UPDATED_BY", length = 16)
+    @Column(name = "CATPRODTRO_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CATCIR_CREATED_AT",
+            name = "CATPRODTRO_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CATCIR_UPDATED_AT",
+            name = "CATPRODTRO_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     @LastModifiedDate
@@ -98,32 +99,20 @@ public class Cyrel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "XID_CATIMP_CODE",
-            referencedColumnName = "ID_CATIMP_CODE",
-            insertable = false,
-            updatable = false,
+            name = "XID_CATSTATUS_CODE",
             nullable = false
     )
-    private Printer printer;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "XID_CATCOL_CODE",
-            referencedColumnName = "ID_CATCOL_CODE",
-            insertable = false,
-            updatable = false
-    )
-    private ColorB mbLeaf;
+    private CatalogStatus status;
 
     @OneToMany(
-            mappedBy = "cyrel",
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            mappedBy = "dieProduct"
     )
-    private List<CyrelDieProduct> dies = new ArrayList<>();
+    private List<Die> dies = new ArrayList<>();
 
     @OneToMany(
-            mappedBy = "cyrel",
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            mappedBy = "dieProduct"
     )
-    private List<CyrelColor> cyrelColors = new ArrayList<>();
+    private List<CyrelDieProduct> cyrels = new ArrayList<>();
 }

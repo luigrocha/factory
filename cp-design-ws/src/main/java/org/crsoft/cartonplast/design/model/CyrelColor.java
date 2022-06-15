@@ -37,6 +37,12 @@ public class CyrelColor {
     private Integer index;
 
     @Column(
+            name = "CATCIR_COL_OBSERVATION",
+            length = 256
+    )
+    private String observation;
+
+    @Column(
             name = "CATCIR_COL_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )

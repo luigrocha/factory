@@ -19,12 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(
-        name = "CATTRO",
-        indexes = {
-                @Index(name = "CAITRO_PTROQ", columnList = "CATTRO_PTROQ")
-        }
-)
+@Table(name = "CATTRO")
 public class Die {
 
     @Id
@@ -35,13 +30,6 @@ public class Die {
             nullable = false
     )
     private Integer id;
-
-    @Column(
-            name = "CATTRO_PTROQ",
-            nullable = false,
-            length = 8
-    )
-    private String code;
 
     @Column(
             name = "CATTRO_NAME",
@@ -56,37 +44,6 @@ public class Die {
             columnDefinition = "TIMESTAMP"
     )
     private LocalDate createdDate;
-
-    @Column(
-            name = "CATTRO_DESCRIPTION",
-            nullable = false,
-            length = 128
-    )
-    private String description;
-
-    @Column(
-            name = "CATTRO_AREA",
-            nullable = false
-    )
-    private Double area;
-
-    @Column(
-            name = "CATTRO_LENGTH",
-            nullable = false
-    )
-    private Double length;
-
-    @Column(
-            name = "CATTRO_WIDTH",
-            nullable = false
-    )
-    private Double width;
-
-    @Column(
-            name = "CATTRO_GSMDIS",
-            nullable = false
-    )
-    private Double gsmdis;
 
     @Column(
             name = "CATTRO_DSB_MULTIPLE",
@@ -170,18 +127,18 @@ public class Die {
     @Column(name = "CATTRO_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CATRO_UPDATED_BY", length = 16)
+    @Column(name = "CATTRO_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CATRO_CREATED_AT",
+            name = "CATTRO_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CATRO_UPDATED_AT",
+            name = "CATTRO_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     @LastModifiedDate
@@ -190,31 +147,34 @@ public class Die {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "XID_CATFAB_CODE",
-            referencedColumnName = "ID_CATFAB_CODE",
-            insertable = false,
-            updatable = false
+            referencedColumnName = "ID_CATFAB_CODE"
     )
     private Manufacturer manufacturer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "XID_CATSTATUS_CODE",
-            referencedColumnName = "ID_CATSTATUS_CODE",
-            insertable = false,
-            updatable = false,
             nullable = false
     )
     private CatalogStatus status;
 
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            mappedBy = "die"
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATPRODTRO_CODE",
+            referencedColumnName = "ID_CATPRODTRO_CODE",
+            nullable = false
     )
-    private List<DieMachine> dieMachines = new ArrayList<>();
+    private DieProduct dieProduct;
 
     @OneToMany(
             fetch = FetchType.LAZY,
-            mappedBy = "die"
+            mappedBy = "die",
+            cascade = CascadeType.ALL
     )
-    private List<Cyrel> cyrels = new ArrayList<>();
+    private List<DieMachine> dieMachines = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        createdDate = LocalDate.now();
+    }
 }

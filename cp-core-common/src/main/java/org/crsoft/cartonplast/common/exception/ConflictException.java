@@ -1,12 +1,8 @@
 package org.crsoft.cartonplast.common.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 /**
  * @author lpillaga on 21/05/2022
  */
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class ConflictException extends RuntimeException {
 
     private static final long serialVersionUID = -81207908739079087L;
