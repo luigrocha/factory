@@ -47,15 +47,13 @@
             <th pSortableColumn="description">
               Descripción <p-sortIcon field="description"></p-sortIcon>
             </th>
+            <th pSortableColumn="observation">
+              Observación <p-sortIcon field="observation"></p-sortIcon>
+            </th>
             <th>
               Color
             </th>
-            <th style="
-                text-align: center;
-                display: flex;
-                justify-content: space-around;
-                min-height: 36.5px;
-              ">
+            <th class="text-center">
               <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
           </tr>
@@ -84,6 +82,10 @@
             <td>
               <span class="p-column-title">Descripción</span>
               {{ color.description }}
+            </td>
+            <td>
+              <span class="p-column-title">Observación</span>
+              {{ color.observation }}
             </td>
             <td>
               <span class="p-column-title">Color</span>
