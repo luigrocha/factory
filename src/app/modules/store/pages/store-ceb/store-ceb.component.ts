@@ -5,8 +5,9 @@ import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS 
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CodeDocument, DocumentEnum, Location, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
+import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-store-ceb',
@@ -104,6 +105,12 @@ export class StoreCebComponent implements OnInit {
 
   itemsPallets = DEFAULT_TYPE_PALLETS;
 
+  srcPdf: any;
+
+  fileName: string;
+
+  enableButtons: boolean;
+
   constructor(
     private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
@@ -111,6 +118,7 @@ export class StoreCebComponent implements OnInit {
     private cellerService: CellerService,
     private authService: AuthService,
   ) {
+    pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
@@ -372,39 +380,44 @@ export class StoreCebComponent implements OnInit {
   }
 
   generateReceipt() {
+    const receiptItems: GenerateReceiptItem[] = [];
 
-    this.pdfDialog = true;
-    // const receiptItems: GenerateReceiptItem[] = [];
+    this.newCellers.forEach(celler => {
+      receiptItems.push({
+        productType: celler.material.typeMaterial.name,
+        productName: celler.material.name,
+        lot: celler.lote,
+        units: celler.amount,
+        bags1KG: celler.balance,
+        bags25KG: celler.coat,
+        pallets55: celler.pallets,
+        totalWeight: celler.weight,
+        location: celler.location.description
+      });
+    });
 
-    // this.newCellers.forEach(celler => {
-    //   receiptItems.push({
-    //     productType: celler.material.typeMaterial.name,
-    //     productName: celler.material.name,
-    //     lot: celler.lote,
-    //     units: celler.amount,
-    //     bags1KG: celler.balance,
-    //     bags25KG: celler.coat,
-    //     pallets55: celler.pallets,
-    //     totalWeight: celler.weight,
-    //     location: celler.location.description
-    //   });
-    // });
+    const receipt: GenerateReceipt = {
+      receiptNumber: this.newCellers[0].numberDocument,
+      receiptDate: this.newCellers[0].date,
+      reason: this.optionDocument.name,
+      reasonObservation: this.observation.toUpperCase(),
+      observations: this.observations.toUpperCase(),
+      deliveredBy: this.authService.getLoggedUser().name,
+      receivedBy: null,
+      items: receiptItems
+    };
 
-    // const receipt: GenerateReceipt = {
-    //   receiptNumber: this.newCellers[0].numberDocument,
-    //   receiptDate: this.newCellers[0].date,
-    //   reason: this.optionDocument.name,
-    //   reasonObservation: this.observation.toUpperCase(),
-    //   observations: this.observations.toUpperCase(),
-    //   deliveredBy: this.authService.getLoggedUser().name,
-    //   receivedBy: null,
-    //   items: receiptItems
-    // };
-    // this.cellerService.generateReceipt(DocumentEnum.CEB, receipt).subscribe(
-    //   (data) => {
-    //     console.log(data);
-    //   }
-    // );
+    this.cellerService.generateReceiptPreview(DocumentEnum.CEB, receipt).subscribe(
+      (data => {
+        const type = data.body.type;
+        this.fileName = data.headers.get('content-disposition').split('filename=')[1];
+        this.srcPdf = URL.createObjectURL(
+          new Blob([data.body], { type })
+        );
+        this.pdfDialog = true;
+        this.enableButtons = true;
+      })
+    );
 
   }
 

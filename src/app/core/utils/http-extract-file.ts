@@ -4,7 +4,7 @@ export function getFileFromResponse(response: HttpResponse<Blob>) {
   const type = response.body.type;
   const a = document.createElement('a');
   const generatedUrl = URL.createObjectURL(
-    new Blob([response.body], {type})
+    new Blob([response.body], { type })
   );
   a.href = generatedUrl;
   a.download = response.headers
