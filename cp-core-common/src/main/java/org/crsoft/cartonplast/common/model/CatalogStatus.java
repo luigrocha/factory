@@ -53,6 +53,18 @@ public class CatalogStatus {
     private String type;
 
     @Column(
+            name = "CATSTATUS_IS_VISIBLE",
+            nullable = false
+    )
+    private Boolean isVisible;
+
+    @Column(
+            name = "CATSTATUS_IS_DEFAULT",
+            nullable = false
+    )
+    private Boolean isDefault;
+
+    @Column(
             name = "CATSTATUS_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )

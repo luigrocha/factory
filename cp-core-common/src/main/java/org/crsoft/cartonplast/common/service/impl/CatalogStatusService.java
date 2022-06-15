@@ -11,6 +11,7 @@ import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
 
@@ -37,5 +38,15 @@ public class CatalogStatusService implements ICatalogStatusService {
         } else {
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
+    }
+
+    @Override
+    public Optional<CatalogStatus> findByTypeAndIsDefault(String type) {
+        return catalogStatusRepository.findByTypeAndIsDefault(type);
+    }
+
+    @Override
+    public Optional<CatalogStatus> findById(String id) {
+        return catalogStatusRepository.findById(id);
     }
 }

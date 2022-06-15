@@ -35,6 +35,12 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<String> handleConflictException(
+            ConflictException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(ReceiptGeneratorException.class)
     public ResponseEntity<String> handleReceiptGeneratorException(
             ReceiptGeneratorException ex) {
