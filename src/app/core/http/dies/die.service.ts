@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DiePageable } from 'src/app/types/dies.types';
+import { CreateDie, Die } from 'src/app/types/dies.types';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +13,11 @@ export class DieService {
 
   constructor(private http: HttpClient) { }
 
-  getAllDies(page: number, size: number, query: string): Observable<DiePageable> {
-    let parameters = `?page=${page}&size=${size}`;
+  getAllDies(): Observable<Die[]> {
+    return this.http.get<Die[]>(this.URL);
+  }
 
-    if (query) {
-      parameters += `&query=${query}`;
-    }
-
-    return this.http.get<DiePageable>(this.URL + parameters);
+  createDie(die: CreateDie): Observable<Die> {
+    return this.http.post<Die>(this.URL, die);
   }
 }

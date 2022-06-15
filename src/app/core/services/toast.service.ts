@@ -28,6 +28,15 @@ export class ToastService {
     });
   }
 
+  warning(message: string) {
+    this.messageService.add({
+      severity: 'warn',
+      summary: 'Alerta',
+      detail: message,
+      life: 5000,
+    });
+  }
+
   errorHttp(message: string, status: number) {
     this.messageService.add({
       severity: 'error',

@@ -1,18 +1,9 @@
-import { Pageable } from 'src/app/types/pageable.types';
-
-export interface DiePageable extends Pageable<Die> {
-}
+import { DieProduct } from "./die-product.types";
 
 export interface Die {
   id: number;
-  code: string;
   name: string;
   createdDate: string;
-  description: string;
-  area: number;
-  length: number;
-  width: number;
-  gsmdis: number;
   dsbMultiple: number;
   observations: string;
   quantity: number;
@@ -26,7 +17,26 @@ export interface Die {
   leafWidth: number;
   manufacturer: string;
   status: DieStatus;
+  dieProduct: DieProduct;
   machines: string[];
+}
+
+export interface CreateDie {
+  name: string;
+  dsbMultiple: number;
+  observations: string;
+  quantity: number;
+  quantityLength: number;
+  separationLength: number;
+  quantityWidth: number;
+  separationWidth: number;
+  borderLength: number;
+  borderWidth: number;
+  leafLength: number;
+  leafWidth: number;
+  manufacturerId: number;
+  dieProductId: number;
+  machines: number[];
 }
 
 export interface DieStatus {

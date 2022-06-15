@@ -5,10 +5,17 @@ import { TableColumn } from 'src/app/types/table.types';
 import { Table } from 'primeng/table';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { debounceTime } from 'rxjs/operators';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { TypePermission } from 'src/app/types/permission';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
+import { DieProduct } from "../../../../types/die-product.types";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { Status } from "../../../../types/catalogs.types";
+import { DIE_PRODUCT_STATUS_TYPE, DIE_STATUS_TYPE } from "../../../../core/constants/status-types";
+import { StatusService } from "../../../../core/http/catalogs/status/status.service";
+import { ToastService } from "../../../../core/services/toast.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-dies-list',
@@ -18,27 +25,37 @@ import { PermissionService } from 'src/app/core/http/permissions/permission.serv
     ConfirmationService
   ]
 })
-export class DiesListComponent implements OnInit, AfterViewInit {
+export class DiesListComponent implements OnInit {
 
-  columns: TableColumn<Die>[];
   pageSize: number = 10;
-  dies: Die[] = [];
+  dies: Die[];
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+  addDialogRef: DynamicDialogRef;
+  selectedDie: Die;
+  menuItems: MenuItem[];
+  dieStates: Status[] = [];
 
-  globalFilterFields: string[] = ['name', 'code', 'description'];
-  initialPage: number = 0;
-  actualPage: number = 0;
-  query: string = null;
-
-  @ViewChild('dt') table: Table;
-
+  globalFilterFields: string[] = [
+    'name',
+    'createdDate',
+    'dieProduct.code',
+    'dieProduct.name',
+    'manufacturer',
+    'machines',
+    'status.name'
+  ];
   permissionsPage: TypePermission[];
 
   constructor(
     private dieService: DieService,
     private breadcrumbService: BreadcrumbService,
     private permissionService: PermissionService,
+    private statusService: StatusService,
+    private router: Router,
+    private toastService: ToastService,
+    public dialogService: DialogService,
+    private confirmationService: ConfirmationService
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -46,73 +63,47 @@ export class DiesListComponent implements OnInit, AfterViewInit {
     ]);
   }
 
-  ngAfterViewInit(): void {
-    this.table.onPage
-      .subscribe(({ first, rows }) => {
-        this.actualPage = first / rows
-        this.pageSize = rows;
-        this.getDies(this.actualPage, this.pageSize, this.query);
-      });
-    this.table.onFilter
-      .pipe(
-        debounceTime(500)
-      )
-      .subscribe(({ filters }) => {
-        const isEmpty = Object.keys(filters).length === 0;
-        if (isEmpty) {
-          this.query = null;
-        } else {
-          this.query = filters.global.value;
-        }
+  ngOnInit(): void {
+    this.getPermissionsPage();
+    this.getMenuItems();
+    this.getDies();
+    this.getDieProductStates();
+  }
 
-        this.getDies(this.initialPage, this.pageSize, this.query);
+  private getDies(): void {
+    this.dieService.getAllDies()
+      .subscribe(dies => {
+        this.dies = dies;
       });
   }
 
-  ngOnInit(): void {
-    this.getPermissionsPage();
-    this.getDies(this.initialPage, this.pageSize, this.query);
-
-    this.columns = [
-      { header: 'Troquel', field: 'name' },
-      { header: 'Fecha', field: 'createdDate' },
-      { header: 'Fabricante', field: 'name' },
-      { header: 'Máquina', field: 'name' },
-      { header: 'Prod', field: 'code' },
-      { header: 'Referencia', field: 'description' },
-      { header: 'Largo (mm)', field: 'length' },
-      { header: 'Ancho (mm)', field: 'width' },
-      { header: 'Cant1 (u)', field: 'quantity' },
-      { header: 'Cant. largo (u)', field: 'quantityLength' },
-      { header: 'Sep. largo (u)', field: 'separationLength' },
-      { header: 'Cant. ancho (u)', field: 'quantityWidth' },
-      { header: 'Sep. ancho (u)', field: 'separationWidth' },
-      { header: 'Bordes largo (mm)', field: 'borderLength' },
-      { header: 'Bordes ancho (mm)', field: 'borderWidth' },
-      { header: 'Largo lámina (mm)', field: 'leafLength' },
-      { header: 'Ancho lámina (mm)', field: 'leafWidth' },
-      { header: 'Área', field: 'area' },
-      { header: 'GSMDIS', field: 'gsmdis' },
-      // { label: 'DesbMúltiple', field: 'dsbMultiple' },
-      // { label: 'Observaciones.', field: 'observations' },
-      { header: 'Estado', field: 'status' },
+  private getMenuItems(): void {
+    this.menuItems = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.editDie()
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: () => this.deleteDie()
+      }
     ];
   }
 
-  private getDies(page: number, size: number, query: string): void {
-    this.dieService.getAllDies(page, size, query)
-      .subscribe(response => {
-        this.dies = response.content;
-        this.table.totalRecords = response.totalElements;
+
+  private editDie(): void {
+  }
+
+  private deleteDie(): void {
+  }
+
+  private getDieProductStates(): void {
+    this.statusService.getAllByType(DIE_STATUS_TYPE)
+      .subscribe(dieStates => {
+        this.dieStates = dieStates;
       });
-  }
-
-  addNewDie(dt: Table): void {
-    console.log(dt);
-  }
-
-  deleteSelectedDies(): void {
-
   }
 
   getPermissionsPage() {
@@ -130,4 +121,11 @@ export class DiesListComponent implements OnInit, AfterViewInit {
     return false;
   }
 
+  addDie(): void {
+    this.router.navigate(['/home/troqueles/crear']);
+  }
+
+  clear(table: Table) {
+    table.clear();
+  }
 }

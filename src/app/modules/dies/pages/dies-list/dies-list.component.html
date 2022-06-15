@@ -1,91 +1,220 @@
-<div class="p-grid table-demo">
+<div class="p-grid">
   <div class="p-col-12">
+    <p-toast></p-toast>
+
     <div class="card">
-      <p-table #dt [value]="dies" [columns]="columns" [rows]="pageSize" [paginator]="true"
-        [globalFilterFields]="globalFilterFields" [rowHover]="true" dataKey="id" [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="tableReportTemplate" styleClass="p-datatable-sm" lazy="true"
-        [rowsPerPageOptions]="rowsPerPageOptions" responsiveLayout="scroll">
+      <p-table #dt
+               [value]="dies"
+               [rows]="pageSize"
+               [paginator]="true"
+               [globalFilterFields]="globalFilterFields"
+               [rowHover]="true"
+               dataKey="id"
+               [showCurrentPageReport]="true"
+               [currentPageReportTemplate]="tableReportTemplate"
+               [rowsPerPageOptions]="rowsPerPageOptions"
+               styleClass="p-datatable-sm"
+               responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
             <h5 class="h-100 mb-0 align-self-center">Gestión de Troqueles</h5>
             <span class="flex-auto"></span>
-            <button pButton pRipple label="Nuevo" class="mr-2" icon="pi pi-plus" *ngIf="isAllow(1)"
-              (click)="addNewDie(dt)"></button>
+            <button pButton
+                    pRipple
+                    label="Limpiar"
+                    icon="pi pi-filter-slash"
+                    class="p-button-outlined sm:mr-2 md:mr-2 lg:mr-2"
+                    (click)="clear(dt)"></button>
+            <button
+              pButton
+              pRipple
+              label="Nuevo"
+              class="sm:mr-2 md:mr-2 lg:mr-2"
+              icon="pi pi-plus"
+              (click)="addDie()"
+            ></button>
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
-                placeholder="Buscar..." class="w-full" />
+              <input pInputText
+                     type="text"
+                     (input)="dt.filterGlobal($event.target.value, 'contains')"
+                     placeholder="Buscar..."
+                     class="w-full"/>
             </span>
           </div>
         </ng-template>
-
         <ng-template pTemplate="header">
           <tr>
-            <th *ngFor="let col of columns">
-              {{col.header}}
+            <th style="min-width: 15rem" pSortableColumn="name">
+              Troquel
+              <p-sortIcon field="name"></p-sortIcon>
+              <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 8rem" pSortableColumn="createdDate">
+              Fecha
+              <p-sortIcon field="createdDate"></p-sortIcon>
+              <p-columnFilter type="date" field="createdDate" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 11rem" pSortableColumn="manufacturer">
+              Fabricante
+              <p-sortIcon field="manufacturer"></p-sortIcon>
+              <p-columnFilter type="text" field="manufacturer" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 10rem" pSortableColumn="machines">
+              Máquina
+              <p-sortIcon field="machines"></p-sortIcon>
+              <p-columnFilter type="text" field="machines" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 8rem" pSortableColumn="dieProduct.code">
+              Prod
+              <p-sortIcon field="dieProduct.code"></p-sortIcon>
+              <p-columnFilter type="text" field="dieProduct.code" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 15rem" pSortableColumn="dieProduct.name">
+              Referencia
+              <p-sortIcon field="dieProduct.name"></p-sortIcon>
+              <p-columnFilter type="text" field="dieProduct.name" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 11rem" pSortableColumn="dieProduct.length">
+              Largo (mm)
+              <p-sortIcon field="dieProduct.length"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="dieProduct.length"
+                              display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 11rem" pSortableColumn="dieProduct.width">
+              Ancho (mm)
+              <p-sortIcon field="dieProduct.width"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="dieProduct.width"
+                              display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 11rem" pSortableColumn="quantity">
+              Cant1 (u)
+              <p-sortIcon field="quantity"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="quantity" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 12rem" pSortableColumn="quantityLength">
+              Cant. largo (u)
+              <p-sortIcon field="quantityLength"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="quantityLength"
+                              display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 12rem" pSortableColumn="separationLength">
+              Sep. largo (u)
+              <p-sortIcon field="separationLength"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="separationLength"
+                              display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 13rem" pSortableColumn="quantityWidth">
+              Cant. ancho (u)
+              <p-sortIcon field="quantityWidth"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="quantityWidth"
+                              display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 12rem" pSortableColumn="separationWidth">
+              Sep. ancho (u)
+              <p-sortIcon field="separationWidth"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="separationWidth"
+                              display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 14rem" pSortableColumn="borderLength">
+              Bordes largo (mm)
+              <p-sortIcon field="borderLength"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="borderLength"
+                              display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 15rem" pSortableColumn="borderWidth">
+              Bordes ancho (mm)
+              <p-sortIcon field="borderWidth"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="borderWidth"
+                              display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 15rem" pSortableColumn="leafLength">
+              Largo lámina (mm)
+              <p-sortIcon field="leafLength"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="leafLength" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 15rem" pSortableColumn="leafWidth">
+              Ancho lámina (mm)
+              <p-sortIcon field="leafWidth"></p-sortIcon>
+              <p-columnFilter type="numeric" [maxFractionDigits]="4" field="leafWidth" display="menu"></p-columnFilter>
+            </th>
+            <th style="min-width: 10rem" pSortableColumn="status.name">
+              Estado
+              <p-sortIcon field="status.name"></p-sortIcon>
+              <p-columnFilter field="status.name" matchMode="equals" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-dropdown [ngModel]="value"
+                              [options]="dieStates"
+                              (onChange)="filter($event.value.name)"
+                              placeholder="{{ value ?  value : 'Estado'}}">
+                    <ng-template let-option pTemplate="item">
+                        <span class="die-badge"
+                              [style.color]="option.color"
+                              [style.backgroundColor]="option.backgroundColor">{{option.name}}</span>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-die>
-          <tr class="p-selectable-row">
+          <tr>
             <td style="min-width: 15rem">
               {{ die.name }}
             </td>
             <td style="min-width: 8rem">
               {{ die.createdDate | date: "dd-MM-yyyy" }}
             </td>
-            <td style="min-width: 10rem">
+            <td style="min-width: 11rem">
               {{ die.manufacturer }}
             </td>
             <td style="min-width: 10rem">
-              <span *ngFor="let machine of die.machines">
-                {{ machine }}
+              <span *ngFor="let machine of die.machines; let isLast = last;">
+                {{ machine }} <span *ngIf="!isLast">, </span>
               </span>
             </td>
             <td style="min-width: 8rem">
-              {{ die.code }}
+              {{ die.dieProduct.code }}
             </td>
             <td style="min-width: 15rem">
-              {{ die.description }}
-            </td>
-            <td style="min-width: 8rem">
-              {{ die.length }}
-            </td>
-            <td style="min-width: 8rem">
-              {{ die.width }}
-            </td>
-            <td style="min-width: 8rem">
-              {{ die.quantity }}
-            </td>
-            <td style="min-width: 10rem">
-              {{ die.quantityLength }}
-            </td>
-            <td style="min-width: 10rem">
-              {{ die.separationLength }}
-            </td>
-            <td style="min-width: 10rem">
-              {{ die.quantityWidth }}
-            </td>
-            <td style="min-width: 10rem">
-              {{ die.separationWidth }}
-            </td>
-            <td style="min-width: 10rem">
-              {{ die.borderLength }}
+              {{ die.dieProduct.name }}
             </td>
             <td style="min-width: 11rem">
+              {{ die.dieProduct.length }}
+            </td>
+            <td style="min-width: 11rem">
+              {{ die.dieProduct.width }}
+            </td>
+            <td style="min-width: 11rem">
+              {{ die.quantity }}
+            </td>
+            <td style="min-width: 12rem">
+              {{ die.quantityLength }}
+            </td>
+            <td style="min-width: 12rem">
+              {{ die.separationLength }}
+            </td>
+            <td style="min-width: 13rem">
+              {{ die.quantityWidth }}
+            </td>
+            <td style="min-width: 12rem">
+              {{ die.separationWidth }}
+            </td>
+            <td style="min-width: 14rem">
+              {{ die.borderLength }}
+            </td>
+            <td style="min-width: 15rem">
               {{ die.borderWidth }}
             </td>
-            <td style="min-width: 12rem">
+            <td style="min-width: 15rem">
               {{ die.leafLength }}
             </td>
-            <td style="min-width: 12rem">
+            <td style="min-width: 15rem">
               {{ die.leafWidth }}
-            </td>
-            <td style="min-width: 8rem">
-              {{ die.area }}
-            </td>
-            <td style="min-width: 8rem">
-              {{ die.gsmdis }}
             </td>
             <!-- <td style="min-width: 11rem">
               {{ die.dsbMultiple }}
@@ -94,25 +223,33 @@
               {{ die.observations }}
             </td> -->
             <td style="min-width: 10rem">
-              <span class="die-badge" appStatusHighlight [status]="die.status">{{
-                die.status.name
-                }}</span>
+              <span class="die-badge" appStatusHighlight [status]="die.status">
+                {{die.status.name}}
+              </span>
             </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="19">
-              <span class="pt-4 pb-4 font-bold">No se pudo encontrar resultados.</span>
+            <td>
+              <div class="flex justify-content-center">
+                <button type="button"
+                        pButton
+                        icon="pi pi-ellipsis-v"
+                        class="p-button-secondary p-button-outlined"
+                        (click)="selectedDie = die; menu1.toggle($event)">
+                </button>
+              </div>
             </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary">
           <div class="p-d-flex p-ai-center p-jc-between">
-            Total de registros: {{ table?.totalRecords }}
+            Total de Troqueles:
+            {{ dies ? dies.length : 0 }}
           </div>
         </ng-template>
       </p-table>
     </div>
+    <p-confirmDialog [style]="{ width: '450px' }"
+                     rejectButtonStyleClass="p-button-text"
+                     acceptButtonStyleClass="p-button-raised"></p-confirmDialog>
   </div>
 </div>
+<p-menu #menu1 [popup]="true" [model]="menuItems"></p-menu>

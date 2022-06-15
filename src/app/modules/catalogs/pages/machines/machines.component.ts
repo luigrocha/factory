@@ -7,6 +7,7 @@ import { TableColumn } from 'src/app/types/table.types';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { MachineModalComponent } from "../../components/machine-modal/machine-modal.component";
+import { BreadcrumbService } from "../../../../core/services/breadcrumb.service";
 
 @Component({
   selector: 'app-machines',
@@ -31,8 +32,14 @@ export class MachinesComponent implements OnInit {
     private toastService: ToastService,
     private confirmationService: ConfirmationService,
     private machineService: MachineService,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    private breadcrumbService: BreadcrumbService
   ) {
+    this.breadcrumbService.setItems([
+      { label: 'Diseño' },
+      { label: 'Catálogos' },
+      { label: 'Máquinas', routerLink: ['/home/catalogs/maquinas'] },
+    ]);
   }
 
   ngOnInit(): void {

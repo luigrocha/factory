@@ -8,4 +8,5 @@ export interface TableHeader<T> {
 export interface TableColumn<T> {
   field: keyof T | string;
   header: string;
+  type?: 'text' | 'numeric' | 'date' | 'boolean';
 }
