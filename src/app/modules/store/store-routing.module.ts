@@ -7,6 +7,7 @@ import { StoreCreateComponent } from './pages/store-create/store-create.componen
 import { StoreComponent } from './pages/store-list/store.component';
 import { StoreMovComponent } from './pages/store-mov/store-mov.component';
 import { StoreTm1Component } from './pages/store-tm1/store-tm1.component';
+import { StoreTm5Component } from './pages/store-tm5/store-tm5.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
   {
     path: 'TM1',
     component: StoreTm1Component,
+  },
+  {
+    path: 'TM5',
+    component: StoreTm5Component,
   },
 ];
 
