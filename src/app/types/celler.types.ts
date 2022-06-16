@@ -55,7 +55,7 @@ export interface OptionDocument {
 export interface GenerateReceipt {
   receiptNumber: string;
   receiptDate: Date;
-  reason: string;
+  reason?: string;
   reasonObservation: string;
   observations: string;
   deliveredBy?: string;

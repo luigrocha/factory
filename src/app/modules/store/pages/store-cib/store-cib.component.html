@@ -110,12 +110,13 @@
             <td>
               {{celler.weight}}
             </td>
-            <td class="align-self-center flex  align-items-center justify-content-between">
-              <button pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-warning p-mr-2" (click)="editItem(celler)"
-                [disabled]="enableButtons"></button>
-              <button pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-outlined p-button-danger"
-                (click)="deleteItem(celler)" [disabled]="enableButtons"></button>
+            <td style="justify-content: center;">
+              <div class="flex justify-content-evenly">
+                <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
+                  (click)="cellerSelect = celler;menu.toggle($event)" [disabled]="enableButtons">
+                </button>
+              </div>
+              <p-menu #menu [popup]="true" [model]="items" appendTo="body"></p-menu>
             </td>
           </tr>
         </ng-template>

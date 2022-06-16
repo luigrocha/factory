@@ -114,7 +114,7 @@
             <td style="justify-content: center;">
               <div class="flex justify-content-evenly">
                 <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
-                  (click)="cellerSelect = celler;menu.toggle($event)">
+                  (click)="cellerSelect = celler;menu.toggle($event)" [disabled]="enableButtons">
                 </button>
               </div>
               <p-menu #menu [popup]="true" [model]="items" appendTo="body"></p-menu>

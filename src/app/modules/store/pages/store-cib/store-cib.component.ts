@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
@@ -109,6 +109,10 @@ export class StoreCibComponent implements OnInit {
 
   enableButtons: boolean;
 
+  items: MenuItem[];
+
+  cellerSelect: Celler;
+
   constructor(
     private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
@@ -129,6 +133,18 @@ export class StoreCibComponent implements OnInit {
     this.getAllOptionsByDocumentCode(DocumentEnum.CIB);
     this.getNewCodeDocumentByDocumentCode(DocumentEnum.CIB);
     this.getAllLocation();
+    this.items = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editItem(this.cellerSelect)
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteItem(this.cellerSelect)
+      }
+    ];
   }
 
   openNew() {
@@ -226,6 +242,7 @@ export class StoreCibComponent implements OnInit {
 
   onLocationSelected(e: any) {
     const loc = e.value;
+    this.newCeller.location = loc;
     this.calculateWeightAvailable(this.newCeller.lote, loc);
   }
 
