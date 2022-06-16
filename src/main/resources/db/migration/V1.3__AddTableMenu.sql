@@ -3,10 +3,10 @@ create table CBTMEN
     CBTMEN_CODE       int auto_increment
         primary key,
     CBT_CBTMEN_CODE   int                                     null,
-    CBTMEN_LABEL      varchar(32)                             not null,
-    CBTMEN_DATA       varchar(32)                             not null,
+    CBTMEN_LABEL      varchar(128)                             not null,
+    CBTMEN_DATA       varchar(128)                             not null,
     CBTMEN_ICON       varchar(32)                             not null,
-    CBTMEN_URL        varchar(32)                             null,
+    CBTMEN_URL        varchar(256)                             null,
     CBTMEN_ROLE       varchar(64)                             not null,
     CBTMEN_CONDITION  tinyint(1)                              null,
     CBTMEN_ORDER      int                                     null,
