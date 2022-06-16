@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CodeDocument, DocumentEnum, Location, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
+import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-store-cep',
@@ -83,8 +84,6 @@ export class StoreCepComponent implements OnInit {
 
   date: Date;
 
-  observations: string;
-
   locations: Location[];
 
   location: Location;
@@ -106,6 +105,16 @@ export class StoreCepComponent implements OnInit {
 
   lote: string;
 
+  srcPdf: any;
+
+  fileName: string;
+
+  enableButtons: boolean;
+
+  items: MenuItem[];
+
+  cellerSelect: Celler;
+
   constructor(
     private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
@@ -113,6 +122,7 @@ export class StoreCepComponent implements OnInit {
     private cellerService: CellerService,
     private authService: AuthService,
   ) {
+    pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
@@ -125,6 +135,18 @@ export class StoreCepComponent implements OnInit {
     this.getAllOptionsByDocumentCode(DocumentEnum.CEP);
     this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEP);
     this.getAllLocation();
+    this.items = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editItem(this.cellerSelect)
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteItem(this.cellerSelect)
+      }
+    ];
   }
 
   openNew() {
@@ -173,7 +195,6 @@ export class StoreCepComponent implements OnInit {
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
       this.newCellers.push(this.newCeller);
-      this.weightTotal -= this.newCeller.weight;
     } else {
       this.messageService.add({
         severity: 'warn',
@@ -234,6 +255,7 @@ export class StoreCepComponent implements OnInit {
 
   onLocationSelected(e: any) {
     const loc = e.value;
+    this.newCeller.location = loc;
     this.newCeller.lote = this.cellers.find(celler => celler.location.id === loc.id).lote;
     this.calculateWeightAvailable(this.newCeller.lote);
   }
@@ -341,14 +363,6 @@ export class StoreCepComponent implements OnInit {
   }
 
   saveCeb() {
-    this.newCellers.forEach(celler => {
-      celler.amount *= -1;
-      celler.balance *= -1;
-      celler.coat *= -1;
-      celler.pallets *= -1;
-      celler.weight *= -1;
-    });
-
     this.cellerService.create(this.newCellers).subscribe(
       (data) => {
         this.messageService.add({
@@ -362,7 +376,6 @@ export class StoreCepComponent implements OnInit {
         this.newCellers = [];
         this.optionDocument = {};
         this.observation = null;
-        this.observations = null;
         this.date = null;
         this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEP);
         this.hideDialog();
@@ -381,39 +394,45 @@ export class StoreCepComponent implements OnInit {
   }
 
   generateReceipt() {
+    const receiptItems: GenerateReceiptItem[] = [];
 
-    this.pdfDialog = true;
-    // const receiptItems: GenerateReceiptItem[] = [];
+    this.newCellers.forEach(celler => {
+      receiptItems.push({
+        productType: celler.material.typeMaterial.name,
+        productName: celler.material.name,
+        lot: celler.lote,
+        units: celler.amount,
+        bags1KG: celler.balance,
+        bags25KG: celler.coat,
+        pallets55: celler.pallets,
+        totalWeight: celler.weight,
+        location: celler.location.description
+      });
+    });
 
-    // this.newCellers.forEach(celler => {
-    //   receiptItems.push({
-    //     productType: celler.material.typeMaterial.name,
-    //     productName: celler.material.name,
-    //     lot: celler.lote,
-    //     units: celler.amount,
-    //     bags1KG: celler.balance,
-    //     bags25KG: celler.coat,
-    //     pallets55: celler.pallets,
-    //     totalWeight: celler.weight,
-    //     location: celler.location.description
-    //   });
-    // });
+    const receipt: GenerateReceipt = {
+      receiptNumber: this.newCellers[0].numberDocument,
+      receiptDate: this.newCellers[0].date,
+      // reason: this.optionDocument.name,
+      reasonObservation: this.observation.toUpperCase(),
+      // observations: this.observations.toUpperCase(),
+      deliveredBy: this.authService.getLoggedUser().name,
+      receivedBy: null,
+      items: receiptItems
+    };
 
-    // const receipt: GenerateReceipt = {
-    //   receiptNumber: this.newCellers[0].numberDocument,
-    //   receiptDate: this.newCellers[0].date,
-    //   reason: this.optionDocument.name,
-    //   reasonObservation: this.observation.toUpperCase(),
-    //   observations: this.observations.toUpperCase(),
-    //   deliveredBy: this.authService.getLoggedUser().name,
-    //   receivedBy: null,
-    //   items: receiptItems
-    // };
-    // this.cellerService.generateReceipt(DocumentEnum.CEP, receipt).subscribe(
-    //   (data) => {
-    //     console.log(data);
-    //   }
-    // );
+    this.cellerService.generateReceiptPreview(DocumentEnum.CEP, receipt).subscribe(
+      (data => {
+        const type = data.body.type;
+        this.fileName = data.headers.get('content-disposition').split('filename=')[1];
+        this.srcPdf = URL.createObjectURL(
+          new Blob([data.body], { type })
+        );
+        this.pdfDialog = true;
+        this.enableButtons = true;
+      })
+    );
+
   }
 
 }

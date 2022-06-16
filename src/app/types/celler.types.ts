@@ -57,7 +57,7 @@ export interface GenerateReceipt {
   receiptDate: Date;
   reason?: string;
   reasonObservation: string;
-  observations: string;
+  observations?: string;
   deliveredBy?: string;
   receivedBy?: string;
   items: GenerateReceiptItem[];
