@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
@@ -111,6 +111,10 @@ export class StoreCebComponent implements OnInit {
 
   enableButtons: boolean;
 
+  items: MenuItem[];
+
+  cellerSelect: Celler;
+
   constructor(
     private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
@@ -124,6 +128,18 @@ export class StoreCebComponent implements OnInit {
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
       { label: 'CEB', routerLink: ['bodega/CEB'] },
     ]);
+    this.items = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editItem(this.cellerSelect)
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteItem(this.cellerSelect)
+      }
+    ];
   }
 
   ngOnInit() {
@@ -180,7 +196,7 @@ export class StoreCebComponent implements OnInit {
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
       this.newCellers.push(this.newCeller);
-      this.weightTotal -= this.newCeller.weight;
+
     } else {
       this.messageService.add({
         severity: 'warn',
@@ -260,7 +276,7 @@ export class StoreCebComponent implements OnInit {
     const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * this.numberCoat * this.numberPallet;
     this.newCeller.weight = balance + coat + pallets;
 
-    if (this.newCeller.weight > this.weightTotal) {
+    if (this.newCeller.weight < (this.weightTotal * -1)) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Atención',
@@ -340,14 +356,6 @@ export class StoreCebComponent implements OnInit {
   }
 
   saveCeb() {
-    this.newCellers.forEach(celler => {
-      celler.amount *= -1;
-      celler.balance *= -1;
-      celler.coat *= -1;
-      celler.pallets *= -1;
-      celler.weight *= -1;
-    });
-
     this.cellerService.create(this.newCellers).subscribe(
       (data) => {
         this.messageService.add({

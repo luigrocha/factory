@@ -8,7 +8,7 @@
         <div class="field col-3 flex flex-column">
           <label for="option">Motivo</label>
           <p-dropdown id="option" [options]="optionDocuments" [(ngModel)]="optionDocument"
-            placeholder="Selecciona motivo" [style]="{'width':'100%'}">
+            placeholder="Selecciona motivo" [style]="{'width':'100%'}" [disabled]="enableButtons">
             <ng-template pTemplate="selectedItem">
               <div *ngIf="optionDocument.name">
                 {{ optionDocument.name }}
@@ -22,7 +22,7 @@
 
         <div class="field col-3 flex flex-column" *ngIf="optionDocument">
           <label for="coat">Observación</label>
-          <input type="text" pInputText id="observation" [(ngModel)]="observation" />
+          <input type="text" pInputText id="observation" [(ngModel)]="observation" [disabled]="enableButtons" />
         </div>
 
         <div class="field col-3 flex flex-column" *ngIf="optionDocument">
@@ -35,12 +35,12 @@
         <div class="field col-3 flex flex-column" *ngIf="optionDocument">
           <label for="date">Fecha Documento</label>
           <p-calendar [showIcon]="true" inputId="date" [(ngModel)]="date" dateFormat="dd-mm-yy"
-            [style]="{'width':'100%'}">
+            [style]="{'width':'100%'}" [disabled]="enableButtons">
           </p-calendar>
         </div>
 
         <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="flex-grow-1" (click)="openNew()"
-          *ngIf="observation && date"></button>
+          *ngIf="observation && date" [disabled]="enableButtons"></button>
 
         <div *ngIf="!optionDocument">
           <p-messages [value]="msgInfo"></p-messages>
@@ -112,9 +112,10 @@
             </td>
             <td class="align-self-center flex  align-items-center justify-content-between">
               <button pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-warning p-mr-2" (click)="editItem(celler)"></button>
+                class="p-button-rounded p-button-outlined p-button-warning p-mr-2" (click)="editItem(celler)"
+                [disabled]="enableButtons"></button>
               <button pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-outlined p-button-danger"
-                (click)="deleteItem(celler)"></button>
+                (click)="deleteItem(celler)" [disabled]="enableButtons"></button>
             </td>
           </tr>
         </ng-template>
@@ -129,7 +130,8 @@
 
       <div class="field flex flex-column mt-3" *ngIf="newCellers.length > 0">
         <label for="observations">Observaciones</label>
-        <textarea type="text" pInputTextarea id="observations" [(ngModel)]="observations"></textarea>
+        <textarea type="text" pInputTextarea id="observations" [(ngModel)]="observations"
+          [disabled]="enableButtons"></textarea>
       </div>
       <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
         <!-- <button pButton pRipple label="Guardar" icon="pi pi-plus"
