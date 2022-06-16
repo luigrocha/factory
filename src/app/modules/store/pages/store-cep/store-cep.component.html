@@ -7,7 +7,7 @@
       <div class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center mb-5">
         <div class="field col-3 flex flex-column">
           <label for="coat">Observación</label>
-          <input type="text" pInputText id="observation" [(ngModel)]="observation" />
+          <input type="text" pInputText id="observation" [(ngModel)]="observation" [disabled]="enableButtons" />
         </div>
 
         <div class="field col-3 flex flex-column" *ngIf="observation">
@@ -20,12 +20,12 @@
         <div class="field col-3 flex flex-column" *ngIf="observation">
           <label for="date">Fecha Documento</label>
           <p-calendar [showIcon]="true" inputId="date" [(ngModel)]="date" dateFormat="dd-mm-yy"
-            [style]="{'width':'100%'}">
+            [style]="{'width':'100%'}" [disabled]="enableButtons">
           </p-calendar>
         </div>
 
         <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="flex-grow-1 w-full" (click)="openNew()"
-          *ngIf="observation && date"></button>
+          *ngIf="observation && date" [disabled]="enableButtons"></button>
 
         <div *ngIf="!observation">
           <p-messages [value]="msgInfo"></p-messages>

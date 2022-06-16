@@ -5,44 +5,56 @@
     <div class="card">
       <h5 class="m-0 mb-5">Traslado de Materiales Ingreso {{numDocument.numDocument}}</h5>
       <div class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center mb-5">
-        <!-- <div class="field col-3 flex flex-column">
-          <label for="option">Motivo</label>
-          <p-dropdown id="option" [options]="optionDocuments" [(ngModel)]="optionDocument"
-            placeholder="Selecciona motivo" [style]="{'width':'100%'}">
-            <ng-template pTemplate="selectedItem">
-              <div *ngIf="optionDocument.name">
-                {{ optionDocument.name }}
-              </div>
-            </ng-template>
-            <ng-template let-option pTemplate="item">
-              {{ option.name }}
-            </ng-template>
-          </p-dropdown>
-        </div> -->
 
         <div class="field col-3 flex flex-column">
-          <label for="coat">Observación</label>
-          <input type="text" pInputText id="observation" [(ngModel)]="observation" />
-        </div>
-
-        <div class="field col-3 flex flex-column" *ngIf="observation">
           <label for="createdAt">Fecha Creación</label>
           <p-calendar [showIcon]="true" inputId="createdAt" [(ngModel)]="createdAt" dateFormat="dd-mm-yy"
             [style]="{'width':'100%'}" disabled="true">
           </p-calendar>
         </div>
 
-        <div class="field col-3 flex flex-column" *ngIf="observation">
+        <div class="field col-3 flex flex-column">
           <label for="date">Fecha Documento</label>
           <p-calendar [showIcon]="true" inputId="date" [(ngModel)]="date" dateFormat="dd-mm-yy"
             [style]="{'width':'100%'}">
           </p-calendar>
         </div>
 
-        <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="w-full flex-grow-1" (click)="openNew()"
-          *ngIf="observation && date"></button>
+        <div class="field col-3 flex flex-column">
+          <label for="origin">Origen</label>
+          <p-dropdown id="origin" [options]="optionDocuments" [(ngModel)]="optionDocumentOrigin"
+            placeholder="Selecciona origen" [style]="{'width':'100%'}" (onChange)='onOptionOriginSelected($event)'
+            [disabled]="enableButtons">
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="optionDocumentOrigin.name">
+                {{ optionDocumentOrigin.name }}
+              </div>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+              {{ option.name }}
+            </ng-template>
+          </p-dropdown>
+        </div>
 
-        <div *ngIf="!observation">
+        <div class="field col-3 flex flex-column">
+          <label for="destiny">Destino</label>
+          <p-dropdown id="destiny" [options]="optionDocumentsDestiny" [(ngModel)]="optionDocumentDestiny"
+            placeholder="Selecciona destino" [style]="{'width':'100%'}" [disabled]="enableButtons">
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="optionDocumentDestiny.name">
+                {{ optionDocumentDestiny.name }}
+              </div>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+              {{ option.name }}
+            </ng-template>
+          </p-dropdown>
+        </div>
+
+        <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="w-full flex-grow-1" (click)="openNew()"
+          *ngIf="date && optionDocumentOrigin && optionDocumentDestiny"></button>
+
+        <div *ngIf="!optionDocumentDestiny">
           <p-messages [value]="msgInfo"></p-messages>
         </div>
       </div>
@@ -110,11 +122,13 @@
             <td>
               {{celler.weight}}
             </td>
-            <td class="align-self-center flex  align-items-center justify-content-between">
-              <button pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-warning p-mr-2" (click)="editItem(celler)"></button>
-              <button pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-outlined p-button-danger"
-                (click)="deleteItem(celler)"></button>
+            <td style="justify-content: center;">
+              <div class="flex justify-content-evenly">
+                <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
+                  (click)="cellerSelect = celler;menu.toggle($event)" [disabled]="enableButtons">
+                </button>
+              </div>
+              <p-menu #menu [popup]="true" [model]="items" appendTo="body"></p-menu>
             </td>
           </tr>
         </ng-template>
@@ -132,11 +146,14 @@
         <textarea type="text" pInputTextarea id="observations" [(ngModel)]="observations"></textarea>
       </div>
       <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
-        <button pButton pRipple label="Guardar" icon="pi pi-plus"
+        <!-- <button pButton pRipple label="Guardar" icon="pi pi-plus"
           class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" *ngIf="newCellers.length > 0"
-          (click)="saveCib()"></button>
-        <!-- <button pButton pRipple label="Vista Previa" icon="pi pi-file-pdf"
-          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" (click)="generateReceipt()"></button> -->
+          (click)="saveCeb()"></button> -->
+        <button pButton pRipple label="Guardar" icon="pi pi-plus" *ngIf="newCellers.length > 0 && observations"
+          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" (click)="generateReceipt()"
+          [disabled]="enableButtons"></button>
+        <button pButton pRipple label="Regresar" icon="pi pi-table" *ngIf="enableButtons"
+          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" routerLink="/home/bodega"></button>
       </div>
     </div>
 
@@ -266,10 +283,9 @@
       </ng-template>
     </p-dialog>
 
-    <p-dialog [(visible)]="pdfDialog" [style]="{ width: '80%' }" [modal]="true" styleClass="p-fluid">
-      <ngx-extended-pdf-viewer [src]="'../../../../../assets/CEB.pdf'" [height]="'80vh'" [useBrowserLocale]="true"
-        [textLayer]="true" [showHandToolButton]="true" [showPresentationModeButton]="true">
-        >
+    <p-dialog [(visible)]="pdfDialog" [style]="{ width: '80%' }" [modal]="true" styleClass="p-fluid" *ngIf="srcPdf">
+      <ngx-extended-pdf-viewer [src]="srcPdf" [height]="'80vh'" [useBrowserLocale]="true"
+        [filenameForDownload]="fileName">
       </ngx-extended-pdf-viewer>
     </p-dialog>
   </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
@@ -7,6 +7,7 @@ import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Celler, CodeDocument, DocumentEnum, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
+import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-store-tm1',
@@ -63,7 +64,11 @@ export class StoreTm1Component implements OnInit {
 
   optionDocuments: OptionDocument[];
 
-  optionDocument: OptionDocument;
+  optionDocumentOrigin: OptionDocument;
+
+  optionDocumentsDestiny: OptionDocument[];
+
+  optionDocumentDestiny: OptionDocument;
 
   observation: string;
 
@@ -91,7 +96,7 @@ export class StoreTm1Component implements OnInit {
 
   msgInfo: any = [{
     severity: 'info',
-    summary: 'Selecciona un motivo y llena la observación para ingresar items'
+    summary: 'Llena fecha, origen y destino para ingresar items'
   }];
 
   numberCoat = DEFAULT_COAT;
@@ -102,6 +107,16 @@ export class StoreTm1Component implements OnInit {
 
   itemsPallets = DEFAULT_TYPE_PALLETS;
 
+  srcPdf: any;
+
+  fileName: string;
+
+  enableButtons: boolean;
+
+  items: MenuItem[];
+
+  cellerSelect: Celler;
+
   constructor(
     private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
@@ -109,11 +124,24 @@ export class StoreTm1Component implements OnInit {
     private cellerService: CellerService,
     private authService: AuthService,
   ) {
+    pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
       { label: 'TM1', routerLink: ['bodega/TM1'] },
     ]);
+    this.items = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: (e) => this.editItem(this.cellerSelect)
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: (e) => this.deleteItem(this.cellerSelect)
+      }
+    ];
   }
 
   ngOnInit() {
@@ -218,7 +246,12 @@ export class StoreTm1Component implements OnInit {
 
   onLocationSelected(e: any) {
     const loc = e.value;
+    this.location = loc;
     this.calculateWeightAvailable(this.newCeller.lote, loc);
+  }
+
+  onOptionOriginSelected(e: any) {
+    this.getAllOptionsByDocumentCode(DocumentEnum.TM1);
   }
 
   calculateWeightAvailable(lote: string, loc: Location) {
@@ -255,9 +288,14 @@ export class StoreTm1Component implements OnInit {
   }
 
   getAllOptionsByDocumentCode(id: number) {
+    this.optionDocumentsDestiny = [];
     this.cellerService.getAllOptionsByDocumentCode(id).subscribe(
       (optionDocument) => {
-        this.optionDocuments = optionDocument;
+        if (this.optionDocumentOrigin) {
+          this.optionDocumentsDestiny = optionDocument.filter(option => this.optionDocumentOrigin.id !== option.id);
+        } else {
+          this.optionDocuments = optionDocument;
+        }
       }
     );
   }
@@ -315,7 +353,8 @@ export class StoreTm1Component implements OnInit {
         this.generateReceipt();
         this.newCeller = {};
         this.newCellers = [];
-        this.optionDocument = {};
+        this.optionDocumentOrigin = {};
+        this.optionDocumentDestiny = {};
         this.observation = null;
         this.observations = null;
         this.date = null;
@@ -337,38 +376,6 @@ export class StoreTm1Component implements OnInit {
 
   generateReceipt() {
 
-    this.pdfDialog = true;
-    // const receiptItems: GenerateReceiptItem[] = [];
-
-    // this.newCellers.forEach(celler => {
-    //   receiptItems.push({
-    //     productType: celler.material.typeMaterial.name,
-    //     productName: celler.material.name,
-    //     lot: celler.lote,
-    //     units: celler.amount,
-    //     bags1KG: celler.balance,
-    //     bags25KG: celler.coat,
-    //     pallets55: celler.pallets,
-    //     totalWeight: celler.weight,
-    //     location: celler.location.description
-    //   });
-    // });
-
-    // const receipt: GenerateReceipt = {
-    //   receiptNumber: this.newCellers[0].numberDocument,
-    //   receiptDate: this.newCellers[0].date,
-    //   reason: this.optionDocument.name,
-    //   reasonObservation: this.observation.toUpperCase(),
-    //   observations: this.observations.toUpperCase(),
-    //   deliveredBy: this.authService.getLoggedUser().name,
-    //   receivedBy: null,
-    //   items: receiptItems
-    // };
-    // this.cellerService.generateReceipt(DocumentEnum.TM1, receipt).subscribe(
-    //   (data) => {
-    //     console.log(data);
-    //   }
-    // );
 
   }
 
