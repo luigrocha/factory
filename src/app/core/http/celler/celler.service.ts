@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { Celler, CodeDocument, Document, GenerateReceipt, Location, OptionDocument } from 'src/app/types/celler.types';
 import { environment } from 'src/environments/environment';
 import { getFileFromResponse } from 'src/app/core/utils/http-extract-file';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +67,18 @@ export class CellerService {
     }).pipe(
       map(response => getFileFromResponse(response))
     );
+  }
+
+  generateReceiptPreview(documentId: number, body: GenerateReceipt) {
+    let params = new HttpParams().set('documentId', documentId);
+
+    const url = this.URL_CELLER + '/generate-receipt';
+
+    return this.http.post(url, body, {
+      params: params,
+      responseType: 'blob',
+      observe: 'response'
+    });
   }
 
 }

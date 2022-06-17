@@ -3,15 +3,31 @@
     <p-toast></p-toast>
 
     <div class="card">
-      <h5 class="m-0 mb-5">Comprobante Ingreso de Materiales {{numDocument.numDocument}}</h5>
+      <h5 class="m-0 mb-5">Traslado de Materiales Ingreso {{numDocument.numDocument}}</h5>
       <div class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center mb-5">
+
         <div class="field col-3 flex flex-column">
-          <label for="option">Motivo</label>
-          <p-dropdown id="option" [options]="optionDocuments" [(ngModel)]="optionDocument"
-            placeholder="Selecciona motivo" [style]="{'width':'100%'}" [disabled]="enableButtons">
+          <label for="createdAt">Fecha Creación</label>
+          <p-calendar [showIcon]="true" inputId="createdAt" [(ngModel)]="createdAt" dateFormat="dd-mm-yy"
+            [style]="{'width':'100%'}" disabled="true">
+          </p-calendar>
+        </div>
+
+        <div class="field col-3 flex flex-column">
+          <label for="date">Fecha Documento</label>
+          <p-calendar [showIcon]="true" inputId="date" [(ngModel)]="date" dateFormat="dd-mm-yy"
+            [style]="{'width':'100%'}" [disabled]="enableButtons">
+          </p-calendar>
+        </div>
+
+        <div class="field col-3 flex flex-column">
+          <label for="origin">Origen</label>
+          <p-dropdown id="origin" [options]="optionDocuments" [(ngModel)]="optionDocumentOrigin"
+            placeholder="Selecciona origen" [style]="{'width':'100%'}" (onChange)='onOptionOriginSelected($event)'
+            [disabled]="enableButtons">
             <ng-template pTemplate="selectedItem">
-              <div *ngIf="optionDocument.name">
-                {{ optionDocument.name }}
+              <div *ngIf="optionDocumentOrigin.name">
+                {{ optionDocumentOrigin.name }}
               </div>
             </ng-template>
             <ng-template let-option pTemplate="item">
@@ -20,29 +36,25 @@
           </p-dropdown>
         </div>
 
-        <div class="field col-3 flex flex-column" *ngIf="optionDocument">
-          <label for="coat">Observación</label>
-          <input type="text" pInputText id="observation" [(ngModel)]="observation" [disabled]="enableButtons" />
+        <div class="field col-3 flex flex-column">
+          <label for="destiny">Destino</label>
+          <p-dropdown id="destiny" [options]="optionDocumentsDestiny" [(ngModel)]="optionDocumentDestiny"
+            placeholder="Selecciona destino" [style]="{'width':'100%'}" [disabled]="enableButtons">
+            <ng-template pTemplate="selectedItem">
+              <div *ngIf="optionDocumentDestiny.name">
+                {{ optionDocumentDestiny.name }}
+              </div>
+            </ng-template>
+            <ng-template let-option pTemplate="item">
+              {{ option.name }}
+            </ng-template>
+          </p-dropdown>
         </div>
 
-        <div class="field col-3 flex flex-column" *ngIf="optionDocument">
-          <label for="createdAt">Fecha Creación</label>
-          <p-calendar [showIcon]="true" inputId="createdAt" [(ngModel)]="createdAt" dateFormat="dd-mm-yy"
-            [style]="{'width':'100%'}" disabled="true">
-          </p-calendar>
-        </div>
+        <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="w-full flex-grow-1" (click)="openNew()"
+          *ngIf="date && optionDocumentOrigin && optionDocumentDestiny" [disabled]="enableButtons"></button>
 
-        <div class="field col-3 flex flex-column" *ngIf="optionDocument">
-          <label for="date">Fecha Documento</label>
-          <p-calendar [showIcon]="true" inputId="date" [(ngModel)]="date" dateFormat="dd-mm-yy"
-            [style]="{'width':'100%'}" [disabled]="enableButtons">
-          </p-calendar>
-        </div>
-
-        <button pButton pRipple label="Añadir Item" icon="pi pi-plus" class="flex-grow-1" (click)="openNew()"
-          *ngIf="observation && date" [disabled]="enableButtons"></button>
-
-        <div *ngIf="!optionDocument">
+        <div *ngIf="!optionDocumentDestiny">
           <p-messages [value]="msgInfo"></p-messages>
         </div>
       </div>
@@ -147,7 +159,7 @@
     </div>
 
 
-    <p-dialog [(visible)]="itemDialog" [style]="{ width: '70%' , height: '95vh'}" header="Nuevo Item CIB" [modal]="true"
+    <p-dialog [(visible)]="itemDialog" [style]="{ width: '70%' , height: '95vh'}" header="Nuevo Item TM1" [modal]="true"
       styleClass="p-fluid">
       <ng-template pTemplate="content">
         <div class="field">

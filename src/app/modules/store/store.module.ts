@@ -27,6 +27,10 @@ import { SliderModule } from 'primeng/slider';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { StoreCibComponent } from './pages/store-cib/store-cib.component';
+import { StoreMovComponent } from './pages/store-mov/store-mov.component';
+import { StoreCepComponent } from './pages/store-cep/store-cep.component';
+import { StoreTm1Component } from './pages/store-tm1/store-tm1.component';
+import { StoreTm5Component } from './pages/store-tm5/store-tm5.component';
 
 registerLocaleData(localeEs, 'es');
 
@@ -59,6 +63,10 @@ registerLocaleData(localeEs, 'es');
     StoreCreateComponent,
     StoreCebComponent,
     StoreCibComponent,
+    StoreMovComponent,
+    StoreCepComponent,
+    StoreTm1Component,
+    StoreTm5Component
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'es' }]
 })

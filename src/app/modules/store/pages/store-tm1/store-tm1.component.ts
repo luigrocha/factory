@@ -5,14 +5,14 @@ import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS 
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, DocumentEnum, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 @Component({
-  selector: 'app-store-ceb',
-  templateUrl: './store-ceb.component.html',
-  styleUrls: ['./store-ceb.component.scss'],
+  selector: 'app-store-tm1',
+  templateUrl: './store-tm1.component.html',
+  styleUrls: ['./store-tm1.component.scss'],
   styles: [
     `
         :host ::ng-deep .p-dialog .product-image {
@@ -44,11 +44,9 @@ import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
   ],
   providers: [MessageService, ConfirmationService],
 })
-export class StoreCebComponent implements OnInit {
+export class StoreTm1Component implements OnInit {
 
   cellers: Celler[];
-
-  celler: Celler;
 
   itemDialog: boolean;
 
@@ -66,7 +64,11 @@ export class StoreCebComponent implements OnInit {
 
   optionDocuments: OptionDocument[];
 
-  optionDocument: OptionDocument;
+  optionDocumentOrigin: OptionDocument;
+
+  optionDocumentsDestiny: OptionDocument[];
+
+  optionDocumentDestiny: OptionDocument;
 
   observation: string;
 
@@ -94,7 +96,7 @@ export class StoreCebComponent implements OnInit {
 
   msgInfo: any = [{
     severity: 'info',
-    summary: 'Selecciona un motivo y llena la observación para ingresar items'
+    summary: 'Llena fecha, origen y destino para ingresar items'
   }];
 
   numberCoat = DEFAULT_COAT;
@@ -126,7 +128,7 @@ export class StoreCebComponent implements OnInit {
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
-      { label: 'CEB', routerLink: ['bodega/CEB'] },
+      { label: 'TM1', routerLink: ['bodega/TM1'] },
     ]);
     this.items = [
       {
@@ -144,8 +146,9 @@ export class StoreCebComponent implements OnInit {
 
   ngOnInit() {
     this.getAllTypeMaterial();
-    this.getAllOptionsByDocumentCode(DocumentEnum.CEB);
-    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
+    this.getAllOptionsByDocumentCode(DocumentEnum.TM1);
+    this.getNewCodeDocumentByDocumentCode(DocumentEnum.TM1);
+    this.getAllLocation();
   }
 
   openNew() {
@@ -168,8 +171,7 @@ export class StoreCebComponent implements OnInit {
     this.getAllMaterialByType(this.typeMaterial.id);
     this.getCellerByMaterialCode(this.material.id);
     setTimeout(() => {
-      this.celler = this.lotes.find(cell => cell.lote === this.newCeller.lote);
-      this.calculateWeightAvailable(this.newCeller.lote);
+      this.calculateWeightAvailable(this.newCeller.lote, this.location);
     }, 1000);
     this.isEditing = true;
     this.itemDialog = true;
@@ -180,23 +182,22 @@ export class StoreCebComponent implements OnInit {
     this.hideDialog();
   }
 
-  //unidades -> lamina, producto terminado y respuestos
-
   saveItem() {
     this.submitted = true;
     if (this.isEditing) {
       this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
       this.isEditing = false;
     } else if (this.isValidToSave()) {
+      this.newCeller.lote = this.newCeller.lote.toUpperCase();
       this.newCeller.numberDocument = this.numDocument.numDocument;
       this.newCeller.observation = this.observation;
       this.newCeller.material = this.material;
       this.newCeller.location = this.location;
-      this.newCeller.document = { id: DocumentEnum.CEB };
+      this.newCeller.document = { id: DocumentEnum.TM1 };
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
       this.newCellers.push(this.newCeller);
-
+      this.weightTotal += this.newCeller.weight;
     } else {
       this.messageService.add({
         severity: 'warn',
@@ -218,7 +219,6 @@ export class StoreCebComponent implements OnInit {
     this.newCeller = {};
     this.typeMaterial = null;
     this.material = null;
-    this.celler = null;
     this.location = null;
     this.weightTotal = 0;
   }
@@ -244,27 +244,20 @@ export class StoreCebComponent implements OnInit {
     this.getCellerByMaterialCode(product.id);
   }
 
-  onLoteSelected(e: any) {
-    const lote = e.value;
-    this.newCeller.lote = lote.lote;
-    this.calculateWeightAvailable(this.newCeller.lote);
-
-    this.location = this.celler.location;
-    this.locations = [];
-    const locationsFilter: Celler[] = this.deleteCellerDuplicateByLocation(this.cellers, this.newCeller.lote);
-    locationsFilter.forEach(loc => { this.locations.push(loc.location); });
-  }
-
   onLocationSelected(e: any) {
     const loc = e.value;
-    this.newCeller.lote = this.cellers.find(celler => celler.location.id === loc.id).lote;
-    this.calculateWeightAvailable(this.newCeller.lote);
+    this.location = loc;
+    this.calculateWeightAvailable(this.newCeller.lote, loc);
   }
 
-  calculateWeightAvailable(lote: string) {
+  onOptionOriginSelected(e: any) {
+    this.getAllOptionsByDocumentCode(DocumentEnum.TM1);
+  }
+
+  calculateWeightAvailable(lote: string, loc: Location) {
     this.weightTotal = 0;
     this.cellers.forEach(celler => {
-      if (celler.lote === lote) {
+      if (celler.lote === lote && celler.location.location === loc.location) {
         this.weightTotal += celler.weight;
       }
     });
@@ -275,15 +268,6 @@ export class StoreCebComponent implements OnInit {
     const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * this.numberCoat;
     const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * this.numberCoat * this.numberPallet;
     this.newCeller.weight = balance + coat + pallets;
-
-    if (this.newCeller.weight < (this.weightTotal * -1)) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'No se dispone la cantidad seleccionada',
-        life: 3000,
-      });
-    }
   }
 
   getAllTypeMaterial() {
@@ -304,9 +288,14 @@ export class StoreCebComponent implements OnInit {
   }
 
   getAllOptionsByDocumentCode(id: number) {
+    this.optionDocumentsDestiny = [];
     this.cellerService.getAllOptionsByDocumentCode(id).subscribe(
       (optionDocument) => {
-        this.optionDocuments = optionDocument;
+        if (this.optionDocumentOrigin) {
+          this.optionDocumentsDestiny = optionDocument.filter(option => this.optionDocumentOrigin.id !== option.id);
+        } else {
+          this.optionDocuments = optionDocument;
+        }
       }
     );
   }
@@ -316,12 +305,9 @@ export class StoreCebComponent implements OnInit {
     this.cellerService.getCellerByMaterialCode(id).subscribe(
       (cellers => {
         this.cellers = cellers;
-        const lotes = this.deleteCellerDuplicateByLote(cellers);
-        this.lotes = lotes.filter((lote: Celler) => lote.weight > 0);
-
+        this.lotes = this.deleteCellerDuplicateByLote(cellers);
       }),
       (err) => {
-        this.celler = null;
         this.cellers = [];
         this.lotes = [];
       }
@@ -336,17 +322,17 @@ export class StoreCebComponent implements OnInit {
     );
   }
 
+  getAllLocation() {
+    this.cellerService.getAllLocation().subscribe(
+      (locations => {
+        this.locations = locations;
+      })
+    );
+  }
+
   deleteCellerDuplicateByLote(cellers: any) {
     const cellersMap = cellers.map(celler => {
       return [celler.lote, celler];
-    });
-    return [...new Map(cellersMap).values()];
-  }
-
-  deleteCellerDuplicateByLocation(cellers: any, lote: string) {
-    const cellerByLote = cellers.filter(celler => celler.lote === lote);
-    const cellersMap = cellerByLote.map(celler => {
-      return [celler.location.id, celler];
     });
     return [...new Map(cellersMap).values()];
   }
@@ -355,7 +341,7 @@ export class StoreCebComponent implements OnInit {
     return this.newCeller.lote ? true : false;
   }
 
-  saveCeb() {
+  saveCib() {
     this.cellerService.create(this.newCellers).subscribe(
       (data) => {
         this.messageService.add({
@@ -367,11 +353,12 @@ export class StoreCebComponent implements OnInit {
         this.generateReceipt();
         this.newCeller = {};
         this.newCellers = [];
-        this.optionDocument = {};
+        this.optionDocumentOrigin = {};
+        this.optionDocumentDestiny = {};
         this.observation = null;
         this.observations = null;
         this.date = null;
-        this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
+        this.getNewCodeDocumentByDocumentCode(DocumentEnum.TM1);
         this.hideDialog();
 
       },
@@ -388,44 +375,7 @@ export class StoreCebComponent implements OnInit {
   }
 
   generateReceipt() {
-    const receiptItems: GenerateReceiptItem[] = [];
 
-    this.newCellers.forEach(celler => {
-      receiptItems.push({
-        productType: celler.material.typeMaterial.name,
-        productName: celler.material.name,
-        lot: celler.lote,
-        units: celler.amount,
-        bags1KG: celler.balance,
-        bags25KG: celler.coat,
-        pallets55: celler.pallets,
-        totalWeight: celler.weight,
-        location: celler.location.description
-      });
-    });
-
-    const receipt: GenerateReceipt = {
-      receiptNumber: this.newCellers[0].numberDocument,
-      receiptDate: this.newCellers[0].date,
-      reason: this.optionDocument.name,
-      reasonObservation: this.observation.toUpperCase(),
-      observations: this.observations.toUpperCase(),
-      deliveredBy: this.authService.getLoggedUser().name,
-      receivedBy: null,
-      items: receiptItems
-    };
-
-    this.cellerService.generateReceiptPreview(DocumentEnum.CEB, receipt).subscribe(
-      (data => {
-        const type = data.body.type;
-        this.fileName = data.headers.get('content-disposition').split('filename=')[1];
-        this.srcPdf = URL.createObjectURL(
-          new Blob([data.body], { type })
-        );
-        this.pdfDialog = true;
-        this.enableButtons = true;
-      })
-    );
 
   }
 

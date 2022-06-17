@@ -10,9 +10,9 @@ import { Material, TypeMaterial } from 'src/app/types/material.types';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 @Component({
-  selector: 'app-store-ceb',
-  templateUrl: './store-ceb.component.html',
-  styleUrls: ['./store-ceb.component.scss'],
+  selector: 'app-store-cep',
+  templateUrl: './store-cep.component.html',
+  styleUrls: ['./store-cep.component.scss'],
   styles: [
     `
         :host ::ng-deep .p-dialog .product-image {
@@ -44,7 +44,7 @@ import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
   ],
   providers: [MessageService, ConfirmationService],
 })
-export class StoreCebComponent implements OnInit {
+export class StoreCepComponent implements OnInit {
 
   cellers: Celler[];
 
@@ -84,8 +84,6 @@ export class StoreCebComponent implements OnInit {
 
   date: Date;
 
-  observations: string;
-
   locations: Location[];
 
   location: Location;
@@ -104,6 +102,8 @@ export class StoreCebComponent implements OnInit {
   itemsCoat = DEFAULT_TYPE_COAT;
 
   itemsPallets = DEFAULT_TYPE_PALLETS;
+
+  lote: string;
 
   srcPdf: any;
 
@@ -126,8 +126,15 @@ export class StoreCebComponent implements OnInit {
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
-      { label: 'CEB', routerLink: ['bodega/CEB'] },
+      { label: 'CEP', routerLink: ['bodega/CEP'] },
     ]);
+  }
+
+  ngOnInit() {
+    this.getAllTypeMaterial();
+    this.getAllOptionsByDocumentCode(DocumentEnum.CEP);
+    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEP);
+    this.getAllLocation();
     this.items = [
       {
         label: 'Editar',
@@ -140,12 +147,6 @@ export class StoreCebComponent implements OnInit {
         command: (e) => this.deleteItem(this.cellerSelect)
       }
     ];
-  }
-
-  ngOnInit() {
-    this.getAllTypeMaterial();
-    this.getAllOptionsByDocumentCode(DocumentEnum.CEB);
-    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
   }
 
   openNew() {
@@ -180,8 +181,6 @@ export class StoreCebComponent implements OnInit {
     this.hideDialog();
   }
 
-  //unidades -> lamina, producto terminado y respuestos
-
   saveItem() {
     this.submitted = true;
     if (this.isEditing) {
@@ -192,11 +191,10 @@ export class StoreCebComponent implements OnInit {
       this.newCeller.observation = this.observation;
       this.newCeller.material = this.material;
       this.newCeller.location = this.location;
-      this.newCeller.document = { id: DocumentEnum.CEB };
+      this.newCeller.document = { id: DocumentEnum.CEP };
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
       this.newCellers.push(this.newCeller);
-
     } else {
       this.messageService.add({
         severity: 'warn',
@@ -257,6 +255,7 @@ export class StoreCebComponent implements OnInit {
 
   onLocationSelected(e: any) {
     const loc = e.value;
+    this.newCeller.location = loc;
     this.newCeller.lote = this.cellers.find(celler => celler.location.id === loc.id).lote;
     this.calculateWeightAvailable(this.newCeller.lote);
   }
@@ -276,7 +275,7 @@ export class StoreCebComponent implements OnInit {
     const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * this.numberCoat * this.numberPallet;
     this.newCeller.weight = balance + coat + pallets;
 
-    if (this.newCeller.weight < (this.weightTotal * -1)) {
+    if (this.newCeller.weight > this.weightTotal) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Atención',
@@ -336,6 +335,14 @@ export class StoreCebComponent implements OnInit {
     );
   }
 
+  getAllLocation() {
+    this.cellerService.getAllLocation().subscribe(
+      (locations => {
+        this.locations = locations;
+      })
+    );
+  }
+
   deleteCellerDuplicateByLote(cellers: any) {
     const cellersMap = cellers.map(celler => {
       return [celler.lote, celler];
@@ -369,9 +376,8 @@ export class StoreCebComponent implements OnInit {
         this.newCellers = [];
         this.optionDocument = {};
         this.observation = null;
-        this.observations = null;
         this.date = null;
-        this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
+        this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEP);
         this.hideDialog();
 
       },
@@ -407,15 +413,15 @@ export class StoreCebComponent implements OnInit {
     const receipt: GenerateReceipt = {
       receiptNumber: this.newCellers[0].numberDocument,
       receiptDate: this.newCellers[0].date,
-      reason: this.optionDocument.name,
+      // reason: this.optionDocument.name,
       reasonObservation: this.observation.toUpperCase(),
-      observations: this.observations.toUpperCase(),
+      // observations: this.observations.toUpperCase(),
       deliveredBy: this.authService.getLoggedUser().name,
       receivedBy: null,
       items: receiptItems
     };
 
-    this.cellerService.generateReceiptPreview(DocumentEnum.CEB, receipt).subscribe(
+    this.cellerService.generateReceiptPreview(DocumentEnum.CEP, receipt).subscribe(
       (data => {
         const type = data.body.type;
         this.fileName = data.headers.get('content-disposition').split('filename=')[1];

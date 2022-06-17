@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
+import { AuthService } from 'src/app/core/auth/service/auth.service';
 
 @Component({
-  selector: 'app-store-ceb',
-  templateUrl: './store-ceb.component.html',
-  styleUrls: ['./store-ceb.component.scss'],
+  selector: 'app-store-mov',
+  templateUrl: './store-mov.component.html',
+  styleUrls: ['./store-mov.component.scss'],
   styles: [
     `
         :host ::ng-deep .p-dialog .product-image {
@@ -44,11 +44,19 @@ import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
   ],
   providers: [MessageService, ConfirmationService],
 })
-export class StoreCebComponent implements OnInit {
+export class StoreMovComponent implements OnInit {
 
-  cellers: Celler[];
+  numDocument: CodeDocument;
 
-  celler: Celler;
+  createdAt: Date = new Date();
+
+  date: Date;
+
+  observations: string;
+
+  newCeller: Celler;
+
+  newCellers: Celler[] = [];
 
   itemDialog: boolean;
 
@@ -62,40 +70,21 @@ export class StoreCebComponent implements OnInit {
 
   material: Material;
 
+  cellers: Celler[];
+
+  celler: Celler;
+
   lotes: Celler[];
 
-  optionDocuments: OptionDocument[];
+  locationsOrigin: Location[];
 
-  optionDocument: OptionDocument;
+  locationOrigin: Location;
 
-  observation: string;
+  locationsDestiny: Location[];
+
+  locationDestiny: Location;
 
   weightTotal: number;
-
-  newCeller: Celler;
-
-  newCellers: Celler[] = [];
-
-  numDocument: CodeDocument;
-
-  isEditing: boolean;
-
-  createdAt: Date = new Date();
-
-  date: Date;
-
-  observations: string;
-
-  locations: Location[];
-
-  location: Location;
-
-  pdfDialog: boolean;
-
-  msgInfo: any = [{
-    severity: 'info',
-    summary: 'Selecciona un motivo y llena la observación para ingresar items'
-  }];
 
   numberCoat = DEFAULT_COAT;
 
@@ -104,6 +93,8 @@ export class StoreCebComponent implements OnInit {
   itemsCoat = DEFAULT_TYPE_COAT;
 
   itemsPallets = DEFAULT_TYPE_PALLETS;
+
+  isEditing: boolean;
 
   srcPdf: any;
 
@@ -115,19 +106,32 @@ export class StoreCebComponent implements OnInit {
 
   cellerSelect: Celler;
 
+  pdfDialog: boolean;
+
+  msgInfo: any = [{
+    severity: 'info',
+    summary: 'Selecciona la fecha del docuemento para ingresar items'
+  }];
+
   constructor(
     private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
-    private materialService: MaterialService,
     private cellerService: CellerService,
+    private materialService: MaterialService,
     private authService: AuthService,
   ) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
-      { label: 'CEB', routerLink: ['bodega/CEB'] },
+      { label: 'MOV', routerLink: ['bodega/MOV'] },
     ]);
+  }
+
+  ngOnInit() {
+    this.getNewCodeDocumentByDocumentCode(DocumentEnum.MOV);
+    this.getAllTypeMaterial();
+    this.getAllLocation();
     this.items = [
       {
         label: 'Editar',
@@ -142,12 +146,6 @@ export class StoreCebComponent implements OnInit {
     ];
   }
 
-  ngOnInit() {
-    this.getAllTypeMaterial();
-    this.getAllOptionsByDocumentCode(DocumentEnum.CEB);
-    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
-  }
-
   openNew() {
     this.newCeller = {
       amount: 0,
@@ -160,43 +158,24 @@ export class StoreCebComponent implements OnInit {
     this.itemDialog = true;
   }
 
-  editItem(celler: Celler) {
-    this.newCeller = { ...celler };
-    this.material = this.newCeller.material;
-    this.typeMaterial = this.newCeller.material.typeMaterial;
-    this.location = this.newCeller.location;
-    this.getAllMaterialByType(this.typeMaterial.id);
-    this.getCellerByMaterialCode(this.material.id);
-    setTimeout(() => {
-      this.celler = this.lotes.find(cell => cell.lote === this.newCeller.lote);
-      this.calculateWeightAvailable(this.newCeller.lote);
-    }, 1000);
-    this.isEditing = true;
-    this.itemDialog = true;
-  }
-
-  deleteItem(celler: Celler) {
-    this.newCellers = this.newCellers.filter(val => val.material !== celler.material);
-    this.hideDialog();
-  }
-
-  //unidades -> lamina, producto terminado y respuestos
-
   saveItem() {
     this.submitted = true;
     if (this.isEditing) {
-      this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
+      const index = this.findIndexByMaterial(this.newCeller.material);
+      this.newCellers[index] = this.newCeller;
+      this.editCellerMov(index);
+
       this.isEditing = false;
     } else if (this.isValidToSave()) {
       this.newCeller.numberDocument = this.numDocument.numDocument;
-      this.newCeller.observation = this.observation;
+      this.newCeller.observation = this.observations;
       this.newCeller.material = this.material;
-      this.newCeller.location = this.location;
-      this.newCeller.document = { id: DocumentEnum.CEB };
+      this.newCeller.document = { id: DocumentEnum.MOV };
       this.newCeller.date = this.date;
       this.newCeller.createdAt = this.createdAt;
+      this.newCeller.location = this.locationOrigin;
       this.newCellers.push(this.newCeller);
-
+      this.createCellers();
     } else {
       this.messageService.add({
         severity: 'warn',
@@ -212,14 +191,64 @@ export class StoreCebComponent implements OnInit {
     this.hideDialog();
   }
 
+  editItem(celler: Celler) {
+    this.newCeller = { ...celler };
+    this.material = this.newCeller.material;
+    this.typeMaterial = this.newCeller.material.typeMaterial;
+    this.locationOrigin = this.newCeller.location;
+    this.newCeller.location = this.locationOrigin;
+
+    const destiny = this.newCellers.findIndex(cell => cell === celler);
+    this.locationDestiny = this.newCellers[destiny + 1].location;
+
+    this.getAllMaterialByType(this.typeMaterial.id);
+    this.getCellerByMaterialCode(this.material.id);
+    setTimeout(() => {
+      this.celler = this.lotes.find(cell => cell.lote === this.newCeller.lote);
+      this.calculateWeightAvailable(this.newCeller.lote);
+    }, 1000);
+    this.isEditing = true;
+    this.itemDialog = true;
+  }
+
+  deleteItem(celler: Celler) {
+    const destiny = this.newCellers.findIndex(cell => cell === celler);
+    const celler2 = this.newCellers[destiny + 1];
+
+    this.newCellers = this.newCellers.filter(val => val.material !== celler.material);
+    this.newCellers = this.newCellers.filter(cell => cell !== celler2);
+
+    this.hideDialog();
+  }
+
+  createCellers() {
+    this.newCellers.push({
+      ...this.newCeller,
+      balance: this.newCeller.balance * -1,
+      coat: this.newCeller.coat * -1,
+      pallets: this.newCeller.pallets * -1,
+      weight: this.newCeller.weight * -1,
+      location: this.locationDestiny
+    });
+  }
+
+  editCellerMov(index: number) {
+    this.newCellers[index + 1].location = this.locationDestiny;
+    this.newCellers[index + 1].balance = this.newCeller.balance * -1;
+    this.newCellers[index + 1].coat = this.newCeller.coat * -1;
+    this.newCellers[index + 1].pallets = this.newCeller.pallets * -1;
+    this.newCellers[index + 1].weight = this.newCeller.weight * -1;
+  }
+
   hideDialog() {
     this.submitted = false;
     this.itemDialog = false;
-    this.newCeller = {};
+    this.newCeller = null;
     this.typeMaterial = null;
     this.material = null;
     this.celler = null;
-    this.location = null;
+    this.locationOrigin = null;
+    this.locationDestiny = null;
     this.weightTotal = 0;
   }
 
@@ -232,6 +261,10 @@ export class StoreCebComponent implements OnInit {
       }
     }
     return index;
+  }
+
+  getIndexPar(index: number): boolean {
+    return index % 2 === 0 ? true : false;
   }
 
   onTypeSelected(e: any) {
@@ -249,16 +282,19 @@ export class StoreCebComponent implements OnInit {
     this.newCeller.lote = lote.lote;
     this.calculateWeightAvailable(this.newCeller.lote);
 
-    this.location = this.celler.location;
-    this.locations = [];
+    this.locationOrigin = this.celler.location;
+    this.locationsOrigin = [];
     const locationsFilter: Celler[] = this.deleteCellerDuplicateByLocation(this.cellers, this.newCeller.lote);
-    locationsFilter.forEach(loc => { this.locations.push(loc.location); });
+    locationsFilter.forEach(loc => { this.locationsOrigin.push(loc.location); });
+    this.getAllLocation();
   }
 
   onLocationSelected(e: any) {
     const loc = e.value;
+    this.locationOrigin = loc;
     this.newCeller.lote = this.cellers.find(celler => celler.location.id === loc.id).lote;
     this.calculateWeightAvailable(this.newCeller.lote);
+    this.getAllLocation();
   }
 
   calculateWeightAvailable(lote: string) {
@@ -286,6 +322,21 @@ export class StoreCebComponent implements OnInit {
     }
   }
 
+  getNewCodeDocumentByDocumentCode(id: number) {
+    this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
+      (numDocument => {
+        this.numDocument = numDocument;
+      }),
+      (err) => {
+        this.numDocument = {
+          document: 'MOV',
+          number: 1,
+          numDocument: 'MOV-1'
+        };
+      }
+    );
+  }
+
   getAllTypeMaterial() {
     this.materialService.getAllTypeMaterial().subscribe(
       (typeMaterials => {
@@ -300,14 +351,6 @@ export class StoreCebComponent implements OnInit {
       (materials => {
         this.materials = materials;
       })
-    );
-  }
-
-  getAllOptionsByDocumentCode(id: number) {
-    this.cellerService.getAllOptionsByDocumentCode(id).subscribe(
-      (optionDocument) => {
-        this.optionDocuments = optionDocument;
-      }
     );
   }
 
@@ -328,10 +371,12 @@ export class StoreCebComponent implements OnInit {
     );
   }
 
-  getNewCodeDocumentByDocumentCode(id: number) {
-    this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
-      (numDocument => {
-        this.numDocument = numDocument;
+  getAllLocation() {
+    this.locationsDestiny = [];
+    this.cellerService.getAllLocation().subscribe(
+      (locations => {
+        // this.locationsDestiny = locations;
+        this.locationsDestiny = locations.filter(location => this.locationOrigin.id !== location.id);
       })
     );
   }
@@ -355,38 +400,6 @@ export class StoreCebComponent implements OnInit {
     return this.newCeller.lote ? true : false;
   }
 
-  saveCeb() {
-    this.cellerService.create(this.newCellers).subscribe(
-      (data) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: this.numDocument + ' Creado',
-          life: 3000,
-        });
-        this.generateReceipt();
-        this.newCeller = {};
-        this.newCellers = [];
-        this.optionDocument = {};
-        this.observation = null;
-        this.observations = null;
-        this.date = null;
-        this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
-        this.hideDialog();
-
-      },
-      (err) => {
-        console.log(err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err.error,
-          life: 3000,
-        });
-      }
-    );
-  }
-
   generateReceipt() {
     const receiptItems: GenerateReceiptItem[] = [];
 
@@ -407,15 +420,15 @@ export class StoreCebComponent implements OnInit {
     const receipt: GenerateReceipt = {
       receiptNumber: this.newCellers[0].numberDocument,
       receiptDate: this.newCellers[0].date,
-      reason: this.optionDocument.name,
-      reasonObservation: this.observation.toUpperCase(),
+      // reason: this.optionDocument.name,
+      reasonObservation: this.observations.toUpperCase(),
       observations: this.observations.toUpperCase(),
       deliveredBy: this.authService.getLoggedUser().name,
       receivedBy: null,
       items: receiptItems
     };
 
-    this.cellerService.generateReceiptPreview(DocumentEnum.CEB, receipt).subscribe(
+    this.cellerService.generateReceiptPreview(DocumentEnum.MOV, receipt).subscribe(
       (data => {
         const type = data.body.type;
         this.fileName = data.headers.get('content-disposition').split('filename=')[1];
