@@ -1,21 +1,18 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Die } from 'src/app/types/dies.types';
 import { DieService } from 'src/app/core/http/dies/die.service';
-import { TableColumn } from 'src/app/types/table.types';
 import { Table } from 'primeng/table';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { debounceTime } from 'rxjs/operators';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { TypePermission } from 'src/app/types/permission';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
-import { DieProduct } from "../../../../types/die-product.types";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { Status } from "../../../../types/catalogs.types";
-import { DIE_PRODUCT_STATUS_TYPE, DIE_STATUS_TYPE } from "../../../../core/constants/status-types";
-import { StatusService } from "../../../../core/http/catalogs/status/status.service";
-import { ToastService } from "../../../../core/services/toast.service";
-import { Router } from "@angular/router";
+import { Status } from 'src/app/types/catalogs.types';
+import { StatusService } from 'src/app/core/http/catalogs/status/status.service';
+import { Router } from '@angular/router';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { DIE_STATUS_TYPE } from 'src/app/core/constants/status-types';
 
 @Component({
   selector: 'app-dies-list',
@@ -58,8 +55,8 @@ export class DiesListComponent implements OnInit {
     private confirmationService: ConfirmationService
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Troqueles', routerLink: ['/home/troqueles'] }
+      {label: 'Diseño'},
+      {label: 'Troqueles', routerLink: ['/home/troqueles']}
     ]);
   }
 

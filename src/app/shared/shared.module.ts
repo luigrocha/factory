@@ -5,13 +5,19 @@ import { StatusHighlightDirective } from './directives/status-highlight/status-h
 import { InputUppercaseDirective } from 'src/app/shared/directives/input-uppercase/input-uppercase.directive';
 import { UserAvatarComponent } from './components/user-avatar/user-avatar.component';
 import { AvatarModule } from 'primeng/avatar';
+import { DocumentViewerComponent } from './components/document-viewer/document-viewer.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { SafePipe } from './pipes/safe.pipe';
 
 @NgModule({
   declarations: [
     LoadingComponent,
     StatusHighlightDirective,
     InputUppercaseDirective,
-    UserAvatarComponent
+    UserAvatarComponent,
+    DocumentViewerComponent,
+    SafePipe
   ],
   exports: [
     LoadingComponent,
@@ -21,7 +27,9 @@ import { AvatarModule } from 'primeng/avatar';
   ],
   imports: [
     CommonModule,
-    AvatarModule
+    AvatarModule,
+    NgxExtendedPdfViewerModule,
+    PdfViewerModule
   ]
 })
 export class SharedModule { }

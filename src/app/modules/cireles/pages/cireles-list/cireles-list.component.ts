@@ -9,6 +9,10 @@ import { debounceTime } from 'rxjs/operators';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { TypePermission } from 'src/app/types/permission';
+import { Router } from '@angular/router';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { AddClientComponent } from 'src/app/modules/clients/components/add-client/add-client.component';
+import { DocumentViewerComponent } from 'src/app/shared/components/document-viewer/document-viewer.component';
 
 @Component({
   selector: 'app-cireles-list',
@@ -29,10 +33,12 @@ export class CirelesListComponent implements OnInit {
   query: string = null;
   menuItems: MenuItem[];
   selectedCirel: Cirel;
+  documentDialogRef: DynamicDialogRef;
 
   subHeaders: TableHeader<CirelColor>[] = [
     { label: 'Tipo', property: 'colorType' },
-    { label: 'Color', property: 'color' }
+    { label: 'Color', property: 'color' },
+    { label: 'Observación', property: 'observation' }
   ];
 
   @ViewChild('dt') table: Table;
@@ -45,6 +51,8 @@ export class CirelesListComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private cirelService: CirelService,
     private permissionService: PermissionService,
+    private router: Router,
+    public dialogService: DialogService
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -61,7 +69,7 @@ export class CirelesListComponent implements OnInit {
       { field: 'printer', header: 'Impresora' },
       { field: 'description', header: 'Descripción' },
       { field: 'cyrelColors', header: 'Colores' },
-      { field: 'die', header: 'Troquel' },
+      { field: 'dies', header: 'Troquel' },
       { field: 'observation', header: 'Observaciones' },
     ];
   }
@@ -112,7 +120,7 @@ export class CirelesListComponent implements OnInit {
   }
 
   addNewCyrel(): void {
-
+    this.router.navigate(['/home/cireles/crear']);
   }
 
   deleteCirel(): void {
@@ -136,4 +144,30 @@ export class CirelesListComponent implements OnInit {
     return false;
   }
 
+  getUploadMenuItems(): MenuItem[] {
+    return [
+      ...this.menuItems,
+      {
+        label: 'Subir documento',
+        icon: 'pi pi-upload',
+        command: () => this.uploadDocument()
+      }
+    ];
+  }
+
+  private uploadDocument() {
+  }
+
+  showDocument(cyrel: Cirel): void {
+    this.documentDialogRef = this.dialogService.open(DocumentViewerComponent, {
+      header: cyrel.print,
+      data: {
+        fileName: cyrel.print,
+        srcPdf: cyrel.documentUrl
+      },
+      height: '90%',
+      width: '90%',
+      contentStyle: {'max-width': '100%', 'overflow': 'hidden'},
+    });
+  }
 }
