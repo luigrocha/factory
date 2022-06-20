@@ -5,7 +5,9 @@ import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.DieProduct;
 import org.crsoft.cartonplast.design.vo.req.DieProductReq;
 import org.crsoft.cartonplast.design.vo.res.DieProductRes;
+import org.crsoft.cartonplast.design.vo.res.DieProductShortRes;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -19,11 +21,21 @@ public interface DieProductMapper {
 
     DieProductRes toDieProductRes(DieProduct dieProduct);
 
+    DieProductShortRes toDieProductShortRes(DieProduct dieProduct);
+
+    @Mapping(target = "dies", ignore = true)
+    @Mapping(target = "cyrels", ignore = true)
     @WithoutAuditField
     DieProduct toDieProduct(DieProductRes dieProductRes);
 
     @WithoutAuditField
+    @Mapping(target = "dies", ignore = true)
+    @Mapping(target = "cyrels", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "id", ignore = true)
     DieProduct toDieProduct(DieProductReq dieProductReq);
 
     List<DieProductRes> toDieProductResList(List<DieProduct> dieProducts);
+
+    List<DieProductShortRes> toDieProductShortResList(List<DieProduct> dieProducts);
 }

@@ -9,13 +9,16 @@ import org.springframework.stereotype.Component;
  * @author lpillaga on 02/06/2022
  */
 @Component
-public class MinioImageUtil {
+public class MinioUrlFileUtil {
 
     @Value("${cp.config.ws.url}")
     private String wsConfigUrl;
 
     @Value("${minio.images.bucket-name}")
     private String imagesBucketName;
+
+    @Value("${minio.documents.bucket-name}")
+    private String documentsBucketName;
 
     @Named("getImageUrl")
     public String getImageUrl(String imageName) {
@@ -30,5 +33,20 @@ public class MinioImageUtil {
                 imagesBucketName +
                 "/" +
                 imageName;
+    }
+
+    @Named("getDocumentUrl")
+    public String getDocumentUrl(String documentName) {
+        if ( documentName == null ) {
+            return null;
+        }
+
+        return wsConfigUrl +
+                "/" +
+                GlobalConstant.FILES_PATH +
+                "/" +
+                documentsBucketName +
+                "/" +
+                documentName;
     }
 }
