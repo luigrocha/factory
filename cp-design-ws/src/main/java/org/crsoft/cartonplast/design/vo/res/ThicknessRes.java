@@ -18,5 +18,5 @@ public class ThicknessRes implements Serializable {
 
     private Integer id;
     private Integer weight;
-    private Double thickness;
+    private Double thick;
 }
