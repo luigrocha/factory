@@ -112,6 +112,12 @@ public class Die {
     private Double leafWidth;
 
     @Column(
+            name = "CATRRO_DOCUMENT_NAME",
+            length = 256
+    )
+    private String documentName;
+
+    @Column(
             name = "CATTRO_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )

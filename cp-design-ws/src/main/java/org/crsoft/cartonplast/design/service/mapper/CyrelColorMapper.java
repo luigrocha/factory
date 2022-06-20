@@ -2,6 +2,7 @@ package org.crsoft.cartonplast.design.service.mapper;
 
 import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.CyrelColor;
+import org.crsoft.cartonplast.design.vo.req.CyrelColorReq;
 import org.crsoft.cartonplast.design.vo.res.CyrelColorRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,4 +23,11 @@ public interface CyrelColorMapper {
     @Mapping(target = "colorType", ignore = true)
     @Mapping(target = "cyrel", ignore = true)
     CyrelColor cyrelColorResToCyrelColor(CyrelColorRes cyrelColorRes);
+
+    @WithoutAuditField
+    @Mapping(target = "color", ignore = true)
+    @Mapping(target = "colorType", ignore = true)
+    @Mapping(target = "cyrel", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    CyrelColor cyrelColorReqToCyrelColor(CyrelColorReq cyrelColorReq);
 }

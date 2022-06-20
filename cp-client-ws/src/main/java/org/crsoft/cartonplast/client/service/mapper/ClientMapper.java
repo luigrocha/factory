@@ -3,7 +3,7 @@ package org.crsoft.cartonplast.client.service.mapper;
 import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.client.vo.res.ClientShortRes;
 import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
-import org.crsoft.cartonplast.common.util.MinioImageUtil;
+import org.crsoft.cartonplast.common.util.MinioUrlFileUtil;
 import org.crsoft.cartonplast.vo.res.ClientRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author lpillaga on 12/05/2022
  */
 @Mapper(componentModel = "spring", uses = {
-        MinioImageUtil.class
+        MinioUrlFileUtil.class
 })
 public interface ClientMapper {
 

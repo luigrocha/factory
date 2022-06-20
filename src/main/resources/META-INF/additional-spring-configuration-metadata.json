@@ -39,6 +39,11 @@
       "name": "minio.images.bucket-name",
       "type": "java.lang.String",
       "description": "Description for minio.images.bucket-name."
+    },
+    {
+      "name": "minio.documents.bucket-name",
+      "type": "java.lang.String",
+      "description": "Description for minio.documents.bucket-name."
     }
   ]
 }

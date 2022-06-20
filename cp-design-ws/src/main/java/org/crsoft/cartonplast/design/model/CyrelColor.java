@@ -1,6 +1,7 @@
 package org.crsoft.cartonplast.design.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "CATCIR_COL")
@@ -79,8 +81,7 @@ public class CyrelColor {
     @JoinColumn(
             name = "XID_CATCIR_CODE",
             referencedColumnName = "ID_CATCIR_CODE",
-            insertable = false,
-            updatable = false
+            nullable = false
     )
     private Cyrel cyrel;
 
@@ -88,8 +89,7 @@ public class CyrelColor {
     @JoinColumn(
             name = "XID_CATCATCOL_CODE",
             referencedColumnName = "ID_CATCATCOL_CODE",
-            insertable = false,
-            updatable = false
+            nullable = false
     )
     private ColorCatalog color;
 
@@ -97,8 +97,7 @@ public class CyrelColor {
     @JoinColumn(
             name = "XID_CATCOLTI_CODE",
             referencedColumnName = "ID_CATCOLTI_CODE",
-            insertable = false,
-            updatable = false
+            nullable = false
     )
     private ColorType colorType;
 }

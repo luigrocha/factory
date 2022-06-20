@@ -43,11 +43,17 @@ public interface DieMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "dieMachines", ignore = true)
     @Mapping(target = "dieProduct", ignore = true)
+    @Mapping(target = "documentName", ignore = true)
     @WithoutAuditField
     Die dieResToDie(DieRes dieRes);
 
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "dieMachines", ignore = true)
+    @Mapping(target = "dieProduct", ignore = true)
+    @Mapping(target = "manufacturer", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "documentName", ignore = true)
     @WithoutAuditField
     Die dieReqToDie(DieReq dieReq);
 

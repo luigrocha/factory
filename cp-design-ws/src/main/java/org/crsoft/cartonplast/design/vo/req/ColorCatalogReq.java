@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.design.vo.res;
+package org.crsoft.cartonplast.design.vo.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,14 +7,18 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * @author lpillaga on 12/05/2022
+ * @author lpillaga on 19/06/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DieShortRes implements Serializable {
+public class ColorCatalogReq implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private Integer id;
+
     private String name;
+
+    private String colorCode;
 }
