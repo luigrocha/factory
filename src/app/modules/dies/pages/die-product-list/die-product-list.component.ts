@@ -1,17 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { BreadcrumbService } from "../../../../core/services/breadcrumb.service";
-import { ConfirmationService, MenuItem } from "primeng/api";
-import { CreateDieProduct, DieProduct } from "../../../../types/die-product.types";
-import { TABLE_REPORT_TEMPLATE } from "../../../../core/constants/table";
-import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { TableColumn } from "../../../../types/table.types";
-import { DieProductService } from "../../../../core/http/die-product/die-product.service";
-import { StatusService } from "../../../../core/http/catalogs/status/status.service";
-import { Status } from "../../../../types/catalogs.types";
-import { DIE_PRODUCT_STATUS_TYPE } from "../../../../core/constants/status-types";
-import { Table } from "primeng/table";
-import { DieProductModalComponent } from "../../components/die-product-modal/die-product-modal.component";
-import { ToastService } from "../../../../core/services/toast.service";
+import { TableColumn } from 'src/app/types/table.types';
+import { CreateDieProduct, DieProduct } from 'src/app/types/die-product.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ConfirmationService, MenuItem } from 'primeng/api';
+import { Status } from 'src/app/types/catalogs.types';
+import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { DieProductService } from 'src/app/core/http/die-product/die-product.service';
+import { StatusService } from 'src/app/core/http/catalogs/status/status.service';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { DIE_PRODUCT_STATUS_TYPE } from 'src/app/core/constants/status-types';
+import {
+  DieProductModalComponent
+} from 'src/app/modules/dies/components/die-product-modal/die-product-modal.component';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-die-product-list',

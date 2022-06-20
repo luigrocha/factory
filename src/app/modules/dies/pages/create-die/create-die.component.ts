@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { BreadcrumbService } from "../../../../core/services/breadcrumb.service";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Manufacturer } from "../../../../types/manufacturer.types";
-import { Observable } from "rxjs";
-import { ManufacturerService } from "../../../../core/http/catalogs/manufacturer/manufacturer.service";
-import { FORM_ERROR_MESSAGES } from "../../../../core/constants/form-error";
-import { Machine } from "../../../../types/machine.types";
-import { MachineService } from "../../../../core/http/catalogs/machine/machine.service";
-import { DieProduct } from "../../../../types/die-product.types";
-import { DieProductService } from "../../../../core/http/die-product/die-product.service";
-import { ToastService } from "../../../../core/services/toast.service";
-import { DIE_NAME_PREFIX, DIE_PRODUCT_NAME_PREFIX, DIE_QUANTITY_SUFFIX } from "../../../../core/constants/generate-die";
-import { CreateDie } from "../../../../types/dies.types";
-import { DieService } from "../../../../core/http/dies/die.service";
-import { Router } from "@angular/router";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { Manufacturer } from 'src/app/types/manufacturer.types';
+import { Machine } from 'src/app/types/machine.types';
+import { DieProduct } from 'src/app/types/die-product.types';
+import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
+import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { ManufacturerService } from 'src/app/core/http/catalogs/manufacturer/manufacturer.service';
+import { MachineService } from 'src/app/core/http/catalogs/machine/machine.service';
+import { DieProductService } from 'src/app/core/http/die-product/die-product.service';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { DieService } from 'src/app/core/http/dies/die.service';
+import { Router } from '@angular/router';
+import { CreateDie } from 'src/app/types/dies.types';
+import { DIE_NAME_PREFIX, DIE_PRODUCT_NAME_PREFIX, DIE_QUANTITY_SUFFIX } from 'src/app/core/constants/generate-die';
 
 @Component({
   selector: 'app-create-die',
@@ -50,7 +50,7 @@ export class CreateDieComponent implements OnInit {
     this.machines$ = this.machineService.getAllMachines();
     this.dieProducts$ = this.dieProductService.getAllAvailableDieProducts();
     this.form = this.fb.group({
-      name: [null, [
+      name: [{value: null, disabled: true}, [
         Validators.required,
         Validators.maxLength(64)
       ]],
@@ -145,19 +145,19 @@ export class CreateDieComponent implements OnInit {
 
   save() {
     if (this.form.invalid) {
-      return ;
+      return;
     }
 
     const dieBody: CreateDie = this.form.getRawValue();
     dieBody.dieProductId = this.dieProduct.value.id;
     dieBody.manufacturerId = this.manufacturer.value.id;
-    dieBody.machines = this.machines.value.map(({ id }) => id);
+    dieBody.machines = this.machines.value.map(({id}) => id);
     this.dieService.createDie(dieBody)
       .subscribe(() => {
         this.toastService.success('Troquel creado correctamente');
         setTimeout(() => {
           this.router.navigate(['/home/troqueles']);
-        }, 100);
+        }, 1000);
       });
   }
 

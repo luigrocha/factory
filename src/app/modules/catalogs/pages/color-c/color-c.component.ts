@@ -4,8 +4,8 @@ import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { ColorCService } from 'src/app/core/http/catalogs/color-c/color-c.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { ColorA } from 'src/app/types/colorA.types';
 import { TypePermission } from 'src/app/types/permission';
+import { ColorCatalog } from 'src/app/types/color-catalog.types';
 
 @Component({
   selector: 'app-color-c',
@@ -46,15 +46,15 @@ export class ColorCComponent implements OnInit {
 
   colorDialog: boolean;
 
-  selectedColor: ColorA[];
+  selectedColor: ColorCatalog[];
 
   submitted: boolean;
 
   cols: any[];
 
-  colors: ColorA[];
+  colors: ColorCatalog[];
 
-  color: ColorA;
+  color: ColorCatalog;
 
   loading = true;
 
@@ -64,7 +64,7 @@ export class ColorCComponent implements OnInit {
 
   items: MenuItem[] = [];
 
-  colorSelect: ColorA;
+  colorSelect: ColorCatalog;
 
   constructor(
     private messageService: MessageService,
@@ -111,18 +111,18 @@ export class ColorCComponent implements OnInit {
   }
 
   openNew() {
-    this.color = {};
+    this.color = {} as ColorCatalog;
     this.submitted = false;
     this.colorDialog = true;
   }
 
-  editColor(color: ColorA) {
+  editColor(color: ColorCatalog) {
     this.color = { ...color };
     this.colorDialog = true;
     this.isEdit = true;
   }
 
-  deleteColor(color: ColorA) {
+  deleteColor(color: ColorCatalog) {
     this.confirmationService.confirm({
       message:
         'Estas seguro de eliminar el color ' + color.name + '?',
@@ -244,7 +244,7 @@ export class ColorCComponent implements OnInit {
 
     this.colors = [...this.colors];
     this.colorDialog = false;
-    this.color = {};
+    this.color = {} as ColorCatalog;
   }
 
   hideDialog() {
@@ -260,7 +260,7 @@ export class ColorCComponent implements OnInit {
   }
 
   isValidToSave(): boolean {
-    return this.color.name && this.color.colorCode ? true : false;
+    return !!(this.color.name && this.color.colorCode);
   }
 
   getPermissionsPage() {
