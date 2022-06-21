@@ -5,9 +5,10 @@ import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, Document, GenerateReceipt, Location } from 'src/app/types/celler.types';
+import { Celler, Document, DocumentEnum, GenerateReceipt, Location } from 'src/app/types/celler.types';
 import { TypeMaterial } from 'src/app/types/material.types';
 import { TypePermission } from 'src/app/types/permission';
+import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-store',
@@ -74,14 +75,18 @@ export class StoreComponent implements OnInit {
 
   locations: Location[];
 
+  pdfDialog: boolean;
+
+  srcPdf: any;
+
+  fileName: string;
+
   constructor(
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private cellerService: CellerService,
     private permissionService: PermissionService,
-    private materialService: MaterialService,
   ) {
+    pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
       { label: 'Gestión de bodega', routerLink: ['bodega'] },
@@ -91,12 +96,6 @@ export class StoreComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAll();
-    this.getAllDocuments();
-    this.getAllTypeMaterial();
-    this.getAllLocation();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 500);
     this.cols = [
       { field: 'lote', header: 'Lote' },
       { field: 'amount', header: 'Cantidad' },
@@ -110,159 +109,19 @@ export class StoreComponent implements OnInit {
       { field: 'location', header: 'Ubicación' },
       { field: 'document', header: 'Documento' },
     ];
-  }
-
-  getMenuItems() {
-    if (this.isAllow(PermissionEnum.UPDATE)) {
-      this.items.push({
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        // command: (e) => this.editUser(this.cellerSelect)
-      });
-    }
-    if (this.isAllow(PermissionEnum.DELETE)) {
-      this.items.push({
-        label: 'Eliminar',
+    this.items = [
+      {
+        label: 'Ver Documento',
+        icon: 'pi pi-file-pdf',
+        command: (e) => this.getReceipt(this.cellerSelect)
+      },
+      {
+        label: 'Anular',
         icon: 'pi pi-trash',
         // command: (e) => this.deleteUser(this.cellerSelect)
-      });
-    }
+      }
+    ];
   }
-
-  // openNew() {
-  //   this.order = {};
-  //   this.submitted = false;
-  //   this.orderDialog = true;
-  // }
-
-  // editOrder(order: Order) {
-  //   this.order = { ...order };
-  //   this.orderDialog = true;
-  // }
-
-  // deleteOrder(order: Order) {
-  //   this.confirmationService.confirm({
-  //     message:
-  //       'Estas seguro de eliminar el order ' + order.lote + '?',
-  //     header: 'Confirmación',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       // this.orderService.delete(order.id).subscribe(
-  //       //   (res) => {
-  //       //     this.messageService.add({
-  //       //       severity: 'success',
-  //       //       summary: 'Éxito',
-  //       //       detail: 'Homopolímero Eliminado',
-  //       //       life: 3000,
-  //       //     });
-  //       //     this.orders = [];
-  //       //     this.getAllUsers();
-  //       //   },
-  //       //   (err) => {
-  //       //     this.messageService.add({
-  //       //       severity: 'error',
-  //       //       summary: 'Error',
-  //       //       detail: err.error,
-  //       //       life: 3000,
-  //       //     });
-  //       //   }
-  //       // );
-
-  //     },
-  //   });
-  // }
-
-  // deleteSelectedOrders() {
-  //   this.confirmationService.confirm({
-  //     message: 'Estás seguro de eliminar los orderes seleccionados?',
-  //     header: 'Confirmación',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       // this.selectedHomo.forEach(order => {
-  //       //   this.orderService.delete(order.id).subscribe(
-  //       //     (res) => {
-  //       //       this.messageService.add({
-  //       //         severity: 'success',
-  //       //         summary: 'Éxito',
-  //       //         detail: 'Homopolímero Eliminado',
-  //       //         life: 3000,
-  //       //       });
-  //       //       this.orders = [];
-  //       //       this.getAllUsers();
-  //       //     },
-  //       //     (err) => {
-  //       //       this.messageService.add({
-  //       //         severity: 'error',
-  //       //         summary: 'Error',
-  //       //         detail: err.error,
-  //       //         life: 3000,
-  //       //       });
-  //       //     }
-  //       //   );
-  //       // })
-
-  //       this.selectedOrder = null;
-  //       this.messageService.add({
-  //         severity: 'success',
-  //         summary: 'Correcto',
-  //         detail: 'Homopolímeros Elimnados',
-  //         life: 3000,
-  //       });
-  //     },
-  //   });
-  // }
-
-  // saveOrder() {
-  //   this.submitted = true;
-
-  //   if (this.order.id) {
-  //     // this.orderService.update(this.order.id, this.order).subscribe(
-  //     //   (res) => {
-  //     //     this.messageService.add({
-  //     //       severity: 'success',
-  //     //       summary: 'Éxito',
-  //     //       detail: 'Homopolímero Actualizado',
-  //     //       life: 3000,
-  //     //     });
-  //     //     this.orders = [];
-  //     //     this.getAllUsers();
-  //     //   },
-  //     //   (err) => {
-  //     //     this.messageService.add({
-  //     //       severity: 'error',
-  //     //       summary: 'Error',
-  //     //       detail: err.error,
-  //     //       life: 3000,
-  //     //     });
-  //     //   }
-  //     // );
-  //   } else {
-  //     // this.orderService.create(this.order).subscribe(
-  //     //   (res) => {
-  //     //     this.messageService.add({
-  //     //       severity: 'success',
-  //     //       summary: 'Éxito',
-  //     //       detail: 'Homopolímero Creado',
-  //     //       life: 3000,
-  //     //     });
-  //     //     this.orders = [];
-  //     //     this.getAllUsers();
-  //     //   },
-  //     //   (err) => {
-  //     //     this.messageService.add({
-  //     //       severity: 'error',
-  //     //       summary: 'Error',
-  //     //       detail: err.error,
-  //     //       life: 3000,
-  //     //     });
-  //     //   }
-  //     // );
-  //   }
-
-  //   this.orders = [...this.orders];
-  //   this.orderDialog = false;
-  //   this.order = {};
-  // }
 
   hideDialog() {
     this.cellerDialog = false;
@@ -277,52 +136,33 @@ export class StoreComponent implements OnInit {
     });
   }
 
-  getAllDocuments() {
-    this.documentsMenu = [];
-    this.cellerService.getAllDocument().subscribe((documents) => {
-      documents.forEach(document => {
-        this.documentsMenu.push({ label: document.description, routerLink: '/home/bodega/' + document.name });
-      });
-    });
-  }
+  getReceipt(celler: Celler) {
+    let typeDocument = 0;
+    const type = celler.numberDocument.split('-')[0];
+    if (type === 'CEB') {
+      typeDocument = DocumentEnum.CEB;
+    } else if (type === 'CIB') {
+      typeDocument = DocumentEnum.CIB;
+    } else if (type === 'MOV') {
+      typeDocument = DocumentEnum.MOV;
+    } else if (type === 'TM1') {
+      typeDocument = DocumentEnum.TM1;
+    } else if (type === 'TM5') {
+      typeDocument = DocumentEnum.TM5;
+    } else if (type === 'CEP') {
+      typeDocument = DocumentEnum.CEP;
+    }
 
-  getAllTypeMaterial() {
-    this.materialService.getAllTypeMaterial().subscribe((types) => {
-      this.types = types;
-    });
-  }
-
-  getAllLocation() {
-    this.cellerService.getAllLocation().subscribe((locations) => {
-      this.locations = locations;
-    });
-  }
-
-  generateReceipt(documentId: number, body: GenerateReceipt): void {
-    const mock = {
-      receiptNumber: "CIB123",
-      receiptDate: new Date(),
-      reason: "Producción de",
-      reasonObservation: "Observacion de produccion",
-      observations: "It compiles well  witho",
-      deliveredBy: "Luis Antonio Pillaga Zhagnay",
-      receivedBy: null,
-      items: [
-        {
-          productType: "HPO",
-          productName: "EXPORT PP PT100 GLOBALENE",
-          lot: "M14784",
-          units: 12,
-          bags1KG: null,
-          bags25KG: 2,
-          pallets55: null,
-          totalWeight: 50.00,
-          location: "Zona 02"
-        }
-      ]
-    };
-    this.cellerService.generateReceipt(documentId, mock)
-      .subscribe();
+    this.cellerService.getReceipt(celler.numberDocument, typeDocument).subscribe(
+      (data => {
+        const type = data.body.type;
+        this.fileName = data.headers.get('content-disposition').split('filename=')[1];
+        this.srcPdf = URL.createObjectURL(
+          new Blob([data.body], { type })
+        );
+        this.pdfDialog = true;
+      })
+    );
   }
 
   getPermissionsPage() {

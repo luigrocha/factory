@@ -1,4 +1,4 @@
-<div class="p-grid">
+<!-- <div class="p-grid">
   <div class="p-col-12">
     <p-toast></p-toast>
 
@@ -114,10 +114,7 @@
         </ng-template>
       </p-table>
 
-      <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
-        <!-- <button pButton pRipple label="Guardar" icon="pi pi-plus"
-          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" *ngIf="newCellers.length > 0"
-          (click)="saveCeb()"></button> -->
+      <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">        
         <button pButton pRipple label="Guardar" icon="pi pi-plus" *ngIf="newCellers.length > 0"
           class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" (click)="generateReceipt()"
           [disabled]="enableButtons"></button>
@@ -161,18 +158,7 @@
           <small class="p-invalid" *ngIf="submitted && !material.name">Campo producto es requerido.</small>
         </div>
         <div class="field" *ngIf="material">
-          <label for="lote">Lote</label>
-          <!-- <p-dropdown id="lote" [options]="lotes" [(ngModel)]="celler" placeholder="Selecciona Lote"
-            (onChange)='onLoteSelected($event)'>
-            <ng-template pTemplate="selectedItem">
-              <div *ngIf="celler.lote">
-                {{ celler.lote }}
-              </div>
-            </ng-template>
-            <ng-template let-lote pTemplate="item">
-              {{ lote.lote }}
-            </ng-template>
-          </p-dropdown> -->
+          <label for="lote">Lote</label>          
           <input type="text" pInputText id="lote" [(ngModel)]="newCeller.lote" />
           <small class="p-invalid" *ngIf="submitted && !celler.lote">Campo lote es requerido.</small>
         </div>
@@ -192,17 +178,9 @@
                   {{ loc.description }}
                 </ng-template>
               </p-dropdown>
-            </div>
-            <!-- <div class="field col">
-              <label for="weight">Disponible</label>
-              <span class="p-inputgroup">
-                <input type="number" pInputText id="weight" [(ngModel)]="weightTotal" disabled />
-                <span class="p-inputgroup-addon">Kg</span>
-              </span>
-            </div> -->
+            </div>            
           </div>
-
-          <!-- <div *ngIf="weightTotal>0"> -->
+          
           <div class="p-formgrid grid">
             <div class="field col" *ngIf="typeMaterial.name == 'PEL'">
               <label class="mb-2" for="numberCoat">Cantidad de sacos: {{numberCoat}}</label>
@@ -251,8 +229,7 @@
                 <span class="p-inputgroup-addon">Kg</span>
               </span>
             </div>
-          </div>
-          <!-- </div> -->
+          </div>          
         </div>
       </ng-template>
 
@@ -270,4 +247,4 @@
       </ngx-extended-pdf-viewer>
     </p-dialog>
   </div>
-</div>
+</div> -->

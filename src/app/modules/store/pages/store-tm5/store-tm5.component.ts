@@ -45,337 +45,337 @@ import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 })
 export class StoreTm5Component implements OnInit {
 
-  cellers: Celler[];
+  // cellers: Celler[];
 
-  itemDialog: boolean;
+  // itemDialog: boolean;
 
-  submitted: boolean;
+  // submitted: boolean;
 
-  typeMaterials: TypeMaterial[];
+  // typeMaterials: TypeMaterial[];
 
-  typeMaterial: TypeMaterial;
+  // typeMaterial: TypeMaterial;
 
-  materials: Material[];
+  // materials: Material[];
 
-  material: Material;
+  // material: Material;
 
-  lotes: Celler[];
+  // lotes: Celler[];
 
-  optionDocuments: OptionDocument[];
+  // optionDocuments: OptionDocument[];
 
-  optionDocumentOrigin: OptionDocument;
+  // optionDocumentOrigin: OptionDocument;
 
-  optionDocumentsDestiny: OptionDocument[];
+  // optionDocumentsDestiny: OptionDocument[];
 
-  optionDocumentDestiny: OptionDocument;
+  // optionDocumentDestiny: OptionDocument;
 
-  observation: string;
+  // observation: string;
 
-  weightTotal: number;
+  // weightTotal: number;
 
-  newCeller: Celler;
+  // newCeller: Celler;
 
-  newCellers: Celler[] = [];
+  // newCellers: Celler[] = [];
 
-  numDocument: CodeDocument;
+  // numDocument: CodeDocument;
 
-  isEditing: boolean;
+  // isEditing: boolean;
 
-  createdAt: Date = new Date();
+  // createdAt: Date = new Date();
 
-  date: Date;
+  // date: Date;
 
-  observations: string;
+  // observations: string;
 
-  locations: Location[];
+  // locations: Location[];
 
-  location: Location;
+  // location: Location;
 
-  pdfDialog: boolean;
+  // pdfDialog: boolean;
 
-  msgInfo: any = [{
-    severity: 'info',
-    summary: 'Llena fecha, origen y destino para ingresar items'
-  }];
+  // msgInfo: any = [{
+  //   severity: 'info',
+  //   summary: 'Llena fecha, origen y destino para ingresar items'
+  // }];
 
-  numberCoat = DEFAULT_COAT;
+  // numberCoat = DEFAULT_COAT;
 
-  numberPallet = DEFAULT_PALLETS;
+  // numberPallet = DEFAULT_PALLETS;
 
-  itemsCoat = DEFAULT_TYPE_COAT;
+  // itemsCoat = DEFAULT_TYPE_COAT;
 
-  itemsPallets = DEFAULT_TYPE_PALLETS;
+  // itemsPallets = DEFAULT_TYPE_PALLETS;
 
-  srcPdf: any;
+  // srcPdf: any;
 
-  fileName: string;
+  // fileName: string;
 
-  enableButtons: boolean;
+  // enableButtons: boolean;
 
-  items: MenuItem[];
+  // items: MenuItem[];
 
-  cellerSelect: Celler;
+  // cellerSelect: Celler;
 
-  constructor(
-    private messageService: MessageService,
-    private breadcrumbService: BreadcrumbService,
-    private materialService: MaterialService,
-    private cellerService: CellerService,
-    private authService: AuthService,
-  ) {
-    pdfDefaultOptions.assetsFolder = 'bleeding-edge';
-    this.breadcrumbService.setItems([
-      { label: 'Bodega' },
-      { label: 'Gestión de bodega', routerLink: ['bodega'] },
-      { label: 'TM5', routerLink: ['bodega/TM5'] },
-    ]);
-    this.items = [
-      {
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        command: (e) => this.editItem(this.cellerSelect)
-      },
-      {
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        command: (e) => this.deleteItem(this.cellerSelect)
-      }
-    ];
-  }
+  // constructor(
+  //   private messageService: MessageService,
+  //   private breadcrumbService: BreadcrumbService,
+  //   private materialService: MaterialService,
+  //   private cellerService: CellerService,
+  //   private authService: AuthService,
+  // ) {
+  //   pdfDefaultOptions.assetsFolder = 'bleeding-edge';
+  //   this.breadcrumbService.setItems([
+  //     { label: 'Bodega' },
+  //     { label: 'Gestión de bodega', routerLink: ['bodega'] },
+  //     { label: 'TM5', routerLink: ['bodega/TM5'] },
+  //   ]);
+  //   this.items = [
+  //     {
+  //       label: 'Editar',
+  //       icon: 'pi pi-pencil',
+  //       command: (e) => this.editItem(this.cellerSelect)
+  //     },
+  //     {
+  //       label: 'Eliminar',
+  //       icon: 'pi pi-trash',
+  //       command: (e) => this.deleteItem(this.cellerSelect)
+  //     }
+  //   ];
+  // }
 
   ngOnInit() {
-    this.getAllTypeMaterial();
-    this.getAllOptionsByDocumentCode(DocumentEnum.TM5);
-    this.getNewCodeDocumentByDocumentCode(DocumentEnum.TM5);
-    this.getAllLocation();
+    //   this.getAllTypeMaterial();
+    //   this.getAllOptionsByDocumentCode(DocumentEnum.TM5);
+    //   this.getNewCodeDocumentByDocumentCode(DocumentEnum.TM5);
+    //   this.getAllLocation();
   }
 
-  openNew() {
-    this.newCeller = {
-      amount: 0,
-      balance: 0,
-      coat: 0,
-      pallets: 0,
-      weight: 0,
-    };
-    this.submitted = false;
-    this.itemDialog = true;
-  }
+  // openNew() {
+  //   this.newCeller = {
+  //     amount: 0,
+  //     balance: 0,
+  //     coat: 0,
+  //     pallets: 0,
+  //     weight: 0,
+  //   };
+  //   this.submitted = false;
+  //   this.itemDialog = true;
+  // }
 
-  editItem(celler: Celler) {
-    this.newCeller = { ...celler };
-    this.material = this.newCeller.material;
-    this.typeMaterial = this.newCeller.material.typeMaterial;
-    this.location = this.newCeller.location;
-    this.getAllMaterialByType(this.typeMaterial.id);
-    this.getCellerByMaterialCode(this.material.id);
-    setTimeout(() => {
-      this.calculateWeightAvailable(this.newCeller.lote, this.location);
-    }, 1000);
-    this.isEditing = true;
-    this.itemDialog = true;
-  }
+  // editItem(celler: Celler) {
+  //   this.newCeller = { ...celler };
+  //   this.material = this.newCeller.material;
+  //   this.typeMaterial = this.newCeller.material.typeMaterial;
+  //   this.location = this.newCeller.location;
+  //   this.getAllMaterialByType(this.typeMaterial.id);
+  //   this.getCellerByMaterialCode(this.material.id);
+  //   setTimeout(() => {
+  //     this.calculateWeightAvailable(this.newCeller.lote, this.location);
+  //   }, 1000);
+  //   this.isEditing = true;
+  //   this.itemDialog = true;
+  // }
 
-  deleteItem(celler: Celler) {
-    this.newCellers = this.newCellers.filter(val => val.material !== celler.material);
-    this.hideDialog();
-  }
+  // deleteItem(celler: Celler) {
+  //   this.newCellers = this.newCellers.filter(val => val.material !== celler.material);
+  //   this.hideDialog();
+  // }
 
-  saveItem() {
-    this.submitted = true;
-    if (this.isEditing) {
-      this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
-      this.isEditing = false;
-    } else if (this.isValidToSave()) {
-      this.newCeller.lote = this.newCeller.lote.toUpperCase();
-      this.newCeller.numberDocument = this.numDocument.numDocument;
-      this.newCeller.observation = this.observation;
-      this.newCeller.material = this.material;
-      this.newCeller.location = this.location;
-      this.newCeller.document = { id: DocumentEnum.TM5 };
-      this.newCeller.date = this.date;
-      this.newCeller.createdAt = this.createdAt;
-      this.newCellers.push(this.newCeller);
-      this.weightTotal += this.newCeller.weight;
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'Llene todos los campos',
-        life: 3000,
-      });
-      this.itemDialog = true;
-      return;
-    }
+  // saveItem() {
+  //   this.submitted = true;
+  //   if (this.isEditing) {
+  //     this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
+  //     this.isEditing = false;
+  //   } else if (this.isValidToSave()) {
+  //     this.newCeller.lote = this.newCeller.lote.toUpperCase();
+  //     this.newCeller.numberDocument = this.numDocument.numDocument;
+  //     this.newCeller.observation = this.observation;
+  //     this.newCeller.material = this.material;
+  //     this.newCeller.location = this.location;
+  //     this.newCeller.document = { id: DocumentEnum.TM5 };
+  //     this.newCeller.date = this.date;
+  //     this.newCeller.createdAt = this.createdAt;
+  //     this.newCellers.push(this.newCeller);
+  //     this.weightTotal += this.newCeller.weight;
+  //   } else {
+  //     this.messageService.add({
+  //       severity: 'warn',
+  //       summary: 'Atención',
+  //       detail: 'Llene todos los campos',
+  //       life: 3000,
+  //     });
+  //     this.itemDialog = true;
+  //     return;
+  //   }
 
-    this.newCellers = [...this.newCellers];
-    this.hideDialog();
-  }
+  //   this.newCellers = [...this.newCellers];
+  //   this.hideDialog();
+  // }
 
-  hideDialog() {
-    this.submitted = false;
-    this.itemDialog = false;
-    this.newCeller = {};
-    this.typeMaterial = null;
-    this.material = null;
-    this.location = null;
-    this.weightTotal = 0;
-  }
+  // hideDialog() {
+  //   this.submitted = false;
+  //   this.itemDialog = false;
+  //   this.newCeller = {};
+  //   this.typeMaterial = null;
+  //   this.material = null;
+  //   this.location = null;
+  //   this.weightTotal = 0;
+  // }
 
-  findIndexByMaterial(material: Material): number {
-    let index = -1;
-    for (let i = 0; i < this.newCellers.length; i++) {
-      if (this.newCellers[i].material === material) {
-        index = i;
-        break;
-      }
-    }
-    return index;
-  }
+  // findIndexByMaterial(material: Material): number {
+  //   let index = -1;
+  //   for (let i = 0; i < this.newCellers.length; i++) {
+  //     if (this.newCellers[i].material === material) {
+  //       index = i;
+  //       break;
+  //     }
+  //   }
+  //   return index;
+  // }
 
-  onTypeSelected(e: any) {
-    const type = e.value;
-    this.getAllMaterialByType(type.id);
-  }
+  // onTypeSelected(e: any) {
+  //   const type = e.value;
+  //   this.getAllMaterialByType(type.id);
+  // }
 
-  onProductSelected(e: any) {
-    const product = e.value;
-    this.getCellerByMaterialCode(product.id);
-  }
+  // onProductSelected(e: any) {
+  //   const product = e.value;
+  //   this.getCellerByMaterialCode(product.id);
+  // }
 
-  onLocationSelected(e: any) {
-    const loc = e.value;
-    this.location = loc;
-    this.calculateWeightAvailable(this.newCeller.lote, loc);
-  }
+  // onLocationSelected(e: any) {
+  //   const loc = e.value;
+  //   this.location = loc;
+  //   this.calculateWeightAvailable(this.newCeller.lote, loc);
+  // }
 
-  onOptionOriginSelected(e: any) {
-    this.getAllOptionsByDocumentCode(DocumentEnum.TM5);
-  }
+  // onOptionOriginSelected(e: any) {
+  //   this.getAllOptionsByDocumentCode(DocumentEnum.TM5);
+  // }
 
-  calculateWeightAvailable(lote: string, loc: Location) {
-    this.weightTotal = 0;
-    this.cellers.forEach(celler => {
-      if (celler.lote === lote && celler.location.location === loc.location) {
-        this.weightTotal += celler.weight;
-      }
-    });
-  }
+  // calculateWeightAvailable(lote: string, loc: Location) {
+  //   this.weightTotal = 0;
+  //   this.cellers.forEach(celler => {
+  //     if (celler.lote === lote && celler.location.location === loc.location) {
+  //       this.weightTotal += celler.weight;
+  //     }
+  //   });
+  // }
 
-  calculateWeight() {
-    const balance = this.newCeller.balance ? this.newCeller.balance : 0;
-    const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * this.numberCoat;
-    const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * this.numberCoat * this.numberPallet;
-    this.newCeller.weight = balance + coat + pallets;
-  }
+  // calculateWeight() {
+  //   const balance = this.newCeller.balance ? this.newCeller.balance : 0;
+  //   const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * this.numberCoat;
+  //   const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * this.numberCoat * this.numberPallet;
+  //   this.newCeller.weight = balance + coat + pallets;
+  // }
 
-  getAllTypeMaterial() {
-    this.materialService.getAllTypeMaterial().subscribe(
-      (typeMaterials => {
-        this.typeMaterials = typeMaterials;
-      })
-    );
-  }
+  // getAllTypeMaterial() {
+  //   this.materialService.getAllTypeMaterial().subscribe(
+  //     (typeMaterials => {
+  //       this.typeMaterials = typeMaterials;
+  //     })
+  //   );
+  // }
 
-  getAllMaterialByType(id: number) {
-    this.materials = [];
-    this.materialService.getAllMaterialByType(id).subscribe(
-      (materials => {
-        this.materials = materials;
-      })
-    );
-  }
+  // getAllMaterialByType(id: number) {
+  //   this.materials = [];
+  //   this.materialService.getAllMaterialByType(id).subscribe(
+  //     (materials => {
+  //       this.materials = materials;
+  //     })
+  //   );
+  // }
 
-  getAllOptionsByDocumentCode(id: number) {
-    this.optionDocumentsDestiny = [];
-    this.cellerService.getAllOptionsByDocumentCode(id).subscribe(
-      (optionDocument) => {
-        if (this.optionDocumentOrigin) {
-          this.optionDocumentsDestiny = optionDocument.filter(option => this.optionDocumentOrigin.id !== option.id);
-        } else {
-          this.optionDocuments = optionDocument;
-        }
-      }
-    );
-  }
+  // getAllOptionsByDocumentCode(id: number) {
+  //   this.optionDocumentsDestiny = [];
+  //   this.cellerService.getAllOptionsByDocumentCode(id).subscribe(
+  //     (optionDocument) => {
+  //       if (this.optionDocumentOrigin) {
+  //         this.optionDocumentsDestiny = optionDocument.filter(option => this.optionDocumentOrigin.id !== option.id);
+  //       } else {
+  //         this.optionDocuments = optionDocument;
+  //       }
+  //     }
+  //   );
+  // }
 
-  getCellerByMaterialCode(id: number) {
-    this.cellers = [];
-    this.cellerService.getCellerByMaterialCode(id).subscribe(
-      (cellers => {
-        this.cellers = cellers;
-        this.lotes = this.deleteCellerDuplicateByLote(cellers);
-      }),
-      (err) => {
-        this.cellers = [];
-        this.lotes = [];
-      }
-    );
-  }
+  // getCellerByMaterialCode(id: number) {
+  //   this.cellers = [];
+  //   this.cellerService.getCellerByMaterialCode(id).subscribe(
+  //     (cellers => {
+  //       this.cellers = cellers;
+  //       this.lotes = this.deleteCellerDuplicateByLote(cellers);
+  //     }),
+  //     (err) => {
+  //       this.cellers = [];
+  //       this.lotes = [];
+  //     }
+  //   );
+  // }
 
-  getNewCodeDocumentByDocumentCode(id: number) {
-    this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
-      (numDocument => {
-        this.numDocument = numDocument;
-      })
-    );
-  }
+  // getNewCodeDocumentByDocumentCode(id: number) {
+  //   this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
+  //     (numDocument => {
+  //       this.numDocument = numDocument;
+  //     })
+  //   );
+  // }
 
-  getAllLocation() {
-    this.cellerService.getAllLocation().subscribe(
-      (locations => {
-        this.locations = locations;
-      })
-    );
-  }
+  // getAllLocation() {
+  //   this.cellerService.getAllLocation().subscribe(
+  //     (locations => {
+  //       this.locations = locations;
+  //     })
+  //   );
+  // }
 
-  deleteCellerDuplicateByLote(cellers: any) {
-    const cellersMap = cellers.map(celler => {
-      return [celler.lote, celler];
-    });
-    return [...new Map(cellersMap).values()];
-  }
+  // deleteCellerDuplicateByLote(cellers: any) {
+  //   const cellersMap = cellers.map(celler => {
+  //     return [celler.lote, celler];
+  //   });
+  //   return [...new Map(cellersMap).values()];
+  // }
 
-  isValidToSave(): boolean {
-    return this.newCeller.lote ? true : false;
-  }
+  // isValidToSave(): boolean {
+  //   return this.newCeller.lote ? true : false;
+  // }
 
-  saveCib() {
-    this.cellerService.create(this.newCellers).subscribe(
-      (data) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: this.numDocument + ' Creado',
-          life: 3000,
-        });
-        this.generateReceipt();
-        this.newCeller = {};
-        this.newCellers = [];
-        this.optionDocumentOrigin = {};
-        this.optionDocumentDestiny = {};
-        this.observation = null;
-        this.observations = null;
-        this.date = null;
-        this.getNewCodeDocumentByDocumentCode(DocumentEnum.TM5);
-        this.hideDialog();
+  // saveCib() {
+  //   this.cellerService.create(this.newCellers).subscribe(
+  //     (data) => {
+  //       this.messageService.add({
+  //         severity: 'success',
+  //         summary: 'Éxito',
+  //         detail: this.numDocument + ' Creado',
+  //         life: 3000,
+  //       });
+  //       this.generateReceipt();
+  //       this.newCeller = {};
+  //       this.newCellers = [];
+  //       this.optionDocumentOrigin = {};
+  //       this.optionDocumentDestiny = {};
+  //       this.observation = null;
+  //       this.observations = null;
+  //       this.date = null;
+  //       this.getNewCodeDocumentByDocumentCode(DocumentEnum.TM5);
+  //       this.hideDialog();
 
-      },
-      (err) => {
-        console.log(err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err.error,
-          life: 3000,
-        });
-      }
-    );
-  }
+  //     },
+  //     (err) => {
+  //       console.log(err);
+  //       this.messageService.add({
+  //         severity: 'error',
+  //         summary: 'Error',
+  //         detail: err.error,
+  //         life: 3000,
+  //       });
+  //     }
+  //   );
+  // }
 
-  generateReceipt() {
+  // generateReceipt() {
 
 
-  }
+  // }
 
 }

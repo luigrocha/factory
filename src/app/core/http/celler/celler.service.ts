@@ -81,4 +81,11 @@ export class CellerService {
     });
   }
 
+  getReceipt(numberDocument: string, documentId: number) {
+    return this.http.get(this.URL_CELLER + '/get-receipt/' + numberDocument + '/' + documentId, {
+      responseType: 'blob',
+      observe: 'response'
+    });
+  }
+
 }

@@ -1,4 +1,4 @@
-<div class="p-grid">
+<!-- <div class="p-grid">
   <div class="p-col-12">
     <p-toast></p-toast>
 
@@ -135,10 +135,7 @@
         <textarea type="text" pInputTextarea id="observations" [(ngModel)]="observations"
           [disabled]="enableButtons"></textarea>
       </div>
-      <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
-        <!-- <button pButton pRipple label="Guardar" icon="pi pi-plus"
-          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" *ngIf="newCellers.length > 0"
-          (click)="saveCeb()"></button> -->
+      <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">        
         <button pButton pRipple label="Guardar" icon="pi pi-plus" *ngIf="newCellers.length > 0 && observations"
           class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" (click)="generateReceipt()"
           [disabled]="enableButtons"></button>
@@ -290,4 +287,4 @@
       </ngx-extended-pdf-viewer>
     </p-dialog>
   </div>
-</div>
+</div> -->

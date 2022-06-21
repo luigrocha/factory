@@ -3,15 +3,24 @@ import { Material } from './material.types';
 export interface Celler {
   id?: number;
   numberDocument?: string;
+  date?: Date;
+  dateDocument?: Date;
+  reason?: string;
+  observation?: string;
+  observations?: string;
+  origin?: string;
+  destiny?: string;
+}
+
+export interface CellerDetail {
+  id?: number;
   lote?: string;
   amount?: number;
   balance?: number;
   coat?: number;
   pallets?: number;
   weight?: number;
-  date?: Date;
-  createdAt?: Date;
-  observation?: string;
+  celler?: Celler;
   material?: Material;
   location?: Location;
   document?: Document;
