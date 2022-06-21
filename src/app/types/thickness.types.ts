@@ -1,5 +1,5 @@
 export interface Thickness {
   id?: number;
   weight?: number;
-  thickness?: number;
+  thick?: number;
 }

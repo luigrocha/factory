@@ -83,7 +83,7 @@ export class ThicknessComponent implements OnInit {
     this.getAll();
     setTimeout(() => {
       this.getMenuItems();
-    }, 500);
+    }, 1000);
     this.cols = [
       { field: 'weight', header: 'Peso' },
       { field: 'thickness', header: 'Grosor' },
@@ -214,6 +214,8 @@ export class ThicknessComponent implements OnInit {
         }
       );
     } else if (this.isValidToSave()) {
+      console.log(this.thicknes);
+
       this.thicknessService.create(this.thicknes).subscribe(
         (res) => {
           this.messageService.add({
@@ -264,7 +266,7 @@ export class ThicknessComponent implements OnInit {
   }
 
   isValidToSave(): boolean {
-    return this.thicknes.weight && this.thicknes.thickness ? true : false;
+    return this.thicknes.weight && this.thicknes.thick ? true : false;
   }
 
   getPermissionsPage() {

@@ -57,7 +57,7 @@
             </td>
             <td>
               <span class="p-column-title">Grosor</span>
-              {{ thicknes.thickness }}
+              {{ thicknes.thick }}
             </td>
             <td style="justify-content: center;">
               <div class="flex justify-content-evenly">
@@ -88,8 +88,8 @@
         </div>
         <div class="p-field">
           <label for="thickness">Grosor</label>
-          <input type="number" pInputText id="thickness" [(ngModel)]="thicknes.thickness" required />
-          <small class="p-invalid" *ngIf="submitted && !thicknes.thickness">Campo grosor es requerido.</small>
+          <input type="number" pInputText id="thickness" [(ngModel)]="thicknes.thick" required />
+          <small class="p-invalid" *ngIf="submitted && !thicknes.thick">Campo grosor es requerido.</small>
         </div>
       </ng-template>
 
