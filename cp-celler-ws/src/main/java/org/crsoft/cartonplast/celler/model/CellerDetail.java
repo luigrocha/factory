@@ -10,11 +10,11 @@ import java.time.LocalDateTime;
 /**
  * @author jyepez on 31/5/2022
  */
-/*@Data
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CDTCELL_DET")*/
+@Table(name = "CDTCELL_DET")
 public class CellerDetail {
 
     @Id

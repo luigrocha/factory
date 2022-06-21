@@ -1,65 +1,45 @@
 package org.crsoft.cartonplast.celler.controller;
 
-import org.crsoft.cartonplast.celler.model.Celler;
-import org.crsoft.cartonplast.celler.service.ICellerService;
-import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
+import org.crsoft.cartonplast.celler.model.CellerDetail;
+import org.crsoft.cartonplast.celler.service.ICellerDetailService;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.util.HttpUtil;
-import org.crsoft.cartonplast.vo.res.CellerRes;
-import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
-import org.springframework.http.HttpStatus;
+import org.crsoft.cartonplast.vo.res.CellerDetailRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Collection;
 
 /**
  * @author jyepez on 31/5/2022
  */
-/*@RestController
-@RequestMapping(GlobalConstant.V1_API_VERSION + "/celler")*/
+@RestController
+@RequestMapping(GlobalConstant.V1_API_VERSION + "/cellerDetail")
 public class CellerDetailController {
-    private final ICellerService cellerService;
+    private final ICellerDetailService cellerDetailService;
 
-    public CellerDetailController(ICellerService cellerService) {
-        this.cellerService = cellerService;
+    public CellerDetailController(ICellerDetailService cellerDetailService) {
+        this.cellerDetailService = cellerDetailService;
     }
 
-    @GetMapping
-    public ResponseEntity<Collection<CellerRes>> findAllCeller() throws NotFoundException {
-        return ResponseEntity.ok(this.cellerService.findAllCeller());
-    }
-
-/*
     @GetMapping("/findByMaterialCode/{code}")
-    public ResponseEntity<Collection<CellerRes>> findCellerByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
-        return ResponseEntity.ok(this.cellerService.findCellerByMaterialCode(code));
+    public ResponseEntity<Collection<CellerDetailRes>> findCellerByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findCellerDetailByMaterialCode(code));
     }
-*/
 
-    @GetMapping("/findNewCodeDocumentByDocumentCode/{code}")
-    public ResponseEntity<CodeDocumentRes> findNewCodeDocumentByDocumentCode(@PathVariable("code") Integer code) throws NotFoundException {
-        return ResponseEntity.ok(this.cellerService.findNewCodeDocumentByDocumentCode(code));
+    @GetMapping("/findByCellerCode/{code}")
+    public ResponseEntity<Collection<CellerDetailRes>> findCellerDetailByCellerCode(@PathVariable("code") Integer code) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findCellerDetailByCellerCode(code));
     }
 
     @PostMapping
-    public ResponseEntity<?> createCeller(@RequestBody Celler celler, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
-        celler.setUpdatedBy(userName);
-        this.cellerService.createCeller(celler);
+    public ResponseEntity<?> createCeller(@RequestBody Collection<CellerDetail> cellers, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
+        cellers.forEach(celler -> {
+            celler.setCreatedBy(userName);
+        });
+        this.cellerDetailService.createCellerDetail(cellers);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping(value = "/generate-receipt", produces = "application/pdf")
-    public ResponseEntity<byte[]> generateReceipt(
-            @Valid @RequestBody GenerateReceiptReq generateReceiptReq,
-            @RequestParam("documentId") Integer documentId) throws NotFoundException {
-        byte[] pdf = cellerService.generateReceipt(generateReceiptReq, documentId);
-        return new ResponseEntity<>(
-                pdf,
-                HttpUtil.getDefaultPDFHeaders(generateReceiptReq.getReceiptNumber()),
-                HttpStatus.OK);
-    }
 }

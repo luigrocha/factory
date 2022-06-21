@@ -1,11 +1,9 @@
 package org.crsoft.cartonplast.celler.service;
 
-import org.crsoft.cartonplast.celler.model.Celler;
-import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
+import org.crsoft.cartonplast.celler.model.CellerDetail;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.vo.res.CellerRes;
-import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
+import org.crsoft.cartonplast.vo.res.CellerDetailRes;
 
 import java.util.Collection;
 
@@ -14,13 +12,11 @@ import java.util.Collection;
  */
 public interface ICellerDetailService {
 
-    Collection<CellerRes> findAllCellerDetail() throws NotFoundException;
+    CellerDetail getCellarDetailByCode(Integer code) throws NotFoundException;
 
-    Celler getCellarDetailByCode(Integer code) throws NotFoundException;
+    Collection<CellerDetailRes> findCellerDetailByMaterialCode(Integer id) throws NotFoundException;
 
-    Collection<CellerRes> findCellerDetailByMaterialCode(Integer id) throws NotFoundException;
+    Collection<CellerDetailRes> findCellerDetailByCellerCode(Integer code) throws NotFoundException;
 
-    CodeDocumentRes findNewCodeDocumentByDocumentCode(Integer code) throws NotFoundException;
-
-    void createCellerDetail(Collection<Celler> celler) throws NotFoundException, InsertException;
+    void createCellerDetail(Collection<CellerDetail> celler) throws NotFoundException, InsertException;
 }
