@@ -33,16 +33,16 @@ public class CellerDetail {
     private Integer amount;
 
     @Column(name = "CDTCELL_DET_BALANCE")
-    private Integer balance;
+    private Double balance;
 
     @Column(name = "CDTCELL_DET_COAT")
-    private Integer coat;
+    private Double coat;
 
     @Column(name = "CDTCELL_DET_PALLETS")
-    private Integer pallets;
+    private Double pallets;
 
     @Column(name = "CDTCELL_DET_WEIGHT")
-    private Integer weight;
+    private Double weight;
 
     @Column(
             name = "CDTCELL_DET_VALID_FROM",

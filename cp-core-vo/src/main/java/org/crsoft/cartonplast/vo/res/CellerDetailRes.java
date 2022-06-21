@@ -20,10 +20,10 @@ public class CellerDetailRes implements Serializable {
     private Integer id;
     private String lote;
     private Integer amount;
-    private Integer balance;
-    private Integer coat;
-    private Integer pallets;
-    private Integer weight;
+    private Double balance;
+    private Double coat;
+    private Double pallets;
+    private Double weight;
     private CellerRes celler;
     private MaterialRes material;
     private LocationRes location;

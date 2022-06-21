@@ -6,15 +6,20 @@ import org.crsoft.cartonplast.celler.model.Document;
 import org.crsoft.cartonplast.celler.repository.CellerRepository;
 import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerMapper;
+import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptItemReq;
 import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.vo.res.CellerDetailRes;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
 import org.keycloak.common.util.CollectionUtil;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_INSERT;
@@ -31,11 +36,14 @@ public class CellerService implements ICellerService {
     private final CellerRepository cellerRepository;
     private final CellerMapper cellerMapper;
     private final DocumentService documentService;
+    private final CellerDetailService cellerDetailService;
 
-    public CellerService(CellerRepository cellerRepository, CellerMapper cellerMapper, DocumentService documentService) {
+    public CellerService(CellerRepository cellerRepository, CellerMapper cellerMapper,
+                         DocumentService documentService,@Lazy CellerDetailService cellerDetailService) {
         this.cellerRepository = cellerRepository;
         this.cellerMapper = cellerMapper;
         this.documentService = documentService;
+        this.cellerDetailService = cellerDetailService;
     }
 
     @Override
@@ -69,7 +77,7 @@ public class CellerService implements ICellerService {
             int number = Integer.parseInt(numDocument.split("-")[1]);
             return CodeDocumentRes.builder()
                     .document(document.getName())
-                    .number(number + 1 )
+                    .number(number + 1)
                     .numDocument(document.getName() + "-" + (number + 1))
                     .build();
         } else {
@@ -85,6 +93,39 @@ public class CellerService implements ICellerService {
         } catch (Exception e) {
             log.error("Error to createCeller: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
+        }
+    }
+
+    @Override
+    public GenerateReceiptReq getReceipt(String numberDocument, Integer documentId) throws NotFoundException {
+        Optional<Celler> celler = this.cellerRepository.findNewCodeDocumentByDocumentCode(numberDocument);
+        if (celler.isPresent()) {
+            Collection<CellerDetailRes> cellerDetails = this.cellerDetailService.findCellerDetailByCellerCode(celler.get().getId());
+            List<GenerateReceiptItemReq> items = new ArrayList<>(0);
+            for (CellerDetailRes cellerDetail : cellerDetails) {
+                items.add(GenerateReceiptItemReq.builder()
+                        .productType(cellerDetail.getMaterial().getTypeMaterial().getName())
+                        .productName(cellerDetail.getMaterial().getName())
+                        .lot(cellerDetail.getLote())
+                        .units(cellerDetail.getAmount())
+                        .bags1KG(cellerDetail.getBalance())
+                        .bags25KG(cellerDetail.getCoat())
+                        .pallets55(cellerDetail.getPallets())
+                        .totalWeight(cellerDetail.getWeight())
+                        .location(cellerDetail.getLocation().getLocation())
+                        .build());
+            }
+            return GenerateReceiptReq.builder()
+                    .receiptNumber(celler.get().getNumberDocument())
+                    .receiptDate(celler.get().getDateDocument())
+                    .reason(celler.get().getReason())
+                    .reasonObservation(celler.get().getObservation())
+                    .observations(celler.get().getObservations())
+                    .items(items)
+                    .build();
+        } else {
+            log.error("Error to getReceipt {}", numberDocument);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
 

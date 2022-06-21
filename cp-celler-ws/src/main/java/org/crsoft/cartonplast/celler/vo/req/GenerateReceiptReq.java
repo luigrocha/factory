@@ -1,6 +1,7 @@
 package org.crsoft.cartonplast.celler.vo.req;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @author lpillaga on 04/06/2022
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class GenerateReceiptReq implements Serializable {

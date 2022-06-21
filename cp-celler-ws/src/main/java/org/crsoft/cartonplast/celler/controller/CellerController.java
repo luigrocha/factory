@@ -45,6 +45,18 @@ public class CellerController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping(value = "/get-receipt/{numberDocument}/{documentId}", produces = "application/pdf")
+    public ResponseEntity<byte[]> getReceipt(
+            @PathVariable("numberDocument") String numberDocument,
+            @PathVariable("documentId")Integer documentId) throws NotFoundException {
+        GenerateReceiptReq receipt = this.cellerService.getReceipt(numberDocument, documentId);
+        byte[] pdf = cellerService.generateReceipt(receipt, documentId);
+        return new ResponseEntity<>(
+                pdf,
+                HttpUtil.getDefaultPDFHeaders(receipt.getReceiptNumber()),
+                HttpStatus.OK);
+    }
+
     @PostMapping(value = "/generate-receipt", produces = "application/pdf")
     public ResponseEntity<byte[]> generateReceipt(
             @Valid @RequestBody GenerateReceiptReq generateReceiptReq,

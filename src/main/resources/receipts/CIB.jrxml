@@ -11,9 +11,9 @@
 		<field name="productName" class="java.lang.String"/>
 		<field name="lot" class="java.lang.String"/>
 		<field name="units" class="java.lang.Integer"/>
-		<field name="bags1KG" class="java.lang.Integer"/>
-		<field name="bags25KG" class="java.lang.Integer"/>
-		<field name="pallets55" class="java.lang.Integer"/>
+		<field name="bags1KG" class="java.lang.Double"/>
+		<field name="bags25KG" class="java.lang.Double"/>
+		<field name="pallets55" class="java.lang.Double"/>
 		<field name="totalWeight" class="java.lang.Double"/>
 		<field name="location" class="java.lang.String"/>
 	</subDataset>

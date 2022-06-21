@@ -28,6 +28,8 @@ public interface CellerRepository extends JpaRepository<Celler, Integer> {
             "ORDER BY c.CDTCELL_CREATED_AT DESC LIMIT 1", nativeQuery = true)
     Optional<Celler> findNewCodeDocumentByDocumentCode(@Param("numberDocument") String numberDocument);
 
+    Optional<Celler> findByNumberDocumentAndValidToIsNull(String numberDocument);
+
     //Collection<Celler> findAllByMaterialAndValidToIsNullOrderByCreatedAtDesc(Material material);
 
 }

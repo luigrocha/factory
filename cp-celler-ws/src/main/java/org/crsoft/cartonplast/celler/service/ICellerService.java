@@ -22,5 +22,7 @@ public interface ICellerService {
 
     void createCeller(Celler celler) throws NotFoundException, InsertException;
 
+    GenerateReceiptReq getReceipt(String numberDocument,Integer documentId) throws NotFoundException;
+
     byte[] generateReceipt(GenerateReceiptReq generateReceiptReq, Integer documentId) throws NotFoundException;
 }
