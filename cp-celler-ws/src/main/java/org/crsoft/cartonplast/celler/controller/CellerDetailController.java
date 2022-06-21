@@ -19,12 +19,12 @@ import java.util.Collection;
 /**
  * @author jyepez on 31/5/2022
  */
-@RestController
-@RequestMapping(GlobalConstant.V1_API_VERSION + "/celler")
-public class CellerController {
+/*@RestController
+@RequestMapping(GlobalConstant.V1_API_VERSION + "/celler")*/
+public class CellerDetailController {
     private final ICellerService cellerService;
 
-    public CellerController(ICellerService cellerService) {
+    public CellerDetailController(ICellerService cellerService) {
         this.cellerService = cellerService;
     }
 
@@ -32,6 +32,13 @@ public class CellerController {
     public ResponseEntity<Collection<CellerRes>> findAllCeller() throws NotFoundException {
         return ResponseEntity.ok(this.cellerService.findAllCeller());
     }
+
+/*
+    @GetMapping("/findByMaterialCode/{code}")
+    public ResponseEntity<Collection<CellerRes>> findCellerByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerService.findCellerByMaterialCode(code));
+    }
+*/
 
     @GetMapping("/findNewCodeDocumentByDocumentCode/{code}")
     public ResponseEntity<CodeDocumentRes> findNewCodeDocumentByDocumentCode(@PathVariable("code") Integer code) throws NotFoundException {

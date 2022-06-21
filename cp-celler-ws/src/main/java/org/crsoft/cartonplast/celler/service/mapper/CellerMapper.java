@@ -9,11 +9,7 @@ import java.util.Collection;
 /**
  * @author jyepez on 31/5/2022
  */
-@Mapper(componentModel = "spring", uses = {
-        MaterialMapper.class,
-        LocationMapper.class,
-        DocumentMapper.class
-})
+@Mapper(componentModel = "spring")
 public interface CellerMapper {
 
     CellerRes cellerToCellerRes(Celler celler);

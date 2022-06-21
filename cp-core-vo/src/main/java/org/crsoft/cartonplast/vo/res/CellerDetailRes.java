@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -14,18 +13,19 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CellerRes implements Serializable {
+public class CellerDetailRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private String numberDocument;
-    private LocalDateTime date;
-    private LocalDateTime dateDocument;
-    private String reason;
-    private String observation;
-    private String observations;
-    private String origin;
-    private String destiny;
-
+    private String lote;
+    private Integer amount;
+    private Integer balance;
+    private Integer coat;
+    private Integer pallets;
+    private Integer weight;
+    private CellerRes celler;
+    private MaterialRes material;
+    private LocationRes location;
+    private DocumentRes document;
 }

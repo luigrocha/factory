@@ -16,5 +16,4 @@ public interface DocumentRepository extends JpaRepository<Document, Integer> {
     Collection<Document> findAllByValidToIsNullOrderByNameAsc();
 
     Optional<Document> findByIdAndValidToIsNull(Integer code);
-
 }

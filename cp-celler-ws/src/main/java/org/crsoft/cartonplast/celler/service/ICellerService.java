@@ -18,11 +18,9 @@ public interface ICellerService {
 
     Celler getCellarByCode(Integer code) throws NotFoundException;
 
-    Collection<CellerRes> findCellerByMaterialCode(Integer id) throws NotFoundException;
-
     CodeDocumentRes findNewCodeDocumentByDocumentCode(Integer code) throws NotFoundException;
 
-    void createCeller(Collection<Celler> celler) throws NotFoundException, InsertException;
+    void createCeller(Celler celler) throws NotFoundException, InsertException;
 
-    byte[] generateReceipt(GenerateReceiptReq generateReceiptReq, Integer documentId);
+    byte[] generateReceipt(GenerateReceiptReq generateReceiptReq, Integer documentId) throws NotFoundException;
 }
