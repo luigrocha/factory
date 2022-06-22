@@ -2,6 +2,7 @@ import { ColorB } from 'src/app/types/colorB.types';
 import { Pageable } from 'src/app/types/pageable.types';
 import { ShortDieProduct } from "./die-product.types";
 import { ColorCatalog } from 'src/app/types/color-catalog.types';
+import { DocumentInfo } from 'src/app/types/document.types';
 
 export interface CirelPageable extends Pageable<Cirel> {
 }
@@ -12,11 +13,14 @@ export interface Cirel {
   description: string;
   description2: string;
   observation: string;
-  documentUrl: string;
   dies: ShortDieProduct[];
   printer: string;
   mbLeaf: ColorB;
   cyrelColors: CirelColor[];
+  documents: CirelDocument[];
+}
+
+export interface CirelDocument extends DocumentInfo {
 }
 
 export interface CirelColor {

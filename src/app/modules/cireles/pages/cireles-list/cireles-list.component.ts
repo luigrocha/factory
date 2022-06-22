@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, SecurityContext, ViewChild } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { CirelService } from 'src/app/core/http/cirel/cirel.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Cirel, CirelColor } from 'src/app/types/cirel.types';
+import { Cirel, CirelColor, CirelDocument } from 'src/app/types/cirel.types';
 import { TableColumn, TableHeader } from 'src/app/types/table.types';
 import { Table } from 'primeng/table';
 import { debounceTime } from 'rxjs/operators';
@@ -11,8 +11,13 @@ import { PermissionService } from 'src/app/core/http/permissions/permission.serv
 import { TypePermission } from 'src/app/types/permission';
 import { Router } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AddClientComponent } from 'src/app/modules/clients/components/add-client/add-client.component';
 import { DocumentViewerComponent } from 'src/app/shared/components/document-viewer/document-viewer.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { formatDate } from '@angular/common';
+import { dateFormat, dateTimeFormat, localString } from 'src/app/core/constants/date';
+import { UploadFileComponent } from 'src/app/shared/components/upload-file/upload-file.component';
+import { CirelDocumentService } from 'src/app/core/http/cirel/cirel-document.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-cireles-list',
@@ -34,6 +39,8 @@ export class CirelesListComponent implements OnInit {
   menuItems: MenuItem[];
   selectedCirel: Cirel;
   documentDialogRef: DynamicDialogRef;
+  uploadDocumentDialogRef: DynamicDialogRef;
+  selectedDocument: CirelDocument;
 
   subHeaders: TableHeader<CirelColor>[] = [
     { label: 'Tipo', property: 'colorType' },
@@ -52,7 +59,9 @@ export class CirelesListComponent implements OnInit {
     private cirelService: CirelService,
     private permissionService: PermissionService,
     private router: Router,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    private cirelDocumentService: CirelDocumentService,
+    private toastService: ToastService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -84,6 +93,11 @@ export class CirelesListComponent implements OnInit {
         label: 'Eliminar',
         icon: 'pi pi-trash',
         command: () => this.deleteCirel()
+      },
+      {
+        label: 'Subir documento',
+        icon: 'pi pi-upload',
+        command: () => this.uploadDocument()
       }
     ];
   }
@@ -144,30 +158,88 @@ export class CirelesListComponent implements OnInit {
     return false;
   }
 
-  getUploadMenuItems(): MenuItem[] {
+  documentIsEmpty(document: CirelDocument[]): boolean {
+    return document.length === 0;
+  }
+
+  private uploadDocument() {
+    this.openUploadDocumentDialog();
+    this.uploadDocumentDialogRef.onClose
+      .subscribe(file => {
+        if (file) {
+          this.cirelDocumentService.uploadCirelDocument(this.selectedCirel.id, file)
+            .subscribe(cyrelDocument => {
+              this.selectedCirel.documents.push(cyrelDocument);
+              this.toastService.success(`Documento cargado correctamente`);
+            });
+        }
+      });
+  }
+
+  private openUploadDocumentDialog(): void {
+    this.uploadDocumentDialogRef = this.dialogService.open(UploadFileComponent, {
+      header: 'Cargar documento de diseño',
+      data: {
+        accept: 'application/pdf'
+      },
+      width: '500px',
+      contentStyle: {'max-width': '100%', 'overflow': 'hidden'},
+    });
+  }
+
+  getDocumentItems(): MenuItem[] {
+    if (!this.selectedDocument) {
+      return [];
+    }
     return [
-      ...this.menuItems,
       {
-        label: 'Subir documento',
-        icon: 'pi pi-upload',
-        command: () => this.uploadDocument()
+        label: 'Ver documento',
+        icon: 'pi pi-file-pdf',
+        command: () => this.showDocument()
+      },
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.editDocument()
       }
     ];
   }
 
-  private uploadDocument() {
-  }
-
-  showDocument(cyrel: Cirel): void {
+  showDocument(): void {
     this.documentDialogRef = this.dialogService.open(DocumentViewerComponent, {
-      header: cyrel.print,
+      header: `Version ${this.selectedDocument.version} - ${this.selectedCirel.print}`,
       data: {
-        fileName: cyrel.print,
-        srcPdf: cyrel.documentUrl
+        fileName: this.selectedCirel.print,
+        document: this.selectedDocument
       },
       height: '90%',
       width: '90%',
       contentStyle: {'max-width': '100%', 'overflow': 'hidden'},
     });
+  }
+
+  editDocument(): void {
+    this.openUploadDocumentDialog();
+    this.uploadDocumentDialogRef.onClose
+      .subscribe(file => {
+        if (file) {
+          this.cirelDocumentService.updateCirelDocument(this.selectedDocument.id, file)
+            .subscribe(cyrelDocument => {
+              const index = this.selectedCirel.documents.findIndex(doc => doc.id === cyrelDocument.id);
+              this.selectedCirel.documents[index] = cyrelDocument;
+              this.toastService.success(`Documento actualizado correctamente`);
+            });
+        }
+      })
+  }
+
+  ngOnDestroy(): void {
+    if (this.documentDialogRef) {
+      this.documentDialogRef.close();
+    }
+
+    if (this.uploadDocumentDialogRef) {
+      this.uploadDocumentDialogRef.close();
+    }
   }
 }

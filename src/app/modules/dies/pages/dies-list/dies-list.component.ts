@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Die } from 'src/app/types/dies.types';
+import { Die, DieDocument } from 'src/app/types/dies.types';
 import { DieService } from 'src/app/core/http/dies/die.service';
 import { Table } from 'primeng/table';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -13,6 +13,9 @@ import { StatusService } from 'src/app/core/http/catalogs/status/status.service'
 import { Router } from '@angular/router';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { DIE_STATUS_TYPE } from 'src/app/core/constants/status-types';
+import { DieDocumentService } from 'src/app/core/http/cirel/die-document.service';
+import { UploadFileComponent } from 'src/app/shared/components/upload-file/upload-file.component';
+import { DocumentViewerComponent } from 'src/app/shared/components/document-viewer/document-viewer.component';
 
 @Component({
   selector: 'app-dies-list',
@@ -28,7 +31,6 @@ export class DiesListComponent implements OnInit {
   dies: Die[];
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
-  addDialogRef: DynamicDialogRef;
   selectedDie: Die;
   menuItems: MenuItem[];
   dieStates: Status[] = [];
@@ -43,6 +45,9 @@ export class DiesListComponent implements OnInit {
     'status.name'
   ];
   permissionsPage: TypePermission[];
+  selectedDocument: DieDocument;
+  documentDialogRef: DynamicDialogRef;
+  uploadDocumentDialogRef: DynamicDialogRef;
 
   constructor(
     private dieService: DieService,
@@ -52,7 +57,8 @@ export class DiesListComponent implements OnInit {
     private router: Router,
     private toastService: ToastService,
     public dialogService: DialogService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private dieDocumentService: DieDocumentService
   ) {
     this.breadcrumbService.setItems([
       {label: 'Diseño'},
@@ -85,10 +91,14 @@ export class DiesListComponent implements OnInit {
         label: 'Eliminar',
         icon: 'pi pi-trash',
         command: () => this.deleteDie()
+      },
+      {
+        label: 'Subir documento',
+        icon: 'pi pi-upload',
+        command: () => this.uploadDocument()
       }
     ];
   }
-
 
   private editDie(): void {
   }
@@ -120,6 +130,81 @@ export class DiesListComponent implements OnInit {
 
   addDie(): void {
     this.router.navigate(['/home/troqueles/crear']);
+  }
+
+  private uploadDocument() {
+    this.openUploadDocumentDialog();
+    this.uploadDocumentDialogRef.onClose
+      .subscribe(file => {
+        if (file) {
+          this.dieDocumentService.uploadDieDocument(this.selectedDie.id, file)
+            .subscribe(dieDocument => {
+              this.selectedDie.documents.push(dieDocument);
+              this.toastService.success(`Documento cargado correctamente`);
+            });
+        }
+      });
+  }
+
+  private openUploadDocumentDialog(): void {
+    this.uploadDocumentDialogRef = this.dialogService.open(UploadFileComponent, {
+      header: 'Cargar documento de diseño',
+      data: {
+        accept: 'application/pdf'
+      },
+      width: '500px',
+      contentStyle: {'max-width': '100%', 'overflow': 'hidden'},
+    });
+  }
+
+  getDocumentItems(): MenuItem[] {
+    if (!this.selectedDocument) {
+      return [];
+    }
+    return [
+      {
+        label: 'Ver documento',
+        icon: 'pi pi-file-pdf',
+        command: () => this.showDocument()
+      },
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.editDocument()
+      }
+    ];
+  }
+
+  showDocument(): void {
+    this.documentDialogRef = this.dialogService.open(DocumentViewerComponent, {
+      header: `Version ${this.selectedDocument.version} - ${this.selectedDie.name}`,
+      data: {
+        fileName: this.selectedDie.name,
+        document: this.selectedDocument
+      },
+      height: '90%',
+      width: '90%',
+      contentStyle: {'max-width': '100%', 'overflow': 'hidden'},
+    });
+  }
+
+  editDocument(): void {
+    this.openUploadDocumentDialog();
+    this.uploadDocumentDialogRef.onClose
+      .subscribe(file => {
+        if (file) {
+          this.dieDocumentService.updateDieDocument(this.selectedDocument.id, file)
+            .subscribe(dieDocument => {
+              const index = this.selectedDie.documents.findIndex(doc => doc.id === dieDocument.id);
+              this.selectedDie.documents[index] = dieDocument;
+              this.toastService.success(`Documento actualizado correctamente`);
+            });
+        }
+      });
+  }
+
+  documentIsEmpty(document: DieDocument[]): boolean {
+    return document.length === 0;
   }
 
   clear(table: Table) {

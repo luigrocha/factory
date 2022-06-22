@@ -14,12 +14,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
-import { CreateCirelComponent } from './pages/create-cirel/create-cirel.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { DialogService } from 'primeng/dynamicdialog';
+import { CreateCirelComponent } from 'src/app/modules/cireles/pages/create-cirel/create-cirel.component';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ChipModule } from 'primeng/chip';
 
 
 @NgModule({
@@ -43,6 +45,8 @@ import { DialogService } from 'primeng/dynamicdialog';
     MultiSelectModule,
     InputTextareaModule,
     SharedModule,
+    OverlayPanelModule,
+    ChipModule
   ],
   declarations: [
     CirelesListComponent,
@@ -52,4 +56,5 @@ import { DialogService } from 'primeng/dynamicdialog';
     DialogService
   ],
 })
-export class CirelesModule { }
+export class CirelesModule {
+}
