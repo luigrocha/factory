@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", uses = {
         ManufacturerMapper.class,
         CatalogStatusMapper.class,
-        DieProductMapper.class
+        DieProductMapper.class,
+        DieDocumentMapper.class
 })
 public interface DieMapper {
 
@@ -43,7 +44,7 @@ public interface DieMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "dieMachines", ignore = true)
     @Mapping(target = "dieProduct", ignore = true)
-    @Mapping(target = "documentName", ignore = true)
+    @Mapping(target = "documents", ignore = true)
     @WithoutAuditField
     Die dieResToDie(DieRes dieRes);
 
@@ -53,7 +54,7 @@ public interface DieMapper {
     @Mapping(target = "manufacturer", ignore = true)
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "documentName", ignore = true)
+    @Mapping(target = "documents", ignore = true)
     @WithoutAuditField
     Die dieReqToDie(DieReq dieReq);
 
