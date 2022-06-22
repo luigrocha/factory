@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -40,12 +39,5 @@ public class CyrelController {
     public ResponseEntity<CyrelRes> createCyrel(
             @Valid @RequestBody CyrelReq cyrelReq) {
         return ResponseEntity.ok(this.cyrelService.createCyrel(cyrelReq));
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<CyrelRes> uploadCyrelDocument(
-            @PathVariable Integer id,
-            @RequestParam(value = "file", required = false) MultipartFile file) {
-        return ResponseEntity.ok(this.cyrelService.uploadCyrelDocument(id, file));
     }
 }

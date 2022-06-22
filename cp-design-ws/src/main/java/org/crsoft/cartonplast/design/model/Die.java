@@ -112,12 +112,6 @@ public class Die {
     private Double leafWidth;
 
     @Column(
-            name = "CATRRO_DOCUMENT_NAME",
-            length = 256
-    )
-    private String documentName;
-
-    @Column(
             name = "CATTRO_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
@@ -178,6 +172,12 @@ public class Die {
             cascade = CascadeType.ALL
     )
     private List<DieMachine> dieMachines = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "die",
+            fetch = FetchType.LAZY
+    )
+    private List<DieDocument> documents = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

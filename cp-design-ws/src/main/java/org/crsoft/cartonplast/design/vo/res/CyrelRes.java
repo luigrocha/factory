@@ -24,9 +24,9 @@ public class CyrelRes implements Serializable {
     private String description2;
     private String observation;
     private String printer;
-    private String documentUrl;
     private ColorBShortRes mbLeaf;
     private CatalogStatusRes status;
     private List<DieProductShortRes> dies;
     private List<CyrelColorRes> cyrelColors;
+    private List<CyrelDocumentRes> documents;
 }

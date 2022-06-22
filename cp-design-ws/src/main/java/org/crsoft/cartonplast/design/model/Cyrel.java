@@ -65,12 +65,6 @@ public class Cyrel {
     private String observation;
 
     @Column(
-            name = "CATCIR_DOCUMENT_NAME",
-            length = 256
-    )
-    private String documentName;
-
-    @Column(
             name = "CATCIR_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
@@ -138,4 +132,10 @@ public class Cyrel {
             cascade = CascadeType.ALL
     )
     private List<CyrelColor> cyrelColors = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "cyrel",
+            fetch = FetchType.LAZY
+    )
+    private List<CyrelDocument> documents = new ArrayList<>();
 }

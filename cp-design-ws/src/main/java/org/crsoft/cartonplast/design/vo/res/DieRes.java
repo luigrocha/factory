@@ -36,4 +36,5 @@ public class DieRes implements Serializable {
     private DieProductRes dieProduct;
     private CatalogStatusRes status;
     private List<String> machines;
+    private List<DieDocumentRes> documents;
 }
