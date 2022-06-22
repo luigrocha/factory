@@ -5,9 +5,14 @@ import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS 
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
+import { Celler, CellerDetail, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
+import { Observable } from 'rxjs';
+import { TableColumn } from 'src/app/types/table.types';
+import { CellerDetailService } from 'src/app/core/http/celler/celler-detail.service';
 
 @Component({
   selector: 'app-store-ceb',
@@ -46,6 +51,16 @@ import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 })
 export class StoreCebComponent implements OnInit {
 
+  form: FormGroup;
+  formErrors = FORM_ERROR_MESSAGES;
+  numDocument: CodeDocument;
+  reazon$: Observable<OptionDocument[]>;
+  types: TypeMaterial[];
+  materials: Material[] = [];
+  lotes: CellerDetail[] = [];
+  columns: TableColumn<CellerDetail>[];
+
+
   // cellers: Celler[];
 
   // celler: Celler;
@@ -62,27 +77,11 @@ export class StoreCebComponent implements OnInit {
 
   // material: Material;
 
-  // lotes: Celler[];
 
-  // optionDocuments: OptionDocument[];
-
-  // optionDocument: OptionDocument;
-
-  // observation: string;
 
   // weightTotal: number;
 
-  // newCeller: Celler;
-
-  // newCellers: Celler[] = [];
-
-  // numDocument: CodeDocument;
-
   // isEditing: boolean;
-
-  // createdAt: Date = new Date();
-
-  // date: Date;
 
   // observations: string;
 
@@ -92,11 +91,6 @@ export class StoreCebComponent implements OnInit {
 
   // pdfDialog: boolean;
 
-  // msgInfo: any = [{
-  //   severity: 'info',
-  //   summary: 'Selecciona un motivo y llena la observación para ingresar items'
-  // }];
-
   // numberCoat = DEFAULT_COAT;
 
   // numberPallet = DEFAULT_PALLETS;
@@ -105,47 +99,184 @@ export class StoreCebComponent implements OnInit {
 
   // itemsPallets = DEFAULT_TYPE_PALLETS;
 
-  // srcPdf: any;
+  srcPdf: any;
 
-  // fileName: string;
+  fileName: string;
 
-  // enableButtons: boolean;
+  enableButtons: boolean;
 
-  // items: MenuItem[];
+  items: MenuItem[];
 
-  // cellerSelect: Celler;
-
-  // constructor(
-  //   private messageService: MessageService,
-  //   private breadcrumbService: BreadcrumbService,
-  //   private materialService: MaterialService,
-  //   private cellerService: CellerService,
-  //   private authService: AuthService,
-  // ) {
-  //   pdfDefaultOptions.assetsFolder = 'bleeding-edge';
-  //   this.breadcrumbService.setItems([
-  //     { label: 'Bodega' },
-  //     { label: 'Gestión de bodega', routerLink: ['bodega'] },
-  //     { label: 'CEB', routerLink: ['bodega/CEB'] },
-  //   ]);
-  //   this.items = [
-  //     {
-  //       label: 'Editar',
-  //       icon: 'pi pi-pencil',
-  //       command: (e) => this.editItem(this.cellerSelect)
-  //     },
-  //     {
-  //       label: 'Eliminar',
-  //       icon: 'pi pi-trash',
-  //       command: (e) => this.deleteItem(this.cellerSelect)
-  //     }
-  //   ];
-  // }
+  constructor(
+    private fb: FormBuilder,
+    private messageService: MessageService,
+    private breadcrumbService: BreadcrumbService,
+    private materialService: MaterialService,
+    private cellerService: CellerService,
+    private cellerDetailService: CellerDetailService,
+    private authService: AuthService,
+  ) {
+    pdfDefaultOptions.assetsFolder = 'bleeding-edge';
+    this.breadcrumbService.setItems([
+      { label: 'Bodega' },
+      { label: 'Gestión de bodega', routerLink: ['bodega'] },
+      { label: 'CEB', routerLink: ['bodega/CEB'] },
+    ]);
+  }
 
   ngOnInit() {
-    //   this.getAllTypeMaterial();
-    //   this.getAllOptionsByDocumentCode(DocumentEnum.CEB);
-    //   this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
+    this.getAllTypeMaterial();
+    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
+    this.reazon$ = this.cellerService.getAllOptionsByDocumentCode(DocumentEnum.CEB);
+    this.getCellerDetailColums();
+    this.form = this.fb.group({
+      reazon: [null, [
+        Validators.required,
+      ]],
+      observation: [null, [
+        Validators.required,
+        Validators.maxLength(128)
+      ]],
+      date: new Date(),
+      dateDocument: [null, [
+        Validators.required,
+      ]],
+      cellerItems: this.fb.array([])
+    });
+  }
+
+  getNewCodeDocumentByDocumentCode(id: number) {
+    this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
+      (numDocument => {
+        this.numDocument = numDocument;
+      })
+    );
+  }
+
+  getAllTypeMaterial() {
+    this.materialService.getAllTypeMaterial().subscribe(typeMaterial => {
+      this.types = typeMaterial;
+    });
+  }
+
+  getCellerDetailColums() {
+    this.columns = [
+      { field: 'type', header: 'Tipo' },
+      { field: 'material', header: 'Producto' },
+      { field: 'lote', header: 'Lote' },
+      { field: 'location', header: 'Ubicación' },
+      { field: 'availability', header: 'Disponible' },
+      { field: 'amount', header: 'Unidades' },
+      { field: 'balance', header: 'Saldos' },
+      { field: 'coat', header: 'Sacos' },
+      { field: 'pallets', header: 'Palets' },
+      { field: 'weight', header: 'Peso' },
+    ]
+  }
+
+  get reazon() {
+    return this.form.get('reazon');
+  }
+
+  get observation() {
+    return this.form.get('observation');
+  }
+
+  get date() {
+    return this.form.get('date');
+  }
+
+  get dateDocument() {
+    return this.form.get('dateDocument');
+  }
+
+  get cellerItemsFormArray() {
+    return this.form.get('cellerItems') as FormArray;
+  }
+
+  getCellerDetailType(index: number) {
+    return this.cellerItemsFormArray.at(index).get('type');
+  }
+
+  searchCellerDetailType(id: number): string {
+    const typeMaterial = this.types.find(type => type.id === id);
+    return typeMaterial ? typeMaterial.name : 'Selecciona Tipo';
+  }
+
+  getCellerDetailMaterial(index: number) {
+    return this.cellerItemsFormArray.at(index).get('material');
+  }
+
+  searchCellerDetailMaterial(id: number): string {
+    const material = this.materials.find(mat => mat.id === id);
+    return material ? material.name : 'Selecciona Material';
+  }
+
+  getCellerDetailLote(index: number) {
+    return this.cellerItemsFormArray.at(index).get('lote');
+  }
+
+  searchCellerDetailLote(id: number): string {
+    const lote = this.lotes.find(lot => lot.id === id);
+    return lote ? lote.lote : 'Selecciona Lote';
+  }
+
+  save() {
+
+  }
+
+  openNew() {
+    this.cellerItemsFormArray.push(this.fb.group({
+      type: [null, [
+        Validators.required,
+      ]],
+      material: [null, [
+        Validators.required,
+      ]],
+      lote: [null, [
+        Validators.required,
+      ]],
+    }));
+  }
+
+  onTypeSelected(e: any) {
+    const type = e.value;
+    this.getAllMaterialByType(type);
+  }
+
+  getAllMaterialByType(id: number) {
+    this.materials = [];
+    this.materialService.getAllMaterialByType(id).subscribe(
+      (materials => {
+        this.materials = materials;
+      })
+    );
+  }
+
+  onProductSelected(e: any) {
+    const product = e.value;
+    this.getCellerByMaterialCode(product);
+  }
+
+  getCellerByMaterialCode(id: number) {
+    this.lotes = [];
+    this.cellerDetailService.getByMaterialCode(id).subscribe(
+      (cellers => {
+        // TODO filtrar movimientos del material por lote        
+        const lotes = this.deleteCellerDuplicateByLote(cellers);
+        this.lotes = lotes.filter((lote: CellerDetail) => lote.weight > 0);
+      }),
+      (err) => {
+        this.lotes = [];
+      }
+    );
+  }
+
+  deleteCellerDuplicateByLote(cellers: any) {
+    const cellersMap = cellers.map(celler => {
+      return [celler.lote, celler];
+    });
+    return [...new Map(cellersMap).values()];
   }
 
   // openNew() {
@@ -234,15 +365,7 @@ export class StoreCebComponent implements OnInit {
   //   return index;
   // }
 
-  // onTypeSelected(e: any) {
-  //   const type = e.value;
-  //   this.getAllMaterialByType(type.id);
-  // }
 
-  // onProductSelected(e: any) {
-  //   const product = e.value;
-  //   this.getCellerByMaterialCode(product.id);
-  // }
 
   // onLoteSelected(e: any) {
   //   const lote = e.value;
@@ -294,54 +417,8 @@ export class StoreCebComponent implements OnInit {
   //   );
   // }
 
-  // getAllMaterialByType(id: number) {
-  //   this.materials = [];
-  //   this.materialService.getAllMaterialByType(id).subscribe(
-  //     (materials => {
-  //       this.materials = materials;
-  //     })
-  //   );
-  // }
 
-  // getAllOptionsByDocumentCode(id: number) {
-  //   this.cellerService.getAllOptionsByDocumentCode(id).subscribe(
-  //     (optionDocument) => {
-  //       this.optionDocuments = optionDocument;
-  //     }
-  //   );
-  // }
 
-  // getCellerByMaterialCode(id: number) {
-  //   this.cellers = [];
-  //   this.cellerService.getCellerByMaterialCode(id).subscribe(
-  //     (cellers => {
-  //       this.cellers = cellers;
-  //       const lotes = this.deleteCellerDuplicateByLote(cellers);
-  //       this.lotes = lotes.filter((lote: Celler) => lote.weight > 0);
-
-  //     }),
-  //     (err) => {
-  //       this.celler = null;
-  //       this.cellers = [];
-  //       this.lotes = [];
-  //     }
-  //   );
-  // }
-
-  // getNewCodeDocumentByDocumentCode(id: number) {
-  //   this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
-  //     (numDocument => {
-  //       this.numDocument = numDocument;
-  //     })
-  //   );
-  // }
-
-  // deleteCellerDuplicateByLote(cellers: any) {
-  //   const cellersMap = cellers.map(celler => {
-  //     return [celler.lote, celler];
-  //   });
-  //   return [...new Map(cellersMap).values()];
-  // }
 
   // deleteCellerDuplicateByLocation(cellers: any, lote: string) {
   //   const cellerByLote = cellers.filter(celler => celler.lote === lote);

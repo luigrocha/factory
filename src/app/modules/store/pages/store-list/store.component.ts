@@ -96,6 +96,7 @@ export class StoreComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAll();
+    this.getAllDocuments();
     this.cols = [
       { field: 'lote', header: 'Lote' },
       { field: 'amount', header: 'Cantidad' },
@@ -135,6 +136,16 @@ export class StoreComponent implements OnInit {
       this.cellers.forEach(celler => celler.date = new Date(celler.date));
     });
   }
+
+  getAllDocuments() {
+    this.documentsMenu = [];
+    this.cellerService.getAllDocument().subscribe((documents) => {
+      documents.forEach(document => {
+        this.documentsMenu.push({ label: document.description, routerLink: '/home/bodega/' + document.name });
+      });
+    });
+  }
+
 
   getReceipt(celler: Celler) {
     let typeDocument = 0;

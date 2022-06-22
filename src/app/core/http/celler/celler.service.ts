@@ -30,10 +30,6 @@ export class CellerService {
     return this.http.get<Celler[]>(this.URL_CELLER + '', this.httpOptions);
   }
 
-  getCellerByMaterialCode(id: number): Observable<Celler[]> {
-    return this.http.get<Celler[]>(this.URL_CELLER + '/findByMaterialCode/' + id, this.httpOptions);
-  }
-
   getAllDocument(): Observable<Document[]> {
     return this.http.get<Document[]>(this.URL_DOCUMENT + '', this.httpOptions);
   }

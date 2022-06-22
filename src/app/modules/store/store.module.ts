@@ -10,7 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { StoreCreateComponent } from './pages/store-create/store-create.component';
 
@@ -47,6 +47,7 @@ registerLocaleData(localeEs, 'es');
     TagModule,
     DialogModule,
     FormsModule,
+    ReactiveFormsModule,
     ConfirmDialogModule,
     MenuModule,
     DataViewModule,
