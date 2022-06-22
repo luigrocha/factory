@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DocumentInfo } from 'src/app/types/document.types';
 
 @Component({
   selector: 'app-document-viewer',
@@ -10,6 +11,7 @@ export class DocumentViewerComponent implements OnInit {
 
   fileName: string;
   srcPdf: string;
+  document: DocumentInfo;
 
   constructor(
     public ref: DynamicDialogRef,
@@ -18,6 +20,7 @@ export class DocumentViewerComponent implements OnInit {
 
   ngOnInit(): void {
     this.fileName = this.config.data.fileName;
-    this.srcPdf = this.config.data.srcPdf;
+    this.document = this.config.data.document;
+    this.srcPdf = this.document.documentUrl;
   }
 }

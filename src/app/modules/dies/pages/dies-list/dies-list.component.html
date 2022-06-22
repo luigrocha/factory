@@ -156,6 +156,9 @@
                 </ng-template>
               </p-columnFilter>
             </th>
+            <th class="text-center">
+              <i class="pi pi-file-pdf" style="font-size: 18px" pTooltip="Documento"></i>
+            </th>
             <th>
               <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
@@ -228,6 +231,16 @@
               </span>
             </td>
             <td>
+              <button pButton
+                      pRipple
+                      *ngIf="!documentIsEmpty(die.documents)"
+                      (click)="selectedDie = die; documentPanel.toggle($event)"
+                      pTooltip="Diseños"
+                      icon="pi pi-eye"
+                      class="p-button-text p-button-rounded p-button-plain">
+              </button>
+            </td>
+            <td>
               <div class="flex justify-content-center">
                 <button type="button"
                         pButton
@@ -253,3 +266,23 @@
   </div>
 </div>
 <p-menu #menu1 [popup]="true" [model]="menuItems"></p-menu>
+<p-menu #documentMenu [popup]="true" [model]="getDocumentItems()"></p-menu>
+
+<p-overlayPanel #documentPanel
+                showCloseIcon="true"
+                [style]="{width: '280px'}">
+  <ng-template pTemplate>
+    <div class="document-list">
+      <h6>Versiones</h6>
+      <ul>
+        <li *ngFor="let document of selectedDie.documents">
+          <p-chip [label]="'V' + document.version"
+                  icon="pi pi-file-pdf" styleClass="mr-2"></p-chip>
+          <span>{{document.versionDate | date: 'dd-MM-yyyy HH:mm:ss'}}</span>
+          <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
+                  (click)="selectedDocument = document; documentMenu.toggle($event)"></button>
+        </li>
+      </ul>
+    </div>
+  </ng-template>
+</p-overlayPanel>

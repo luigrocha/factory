@@ -1,0 +1,9 @@
+<p-fileUpload name="demo[]"
+              (uploadHandler)="selectFile($event)"
+              [multiple]="isMultiple"
+              [invalidFileSizeMessageSummary]="maxSizeSummary"
+              [invalidFileSizeMessageDetail]="maxSizeDetail"
+              [accept]="accept"
+              [customUpload]="true"
+              [maxFileSize]="maxFileSize">
+</p-fileUpload>
