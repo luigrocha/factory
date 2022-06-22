@@ -11,6 +11,13 @@ export interface DieProduct {
   status: Status;
 }
 
+export interface ShortDieProduct {
+  id: number;
+  code: string;
+  name: string;
+}
+
+
 export interface CreateDieProduct extends Omit<DieProduct, 'id' | 'status'> {
 }
 

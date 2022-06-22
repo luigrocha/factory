@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CirelPageable } from 'src/app/types/cirel.types';
+import { Cirel, CirelPageable, CreateCirel } from 'src/app/types/cirel.types';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -22,5 +22,9 @@ export class CirelService {
     }
 
     return this.http.get<CirelPageable>(this.URL + parameters);
+  }
+
+  createCirel(cirel: CreateCirel): Observable<Cirel> {
+    return this.http.post<Cirel>(this.URL, cirel);
   }
 }
