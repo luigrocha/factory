@@ -13,6 +13,7 @@ import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
 import { Observable } from 'rxjs';
 import { TableColumn } from 'src/app/types/table.types';
 import { CellerDetailService } from 'src/app/core/http/celler/celler-detail.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-store-ceb',
@@ -78,6 +79,7 @@ export class StoreCebComponent implements OnInit {
     private cellerDetailService: CellerDetailService,
     private cdr: ChangeDetectorRef,
     private authService: AuthService,
+    private toastService: ToastService,
   ) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
@@ -251,8 +253,14 @@ export class StoreCebComponent implements OnInit {
     body.destiny = null;
     body.deliveredBy = this.authService.getLoggedUser().name;
     body.receivedBy = null;
+    body.cellerItems.forEach(item => item.document = DocumentEnum.CEB);
 
-    this.generateReceipt(body);
+    this.cellerService.create(body).subscribe(
+      (data => {
+        this.toastService.success(body.numberDocument + ' Creado');
+        this.generateReceipt(body);
+      })
+    )
   }
 
   openNew() {

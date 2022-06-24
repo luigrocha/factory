@@ -46,7 +46,7 @@ export class CellerService {
     return this.http.get<Location[]>(this.URL_LOCATION + '', this.httpOptions);
   }
 
-  create(celler: Celler[]): Observable<any> {
+  create(celler: GenerateReceipt): Observable<any> {
     return this.http.post<any>(this.URL_CELLER + '', celler, this.httpOptions);
   }
 
