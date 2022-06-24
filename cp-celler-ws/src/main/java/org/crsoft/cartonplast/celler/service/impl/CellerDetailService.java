@@ -7,6 +7,7 @@ import org.crsoft.cartonplast.celler.service.ICellerDetailService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerDetailMapper;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.vo.req.CellerDetailReq;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
 import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
@@ -91,18 +92,10 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public void createCellerDetail(Collection<CellerDetail> cellers) throws InsertException, NotFoundException {
+    public void createCellerDetail(Collection<CellerDetailReq> cellers,Celler codeCeller,String userName) throws InsertException, NotFoundException {
         Collection<CellerDetail> cellersSave = new ArrayList<>(0);
-        for (CellerDetail cellerDetail : cellers) {
-            Celler celler = this.cellerService.getCellarByCode(cellerDetail.getCeller().getId());
-            Material material = this.materialService.getMaterialByCode(cellerDetail.getMaterial().getId());
-            Location location = this.locationService.getLocationByCode(cellerDetail.getLocation().getId());
-            Document document = this.documentService.getDocumentById(cellerDetail.getDocument().getId());
-            cellerDetail.setCeller(celler);
-            cellerDetail.setMaterial(material);
-            cellerDetail.setLocation(location);
-            cellerDetail.setDocument(document);
-            cellersSave.add(cellerDetail);
+        for (CellerDetailReq cellerDetail : cellers) {
+            cellersSave.add(buildCellerDetailToSave(cellerDetail,codeCeller,userName));
         }
         try {
             this.cellerDetailRepository.saveAll(cellersSave);
@@ -110,6 +103,25 @@ public class CellerDetailService implements ICellerDetailService {
             log.error("Error to createCellerDetail: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
+    }
 
+    private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq,Celler codeCeller,String userName) throws NotFoundException {
+        Material material = this.materialService.getMaterialByCode(cellerDetailReq.getMaterial());
+        Location location = this.locationService.getLocationByCode(cellerDetailReq.getLocation());
+        Document document = this.documentService.getDocumentById(cellerDetailReq.getDocument());
+        CellerDetail cellerLote = getCellarDetailByCode(cellerDetailReq.getLote());
+        CellerDetail cellerDetail = new CellerDetail();
+        cellerDetail.setLote(cellerLote.getLote());
+        cellerDetail.setAmount(cellerDetailReq.getAmount());
+        cellerDetail.setBalance(cellerDetailReq.getBalance());
+        cellerDetail.setCoat(cellerDetailReq.getCoat());
+        cellerDetail.setPallets(cellerDetailReq.getPallets());
+        cellerDetail.setWeight(cellerDetailReq.getWeight());
+        cellerDetail.setCeller(codeCeller);
+        cellerDetail.setMaterial(material);
+        cellerDetail.setLocation(location);
+        cellerDetail.setDocument(document);
+        cellerDetail.setCreatedBy(userName);
+        return cellerDetail;
     }
 }

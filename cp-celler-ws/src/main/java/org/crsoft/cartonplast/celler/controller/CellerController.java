@@ -40,9 +40,8 @@ public class CellerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCeller(@RequestBody Celler celler, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
-        celler.setUpdatedBy(userName);
-        this.cellerService.createCeller(celler);
+    public ResponseEntity<?> createCeller(@RequestBody CellerReq celler, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
+        this.cellerService.createCeller(celler,userName);
         return ResponseEntity.ok().build();
     }
 

@@ -1,8 +1,7 @@
 package org.crsoft.cartonplast.celler.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.crsoft.cartonplast.celler.model.Celler;
-import org.crsoft.cartonplast.celler.model.Document;
+import org.crsoft.cartonplast.celler.model.*;
 import org.crsoft.cartonplast.celler.repository.CellerRepository;
 import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerMapper;
@@ -10,6 +9,8 @@ import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptItemReq;
 import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.vo.req.CellerDetailReq;
+import org.crsoft.cartonplast.vo.req.CellerReq;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
@@ -37,13 +38,19 @@ public class CellerService implements ICellerService {
     private final CellerMapper cellerMapper;
     private final DocumentService documentService;
     private final CellerDetailService cellerDetailService;
+    private final MaterialService materialService;
+    private final LocationService locationService;
+    private final OptionDocumentService optionDocumentService;
 
     public CellerService(CellerRepository cellerRepository, CellerMapper cellerMapper,
-                         DocumentService documentService,@Lazy CellerDetailService cellerDetailService) {
+                         DocumentService documentService, @Lazy CellerDetailService cellerDetailService, MaterialService materialService, LocationService locationService, OptionDocumentService optionDocumentService) {
         this.cellerRepository = cellerRepository;
         this.cellerMapper = cellerMapper;
         this.documentService = documentService;
         this.cellerDetailService = cellerDetailService;
+        this.materialService = materialService;
+        this.locationService = locationService;
+        this.optionDocumentService = optionDocumentService;
     }
 
     @Override
@@ -87,13 +94,29 @@ public class CellerService implements ICellerService {
     }
 
     @Override
-    public void createCeller(Celler celler) throws InsertException {
+    public void createCeller(CellerReq celler,String userName) throws InsertException {
         try {
-            this.cellerRepository.save(celler);
+            Celler cellerSave = this.cellerRepository.save(buildCellerToSave(celler, userName));
+            this.cellerDetailService.createCellerDetail(celler.getCellerItems(),cellerSave,userName);
         } catch (Exception e) {
             log.error("Error to createCeller: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
+    }
+
+    private Celler buildCellerToSave(CellerReq celler,String userName) throws NotFoundException {
+        OptionDocument reason = this.optionDocumentService.findByCode(celler.getReason());
+        Celler cellerNew = new Celler();
+        cellerNew.setNumberDocument(celler.getNumberDocument());
+        cellerNew.setDate(celler.getDate());
+        cellerNew.setDateDocument(celler.getDateDocument());
+        cellerNew.setReason(reason.getName());
+        cellerNew.setObservation(celler.getObservation());
+        cellerNew.setObservations(celler.getObservations());
+        cellerNew.setOrigin(celler.getOrigin());
+        cellerNew.setDestiny(celler.getDestiny());
+        cellerNew.setCreatedBy(userName);
+        return cellerNew;
     }
 
     @Override
@@ -133,6 +156,42 @@ public class CellerService implements ICellerService {
     public byte[] generateReceipt(GenerateReceiptReq generateReceiptReq, Integer documentId) throws NotFoundException {
         Document document = this.documentService.getDocumentById(documentId);
         return ReceiptServiceFactory.getService(document.getName()).generateReceipt(generateReceiptReq);
+    }
+
+    @Override
+    public GenerateReceiptReq buildRecipeReq(CellerReq cellerReq) throws NotFoundException {
+        OptionDocument optionDocument = this.optionDocumentService.findByCode(cellerReq.getReason());
+        return GenerateReceiptReq.builder()
+                .receiptNumber(cellerReq.getNumberDocument())
+                .receiptDate(cellerReq.getDateDocument())
+                .reason(optionDocument.getName())
+                .reasonObservation(cellerReq.getObservation())
+                .observations(cellerReq.getObservations())
+                .deliveredBy(cellerReq.getDeliveredBy())
+                .receivedBy(cellerReq.getReceivedBy())
+                .items(buildRecipeItemsReq(cellerReq.getCellerItems()))
+                .build();
+    }
+
+    private List<GenerateReceiptItemReq> buildRecipeItemsReq(Collection<CellerDetailReq> cellerDetailReq) throws NotFoundException {
+        List<GenerateReceiptItemReq> generateReceiptItemReqs = new ArrayList<>(0);
+        for (CellerDetailReq celler : cellerDetailReq) {
+            Material material = this.materialService.getMaterialByCode(celler.getMaterial());
+            Location location = this.locationService.getLocationByCode(celler.getLocation());
+            CellerDetail cellerLote = this.cellerDetailService.getCellarDetailByCode(celler.getLote());
+            generateReceiptItemReqs.add(GenerateReceiptItemReq.builder()
+                    .productType(material.getTypeMaterial().getName())
+                    .productName(material.getName())
+                    .lot(cellerLote.getLote())
+                    .units(celler.getAmount())
+                    .bags1KG(celler.getBalance())
+                    .bags25KG(celler.getCoat())
+                    .pallets55(celler.getPallets())
+                    .totalWeight(celler.getWeight())
+                    .location(location.getDescription())
+                    .build());
+        }
+        return generateReceiptItemReqs;
     }
 
 }

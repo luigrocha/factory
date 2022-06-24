@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.celler.service.ICellerDetailService;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.vo.req.CellerDetailReq;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,14 +40,4 @@ public class CellerDetailController {
     public ResponseEntity<Collection<CellerDetailRes>> findCellerDetailByCellerCode(@PathVariable("code") Integer code) throws NotFoundException {
         return ResponseEntity.ok(this.cellerDetailService.findCellerDetailByCellerCode(code));
     }
-
-    @PostMapping
-    public ResponseEntity<?> createCeller(@RequestBody Collection<CellerDetail> cellers, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
-        cellers.forEach(celler -> {
-            celler.setCreatedBy(userName);
-        });
-        this.cellerDetailService.createCellerDetail(cellers);
-        return ResponseEntity.ok().build();
-    }
-
 }

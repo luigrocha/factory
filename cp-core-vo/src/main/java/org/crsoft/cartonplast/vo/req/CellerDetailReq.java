@@ -20,14 +20,14 @@ public class CellerDetailReq implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
     private Integer material;
-    private String lote;
+    private Integer lote;
     private Integer amount;
     private Double balance;
     private Double coat;
     private Double pallets;
     private Double weight;
     private Integer location;
+    private Integer document;
 
 }

@@ -22,7 +22,7 @@ public interface ICellerService {
 
     CodeDocumentRes findNewCodeDocumentByDocumentCode(Integer code) throws NotFoundException;
 
-    void createCeller(Celler celler) throws NotFoundException, InsertException;
+    void createCeller(CellerReq celler,String userName) throws NotFoundException, InsertException;
 
     GenerateReceiptReq getReceipt(String numberDocument, Integer documentId) throws NotFoundException;
 
