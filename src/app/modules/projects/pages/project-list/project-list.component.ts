@@ -1,39 +1,91 @@
 import { Component, OnInit } from '@angular/core';
 import { Project } from 'src/app/types/project.types';
-import { TableHeader } from 'src/app/types/table.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { Table } from 'primeng/table';
+import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { MenuItem } from 'primeng/api';
+import { ProjectService } from 'src/app/core/http/projects/project.service';
 
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
-  styleUrls: ['./project-list.component.scss']
+  styleUrls: ['./project-list.component.scss'],
+  styles: [`
+        :host ::ng-deep  .p-frozen-column {
+            font-weight: bold;
+        }
+
+        :host ::ng-deep .p-datatable-frozen-tbody {
+            font-weight: bold;
+        }
+
+        :host ::ng-deep .p-progressbar {
+            height:.5rem;
+        }
+    `]
 })
 export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
-  selectedProjects: Project[] = [];
-  initialPage: number = 0;
-  pageSize: number = 10;
-  actualPage: number = 0;
-  query: string = null;
-  headers: TableHeader<Project>[] = [
-    { label: 'Cliente', property: 'client', frozen: true },
-    { label: 'Proyecto', property: 'name', frozen: true },
-    { label: 'Code GEN', property: 'code', frozen: true },
-    { label: 'GSM', property: 'gsm', frozen: false },
-    { label: '%HPo', property: 'gsm', frozen: false },
-
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  selectedProject: Project;
+  globalFilterFields: string[] = [
+    'name',
+    'codeGen',
+    'client.name'
   ];
+  pageSize: number = 10;
+  menuItems: MenuItem[];
 
-  constructor() { }
+  constructor(
+    private breadcrumbService: BreadcrumbService,
+    private projectService: ProjectService
+  ) {
+    this.breadcrumbService.setItems([
+      {label: 'Diseño'},
+      {label: 'Proyectos', routerLink: ['/home/proyectos']},
+    ]);
+  }
 
   ngOnInit(): void {
+    this.getAllProjects();
+    this.getMenuItems();
   }
 
-  private addNewProject(): void {
+  private getAllProjects() {
+    this.projectService.getAllProjects()
+      .subscribe(projects => {
+        this.projects = projects;
+      });
   }
 
-  private deleteSelectedProjects(): void {
+  private getMenuItems(): void {
+    this.menuItems = [
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.editProject()
+      },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        command: () => this.deleteProject()
+      }
+    ];
   }
 
+  addNewProject(): void {
+  }
 
+  clear(table: Table) {
+    table.clear();
+  }
+
+  private editProject() {
+    return undefined;
+  }
+
+  private deleteProject() {
+    return undefined;
+  }
 }
