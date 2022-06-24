@@ -1,4 +1,5 @@
 import { DieProduct } from "./die-product.types";
+import { DocumentInfo } from 'src/app/types/document.types';
 
 export interface Die {
   id: number;
@@ -19,6 +20,10 @@ export interface Die {
   status: DieStatus;
   dieProduct: DieProduct;
   machines: string[];
+  documents: DieDocument[];
+}
+
+export interface DieDocument extends DocumentInfo {
 }
 
 export interface CreateDie {

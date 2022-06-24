@@ -9,6 +9,8 @@ import { DocumentViewerComponent } from './components/document-viewer/document-v
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { SafePipe } from './pipes/safe.pipe';
+import { UploadFileComponent } from './components/upload-file/upload-file.component';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
   declarations: [
@@ -17,19 +19,22 @@ import { SafePipe } from './pipes/safe.pipe';
     InputUppercaseDirective,
     UserAvatarComponent,
     DocumentViewerComponent,
-    SafePipe
+    SafePipe,
+    UploadFileComponent
   ],
   exports: [
     LoadingComponent,
     StatusHighlightDirective,
     InputUppercaseDirective,
-    UserAvatarComponent
+    UserAvatarComponent,
+    SafePipe
   ],
   imports: [
     CommonModule,
     AvatarModule,
     NgxExtendedPdfViewerModule,
-    PdfViewerModule
+    PdfViewerModule,
+    FileUploadModule
   ]
 })
 export class SharedModule { }

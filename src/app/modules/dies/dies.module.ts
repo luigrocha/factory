@@ -21,6 +21,8 @@ import { DividerModule } from 'primeng/divider';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MenuModule } from 'primeng/menu';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ChipModule } from 'primeng/chip';
 
 
 @NgModule({
@@ -47,7 +49,9 @@ import { MenuModule } from 'primeng/menu';
     ReactiveFormsModule,
     InputTextareaModule,
     DividerModule,
-    MultiSelectModule
+    MultiSelectModule,
+    OverlayPanelModule,
+    ChipModule
   ],
   providers: [
     DialogService
