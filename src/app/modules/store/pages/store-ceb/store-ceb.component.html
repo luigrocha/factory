@@ -10,7 +10,7 @@
         <div
           class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center mb-5"
         >
-          <div class="field col-3 flex flex-column">
+          <div class="field col-6 flex flex-column">
             <label for="option">Motivo</label>
             <p-dropdown
               [options]="reazon$ | async"
@@ -43,7 +43,7 @@
             >
           </div>
 
-          <div class="field col-3 flex flex-column">
+          <div class="field col-6 flex flex-column">
             <label for="observation">Observación</label>
             <input
               pInputText
@@ -66,7 +66,7 @@
             >
           </div>
 
-          <div class="field col-3 flex flex-column">
+          <div class="field col-6 flex flex-column">
             <label for="date">Fecha Creación</label>
             <p-calendar
               [showIcon]="true"
@@ -79,7 +79,7 @@
             </p-calendar>
           </div>
 
-          <div class="field col-3 flex flex-column">
+          <div class="field col-6 flex flex-column">
             <label for="dateDocument">Fecha Documento</label>
             <p-calendar
               [showIcon]="true"
@@ -100,6 +100,38 @@
               class="p-error block"
               >{{ formErrors.required }}</small
             >
+          </div>
+
+          <div class="field col-6 flex flex-column">
+            <label class="mb-2" for="numberCoat"
+              >Cantidad de sacos: {{ numberCoat.value }}</label
+            >
+            <p-dropdown
+              id="numberCoat"
+              [options]="itemsCoat"
+              formControlName="numberCoat"
+              [editable]="true"
+              placeholder="Selecciona cantidad de sacos"
+              [style]="{ width: '100%' }"
+              [disabled]="enableButtons"
+            >
+            </p-dropdown>
+          </div>
+
+          <div class="field col-6 flex flex-column">
+            <label class="mb-2" for="numberPallet"
+              >Cantidad de sacos en pallet: {{ numberPallet.value }}</label
+            >
+            <p-dropdown
+              id="numberPallet"
+              [options]="itemsPallets"
+              formControlName="numberPallet"
+              [editable]="true"
+              placeholder="Selecciona cantidad de pallets"
+              [style]="{ width: '100%' }"
+              [disabled]="enableButtons"
+            >
+            </p-dropdown>
           </div>
 
           <button
@@ -221,7 +253,6 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-
               <td>
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
@@ -240,6 +271,7 @@
                       [showClear]="true"
                       emptyMessage="No se encontraron resultados"
                       placeholder="Seleccione Lote"
+                      (onChange)="onLoteSelected($event)"
                       [style]="{ width: '100%' }"
                     ></p-dropdown>
                     <small
@@ -259,7 +291,151 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="locations"
+                      formControlName="location"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          getCellerDetailLocation(index).touched &&
+                          getCellerDetailLocation(index).invalid
+                      }"
+                      optionLabel="description"
+                      optionValue="id"
+                      [filter]="true"
+                      filterBy="description"
+                      [showClear]="true"
+                      emptyMessage="No se encontraron resultados"
+                      placeholder="Seleccione Ubicación"
+                      (onChange)="onLocationSelected($event, index)"
+                      [style]="{ width: '100%' }"
+                    ></p-dropdown>
+                    <small
+                      *ngIf="
+                        getCellerDetailLocation(index).touched &&
+                        getCellerDetailLocation(index).hasError('required')
+                      "
+                      id="type-help"
+                      class="p-error block"
+                      >{{ formErrors.required }}</small
+                    >
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailLocation(
+                        getCellerDetailLocation(index).value
+                      )
+                    }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="availability"
+                      formControlName="availability"
+                      aria-describedby="availability-help"
+                      type="number"
+                      disabled
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailAvailability(index).value }} Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="amount"
+                      formControlName="amount"
+                      aria-describedby="amount-help"
+                      type="number"
+                      max="0"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailAmount(index).value }} Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="balance"
+                      formControlName="balance"
+                      aria-describedby="balance-help"
+                      type="number"
+                      (input)="calculateWeight(index)"
+                      max="0"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailBalance(index).value }} Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="coat"
+                      formControlName="coat"
+                      aria-describedby="coat-help"
+                      type="number"
+                      (input)="calculateWeight(index)"
+                      max="0"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailCoat(index).value }} Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="pallets"
+                      formControlName="pallets"
+                      aria-describedby="pallets-help"
+                      type="number"
+                      (input)="calculateWeight(index)"
+                      max="0"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailPallets(index).value }} Pall
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="weight"
+                      formControlName="weight"
+                      aria-describedby="weight-help"
+                      type="number"
+                      disabled
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailWeight(index).value }} Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
               <td style="text-align: center">
                 <button
                   *ngIf="!editing"
@@ -269,6 +445,7 @@
                   pInitEditableRow
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-text"
+                  [disabled]="enableButtons"
                 ></button>
                 <button
                   *ngIf="editing"
@@ -295,239 +472,50 @@
           </ng-template>
         </p-table>
 
-        <!-- <p-table #dt [value]="newCellers" [rowHover]="true" responsiveLayout="scroll"
-        styleClass="p-datatable-customers p-datatable-sm">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>
-              Tipo
-            </th>
-            <th>
-              Producto
-            </th>
-            <th>
-              Lote
-            </th>
-            <th>
-              Ubicación
-            </th>
-            <th>
-              Saldos (1Kg)
-            </th>
-            <th>
-              Sacos ({{numberCoat}}Kg)
-            </th>
-            <th>
-              Pallets (55)
-            </th>
-            <th>
-              Peso
-            </th>
-            <th style="
-                text-align: center;
-                display: flex;
-                justify-content: space-around;
-                min-height: 36.5px;
-              ">
-              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-celler>
-          <tr>
-            <td>
-              {{celler.material.typeMaterial.name}}
-            </td>
-            <td>
-              {{celler.material.name}}
-            </td>
-            <td>
-              {{celler.lote}}
-            </td>
-            <td>
-              {{celler.location.description}}
-            </td>
-            <td>
-              {{celler.balance}}
-            </td>
-            <td>
-              {{celler.coat}}
-            </td>
-            <td>
-              {{celler.pallets}}
-            </td>
-            <td>
-              {{celler.weight}}
-            </td>
-            <td style="justify-content: center;">
-              <div class="flex justify-content-evenly">
-                <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
-                  (click)="cellerSelect = celler;menu.toggle($event)" [disabled]="enableButtons">
-                </button>
-              </div>
-              <p-menu #menu [popup]="true" [model]="items" appendTo="body"></p-menu>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="9" style="text-align: center">
-              No existen items
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-
-      <div class="field flex flex-column mt-3" *ngIf="newCellers.length > 0">
-        <label for="observations">Observaciones</label>
-        <textarea type="text" pInputTextarea id="observations" [(ngModel)]="observations"
-          [disabled]="enableButtons"></textarea>
-      </div>
-      <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
-        <button pButton pRipple label="Guardar" icon="pi pi-plus" *ngIf="newCellers.length > 0 && observations"
-          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" (click)="generateReceipt()"
-          [disabled]="enableButtons"></button>
-        <button pButton pRipple label="Regresar" icon="pi pi-table" *ngIf="enableButtons"
-          class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3" routerLink="/home/bodega"></button>
-      </div>
-    </div>
-
-
-    <p-dialog [(visible)]="itemDialog" [style]="{ width: '70%' , height: '90vh'}" header="Nuevo Item CEB" [modal]="true"
-      styleClass="p-fluid">
-      <ng-template pTemplate="content">
-        <div class="field">
-          <label for="type">Tipo</label>
-          <p-dropdown id="type" [options]="typeMaterials" [(ngModel)]="typeMaterial" placeholder="Selecciona tipo"
-            (onChange)='onTypeSelected($event)' autofocus>
-            <ng-template pTemplate="selectedItem">
-              <div *ngIf="typeMaterial.name">
-                {{ typeMaterial.name }}
-              </div>
-            </ng-template>
-            <ng-template let-type pTemplate="item">
-              {{ type.name }}
-            </ng-template>
-          </p-dropdown>
-          <small class="p-invalid" *ngIf="submitted && !typeMaterial.name">Campo tipo es requerido.</small>
-        </div>
-        <div class="field" *ngIf="typeMaterial">
-          <label for="product">Producto / Envase</label>
-          <p-dropdown id="product" [options]="materials" [(ngModel)]="material" placeholder="Selecciona producto/envase"
-            (onChange)='onProductSelected($event)'>
-            <ng-template pTemplate="selectedItem">
-              <div *ngIf="material.name">
-                {{ material.name }}
-              </div>
-            </ng-template>
-            <ng-template let-product pTemplate="item">
-              {{ product.name }}
-            </ng-template>
-          </p-dropdown>
-          <small class="p-invalid" *ngIf="submitted && !material.name">Campo producto es requerido.</small>
-        </div>
-        <div class="field" *ngIf="material">
-          <label for="lote">Lote</label>
-          <p-dropdown id="lote" [options]="lotes" [(ngModel)]="celler" placeholder="Selecciona Lote"
-            (onChange)='onLoteSelected($event)'>
-            <ng-template pTemplate="selectedItem">
-              <div *ngIf="celler.lote">
-                {{ celler.lote }}
-              </div>
-            </ng-template>
-            <ng-template let-lote pTemplate="item">
-              {{ lote.lote }}
-            </ng-template>
-          </p-dropdown>
-          <small class="p-invalid" *ngIf="submitted && !celler.lote">Campo lote es requerido.</small>
+        <div class="field flex flex-column mt-3">
+          <label for="observations">Observaciones</label>
+          <textarea
+            pInputTextarea
+            id="observations"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                observations.touched && observations.invalid
+            }"
+            formControlName="observations"
+            aria-describedby="observations-help"
+            type="text"
+            [disabled]="enableButtons"
+          ></textarea>
+          <small
+            *ngIf="observations.touched && observations.hasError('required')"
+            id="observations-help"
+            class="p-error block"
+            >{{ formErrors.required }}</small
+          >
         </div>
 
-        <div *ngIf="celler">
-          <div class="p-formgrid grid">
-            <div class="field col">
-              <label for="location">Ubicación</label>
-              <p-dropdown id="location" [options]="locations" [(ngModel)]="location" placeholder="Selecciona Ubicación"
-                (onChange)='onLocationSelected($event)'>
-                <ng-template pTemplate="selectedItem">
-                  <div *ngIf="location.description">
-                    {{ location.description }}
-                  </div>
-                </ng-template>
-                <ng-template let-loc pTemplate="item">
-                  {{ loc.description }}
-                </ng-template>
-              </p-dropdown>
-            </div>
-            <div class="field col">
-              <label for="weight">Disponible</label>
-              <span class="p-inputgroup">
-                <input type="number" pInputText id="weight" [(ngModel)]="weightTotal" disabled />
-                <span class="p-inputgroup-addon">Kg</span>
-              </span>
-            </div>
-          </div>
-
-          <div *ngIf="weightTotal>0">
-            <div class="p-formgrid grid">
-              <div class="field col" *ngIf="typeMaterial.name == 'PEL'">
-                <label class="mb-2" for="numberCoat">Cantidad de sacos: {{numberCoat}}</label>
-                <p-dropdown id="numberCoat" [options]="itemsCoat" [(ngModel)]="numberCoat" [editable]="true"
-                  placeholder="Selecciona cantidad de sacos">
-                </p-dropdown>
-              </div>
-              <div class="field col">
-                <label class="mb-2" for="numberPallet">Cantidad de sacos en pallet: {{numberPallet}}</label>
-                <p-dropdown id="numberPallet" [options]="itemsPallets" [(ngModel)]="numberPallet" [editable]="true"
-                  placeholder="Selecciona cantidad de sacos en pallet">
-                </p-dropdown>
-              </div>
-            </div>
-            <div class="p-formgrid grid">
-              <div class="field col">
-                <label for="balance">Saldos(1Kg)</label>
-                <span class="p-inputgroup">
-                  <input type="number" pInputText id="balance" [(ngModel)]="newCeller.balance"
-                    (ngModelChange)="calculateWeight()" max="0" />
-                  <span class="p-inputgroup-addon">Kg</span>
-                </span>
-              </div>
-              <div class="field col">
-                <label for="coat">Sacos({{numberCoat}}Kg)</label>
-                <span class="p-inputgroup">
-                  <input type="number" pInputText id="coat" [(ngModel)]="newCeller.coat"
-                    (ngModelChange)="calculateWeight()" max="0" />
-                  <span class="p-inputgroup-addon">Kg</span>
-                </span>
-              </div>
-            </div>
-            <div class="p-formgrid grid">
-              <div class="field col">
-                <label for="pallets">Pallets({{numberPallet}})</label>
-                <span class="p-inputgroup">
-                  <input type="number" pInputText id="pallets" [(ngModel)]="newCeller.pallets"
-                    (ngModelChange)="calculateWeight()" max="0" />
-                  <span class="p-inputgroup-addon">Pall</span>
-                </span>
-              </div>
-              <div class="field col">
-                <label for="weight">Peso Total</label>
-                <span class="p-inputgroup">
-                  <input type="number" pInputText id="weight" [(ngModel)]="newCeller.weight" disabled />
-                  <span class="p-inputgroup-addon">Kg</span>
-                </span>
-              </div>
-            </div>
-          </div>
+        <div
+          class="flex flex-column md:flex-row md:justify-content-center md:align-items-center"
+        >
+          <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-plus"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            type="submit"
+            [disabled]="form.invalid"
+          ></button>
+          <button
+            pButton
+            pRipple
+            label="Regresar"
+            icon="pi pi-table"
+            *ngIf="enableButtons"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            routerLink="/home/bodega"
+          ></button>
         </div>
-      </ng-template>
-
-      <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-          (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveItem()"
-          *ngIf="weightTotal>0 && newCeller.weight<0 && newCeller.weight>(weightTotal*-1)"></button>
-      </ng-template>
-    </p-dialog> -->
 
         <p-dialog
           [(visible)]="pdfDialog"

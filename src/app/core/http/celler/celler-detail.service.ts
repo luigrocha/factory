@@ -23,6 +23,10 @@ export class CellerDetailService {
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
+  getByLocationCode(codeLocation: number, codeMaterial: number): Observable<CellerDetail[]> {
+    return this.http.get<CellerDetail[]>(this.URL_CELLER + '/findByLocationCode/' + codeLocation + '/' + codeMaterial, this.httpOptions);
+  }
+
   getByMaterialCode(id: number): Observable<CellerDetail[]> {
     return this.http.get<CellerDetail[]>(this.URL_CELLER + '/findByMaterialCode/' + id, this.httpOptions);
   }

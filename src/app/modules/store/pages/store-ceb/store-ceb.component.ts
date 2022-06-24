@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
@@ -58,54 +58,16 @@ export class StoreCebComponent implements OnInit {
   types: TypeMaterial[];
   materials: Material[] = [];
   lotes: CellerDetail[] = [];
+  locations: Location[] = [];
+  cellers: CellerDetail[];
   columns: TableColumn<CellerDetail>[];
-
-
-  // cellers: Celler[];
-
-  // celler: Celler;
-
-  // itemDialog: boolean;
-
-  // submitted: boolean;
-
-  // typeMaterials: TypeMaterial[];
-
-  // typeMaterial: TypeMaterial;
-
-  // materials: Material[];
-
-  // material: Material;
-
-
-
-  // weightTotal: number;
-
-  // isEditing: boolean;
-
-  // observations: string;
-
-  // locations: Location[];
-
-  // location: Location;
-
-  // pdfDialog: boolean;
-
-  // numberCoat = DEFAULT_COAT;
-
-  // numberPallet = DEFAULT_PALLETS;
-
-  // itemsCoat = DEFAULT_TYPE_COAT;
-
-  // itemsPallets = DEFAULT_TYPE_PALLETS;
-
+  itemsCoat = DEFAULT_TYPE_COAT;
+  itemsPallets = DEFAULT_TYPE_PALLETS;
   srcPdf: any;
-
   fileName: string;
-
   enableButtons: boolean;
-
   items: MenuItem[];
+  isSave: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -114,7 +76,7 @@ export class StoreCebComponent implements OnInit {
     private materialService: MaterialService,
     private cellerService: CellerService,
     private cellerDetailService: CellerDetailService,
-    private authService: AuthService,
+    private cdr: ChangeDetectorRef,
   ) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
@@ -141,7 +103,12 @@ export class StoreCebComponent implements OnInit {
       dateDocument: [null, [
         Validators.required,
       ]],
-      cellerItems: this.fb.array([])
+      cellerItems: this.fb.array([]),
+      observations: [null, [
+        Validators.required,
+      ]],
+      numberCoat: [DEFAULT_COAT],
+      numberPallet: [DEFAULT_PALLETS],
     });
   }
 
@@ -171,7 +138,7 @@ export class StoreCebComponent implements OnInit {
       { field: 'coat', header: 'Sacos' },
       { field: 'pallets', header: 'Palets' },
       { field: 'weight', header: 'Peso' },
-    ]
+    ];
   }
 
   get reazon() {
@@ -192,6 +159,18 @@ export class StoreCebComponent implements OnInit {
 
   get cellerItemsFormArray() {
     return this.form.get('cellerItems') as FormArray;
+  }
+
+  get observations() {
+    return this.form.get('observations');
+  }
+
+  get numberCoat() {
+    return this.form.get('numberCoat');
+  }
+
+  get numberPallet() {
+    return this.form.get('numberPallet');
   }
 
   getCellerDetailType(index: number) {
@@ -221,8 +200,47 @@ export class StoreCebComponent implements OnInit {
     return lote ? lote.lote : 'Selecciona Lote';
   }
 
-  save() {
+  getCellerDetailLocation(index: number) {
+    return this.cellerItemsFormArray.at(index).get('location');
+  }
 
+  searchCellerDetailLocation(id: number): string {
+    const location = this.locations.find(lot => lot.id === id);
+    return location ? location.description : 'Selecciona ubicación';
+  }
+
+  getCellerDetailAvailability(index: number) {
+    return this.cellerItemsFormArray.at(index).get('availability');
+  }
+
+  getCellerDetailAmount(index: number) {
+    return this.cellerItemsFormArray.at(index).get('amount');
+  }
+
+  getCellerDetailBalance(index: number) {
+    return this.cellerItemsFormArray.at(index).get('balance');
+  }
+
+  getCellerDetailCoat(index: number) {
+    return this.cellerItemsFormArray.at(index).get('coat');
+  }
+
+  getCellerDetailPallets(index: number) {
+    return this.cellerItemsFormArray.at(index).get('pallets');
+  }
+
+  getCellerDetailWeight(index: number) {
+    return this.cellerItemsFormArray.at(index).get('weight');
+  }
+
+  save() {
+    if (this.form.invalid) {
+      return;
+    }
+
+
+
+    this.generateReceipt();
   }
 
   openNew() {
@@ -236,6 +254,15 @@ export class StoreCebComponent implements OnInit {
       lote: [null, [
         Validators.required,
       ]],
+      location: [null, [
+        Validators.required,
+      ]],
+      availability: [0],
+      amount: [0],
+      balance: [0],
+      coat: [0],
+      pallets: [0],
+      weight: [0]
     }));
   }
 
@@ -262,7 +289,6 @@ export class StoreCebComponent implements OnInit {
     this.lotes = [];
     this.cellerDetailService.getByMaterialCode(id).subscribe(
       (cellers => {
-        // TODO filtrar movimientos del material por lote        
         const lotes = this.deleteCellerDuplicateByLote(cellers);
         this.lotes = lotes.filter((lote: CellerDetail) => lote.weight > 0);
       }),
@@ -272,11 +298,116 @@ export class StoreCebComponent implements OnInit {
     );
   }
 
+  onLoteSelected(e: any) {
+    const lote = e.value;
+    const celler = this.lotes.find(lo => lo.id === lote);
+    this.getCellerByLocationCode(celler.location.id, celler.material.id);
+  }
+
+  getCellerByLocationCode(codeLocation: number, codeMaterial: number) {
+    this.locations = [];
+    this.cellers = [];
+    this.cellerDetailService.getByLocationCode(codeLocation, codeMaterial).subscribe(
+      (locations) => {
+        this.cellers = locations;
+        this.deleteCellerDuplicateByLocation(locations).forEach((location: CellerDetail) => this.locations.push(location.location));
+      }
+    );
+  }
+
+  onLocationSelected(e: any, index: number) {
+    const location = e.value;
+    this.calculateWeightAvailable(location, index);
+  }
+
+  calculateWeightAvailable(location: number, index) {
+    let weightTotal = 0;
+    this.cellers.forEach(celler => {
+      if (celler.location.id === location) {
+        weightTotal += celler.weight;
+      }
+    });
+    this.cellerItemsFormArray.at(index).get('availability').setValue(weightTotal);
+  }
+
+  deleteCellerDuplicateByLocation(cellers: any) {
+    const cellersMap = cellers.map(celler => {
+      return [celler.location.id, celler];
+    });
+    return [...new Map(cellersMap).values()];
+  }
+
   deleteCellerDuplicateByLote(cellers: any) {
     const cellersMap = cellers.map(celler => {
       return [celler.lote, celler];
     });
     return [...new Map(cellersMap).values()];
+  }
+
+  calculateWeight(index: number) {
+    const balance = this.getCellerDetailBalance(index).value;
+    const coat = this.getCellerDetailCoat(index).value * this.numberCoat.value;
+    const pallets = this.getCellerDetailPallets(index).value * this.numberCoat.value * this.numberPallet.value;
+    this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
+
+    if (this.getCellerDetailWeight(index).value < (this.getCellerDetailAvailability(index).value * -1)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Atención',
+        detail: 'No se dispone la cantidad seleccionada',
+        life: 3000,
+      });
+    }
+  }
+
+  generateReceipt() {
+    const receiptItems: GenerateReceiptItem[] = [];
+
+    // this.newCellers.forEach(celler => {
+    //   receiptItems.push({
+    //     productType: celler.material.typeMaterial.name,
+    //     productName: celler.material.name,
+    //     lot: celler.lote,
+    //     units: celler.amount,
+    //     bags1KG: celler.balance,
+    //     bags25KG: celler.coat,
+    //     pallets55: celler.pallets,
+    //     totalWeight: celler.weight,
+    //     location: celler.location.description
+    //   });
+    // });
+
+    // const receipt: GenerateReceipt = {
+    //   receiptNumber: this.newCellers[0].numberDocument,
+    //   receiptDate: this.newCellers[0].date,
+    //   reason: this.optionDocument.name,
+    //   reasonObservation: this.observation.toUpperCase(),
+    //   observations: this.observations.toUpperCase(),
+    //   deliveredBy: this.authService.getLoggedUser().name,
+    //   receivedBy: null,
+    //   items: receiptItems
+    // };
+
+    // this.cellerService.generateReceiptPreview(DocumentEnum.CEB, receipt).subscribe(
+    //   (data => {
+    //     const type = data.body.type;
+    //     this.fileName = data.headers.get('content-disposition').split('filename=')[1];
+    //     this.srcPdf = URL.createObjectURL(
+    //       new Blob([data.body], { type })
+    //     );
+    //     this.pdfDialog = true;
+    //     this.enableButtons = true;
+    //   })
+    // );
+
+  }
+
+  onRowEditSave() {
+    this.cdr.detectChanges();
+  }
+
+  onRowEditCancel() {
+    this.cdr.detectChanges();
   }
 
   // openNew() {
@@ -367,47 +498,8 @@ export class StoreCebComponent implements OnInit {
 
 
 
-  // onLoteSelected(e: any) {
-  //   const lote = e.value;
-  //   this.newCeller.lote = lote.lote;
-  //   this.calculateWeightAvailable(this.newCeller.lote);
 
-  //   this.location = this.celler.location;
-  //   this.locations = [];
-  //   const locationsFilter: Celler[] = this.deleteCellerDuplicateByLocation(this.cellers, this.newCeller.lote);
-  //   locationsFilter.forEach(loc => { this.locations.push(loc.location); });
-  // }
 
-  // onLocationSelected(e: any) {
-  //   const loc = e.value;
-  //   this.newCeller.lote = this.cellers.find(celler => celler.location.id === loc.id).lote;
-  //   this.calculateWeightAvailable(this.newCeller.lote);
-  // }
-
-  // calculateWeightAvailable(lote: string) {
-  //   this.weightTotal = 0;
-  //   this.cellers.forEach(celler => {
-  //     if (celler.lote === lote) {
-  //       this.weightTotal += celler.weight;
-  //     }
-  //   });
-  // }
-
-  // calculateWeight() {
-  //   const balance = this.newCeller.balance ? this.newCeller.balance : 0;
-  //   const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * this.numberCoat;
-  //   const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * this.numberCoat * this.numberPallet;
-  //   this.newCeller.weight = balance + coat + pallets;
-
-  //   if (this.newCeller.weight < (this.weightTotal * -1)) {
-  //     this.messageService.add({
-  //       severity: 'warn',
-  //       summary: 'Atención',
-  //       detail: 'No se dispone la cantidad seleccionada',
-  //       life: 3000,
-  //     });
-  //   }
-  // }
 
   // getAllTypeMaterial() {
   //   this.materialService.getAllTypeMaterial().subscribe(
