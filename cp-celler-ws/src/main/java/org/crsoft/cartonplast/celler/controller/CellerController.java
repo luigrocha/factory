@@ -7,6 +7,7 @@ import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.util.HttpUtil;
+import org.crsoft.cartonplast.vo.req.CellerReq;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,6 @@ import java.util.Collection;
 @RestController
 @RequestMapping(GlobalConstant.V1_API_VERSION + "/celler")
 public class CellerController {
-
     private final ICellerService cellerService;
 
     public CellerController(ICellerService cellerService) {
@@ -34,33 +34,38 @@ public class CellerController {
         return ResponseEntity.ok(this.cellerService.findAllCeller());
     }
 
-    @GetMapping("/findByMaterialCode/{code}")
-    public ResponseEntity<Collection<CellerRes>> findCellerByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
-        return ResponseEntity.ok(this.cellerService.findCellerByMaterialCode(code));
-    }
-
     @GetMapping("/findNewCodeDocumentByDocumentCode/{code}")
     public ResponseEntity<CodeDocumentRes> findNewCodeDocumentByDocumentCode(@PathVariable("code") Integer code) throws NotFoundException {
         return ResponseEntity.ok(this.cellerService.findNewCodeDocumentByDocumentCode(code));
     }
 
     @PostMapping
-    public ResponseEntity<?> createCeller(@RequestBody Collection<Celler> cellers, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
-        cellers.forEach(celler -> {
-            celler.setCreatedBy(userName);
-        });
-        this.cellerService.createCeller(cellers);
+    public ResponseEntity<?> createCeller(@RequestBody CellerReq celler, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
+        this.cellerService.createCeller(celler,userName);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(value = "/get-receipt/{numberDocument}/{documentId}", produces = "application/pdf")
+    public ResponseEntity<byte[]> getReceipt(
+            @PathVariable("numberDocument") String numberDocument,
+            @PathVariable("documentId") Integer documentId) throws NotFoundException {
+        GenerateReceiptReq receipt = this.cellerService.getReceipt(numberDocument, documentId);
+        byte[] pdf = cellerService.generateReceipt(receipt, documentId);
+        return new ResponseEntity<>(
+                pdf,
+                HttpUtil.getDefaultPDFHeaders(receipt.getReceiptNumber()),
+                HttpStatus.OK);
     }
 
     @PostMapping(value = "/generate-receipt", produces = "application/pdf")
     public ResponseEntity<byte[]> generateReceipt(
-            @Valid @RequestBody GenerateReceiptReq generateReceiptReq,
-            @RequestParam("documentId") Integer documentId) {
-        byte[] pdf = cellerService.generateReceipt(generateReceiptReq, documentId);
+            @Valid @RequestBody CellerReq generateReceiptReq,
+            @RequestParam("documentId") Integer documentId) throws NotFoundException {
+        GenerateReceiptReq receipt = this.cellerService.buildRecipeReq(generateReceiptReq);
+        byte[] pdf = cellerService.generateReceipt(receipt, documentId);
         return new ResponseEntity<>(
                 pdf,
-                HttpUtil.getDefaultPDFHeaders(generateReceiptReq.getReceiptNumber()),
+                HttpUtil.getDefaultPDFHeaders(generateReceiptReq.getNumberDocument()),
                 HttpStatus.OK);
     }
 }

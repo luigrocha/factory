@@ -22,6 +22,7 @@ import java.util.Map;
 public class ReceiptCEBService implements IReceiptService {
 
     private final ReceiptGeneratorUtil receiptGeneratorUtil;
+
     @Override
     public String getReceiptType() {
         return ReceiptType.CEB.getType();

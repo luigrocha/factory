@@ -15,7 +15,7 @@ import java.util.Collection;
 @Mapper(componentModel = "spring")
 public interface ThicknessMapper {
 
-    @Mapping(source = "thick", target = "thickness")
+    // @Mapping(source = "thick", target = "thickness")
     ThicknessRes thicknessToThicknessRes(Thickness thickness);
 
     @InheritInverseConfiguration

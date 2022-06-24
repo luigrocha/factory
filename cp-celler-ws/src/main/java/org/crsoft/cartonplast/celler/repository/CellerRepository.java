@@ -1,9 +1,9 @@
 package org.crsoft.cartonplast.celler.repository;
 
 import org.crsoft.cartonplast.celler.model.Celler;
-import org.crsoft.cartonplast.celler.model.Document;
-import org.crsoft.cartonplast.celler.model.Material;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -19,10 +19,15 @@ public interface CellerRepository extends JpaRepository<Celler, Integer> {
 
     Optional<Celler> findByIdAndValidToIsNull(Integer code);
 
-    Collection<Celler> findAllByMaterialAndValidToIsNullOrderByCreatedAtDesc(Material material);
+    Optional<Celler> findDistinctTopByNumberDocumentLikeAndValidToIsNullOrderByCreatedAtDesc(String numberDocument);
 
-    Optional<Celler> findDistinctTopByMaterialAndValidToIsNullOrderByCreatedAtDesc(Material material);
+    @Query(value = "SELECT * FROM CDTCELL c " +
+            "WHERE c.CDTCELL_NUM_DOC LIKE CONCAT(:numberDocument,'%')" +
+            "ORDER BY c.CDTCELL_CREATED_AT DESC LIMIT 1", nativeQuery = true)
+    Optional<Celler> findNewCodeDocumentByDocumentCode(@Param("numberDocument") String numberDocument);
 
-    Optional<Celler> findDistinctTopByDocumentAndValidToIsNullOrderByCreatedAtDesc(Document document);
+    Optional<Celler> findByNumberDocumentAndValidToIsNull(String numberDocument);
+
+    //Collection<Celler> findAllByMaterialAndValidToIsNullOrderByCreatedAtDesc(Material material);
 
 }
