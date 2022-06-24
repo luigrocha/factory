@@ -30,10 +30,6 @@ export class CellerService {
     return this.http.get<Celler[]>(this.URL_CELLER + '', this.httpOptions);
   }
 
-  getCellerByMaterialCode(id: number): Observable<Celler[]> {
-    return this.http.get<Celler[]>(this.URL_CELLER + '/findByMaterialCode/' + id, this.httpOptions);
-  }
-
   getAllDocument(): Observable<Document[]> {
     return this.http.get<Document[]>(this.URL_DOCUMENT + '', this.httpOptions);
   }
@@ -50,7 +46,7 @@ export class CellerService {
     return this.http.get<Location[]>(this.URL_LOCATION + '', this.httpOptions);
   }
 
-  create(celler: Celler[]): Observable<any> {
+  create(celler: GenerateReceipt): Observable<any> {
     return this.http.post<any>(this.URL_CELLER + '', celler, this.httpOptions);
   }
 
@@ -76,6 +72,13 @@ export class CellerService {
 
     return this.http.post(url, body, {
       params: params,
+      responseType: 'blob',
+      observe: 'response'
+    });
+  }
+
+  getReceipt(numberDocument: string, documentId: number) {
+    return this.http.get(this.URL_CELLER + '/get-receipt/' + numberDocument + '/' + documentId, {
       responseType: 'blob',
       observe: 'response'
     });

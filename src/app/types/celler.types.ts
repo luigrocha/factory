@@ -3,15 +3,24 @@ import { Material } from './material.types';
 export interface Celler {
   id?: number;
   numberDocument?: string;
+  date?: Date;
+  dateDocument?: Date;
+  reason?: string;
+  observation?: string;
+  observations?: string;
+  origin?: string;
+  destiny?: string;
+}
+
+export interface CellerDetail {
+  id?: number;
   lote?: string;
   amount?: number;
   balance?: number;
   coat?: number;
   pallets?: number;
   weight?: number;
-  date?: Date;
-  createdAt?: Date;
-  observation?: string;
+  celler?: Celler;
   material?: Material;
   location?: Location;
   document?: Document;
@@ -53,24 +62,27 @@ export interface OptionDocument {
 }
 
 export interface GenerateReceipt {
-  receiptNumber: string;
-  receiptDate: Date;
+  numberDocument: string;
+  date?: Date;
+  dateDocument?: Date;
   reason?: string;
-  reasonObservation: string;
+  observation?: string;
   observations?: string;
+  origin?: string;
+  destiny?: string;
   deliveredBy?: string;
   receivedBy?: string;
-  items: GenerateReceiptItem[];
+  cellerItems: GenerateReceiptItem[];
 }
 
 export interface GenerateReceiptItem {
-  productType: string;
-  productName: string;
-  lot: string;
-  units: number;
-  bags1KG: number;
-  bags25KG: number;
-  pallets55: number;
-  totalWeight: number;
-  location: string;
+  material: number;
+  lote: string;
+  amount: number;
+  balance: number;
+  coat: number;
+  pallets: number;
+  weight: number;
+  document?: number;
+  location: number;
 }

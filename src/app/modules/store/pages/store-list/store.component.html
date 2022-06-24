@@ -4,7 +4,7 @@
 
     <div class="card">
       <p-table #dt [value]="cellers" [columns]="cols" [rows]="7" [paginator]="true"
-        [globalFilterFields]="['lote', 'amount','balance','coat','pallets','weight','date','observation','numberDocument','material.name','location.description','document.name','material.typeMaterial.name']"
+        [globalFilterFields]="['numberDocument', 'date','dateDocument','reason','observation','observations','origin','destiny']"
         [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [rowHover]="true" dataKey="id"
         styleClass="p-datatable-customers p-datatable-sm" responsiveLayout="scroll">
         <ng-template pTemplate="caption">
@@ -30,65 +30,34 @@
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
             <th>
-              Tipo
-              <p-columnFilter type="status" field="material.typeMaterial.name" display="menu">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [ngModel]="value" [options]="types" (onChange)="filter($event.value.name)"
-                    placeholder="{{ value ?  value : 'Selecciona prioridad' }}" [style]="{'min-width': '12rem'}">
-                    <ng-template let-option pTemplate="item">
-                      {{option.name}}
-                    </ng-template>
-                  </p-dropdown>
-                </ng-template>
-              </p-columnFilter>
-            </th>
-            <th>
-              Producto
-              <p-columnFilter type="text" field="material.name" display="menu" placeholder="Buscar por material">
-              </p-columnFilter>
-            </th>
-            <th>
-              Lote
-              <p-columnFilter type="text" field="lote" display="menu" placeholder="Buscar por lote">
-              </p-columnFilter>
-            </th>
-            <th>
-              Cantidad
-            </th>
-            <th>
-              Saldos
-            </th>
-            <th>
-              Sacos
-            </th>
-            <th>
-              Pallets
-            </th>
-            <th>
-              Peso Kg
-            </th>
-            <th>
-              Ubicación
-              <p-columnFilter type="status" field="location.description" display="menu">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [ngModel]="value" [options]="locations" (onChange)="filter($event.value.description)"
-                    placeholder="{{ value ?  value : 'Selecciona prioridad' }}" [style]="{'min-width': '12rem'}">
-                    <ng-template let-option pTemplate="item">
-                      {{option.description}}
-                    </ng-template>
-                  </p-dropdown>
-                </ng-template>
-              </p-columnFilter>
-            </th>
-            <th>
               Documento
               <p-columnFilter type="text" field="numberDocument" display="menu" placeholder="Buscar por Documento">
               </p-columnFilter>
             </th>
             <th>
-              Fecha
+              Fecha Creación
               <p-columnFilter type="date" field="date" display="menu" placeholder="dd-mm-aaaa">
               </p-columnFilter>
+            </th>
+            <th>
+              Fecha Documento
+              <p-columnFilter type="date" field="dateDocument" display="menu" placeholder="dd-mm-aaaa">
+              </p-columnFilter>
+            </th>
+            <th>
+              Razon
+            </th>
+            <th>
+              Observacion
+            </th>
+            <th>
+              Obseraciones
+            </th>
+            <th>
+              Origen
+            </th>
+            <th>
+              Destino
             </th>
             <th style="              
                 text-align: center;
@@ -106,55 +75,47 @@
             <td>
               <p-tableCheckbox [value]="celler"></p-tableCheckbox>
             </td>
-            <td style="min-width: 6rem">
-              <span class="p-column-title">Tipo</span>
-              {{celler.material.typeMaterial.name}}
-            </td>
-            <td style="min-width: 8rem">
-              <span class="p-column-title">Producto</span>
-              {{ celler.material.name }}
-            </td>
-            <td style="min-width: 8rem">
-              <span class="p-column-title">Lote</span>
-              {{celler.lote}}
-            </td>
-            <td>
-              <span class="p-column-title">Cantidad</span>
-              {{celler.amount}}
-            </td>
-            <td>
-              <span class="p-column-title">Saldos</span>
-              {{celler.balance}}
-            </td>
-            <td>
-              <span class="p-column-title">Sacos</span>
-              {{celler.coat}}
-            </td>
-            <td>
-              <span class="p-column-title">Pallets</span>
-              {{celler.pallets}}
-            </td>
-            <td style="min-width: 5rem">
-              <span class="p-column-title">Peso Kg</span>
-              {{celler.weight }} Kg
-            </td>
-            <td style="min-width: 8rem">
-              <span class="p-column-title">Ubicación</span>
-              {{celler.location.description}}
-            </td>
             <td style="min-width: 9rem">
               <span class="p-column-title">Documento</span>
               {{celler.numberDocument}}
             </td>
-            <td style="min-width: 9rem">
+            <td style="min-width: 11rem">
+              <span class="p-column-title">Fecha Creación</span>
+              {{ celler.date | date: "dd-MM-yyyy" }}
+            </td>
+            <td style="min-width: 12rem">
+              <span class="p-column-title">Fecha Documento</span>
+              {{ celler.dateDocument | date: "dd-MM-yyyy" }}
+            </td>
+            <td style="min-width: 6rem">
+              <span class="p-column-title">Razon</span>
+              {{celler.reason}}
+            </td>
+            <td style="min-width: 6rem">
+              <span class="p-column-title">Observacion</span>
+              {{celler.observation}}
+            </td>
+            <td style="min-width: 6rem">
+              <span class="p-column-title">Observaciones</span>
+              {{celler.observations}}
+            </td>
+            <td style="min-width: 6rem">
+              <span class="p-column-title">Origen</span>
+              {{celler.origin}}
+            </td>
+            <td style="min-width: 6rem">
+              <span class="p-column-title">Destino</span>
+              {{celler.destiny }}
+            </td>
+            <!-- <td style="min-width: 9rem">
               <span class="p-column-title">Fecha</span>
               {{ celler.date | date: "dd-MM-yyyy" }} <i class="pi pi-info-circle ml-2" style="font-size: 18px"
                 pTooltip="{{celler.observation}}"></i>
-            </td>
+            </td> -->
             <td style="justify-content: center;">
               <div class="flex justify-content-evenly">
                 <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
-                  (click)="userSelect = celler;menu.toggle($event)">
+                  (click)="cellerSelect = celler;menu.toggle($event)">
                 </button>
               </div>
               <p-menu #menu [popup]="true" [model]="items" appendTo="body"></p-menu>
@@ -190,6 +151,12 @@
           (click)="hideDialog()"></button>
         <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveOrder()"></button>
       </ng-template>
+    </p-dialog>
+
+    <p-dialog [(visible)]="pdfDialog" [style]="{ width: '80%' }" [modal]="true" styleClass="p-fluid" *ngIf="srcPdf">
+      <ngx-extended-pdf-viewer [src]="srcPdf" [height]="'80vh'" [useBrowserLocale]="true"
+        [filenameForDownload]="fileName">
+      </ngx-extended-pdf-viewer>
     </p-dialog>
 
     <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
