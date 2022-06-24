@@ -23,6 +23,13 @@ public class CellerDetailController {
         this.cellerDetailService = cellerDetailService;
     }
 
+    @GetMapping("/findByLocationCode/{codeLocation}/{codeMaterial}")
+    public ResponseEntity<Collection<CellerDetailRes>> findByLocationCode(
+            @PathVariable("codeLocation") Integer codeLocation,
+            @PathVariable("codeMaterial") Integer codeMaterial) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findByLocationCode(codeLocation,codeMaterial));
+    }
+
     @GetMapping("/findByMaterialCode/{code}")
     public ResponseEntity<Collection<CellerDetailRes>> findCellerByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
         return ResponseEntity.ok(this.cellerDetailService.findCellerDetailByMaterialCode(code));

@@ -4,9 +4,11 @@ import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.vo.req.CellerReq;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 /**
@@ -24,5 +26,5 @@ public interface ICellerService {
 
     GenerateReceiptReq getReceipt(String numberDocument,Integer documentId) throws NotFoundException;
 
-    byte[] generateReceipt(GenerateReceiptReq generateReceiptReq, Integer documentId) throws NotFoundException;
+    byte[] generateReceipt(@Valid GenerateReceiptReq generateReceiptReq, Integer documentId) throws NotFoundException;
 }

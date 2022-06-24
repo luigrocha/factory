@@ -14,6 +14,8 @@ public interface ICellerDetailService {
 
     CellerDetail getCellarDetailByCode(Integer code) throws NotFoundException;
 
+    Collection<CellerDetailRes> findByLocationCode(Integer code,Integer codeMaterial) throws NotFoundException;
+
     Collection<CellerDetailRes> findCellerDetailByMaterialCode(Integer id) throws NotFoundException;
 
     Collection<CellerDetailRes> findCellerDetailByCellerCode(Integer code) throws NotFoundException;

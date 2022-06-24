@@ -54,6 +54,19 @@ public class CellerDetailService implements ICellerDetailService{
     }
 
     @Override
+    public Collection<CellerDetailRes> findByLocationCode(Integer codeLocation, Integer codeMaterial) throws NotFoundException {
+        Location location = this.locationService.getLocationByCode(codeLocation);
+        Material material = this.materialService.getMaterialByCode(codeMaterial);
+        Collection<CellerDetail> cellerDetails = this.cellerDetailRepository.findAllByLocationAndMaterialAndValidToIsNull(location,material);
+        if(CollectionUtil.isNotEmpty(cellerDetails)){
+            return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellerDetails);
+        } else {
+            log.error("Error to findByLocationCode {} - {}", codeLocation,codeMaterial);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
     public Collection<CellerDetailRes> findCellerDetailByMaterialCode(Integer id) throws NotFoundException {
         Material material = this.materialService.getMaterialByCode(id);
         Collection<CellerDetail> cellers = this.cellerDetailRepository.findAllByMaterialAndValidToIsNullOrderByCreatedAtDesc(material);
