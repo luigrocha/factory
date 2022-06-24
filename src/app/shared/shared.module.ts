@@ -11,6 +11,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { SafePipe } from './pipes/safe.pipe';
 import { UploadFileComponent } from './components/upload-file/upload-file.component';
 import { FileUploadModule } from 'primeng/fileupload';
+import { YesNoPipe } from './pipes/yes-no.pipe';
 
 @NgModule({
   declarations: [
@@ -20,14 +21,16 @@ import { FileUploadModule } from 'primeng/fileupload';
     UserAvatarComponent,
     DocumentViewerComponent,
     SafePipe,
-    UploadFileComponent
+    UploadFileComponent,
+    YesNoPipe
   ],
   exports: [
     LoadingComponent,
     StatusHighlightDirective,
     InputUppercaseDirective,
     UserAvatarComponent,
-    SafePipe
+    SafePipe,
+    YesNoPipe
   ],
   imports: [
     CommonModule,

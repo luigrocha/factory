@@ -1,4 +1,5 @@
-export interface Carbonate {
-  id: string;
-  code: string;
+export interface CalciumCarbonate {
+  id: number;
+  percentage: number;
+  apCode: string;
 }
