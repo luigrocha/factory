@@ -10,6 +10,7 @@ import org.crsoft.cartonplast.common.constant.ReceiptConstant;
 import org.crsoft.cartonplast.common.enums.ReceiptType;
 import org.crsoft.cartonplast.common.exception.ReceiptGeneratorException;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
 
 /**

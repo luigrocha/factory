@@ -27,7 +27,7 @@ public class CellerDetailController {
     public ResponseEntity<Collection<CellerDetailRes>> findByLocationCode(
             @PathVariable("codeLocation") Integer codeLocation,
             @PathVariable("codeMaterial") Integer codeMaterial) throws NotFoundException {
-        return ResponseEntity.ok(this.cellerDetailService.findByLocationCode(codeLocation,codeMaterial));
+        return ResponseEntity.ok(this.cellerDetailService.findByLocationCode(codeLocation, codeMaterial));
     }
 
     @GetMapping("/findByMaterialCode/{code}")

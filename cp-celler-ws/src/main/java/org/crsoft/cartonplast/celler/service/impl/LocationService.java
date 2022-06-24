@@ -83,7 +83,7 @@ public class LocationService implements ILocationService {
             location.setUpdatedAt(LocalDateTime.now());
             location.setValidTo(LocalDateTime.now());
             this.locationRepository.save(location);
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("Error to deleteLocationByCode: {}", e.getMessage());
             throw new UpdateException(TABLE_NAME, MESSAGE_DELETE);
         }

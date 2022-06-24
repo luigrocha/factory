@@ -23,7 +23,7 @@ import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NO
  */
 @Service
 @Slf4j
-public class CellerDetailService implements ICellerDetailService{
+public class CellerDetailService implements ICellerDetailService {
 
     private static final String TABLE_NAME = "CATCELL_DET";
     private final CellerDetailRepository cellerDetailRepository;
@@ -57,11 +57,11 @@ public class CellerDetailService implements ICellerDetailService{
     public Collection<CellerDetailRes> findByLocationCode(Integer codeLocation, Integer codeMaterial) throws NotFoundException {
         Location location = this.locationService.getLocationByCode(codeLocation);
         Material material = this.materialService.getMaterialByCode(codeMaterial);
-        Collection<CellerDetail> cellerDetails = this.cellerDetailRepository.findAllByLocationAndMaterialAndValidToIsNull(location,material);
-        if(CollectionUtil.isNotEmpty(cellerDetails)){
+        Collection<CellerDetail> cellerDetails = this.cellerDetailRepository.findAllByLocationAndMaterialAndValidToIsNull(location, material);
+        if (CollectionUtil.isNotEmpty(cellerDetails)) {
             return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellerDetails);
         } else {
-            log.error("Error to findByLocationCode {} - {}", codeLocation,codeMaterial);
+            log.error("Error to findByLocationCode {} - {}", codeLocation, codeMaterial);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
@@ -82,7 +82,7 @@ public class CellerDetailService implements ICellerDetailService{
     public Collection<CellerDetailRes> findCellerDetailByCellerCode(Integer code) throws NotFoundException {
         Celler celler = this.cellerService.getCellarByCode(code);
         Collection<CellerDetail> cellerDetailRes = this.cellerDetailRepository.findAllByCellerAndValidToIsNull(celler);
-        if(CollectionUtil.isNotEmpty(cellerDetailRes)){
+        if (CollectionUtil.isNotEmpty(cellerDetailRes)) {
             return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellerDetailRes);
         } else {
             log.error("Error to findCellerDetailByCellerCode {}", code);

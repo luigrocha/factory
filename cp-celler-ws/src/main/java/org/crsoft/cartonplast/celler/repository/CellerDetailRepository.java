@@ -22,6 +22,6 @@ public interface CellerDetailRepository extends JpaRepository<CellerDetail, Inte
 
     Collection<CellerDetail> findAllByCellerAndValidToIsNull(Celler celler);
 
-    Collection<CellerDetail> findAllByLocationAndMaterialAndValidToIsNull(Location location,Material material);
+    Collection<CellerDetail> findAllByLocationAndMaterialAndValidToIsNull(Location location, Material material);
 
 }

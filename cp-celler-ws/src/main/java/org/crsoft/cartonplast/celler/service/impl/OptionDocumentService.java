@@ -48,7 +48,7 @@ public class OptionDocumentService implements IOptionDocumentService {
     @Override
     public OptionDocument findByCode(Integer code) throws NotFoundException {
         Optional<OptionDocument> optionDocument = this.optionDocumentRepository.findByIdAndValidToIsNull(code);
-        if(optionDocument.isPresent()){
+        if (optionDocument.isPresent()) {
             return optionDocument.get();
         } else {
             log.error("Error to findByCode {}", code);

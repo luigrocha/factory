@@ -7,6 +7,7 @@ import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.util.HttpUtil;
+import org.crsoft.cartonplast.vo.req.CellerReq;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class CellerController {
     @GetMapping(value = "/get-receipt/{numberDocument}/{documentId}", produces = "application/pdf")
     public ResponseEntity<byte[]> getReceipt(
             @PathVariable("numberDocument") String numberDocument,
-            @PathVariable("documentId")Integer documentId) throws NotFoundException {
+            @PathVariable("documentId") Integer documentId) throws NotFoundException {
         GenerateReceiptReq receipt = this.cellerService.getReceipt(numberDocument, documentId);
         byte[] pdf = cellerService.generateReceipt(receipt, documentId);
         return new ResponseEntity<>(
@@ -59,12 +60,13 @@ public class CellerController {
 
     @PostMapping(value = "/generate-receipt", produces = "application/pdf")
     public ResponseEntity<byte[]> generateReceipt(
-            @Valid @RequestBody GenerateReceiptReq generateReceiptReq,
+            @Valid @RequestBody CellerReq generateReceiptReq,
             @RequestParam("documentId") Integer documentId) throws NotFoundException {
-        byte[] pdf = cellerService.generateReceipt(generateReceiptReq, documentId);
+        GenerateReceiptReq receipt = this.cellerService.buildRecipeReq(generateReceiptReq);
+        byte[] pdf = cellerService.generateReceipt(receipt, documentId);
         return new ResponseEntity<>(
                 pdf,
-                HttpUtil.getDefaultPDFHeaders(generateReceiptReq.getReceiptNumber()),
+                HttpUtil.getDefaultPDFHeaders(generateReceiptReq.getNumberDocument()),
                 HttpStatus.OK);
     }
 }

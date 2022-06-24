@@ -1,8 +1,6 @@
 package org.crsoft.cartonplast.celler.repository;
 
 import org.crsoft.cartonplast.celler.model.Celler;
-import org.crsoft.cartonplast.celler.model.Document;
-import org.crsoft.cartonplast.celler.model.Material;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
