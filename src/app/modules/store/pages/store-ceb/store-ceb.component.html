@@ -13,12 +13,12 @@
           <div class="field col-6 flex flex-column">
             <label for="option">Motivo</label>
             <p-dropdown
-              [options]="reazon$ | async"
-              id="reazon"
+              [options]="reasons"
+              id="reason"
               [ngClass]="{
-                'ng-invalid ng-dirty': reazon.touched && reazon.invalid
+                'ng-invalid ng-dirty': reason.touched && reason.invalid
               }"
-              formControlName="reazon"
+              formControlName="reason"
               placeholder="Selecciona motivo"
               optionLabel="name"
               optionValue="id"
@@ -36,8 +36,8 @@
               </ng-template>
             </p-dropdown>
             <small
-              *ngIf="reazon.touched && reazon.hasError('required')"
-              id="reazon-help"
+              *ngIf="reason.touched && reason.hasError('required')"
+              id="reason-help"
               class="p-error block"
               >{{ formErrors.required }}</small
             >
@@ -504,6 +504,7 @@
             icon="pi pi-plus"
             class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
             type="submit"
+            *ngIf="!enableButtons"
             [disabled]="form.invalid"
           ></button>
           <button

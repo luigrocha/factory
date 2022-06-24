@@ -54,7 +54,7 @@ export class StoreCebComponent implements OnInit {
   form: FormGroup;
   formErrors = FORM_ERROR_MESSAGES;
   numDocument: CodeDocument;
-  reazon$: Observable<OptionDocument[]>;
+  reasons: OptionDocument[];
   types: TypeMaterial[];
   materials: Material[] = [];
   lotes: CellerDetail[] = [];
@@ -67,7 +67,7 @@ export class StoreCebComponent implements OnInit {
   fileName: string;
   enableButtons: boolean;
   items: MenuItem[];
-  isSave: boolean;
+  pdfDialog: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -77,6 +77,7 @@ export class StoreCebComponent implements OnInit {
     private cellerService: CellerService,
     private cellerDetailService: CellerDetailService,
     private cdr: ChangeDetectorRef,
+    private authService: AuthService,
   ) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
@@ -89,10 +90,10 @@ export class StoreCebComponent implements OnInit {
   ngOnInit() {
     this.getAllTypeMaterial();
     this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
-    this.reazon$ = this.cellerService.getAllOptionsByDocumentCode(DocumentEnum.CEB);
+    this.getAllReasons();
     this.getCellerDetailColums();
     this.form = this.fb.group({
-      reazon: [null, [
+      reason: [null, [
         Validators.required,
       ]],
       observation: [null, [
@@ -110,6 +111,12 @@ export class StoreCebComponent implements OnInit {
       numberCoat: [DEFAULT_COAT],
       numberPallet: [DEFAULT_PALLETS],
     });
+  }
+
+  getAllReasons() {
+    this.cellerService.getAllOptionsByDocumentCode(DocumentEnum.CEB).subscribe((reasons => {
+      this.reasons = reasons;
+    }));
   }
 
   getNewCodeDocumentByDocumentCode(id: number) {
@@ -141,8 +148,8 @@ export class StoreCebComponent implements OnInit {
     ];
   }
 
-  get reazon() {
-    return this.form.get('reazon');
+  get reason() {
+    return this.form.get('reason');
   }
 
   get observation() {
@@ -238,9 +245,14 @@ export class StoreCebComponent implements OnInit {
       return;
     }
 
+    const body: GenerateReceipt = { ...this.form.getRawValue() };
+    body.numberDocument = this.numDocument.numDocument;
+    body.origin = null;
+    body.destiny = null;
+    body.deliveredBy = this.authService.getLoggedUser().name;
+    body.receivedBy = null;
 
-
-    this.generateReceipt();
+    this.generateReceipt(body);
   }
 
   openNew() {
@@ -360,45 +372,18 @@ export class StoreCebComponent implements OnInit {
     }
   }
 
-  generateReceipt() {
-    const receiptItems: GenerateReceiptItem[] = [];
-
-    // this.newCellers.forEach(celler => {
-    //   receiptItems.push({
-    //     productType: celler.material.typeMaterial.name,
-    //     productName: celler.material.name,
-    //     lot: celler.lote,
-    //     units: celler.amount,
-    //     bags1KG: celler.balance,
-    //     bags25KG: celler.coat,
-    //     pallets55: celler.pallets,
-    //     totalWeight: celler.weight,
-    //     location: celler.location.description
-    //   });
-    // });
-
-    // const receipt: GenerateReceipt = {
-    //   receiptNumber: this.newCellers[0].numberDocument,
-    //   receiptDate: this.newCellers[0].date,
-    //   reason: this.optionDocument.name,
-    //   reasonObservation: this.observation.toUpperCase(),
-    //   observations: this.observations.toUpperCase(),
-    //   deliveredBy: this.authService.getLoggedUser().name,
-    //   receivedBy: null,
-    //   items: receiptItems
-    // };
-
-    // this.cellerService.generateReceiptPreview(DocumentEnum.CEB, receipt).subscribe(
-    //   (data => {
-    //     const type = data.body.type;
-    //     this.fileName = data.headers.get('content-disposition').split('filename=')[1];
-    //     this.srcPdf = URL.createObjectURL(
-    //       new Blob([data.body], { type })
-    //     );
-    //     this.pdfDialog = true;
-    //     this.enableButtons = true;
-    //   })
-    // );
+  generateReceipt(body: GenerateReceipt) {
+    this.cellerService.generateReceiptPreview(DocumentEnum.CEB, body).subscribe(
+      (data => {
+        const type = data.body.type;
+        this.fileName = data.headers.get('content-disposition').split('filename=')[1];
+        this.srcPdf = URL.createObjectURL(
+          new Blob([data.body], { type })
+        );
+        this.pdfDialog = true;
+        this.enableButtons = true;
+      })
+    );
 
   }
 
@@ -409,193 +394,4 @@ export class StoreCebComponent implements OnInit {
   onRowEditCancel() {
     this.cdr.detectChanges();
   }
-
-  // openNew() {
-  //   this.newCeller = {
-  //     amount: 0,
-  //     balance: 0,
-  //     coat: 0,
-  //     pallets: 0,
-  //     weight: 0,
-  //   };
-  //   this.submitted = false;
-  //   this.itemDialog = true;
-  // }
-
-  // editItem(celler: Celler) {
-  //   this.newCeller = { ...celler };
-  //   this.material = this.newCeller.material;
-  //   this.typeMaterial = this.newCeller.material.typeMaterial;
-  //   this.location = this.newCeller.location;
-  //   this.getAllMaterialByType(this.typeMaterial.id);
-  //   this.getCellerByMaterialCode(this.material.id);
-  //   setTimeout(() => {
-  //     this.celler = this.lotes.find(cell => cell.lote === this.newCeller.lote);
-  //     this.calculateWeightAvailable(this.newCeller.lote);
-  //   }, 1000);
-  //   this.isEditing = true;
-  //   this.itemDialog = true;
-  // }
-
-  // deleteItem(celler: Celler) {
-  //   this.newCellers = this.newCellers.filter(val => val.material !== celler.material);
-  //   this.hideDialog();
-  // }
-
-  // //unidades -> lamina, producto terminado y respuestos
-
-  // saveItem() {
-  //   this.submitted = true;
-  //   if (this.isEditing) {
-  //     this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
-  //     this.isEditing = false;
-  //   } else if (this.isValidToSave()) {
-  //     this.newCeller.numberDocument = this.numDocument.numDocument;
-  //     this.newCeller.observation = this.observation;
-  //     this.newCeller.material = this.material;
-  //     this.newCeller.location = this.location;
-  //     this.newCeller.document = { id: DocumentEnum.CEB };
-  //     this.newCeller.date = this.date;
-  //     this.newCeller.createdAt = this.createdAt;
-  //     this.newCellers.push(this.newCeller);
-
-  //   } else {
-  //     this.messageService.add({
-  //       severity: 'warn',
-  //       summary: 'Atención',
-  //       detail: 'Llene todos los campos',
-  //       life: 3000,
-  //     });
-  //     this.itemDialog = true;
-  //     return;
-  //   }
-
-  //   this.newCellers = [...this.newCellers];
-  //   this.hideDialog();
-  // }
-
-  // hideDialog() {
-  //   this.submitted = false;
-  //   this.itemDialog = false;
-  //   this.newCeller = {};
-  //   this.typeMaterial = null;
-  //   this.material = null;
-  //   this.celler = null;
-  //   this.location = null;
-  //   this.weightTotal = 0;
-  // }
-
-  // findIndexByMaterial(material: Material): number {
-  //   let index = -1;
-  //   for (let i = 0; i < this.newCellers.length; i++) {
-  //     if (this.newCellers[i].material === material) {
-  //       index = i;
-  //       break;
-  //     }
-  //   }
-  //   return index;
-  // }
-
-
-
-
-
-
-  // getAllTypeMaterial() {
-  //   this.materialService.getAllTypeMaterial().subscribe(
-  //     (typeMaterials => {
-  //       this.typeMaterials = typeMaterials;
-  //     })
-  //   );
-  // }
-
-
-
-
-  // deleteCellerDuplicateByLocation(cellers: any, lote: string) {
-  //   const cellerByLote = cellers.filter(celler => celler.lote === lote);
-  //   const cellersMap = cellerByLote.map(celler => {
-  //     return [celler.location.id, celler];
-  //   });
-  //   return [...new Map(cellersMap).values()];
-  // }
-
-  // isValidToSave(): boolean {
-  //   return this.newCeller.lote ? true : false;
-  // }
-
-  // saveCeb() {
-  //   this.cellerService.create(this.newCellers).subscribe(
-  //     (data) => {
-  //       this.messageService.add({
-  //         severity: 'success',
-  //         summary: 'Éxito',
-  //         detail: this.numDocument + ' Creado',
-  //         life: 3000,
-  //       });
-  //       this.generateReceipt();
-  //       this.newCeller = {};
-  //       this.newCellers = [];
-  //       this.optionDocument = {};
-  //       this.observation = null;
-  //       this.observations = null;
-  //       this.date = null;
-  //       this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEB);
-  //       this.hideDialog();
-
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //       this.messageService.add({
-  //         severity: 'error',
-  //         summary: 'Error',
-  //         detail: err.error,
-  //         life: 3000,
-  //       });
-  //     }
-  //   );
-  // }
-
-  // generateReceipt() {
-  //   const receiptItems: GenerateReceiptItem[] = [];
-
-  //   this.newCellers.forEach(celler => {
-  //     receiptItems.push({
-  //       productType: celler.material.typeMaterial.name,
-  //       productName: celler.material.name,
-  //       lot: celler.lote,
-  //       units: celler.amount,
-  //       bags1KG: celler.balance,
-  //       bags25KG: celler.coat,
-  //       pallets55: celler.pallets,
-  //       totalWeight: celler.weight,
-  //       location: celler.location.description
-  //     });
-  //   });
-
-  //   const receipt: GenerateReceipt = {
-  //     receiptNumber: this.newCellers[0].numberDocument,
-  //     receiptDate: this.newCellers[0].date,
-  //     reason: this.optionDocument.name,
-  //     reasonObservation: this.observation.toUpperCase(),
-  //     observations: this.observations.toUpperCase(),
-  //     deliveredBy: this.authService.getLoggedUser().name,
-  //     receivedBy: null,
-  //     items: receiptItems
-  //   };
-
-  //   this.cellerService.generateReceiptPreview(DocumentEnum.CEB, receipt).subscribe(
-  //     (data => {
-  //       const type = data.body.type;
-  //       this.fileName = data.headers.get('content-disposition').split('filename=')[1];
-  //       this.srcPdf = URL.createObjectURL(
-  //         new Blob([data.body], { type })
-  //       );
-  //       this.pdfDialog = true;
-  //       this.enableButtons = true;
-  //     })
-  //   );
-
-  // }
-
 }
