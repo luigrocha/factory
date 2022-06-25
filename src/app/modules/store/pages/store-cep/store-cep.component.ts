@@ -90,6 +90,7 @@ export class StoreCepComponent implements OnInit {
     this.getAllTypeMaterial();
     this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEP);
     this.getCellerDetailColums();
+    this.getAllLocations();
     this.form = this.fb.group({
       observation: [null, [
         Validators.required,
@@ -100,9 +101,6 @@ export class StoreCepComponent implements OnInit {
         Validators.required,
       ]],
       cellerItems: this.fb.array([]),
-      observations: [null, [
-        Validators.required,
-      ]],
       numberCoat: [DEFAULT_COAT],
       numberPallet: [DEFAULT_PALLETS],
     });
@@ -122,13 +120,18 @@ export class StoreCepComponent implements OnInit {
     });
   }
 
+  getAllLocations() {
+    this.cellerService.getAllLocation().subscribe(locations => {
+      this.locations = locations;
+    });
+  }
+
   getCellerDetailColums() {
     this.columns = [
       { field: 'type', header: 'Tipo' },
       { field: 'material', header: 'Producto' },
       { field: 'lote', header: 'Lote' },
       { field: 'location', header: 'Ubicación' },
-      { field: 'availability', header: 'Disponible' },
       { field: 'amount', header: 'Unidades' },
       { field: 'balance', header: 'Saldos' },
       { field: 'coat', header: 'Sacos' },
@@ -151,10 +154,6 @@ export class StoreCepComponent implements OnInit {
 
   get cellerItemsFormArray() {
     return this.form.get('cellerItems') as FormArray;
-  }
-
-  get observations() {
-    return this.form.get('observations');
   }
 
   get numberCoat() {
@@ -187,11 +186,6 @@ export class StoreCepComponent implements OnInit {
     return this.cellerItemsFormArray.at(index).get('lote');
   }
 
-  searchCellerDetailLote(id: number): string {
-    const lote = this.lotes.find(lot => lot.id === id);
-    return lote ? lote.lote : 'Selecciona Lote';
-  }
-
   getCellerDetailLocation(index: number) {
     return this.cellerItemsFormArray.at(index).get('location');
   }
@@ -199,10 +193,6 @@ export class StoreCepComponent implements OnInit {
   searchCellerDetailLocation(id: number): string {
     const location = this.locations.find(lot => lot.id === id);
     return location ? location.description : 'Selecciona ubicación';
-  }
-
-  getCellerDetailAvailability(index: number) {
-    return this.cellerItemsFormArray.at(index).get('availability');
   }
 
   getCellerDetailAmount(index: number) {
@@ -261,7 +251,6 @@ export class StoreCepComponent implements OnInit {
       location: [null, [
         Validators.required,
       ]],
-      availability: [0],
       amount: [0],
       balance: [0],
       coat: [0],
@@ -286,7 +275,7 @@ export class StoreCepComponent implements OnInit {
 
   onProductSelected(e: any) {
     const product = e.value;
-    this.getCellerByMaterialCode(product);
+    // this.getCellerByMaterialCode(product);
   }
 
   getCellerByMaterialCode(id: number) {
@@ -300,38 +289,6 @@ export class StoreCepComponent implements OnInit {
         this.lotes = [];
       }
     );
-  }
-
-  onLoteSelected(e: any) {
-    const lote = e.value;
-    const celler = this.lotes.find(lo => lo.id === lote);
-    this.getCellerByLocationCode(celler.location.id, celler.material.id);
-  }
-
-  getCellerByLocationCode(codeLocation: number, codeMaterial: number) {
-    this.locations = [];
-    this.cellers = [];
-    this.cellerDetailService.getByLocationCode(codeLocation, codeMaterial).subscribe(
-      (locations) => {
-        this.cellers = locations;
-        this.deleteCellerDuplicateByLocation(locations).forEach((location: CellerDetail) => this.locations.push(location.location));
-      }
-    );
-  }
-
-  onLocationSelected(e: any, index: number) {
-    const location = e.value;
-    this.calculateWeightAvailable(location, index);
-  }
-
-  calculateWeightAvailable(location: number, index) {
-    let weightTotal = 0;
-    this.cellers.forEach(celler => {
-      if (celler.location.id === location) {
-        weightTotal += celler.weight;
-      }
-    });
-    this.cellerItemsFormArray.at(index).get('availability').setValue(weightTotal);
   }
 
   deleteCellerDuplicateByLocation(cellers: any) {
@@ -353,15 +310,6 @@ export class StoreCepComponent implements OnInit {
     const coat = this.getCellerDetailCoat(index).value * this.numberCoat.value;
     const pallets = this.getCellerDetailPallets(index).value * this.numberCoat.value * this.numberPallet.value;
     this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
-
-    if (this.getCellerDetailWeight(index).value < (this.getCellerDetailAvailability(index).value * -1)) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'No se dispone la cantidad seleccionada',
-        life: 3000,
-      });
-    }
   }
 
   generateReceipt(body: GenerateReceipt) {
