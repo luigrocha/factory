@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
+import { CellerDetail, CodeDocument, DocumentEnum, GenerateReceipt, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
-
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
+import { TableColumn } from 'src/app/types/table.types';
+import { CellerDetailService } from 'src/app/core/http/celler/celler-detail.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 @Component({
   selector: 'app-store-cep',
   templateUrl: './store-cep.component.html',
@@ -46,393 +50,340 @@ import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 })
 export class StoreCepComponent implements OnInit {
 
-  // cellers: Celler[];
+  form: FormGroup;
+  formErrors = FORM_ERROR_MESSAGES;
+  numDocument: CodeDocument;
+  types: TypeMaterial[];
+  materials: Material[] = [];
+  lotes: CellerDetail[] = [];
+  locations: Location[] = [];
+  cellers: CellerDetail[];
+  columns: TableColumn<CellerDetail>[];
+  itemsCoat = DEFAULT_TYPE_COAT;
+  itemsPallets = DEFAULT_TYPE_PALLETS;
+  srcPdf: any;
+  fileName: string;
+  enableButtons: boolean;
+  items: MenuItem[];
+  pdfDialog: boolean;
 
-  // celler: Celler;
-
-  // itemDialog: boolean;
-
-  // submitted: boolean;
-
-  // typeMaterials: TypeMaterial[];
-
-  // typeMaterial: TypeMaterial;
-
-  // materials: Material[];
-
-  // material: Material;
-
-  // lotes: Celler[];
-
-  // optionDocuments: OptionDocument[];
-
-  // optionDocument: OptionDocument;
-
-  // observation: string;
-
-  // weightTotal: number;
-
-  // newCeller: Celler;
-
-  // newCellers: Celler[] = [];
-
-  // numDocument: CodeDocument;
-
-  // isEditing: boolean;
-
-  // createdAt: Date = new Date();
-
-  // date: Date;
-
-  // locations: Location[];
-
-  // location: Location;
-
-  // pdfDialog: boolean;
-
-  // msgInfo: any = [{
-  //   severity: 'info',
-  //   summary: 'Selecciona un motivo y llena la observación para ingresar items'
-  // }];
-
-  // numberCoat = DEFAULT_COAT;
-
-  // numberPallet = DEFAULT_PALLETS;
-
-  // itemsCoat = DEFAULT_TYPE_COAT;
-
-  // itemsPallets = DEFAULT_TYPE_PALLETS;
-
-  // lote: string;
-
-  // srcPdf: any;
-
-  // fileName: string;
-
-  // enableButtons: boolean;
-
-  // items: MenuItem[];
-
-  // cellerSelect: Celler;
-
-  // constructor(
-  //   private messageService: MessageService,
-  //   private breadcrumbService: BreadcrumbService,
-  //   private materialService: MaterialService,
-  //   private cellerService: CellerService,
-  //   private authService: AuthService,
-  // ) {
-  //   pdfDefaultOptions.assetsFolder = 'bleeding-edge';
-  //   this.breadcrumbService.setItems([
-  //     { label: 'Bodega' },
-  //     { label: 'Gestión de bodega', routerLink: ['bodega'] },
-  //     { label: 'CEP', routerLink: ['bodega/CEP'] },
-  //   ]);
-  // }
-
-  ngOnInit() {
-    //   this.getAllTypeMaterial();
-    //   this.getAllOptionsByDocumentCode(DocumentEnum.CEP);
-    //   this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEP);
-    //   this.getAllLocation();
-    //   this.items = [
-    //     {
-    //       label: 'Editar',
-    //       icon: 'pi pi-pencil',
-    //       command: (e) => this.editItem(this.cellerSelect)
-    //     },
-    //     {
-    //       label: 'Eliminar',
-    //       icon: 'pi pi-trash',
-    //       command: (e) => this.deleteItem(this.cellerSelect)
-    //     }
-    //   ];
+  constructor(
+    private fb: FormBuilder,
+    private messageService: MessageService,
+    private breadcrumbService: BreadcrumbService,
+    private materialService: MaterialService,
+    private cellerService: CellerService,
+    private cellerDetailService: CellerDetailService,
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private toastService: ToastService,
+  ) {
+    pdfDefaultOptions.assetsFolder = 'bleeding-edge';
+    this.breadcrumbService.setItems([
+      { label: 'Bodega' },
+      { label: 'Gestión de bodega', routerLink: ['bodega'] },
+      { label: 'CEP', routerLink: ['bodega/CEP'] },
+    ]);
   }
 
-  // openNew() {
-  //   this.newCeller = {
-  //     amount: 0,
-  //     balance: 0,
-  //     coat: 0,
-  //     pallets: 0,
-  //     weight: 0,
-  //   };
-  //   this.submitted = false;
-  //   this.itemDialog = true;
-  // }
+  ngOnInit() {
+    this.getAllTypeMaterial();
+    this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEP);
+    this.getCellerDetailColums();
+    this.form = this.fb.group({
+      observation: [null, [
+        Validators.required,
+        Validators.maxLength(128)
+      ]],
+      date: new Date(),
+      dateDocument: [null, [
+        Validators.required,
+      ]],
+      cellerItems: this.fb.array([]),
+      observations: [null, [
+        Validators.required,
+      ]],
+      numberCoat: [DEFAULT_COAT],
+      numberPallet: [DEFAULT_PALLETS],
+    });
+  }
 
-  // editItem(celler: Celler) {
-  //   this.newCeller = { ...celler };
-  //   this.material = this.newCeller.material;
-  //   this.typeMaterial = this.newCeller.material.typeMaterial;
-  //   this.location = this.newCeller.location;
-  //   this.getAllMaterialByType(this.typeMaterial.id);
-  //   this.getCellerByMaterialCode(this.material.id);
-  //   setTimeout(() => {
-  //     this.celler = this.lotes.find(cell => cell.lote === this.newCeller.lote);
-  //     this.calculateWeightAvailable(this.newCeller.lote);
-  //   }, 1000);
-  //   this.isEditing = true;
-  //   this.itemDialog = true;
-  // }
+  getNewCodeDocumentByDocumentCode(id: number) {
+    this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
+      (numDocument => {
+        this.numDocument = numDocument;
+      })
+    );
+  }
 
-  // deleteItem(celler: Celler) {
-  //   this.newCellers = this.newCellers.filter(val => val.material !== celler.material);
-  //   this.hideDialog();
-  // }
+  getAllTypeMaterial() {
+    this.materialService.getAllTypeMaterial().subscribe(typeMaterial => {
+      this.types = typeMaterial;
+    });
+  }
 
-  // saveItem() {
-  //   this.submitted = true;
-  //   if (this.isEditing) {
-  //     this.newCellers[this.findIndexByMaterial(this.newCeller.material)] = this.newCeller;
-  //     this.isEditing = false;
-  //   } else if (this.isValidToSave()) {
-  //     this.newCeller.numberDocument = this.numDocument.numDocument;
-  //     this.newCeller.observation = this.observation;
-  //     this.newCeller.material = this.material;
-  //     this.newCeller.location = this.location;
-  //     this.newCeller.document = { id: DocumentEnum.CEP };
-  //     this.newCeller.date = this.date;
-  //     this.newCeller.createdAt = this.createdAt;
-  //     this.newCellers.push(this.newCeller);
-  //   } else {
-  //     this.messageService.add({
-  //       severity: 'warn',
-  //       summary: 'Atención',
-  //       detail: 'Llene todos los campos',
-  //       life: 3000,
-  //     });
-  //     this.itemDialog = true;
-  //     return;
-  //   }
+  getCellerDetailColums() {
+    this.columns = [
+      { field: 'type', header: 'Tipo' },
+      { field: 'material', header: 'Producto' },
+      { field: 'lote', header: 'Lote' },
+      { field: 'location', header: 'Ubicación' },
+      { field: 'availability', header: 'Disponible' },
+      { field: 'amount', header: 'Unidades' },
+      { field: 'balance', header: 'Saldos' },
+      { field: 'coat', header: 'Sacos' },
+      { field: 'pallets', header: 'Palets' },
+      { field: 'weight', header: 'Peso' },
+    ];
+  }
 
-  //   this.newCellers = [...this.newCellers];
-  //   this.hideDialog();
-  // }
+  get observation() {
+    return this.form.get('observation');
+  }
 
-  // hideDialog() {
-  //   this.submitted = false;
-  //   this.itemDialog = false;
-  //   this.newCeller = {};
-  //   this.typeMaterial = null;
-  //   this.material = null;
-  //   this.celler = null;
-  //   this.location = null;
-  //   this.weightTotal = 0;
-  // }
+  get date() {
+    return this.form.get('date');
+  }
 
-  // findIndexByMaterial(material: Material): number {
-  //   let index = -1;
-  //   for (let i = 0; i < this.newCellers.length; i++) {
-  //     if (this.newCellers[i].material === material) {
-  //       index = i;
-  //       break;
-  //     }
-  //   }
-  //   return index;
-  // }
+  get dateDocument() {
+    return this.form.get('dateDocument');
+  }
 
-  // onTypeSelected(e: any) {
-  //   const type = e.value;
-  //   this.getAllMaterialByType(type.id);
-  // }
+  get cellerItemsFormArray() {
+    return this.form.get('cellerItems') as FormArray;
+  }
 
-  // onProductSelected(e: any) {
-  //   const product = e.value;
-  //   this.getCellerByMaterialCode(product.id);
-  // }
+  get observations() {
+    return this.form.get('observations');
+  }
 
-  // onLoteSelected(e: any) {
-  //   const lote = e.value;
-  //   this.newCeller.lote = lote.lote;
-  //   this.calculateWeightAvailable(this.newCeller.lote);
+  get numberCoat() {
+    return this.form.get('numberCoat');
+  }
 
-  //   this.location = this.celler.location;
-  //   this.locations = [];
-  //   const locationsFilter: Celler[] = this.deleteCellerDuplicateByLocation(this.cellers, this.newCeller.lote);
-  //   locationsFilter.forEach(loc => { this.locations.push(loc.location); });
-  // }
+  get numberPallet() {
+    return this.form.get('numberPallet');
+  }
 
-  // onLocationSelected(e: any) {
-  //   const loc = e.value;
-  //   this.newCeller.location = loc;
-  //   this.newCeller.lote = this.cellers.find(celler => celler.location.id === loc.id).lote;
-  //   this.calculateWeightAvailable(this.newCeller.lote);
-  // }
+  getCellerDetailType(index: number) {
+    return this.cellerItemsFormArray.at(index).get('type');
+  }
 
-  // calculateWeightAvailable(lote: string) {
-  //   this.weightTotal = 0;
-  //   this.cellers.forEach(celler => {
-  //     if (celler.lote === lote) {
-  //       this.weightTotal += celler.weight;
-  //     }
-  //   });
-  // }
+  searchCellerDetailType(id: number): string {
+    const typeMaterial = this.types.find(type => type.id === id);
+    return typeMaterial ? typeMaterial.name : 'Selecciona Tipo';
+  }
 
-  // calculateWeight() {
-  //   const balance = this.newCeller.balance ? this.newCeller.balance : 0;
-  //   const coat = (this.newCeller.coat ? this.newCeller.coat : 0) * this.numberCoat;
-  //   const pallets = (this.newCeller.pallets ? this.newCeller.pallets : 0) * this.numberCoat * this.numberPallet;
-  //   this.newCeller.weight = balance + coat + pallets;
+  getCellerDetailMaterial(index: number) {
+    return this.cellerItemsFormArray.at(index).get('material');
+  }
 
-  //   if (this.newCeller.weight > this.weightTotal) {
-  //     this.messageService.add({
-  //       severity: 'warn',
-  //       summary: 'Atención',
-  //       detail: 'No se dispone la cantidad seleccionada',
-  //       life: 3000,
-  //     });
-  //   }
-  // }
+  searchCellerDetailMaterial(id: number): string {
+    const material = this.materials.find(mat => mat.id === id);
+    return material ? material.name : 'Selecciona Material';
+  }
 
-  // getAllTypeMaterial() {
-  //   this.materialService.getAllTypeMaterial().subscribe(
-  //     (typeMaterials => {
-  //       this.typeMaterials = typeMaterials;
-  //     })
-  //   );
-  // }
+  getCellerDetailLote(index: number) {
+    return this.cellerItemsFormArray.at(index).get('lote');
+  }
 
-  // getAllMaterialByType(id: number) {
-  //   this.materials = [];
-  //   this.materialService.getAllMaterialByType(id).subscribe(
-  //     (materials => {
-  //       this.materials = materials;
-  //     })
-  //   );
-  // }
+  searchCellerDetailLote(id: number): string {
+    const lote = this.lotes.find(lot => lot.id === id);
+    return lote ? lote.lote : 'Selecciona Lote';
+  }
 
-  // getAllOptionsByDocumentCode(id: number) {
-  //   this.cellerService.getAllOptionsByDocumentCode(id).subscribe(
-  //     (optionDocument) => {
-  //       this.optionDocuments = optionDocument;
-  //     }
-  //   );
-  // }
+  getCellerDetailLocation(index: number) {
+    return this.cellerItemsFormArray.at(index).get('location');
+  }
 
-  // getCellerByMaterialCode(id: number) {
-  //   this.cellers = [];
-  //   this.cellerService.getCellerByMaterialCode(id).subscribe(
-  //     (cellers => {
-  //       this.cellers = cellers;
-  //       const lotes = this.deleteCellerDuplicateByLote(cellers);
-  //       this.lotes = lotes.filter((lote: Celler) => lote.weight > 0);
+  searchCellerDetailLocation(id: number): string {
+    const location = this.locations.find(lot => lot.id === id);
+    return location ? location.description : 'Selecciona ubicación';
+  }
 
-  //     }),
-  //     (err) => {
-  //       this.celler = null;
-  //       this.cellers = [];
-  //       this.lotes = [];
-  //     }
-  //   );
-  // }
+  getCellerDetailAvailability(index: number) {
+    return this.cellerItemsFormArray.at(index).get('availability');
+  }
 
-  // getNewCodeDocumentByDocumentCode(id: number) {
-  //   this.cellerService.getNewCodeDocumentByDocumentCode(id).subscribe(
-  //     (numDocument => {
-  //       this.numDocument = numDocument;
-  //     })
-  //   );
-  // }
+  getCellerDetailAmount(index: number) {
+    return this.cellerItemsFormArray.at(index).get('amount');
+  }
 
-  // getAllLocation() {
-  //   this.cellerService.getAllLocation().subscribe(
-  //     (locations => {
-  //       this.locations = locations;
-  //     })
-  //   );
-  // }
+  getCellerDetailBalance(index: number) {
+    return this.cellerItemsFormArray.at(index).get('balance');
+  }
 
-  // deleteCellerDuplicateByLote(cellers: any) {
-  //   const cellersMap = cellers.map(celler => {
-  //     return [celler.lote, celler];
-  //   });
-  //   return [...new Map(cellersMap).values()];
-  // }
+  getCellerDetailCoat(index: number) {
+    return this.cellerItemsFormArray.at(index).get('coat');
+  }
 
-  // deleteCellerDuplicateByLocation(cellers: any, lote: string) {
-  //   const cellerByLote = cellers.filter(celler => celler.lote === lote);
-  //   const cellersMap = cellerByLote.map(celler => {
-  //     return [celler.location.id, celler];
-  //   });
-  //   return [...new Map(cellersMap).values()];
-  // }
+  getCellerDetailPallets(index: number) {
+    return this.cellerItemsFormArray.at(index).get('pallets');
+  }
 
-  // isValidToSave(): boolean {
-  //   return this.newCeller.lote ? true : false;
-  // }
+  getCellerDetailWeight(index: number) {
+    return this.cellerItemsFormArray.at(index).get('weight');
+  }
 
-  // saveCeb() {
-  //   this.cellerService.create(this.newCellers).subscribe(
-  //     (data) => {
-  //       this.messageService.add({
-  //         severity: 'success',
-  //         summary: 'Éxito',
-  //         detail: this.numDocument + ' Creado',
-  //         life: 3000,
-  //       });
-  //       this.generateReceipt();
-  //       this.newCeller = {};
-  //       this.newCellers = [];
-  //       this.optionDocument = {};
-  //       this.observation = null;
-  //       this.date = null;
-  //       this.getNewCodeDocumentByDocumentCode(DocumentEnum.CEP);
-  //       this.hideDialog();
+  save() {
+    if (this.form.invalid) {
+      return;
+    }
 
-  //     },
-  //     (err) => {
-  //       console.log(err);
-  //       this.messageService.add({
-  //         severity: 'error',
-  //         summary: 'Error',
-  //         detail: err.error,
-  //         life: 3000,
-  //       });
-  //     }
-  //   );
-  // }
+    const body: GenerateReceipt = { ...this.form.getRawValue() };
+    body.numberDocument = this.numDocument.numDocument;
+    body.origin = null;
+    body.destiny = null;
+    body.deliveredBy = this.authService.getLoggedUser().name;
+    body.receivedBy = null;
+    body.cellerItems.forEach(item => item.document = DocumentEnum.CEP);
 
-  // generateReceipt() {
-  //   const receiptItems: GenerateReceiptItem[] = [];
+    this.cellerService.create(body).subscribe(
+      (data => {
+        this.toastService.success(body.numberDocument + ' Creado');
+        // this.generateReceipt(body);
+        this.enableButtons = true;
+      })
+    )
+  }
 
-  //   this.newCellers.forEach(celler => {
-  //     receiptItems.push({
-  //       productType: celler.material.typeMaterial.name,
-  //       productName: celler.material.name,
-  //       lot: celler.lote,
-  //       units: celler.amount,
-  //       bags1KG: celler.balance,
-  //       bags25KG: celler.coat,
-  //       pallets55: celler.pallets,
-  //       totalWeight: celler.weight,
-  //       location: celler.location.description
-  //     });
-  //   });
+  openNew() {
+    this.cellerItemsFormArray.push(this.fb.group({
+      type: [null, [
+        Validators.required,
+      ]],
+      material: [null, [
+        Validators.required,
+      ]],
+      lote: [null, [
+        Validators.required,
+      ]],
+      location: [null, [
+        Validators.required,
+      ]],
+      availability: [0],
+      amount: [0],
+      balance: [0],
+      coat: [0],
+      pallets: [0],
+      weight: [0]
+    }));
+  }
 
-  //   const receipt: GenerateReceipt = {
-  //     receiptNumber: this.newCellers[0].numberDocument,
-  //     receiptDate: this.newCellers[0].date,
-  //     // reason: this.optionDocument.name,
-  //     reasonObservation: this.observation.toUpperCase(),
-  //     // observations: this.observations.toUpperCase(),
-  //     deliveredBy: this.authService.getLoggedUser().name,
-  //     receivedBy: null,
-  //     items: receiptItems
-  //   };
+  onTypeSelected(e: any) {
+    const type = e.value;
+    this.getAllMaterialByType(type);
+  }
 
-  //   this.cellerService.generateReceiptPreview(DocumentEnum.CEP, receipt).subscribe(
-  //     (data => {
-  //       const type = data.body.type;
-  //       this.fileName = data.headers.get('content-disposition').split('filename=')[1];
-  //       this.srcPdf = URL.createObjectURL(
-  //         new Blob([data.body], { type })
-  //       );
-  //       this.pdfDialog = true;
-  //       this.enableButtons = true;
-  //     })
-  //   );
+  getAllMaterialByType(id: number) {
+    this.materials = [];
+    this.materialService.getAllMaterialByType(id).subscribe(
+      (materials => {
+        this.materials = materials;
+      })
+    );
+  }
 
-  // }
+  onProductSelected(e: any) {
+    const product = e.value;
+    this.getCellerByMaterialCode(product);
+  }
+
+  getCellerByMaterialCode(id: number) {
+    this.lotes = [];
+    this.cellerDetailService.getByMaterialCode(id).subscribe(
+      (cellers => {
+        const lotes = this.deleteCellerDuplicateByLote(cellers);
+        this.lotes = lotes.filter((lote: CellerDetail) => lote.weight > 0);
+      }),
+      (err) => {
+        this.lotes = [];
+      }
+    );
+  }
+
+  onLoteSelected(e: any) {
+    const lote = e.value;
+    const celler = this.lotes.find(lo => lo.id === lote);
+    this.getCellerByLocationCode(celler.location.id, celler.material.id);
+  }
+
+  getCellerByLocationCode(codeLocation: number, codeMaterial: number) {
+    this.locations = [];
+    this.cellers = [];
+    this.cellerDetailService.getByLocationCode(codeLocation, codeMaterial).subscribe(
+      (locations) => {
+        this.cellers = locations;
+        this.deleteCellerDuplicateByLocation(locations).forEach((location: CellerDetail) => this.locations.push(location.location));
+      }
+    );
+  }
+
+  onLocationSelected(e: any, index: number) {
+    const location = e.value;
+    this.calculateWeightAvailable(location, index);
+  }
+
+  calculateWeightAvailable(location: number, index) {
+    let weightTotal = 0;
+    this.cellers.forEach(celler => {
+      if (celler.location.id === location) {
+        weightTotal += celler.weight;
+      }
+    });
+    this.cellerItemsFormArray.at(index).get('availability').setValue(weightTotal);
+  }
+
+  deleteCellerDuplicateByLocation(cellers: any) {
+    const cellersMap = cellers.map(celler => {
+      return [celler.location.id, celler];
+    });
+    return [...new Map(cellersMap).values()];
+  }
+
+  deleteCellerDuplicateByLote(cellers: any) {
+    const cellersMap = cellers.map(celler => {
+      return [celler.lote, celler];
+    });
+    return [...new Map(cellersMap).values()];
+  }
+
+  calculateWeight(index: number) {
+    const balance = this.getCellerDetailBalance(index).value;
+    const coat = this.getCellerDetailCoat(index).value * this.numberCoat.value;
+    const pallets = this.getCellerDetailPallets(index).value * this.numberCoat.value * this.numberPallet.value;
+    this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
+
+    if (this.getCellerDetailWeight(index).value < (this.getCellerDetailAvailability(index).value * -1)) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Atención',
+        detail: 'No se dispone la cantidad seleccionada',
+        life: 3000,
+      });
+    }
+  }
+
+  generateReceipt(body: GenerateReceipt) {
+    this.cellerService.generateReceiptPreview(DocumentEnum.CEP, body).subscribe(
+      (data => {
+        const type = data.body.type;
+        this.fileName = data.headers.get('content-disposition').split('filename=')[1];
+        this.srcPdf = URL.createObjectURL(
+          new Blob([data.body], { type })
+        );
+        this.pdfDialog = true;
+      })
+    );
+
+  }
+
+  onRowEditSave() {
+    this.cdr.detectChanges();
+  }
+
+  onRowEditCancel() {
+    this.cdr.detectChanges();
+  }
 
 }
