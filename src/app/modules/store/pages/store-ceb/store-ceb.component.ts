@@ -5,12 +5,11 @@ import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS 
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CellerDetail, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
+import { CellerDetail, CodeDocument, DocumentEnum, GenerateReceipt, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
-import { Observable } from 'rxjs';
 import { TableColumn } from 'src/app/types/table.types';
 import { CellerDetailService } from 'src/app/core/http/celler/celler-detail.service';
 import { ToastService } from 'src/app/core/services/toast.service';
