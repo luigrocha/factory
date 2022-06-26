@@ -260,7 +260,7 @@ export class StoreCebComponent implements OnInit {
         this.toastService.success(body.numberDocument + ' Creado');
         this.generateReceipt(body);
       })
-    )
+    );
   }
 
   openNew() {
