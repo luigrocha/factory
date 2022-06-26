@@ -250,7 +250,7 @@ export class StoreCibComponent implements OnInit {
         // this.generateReceipt(body);
         this.enableButtons = true;
       })
-    )
+    );
   }
 
   openNew() {
