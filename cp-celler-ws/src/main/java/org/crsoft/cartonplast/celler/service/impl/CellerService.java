@@ -19,10 +19,7 @@ import org.keycloak.common.util.CollectionUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_INSERT;
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
@@ -106,12 +103,14 @@ public class CellerService implements ICellerService {
     }
 
     private Celler buildCellerToSave(CellerReq celler,String userName) throws NotFoundException {
-        OptionDocument reason = this.optionDocumentService.findByCode(celler.getReason());
         Celler cellerNew = new Celler();
         cellerNew.setNumberDocument(celler.getNumberDocument());
         cellerNew.setDate(celler.getDate());
         cellerNew.setDateDocument(celler.getDateDocument());
-        cellerNew.setReason(reason.getName());
+        if(Objects.nonNull(celler.getReason())){
+            OptionDocument reason = this.optionDocumentService.findByCode(celler.getReason());
+            cellerNew.setReason(reason.getName());
+        }
         cellerNew.setObservation(celler.getObservation());
         cellerNew.setObservations(celler.getObservations());
         cellerNew.setOrigin(celler.getOrigin());
