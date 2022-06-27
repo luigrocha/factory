@@ -122,7 +122,9 @@ public class CellerDetailService implements ICellerDetailService {
         Document document = this.documentService.getDocumentById(cellerDetailReq.getDocument());
         Location location = this.locationService.getLocationByCode(cellerDetailReq.getLocation());
         String loteString = String.valueOf(cellerDetailReq.getLote());
-        if(document.getName().equals(DocumentEnum.CEB.getName())){
+        if(document.getName().equals(DocumentEnum.CEB.getName()) ||
+                document.getName().equals(DocumentEnum.TM5.getName()) ||
+                document.getName().equals(DocumentEnum.MOV.getName())){
             loteString = getCellarDetailByCode((Integer) cellerDetailReq.getLote()).getLote();
         }
         CellerDetail cellerDetail = new CellerDetail();

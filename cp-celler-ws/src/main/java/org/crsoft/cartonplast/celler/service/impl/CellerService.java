@@ -179,7 +179,10 @@ public class CellerService implements ICellerService {
             Material material = this.materialService.getMaterialByCode(celler.getMaterial());
             Location location = this.locationService.getLocationByCode(celler.getLocation());
             String loteString = String.valueOf(celler.getLote());
-            if(celler.getDocument().equals(DocumentEnum.CEB.getCode())){
+            if( celler.getDocument().equals(DocumentEnum.CEB.getCode()) ||
+                celler.getDocument().equals(DocumentEnum.TM5.getCode()) ||
+                celler.getDocument().equals(DocumentEnum.MOV.getCode())
+            ){
                 CellerDetail cellerLote = this.cellerDetailService.getCellarDetailByCode((Integer) celler.getLote());
                 loteString = cellerLote.getLote();
             }
