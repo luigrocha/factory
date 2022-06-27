@@ -107,6 +107,9 @@ export class StoreCibComponent implements OnInit {
         Validators.required,
       ]],
       cellerItems: this.fb.array([]),
+      observations: [null, [
+        Validators.required,
+      ]],
       numberCoat: [DEFAULT_COAT],
       numberPallet: [DEFAULT_PALLETS],
     });
@@ -170,6 +173,10 @@ export class StoreCibComponent implements OnInit {
 
   get cellerItemsFormArray() {
     return this.form.get('cellerItems') as FormArray;
+  }
+
+  get observations() {
+    return this.form.get('observations');
   }
 
   get numberCoat() {
@@ -243,11 +250,10 @@ export class StoreCibComponent implements OnInit {
     body.deliveredBy = this.authService.getLoggedUser().name;
     body.receivedBy = null;
     body.cellerItems.forEach(item => item.document = DocumentEnum.CIB);
-
     this.cellerService.create(body).subscribe(
       (data => {
         this.toastService.success(body.numberDocument + ' Creado');
-        // this.generateReceipt(body);
+        this.generateReceipt(body);
         this.enableButtons = true;
       })
     );
@@ -319,6 +325,23 @@ export class StoreCibComponent implements OnInit {
       return [celler.lote, celler];
     });
     return [...new Map(cellersMap).values()];
+  }
+
+  onLocationSelected(e: any, index: number) {
+    const location = e.value;
+    this.calculateWeightAvailable(location, index);
+  }
+
+  calculateWeightAvailable(location: number, index) {
+    let weightTotal = 0;
+    if (this.cellers) {
+      this.cellers.forEach(celler => {
+        if (celler.location.id === location) {
+          weightTotal += celler.weight;
+        }
+      });
+    }
+    // this.cellerItemsFormArray.at(index).get('availability').setValue(weightTotal);
   }
 
   calculateWeight(index: number) {
