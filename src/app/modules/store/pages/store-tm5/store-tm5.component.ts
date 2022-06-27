@@ -253,11 +253,16 @@ export class StoreTm5Component implements OnInit {
 
     const body: GenerateReceipt = { ...this.form.getRawValue() };
     body.numberDocument = this.numDocument.numDocument;
-    body.origin = null;
-    body.destiny = null;
     body.deliveredBy = this.authService.getLoggedUser().name;
     body.receivedBy = null;
-    body.cellerItems.forEach(item => item.document = DocumentEnum.TM5);
+    body.cellerItems.forEach(item => {
+      item.document = DocumentEnum.TM5;
+      item.amount *= -1;
+      item.balance *= -1;
+      item.coat *= -1;
+      item.pallets *= -1;
+      item.weight *= -1;
+    });
 
     this.cellerService.create(body).subscribe(
       (data => {

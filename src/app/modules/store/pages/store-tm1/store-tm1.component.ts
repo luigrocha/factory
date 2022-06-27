@@ -246,8 +246,6 @@ export class StoreTm1Component implements OnInit {
 
     const body: GenerateReceipt = { ...this.form.getRawValue() };
     body.numberDocument = this.numDocument.numDocument;
-    body.origin = null;
-    body.destiny = null;
     body.deliveredBy = this.authService.getLoggedUser().name;
     body.receivedBy = null;
     body.cellerItems.forEach(item => item.document = DocumentEnum.TM1);
@@ -334,6 +332,23 @@ export class StoreTm1Component implements OnInit {
       return [celler.lote, celler];
     });
     return [...new Map(cellersMap).values()];
+  }
+
+  onLocationSelected(e: any, index: number) {
+    const location = e.value;
+    this.calculateWeightAvailable(location, index);
+  }
+
+  calculateWeightAvailable(location: number, index) {
+    let weightTotal = 0;
+    if (this.cellers) {
+      this.cellers.forEach(celler => {
+        if (celler.location.id === location) {
+          weightTotal += celler.weight;
+        }
+      });
+    }
+    // this.cellerItemsFormArray.at(index).get('availability').setValue(weightTotal);
   }
 
   calculateWeight(index: number) {

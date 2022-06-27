@@ -252,7 +252,14 @@ export class StoreCebComponent implements OnInit {
     body.destiny = null;
     body.deliveredBy = this.authService.getLoggedUser().name;
     body.receivedBy = null;
-    body.cellerItems.forEach(item => item.document = DocumentEnum.CEB);
+    body.cellerItems.forEach(item => {
+      item.document = DocumentEnum.CEB;
+      item.amount *= -1;
+      item.balance *= -1;
+      item.coat *= -1;
+      item.pallets *= -1;
+      item.weight *= -1;
+    });
 
     this.cellerService.create(body).subscribe(
       (data => {
