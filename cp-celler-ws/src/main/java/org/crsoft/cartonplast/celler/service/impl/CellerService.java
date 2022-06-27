@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.celler.model.*;
 import org.crsoft.cartonplast.celler.repository.CellerRepository;
 import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerMapper;
+import org.crsoft.cartonplast.celler.util.DocumentEnum;
 import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptItemReq;
 import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
@@ -178,11 +179,15 @@ public class CellerService implements ICellerService {
         for (CellerDetailReq celler : cellerDetailReq) {
             Material material = this.materialService.getMaterialByCode(celler.getMaterial());
             Location location = this.locationService.getLocationByCode(celler.getLocation());
-            CellerDetail cellerLote = this.cellerDetailService.getCellarDetailByCode(celler.getLote());
+            String loteString = String.valueOf(celler.getLote());
+            if(celler.getDocument().equals(DocumentEnum.CEB.getCode())){
+                CellerDetail cellerLote = this.cellerDetailService.getCellarDetailByCode((Integer) celler.getLote());
+                loteString = cellerLote.getLote();
+            }
             generateReceiptItemReqs.add(GenerateReceiptItemReq.builder()
                     .productType(material.getTypeMaterial().getName())
                     .productName(material.getName())
-                    .lot(cellerLote.getLote())
+                    .lot(loteString)
                     .units(celler.getAmount())
                     .bags1KG(celler.getBalance())
                     .bags25KG(celler.getCoat())

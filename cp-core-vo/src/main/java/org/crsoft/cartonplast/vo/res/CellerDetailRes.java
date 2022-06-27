@@ -24,7 +24,7 @@ public class CellerDetailRes implements Serializable {
     private Double coat;
     private Double pallets;
     private Double weight;
-    private CellerRes celler;
+    // private CellerRes celler;
     private MaterialRes material;
     private LocationRes location;
     private DocumentRes document;

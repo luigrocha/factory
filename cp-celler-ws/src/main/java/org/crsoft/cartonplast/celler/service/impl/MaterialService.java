@@ -58,4 +58,10 @@ public class MaterialService implements IMaterialService {
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
+
+    @Override
+    public Collection<MaterialRes> findIfExistStock(Integer id) throws NotFoundException {
+        TypeMaterial typeMaterial = this.typeCellarService.findCellarById(id);
+        return null;
+    }
 }

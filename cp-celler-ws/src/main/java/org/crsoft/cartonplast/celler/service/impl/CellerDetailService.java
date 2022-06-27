@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.celler.model.*;
 import org.crsoft.cartonplast.celler.repository.CellerDetailRepository;
 import org.crsoft.cartonplast.celler.service.ICellerDetailService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerDetailMapper;
+import org.crsoft.cartonplast.celler.util.DocumentEnum;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
@@ -105,13 +106,27 @@ public class CellerDetailService implements ICellerDetailService {
         }
     }
 
+    @Override
+    public Collection<CellerDetailRes> findIfExistStockByMaterialCode(Integer id) throws NotFoundException {
+        this.materialService.getMaterialByCode(id);
+        return null;
+    }
+
+    @Override
+    public Collection<CellerDetailRes> findIfExistStockByMaterialAndLote(Integer material, String lote) {
+        return null;
+    }
+
     private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq,Celler codeCeller,String userName) throws NotFoundException {
         Material material = this.materialService.getMaterialByCode(cellerDetailReq.getMaterial());
-        Location location = this.locationService.getLocationByCode(cellerDetailReq.getLocation());
         Document document = this.documentService.getDocumentById(cellerDetailReq.getDocument());
-        CellerDetail cellerLote = getCellarDetailByCode(cellerDetailReq.getLote());
+        Location location = this.locationService.getLocationByCode(cellerDetailReq.getLocation());
+        String loteString = String.valueOf(cellerDetailReq.getLote());
+        if(document.getName().equals(DocumentEnum.CEB.getName())){
+            loteString = getCellarDetailByCode((Integer) cellerDetailReq.getLote()).getLote();
+        }
         CellerDetail cellerDetail = new CellerDetail();
-        cellerDetail.setLote(cellerLote.getLote());
+        cellerDetail.setLote(loteString);
         cellerDetail.setAmount(cellerDetailReq.getAmount());
         cellerDetail.setBalance(cellerDetailReq.getBalance());
         cellerDetail.setCoat(cellerDetailReq.getCoat());

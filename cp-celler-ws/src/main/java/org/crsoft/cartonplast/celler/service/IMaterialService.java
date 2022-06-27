@@ -15,4 +15,6 @@ public interface IMaterialService {
 
     Material getMaterialByCode(Integer code) throws NotFoundException;
 
+    Collection<MaterialRes> findIfExistStock(Integer id) throws NotFoundException;
+
 }
