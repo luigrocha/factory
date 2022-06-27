@@ -249,17 +249,31 @@ export class StoreMovComponent implements OnInit {
     }
 
     const body: GenerateReceipt = { ...this.form.getRawValue() };
+    const itemsDown = [...this.form.getRawValue().cellerItems];
     body.numberDocument = this.numDocument.numDocument;
     body.origin = null;
     body.destiny = null;
     body.deliveredBy = this.authService.getLoggedUser().name;
     body.receivedBy = null;
-    body.cellerItems.forEach(item => item.document = DocumentEnum.MOV);
+    body.cellerItems.forEach(item => {
+      item.document = DocumentEnum.MOV;
+      item.amount *= -1;
+      item.balance *= -1;
+      item.coat *= -1;
+      item.pallets *= -1;
+      item.weight *= -1;
+    });
+
+    itemsDown.forEach(item => {
+      item.document = DocumentEnum.MOV;
+      item.location = item.destiny;
+      body.cellerItems.push(item);
+    });
 
     this.cellerService.create(body).subscribe(
       (data => {
         this.toastService.success(body.numberDocument + ' Creado');
-        this.generateReceipt(body);
+        // this.generateReceipt(body);
       })
     );
   }
