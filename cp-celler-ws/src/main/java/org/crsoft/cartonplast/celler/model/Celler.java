@@ -50,6 +50,9 @@ public class Celler {
     @Column(name = "CDTCELL_DESTINY")
     private String destiny;
 
+    @Column(name = "CDTCELL_STATE")
+    private Boolean state;
+
     @Column(
             name = "CDTCELL_VALID_FROM",
             columnDefinition = "TIMESTAMP"
@@ -82,6 +85,7 @@ public class Celler {
 
     @PrePersist
     public void prePersist() {
+        this.state = Boolean.TRUE;
         this.validFrom = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
     }

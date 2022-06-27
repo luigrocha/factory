@@ -1,11 +1,11 @@
 package org.crsoft.cartonplast.celler.controller;
 
-import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.common.util.HttpUtil;
 import org.crsoft.cartonplast.vo.req.CellerReq;
 import org.crsoft.cartonplast.vo.res.CellerRes;
@@ -41,7 +41,7 @@ public class CellerController {
 
     @PostMapping
     public ResponseEntity<?> createCeller(@RequestBody CellerReq celler, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
-        this.cellerService.createCeller(celler,userName);
+        this.cellerService.createCeller(celler, userName);
         return ResponseEntity.ok().build();
     }
 
@@ -67,5 +67,13 @@ public class CellerController {
                 pdf,
                 HttpUtil.getDefaultPDFHeaders(generateReceiptReq.getNumberDocument()),
                 HttpStatus.OK);
+    }
+
+    @PatchMapping("/anulate/{code}/{userName}")
+    public ResponseEntity<?> anulateCeller(@PathVariable("code") Integer code,
+                                           @PathVariable("userName") String userName)
+            throws NotFoundException, UpdateException {
+        this.cellerService.anulateCeller(code, userName);
+        return ResponseEntity.ok().build();
     }
 }

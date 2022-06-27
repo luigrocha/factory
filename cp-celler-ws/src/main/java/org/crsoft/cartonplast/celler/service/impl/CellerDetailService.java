@@ -93,10 +93,10 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public void createCellerDetail(Collection<CellerDetailReq> cellers,Celler codeCeller,String userName) throws InsertException, NotFoundException {
+    public void createCellerDetail(Collection<CellerDetailReq> cellers, Celler codeCeller, String userName) throws InsertException, NotFoundException {
         Collection<CellerDetail> cellersSave = new ArrayList<>(0);
         for (CellerDetailReq cellerDetail : cellers) {
-            cellersSave.add(buildCellerDetailToSave(cellerDetail,codeCeller,userName));
+            cellersSave.add(buildCellerDetailToSave(cellerDetail, codeCeller, userName));
         }
         try {
             this.cellerDetailRepository.saveAll(cellersSave);
@@ -117,14 +117,14 @@ public class CellerDetailService implements ICellerDetailService {
         return null;
     }
 
-    private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq,Celler codeCeller,String userName) throws NotFoundException {
+    private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq, Celler codeCeller, String userName) throws NotFoundException {
         Material material = this.materialService.getMaterialByCode(cellerDetailReq.getMaterial());
         Document document = this.documentService.getDocumentById(cellerDetailReq.getDocument());
         Location location = this.locationService.getLocationByCode(cellerDetailReq.getLocation());
         String loteString = String.valueOf(cellerDetailReq.getLote());
-        if(document.getName().equals(DocumentEnum.CEB.getName()) ||
+        if (document.getName().equals(DocumentEnum.CEB.getName()) ||
                 document.getName().equals(DocumentEnum.TM5.getName()) ||
-                document.getName().equals(DocumentEnum.MOV.getName())){
+                document.getName().equals(DocumentEnum.MOV.getName())) {
             loteString = getCellarDetailByCode((Integer) cellerDetailReq.getLote()).getLote();
         }
         CellerDetail cellerDetail = new CellerDetail();
