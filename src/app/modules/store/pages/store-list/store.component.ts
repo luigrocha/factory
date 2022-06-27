@@ -1,49 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { PermissionEnum } from 'src/app/core/constants/permisions';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
-import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { Celler, Document, DocumentEnum, GenerateReceipt, Location } from 'src/app/types/celler.types';
 import { TypeMaterial } from 'src/app/types/material.types';
 import { TypePermission } from 'src/app/types/permission';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-store',
   templateUrl: './store.component.html',
   styleUrls: ['./store.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class StoreComponent implements OnInit {
 
@@ -85,6 +55,7 @@ export class StoreComponent implements OnInit {
     private breadcrumbService: BreadcrumbService,
     private cellerService: CellerService,
     private permissionService: PermissionService,
+    private toastService: ToastService,
   ) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
@@ -119,7 +90,7 @@ export class StoreComponent implements OnInit {
       {
         label: 'Anular',
         icon: 'pi pi-trash',
-        // command: (e) => this.deleteUser(this.cellerSelect)
+        command: (e) => this.anulate(this.cellerSelect)
       }
     ];
   }
@@ -172,6 +143,16 @@ export class StoreComponent implements OnInit {
           new Blob([data.body], { type })
         );
         this.pdfDialog = true;
+      })
+    );
+  }
+
+  anulate(celler: Celler) {
+    this.cellerService.anulate(celler.id).subscribe(
+      (data => {
+        this.cellers = [];
+        this.toastService.success(`${celler.numberDocument} anulado correctamente`);
+        this.getAll();
       })
     );
   }

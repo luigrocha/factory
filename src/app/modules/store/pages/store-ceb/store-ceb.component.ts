@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
@@ -18,36 +18,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
   selector: 'app-store-ceb',
   templateUrl: './store-ceb.component.html',
   styleUrls: ['./store-ceb.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class StoreCebComponent implements OnInit {
 
@@ -71,7 +42,6 @@ export class StoreCebComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
     private materialService: MaterialService,
     private cellerService: CellerService,
@@ -377,12 +347,7 @@ export class StoreCebComponent implements OnInit {
     this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
 
     if (this.getCellerDetailWeight(index).value < (this.getCellerDetailAvailability(index).value * -1)) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'No se dispone la cantidad seleccionada',
-        life: 3000,
-      });
+      this.toastService.warning('No se dispone la cantidad seleccionada');
     }
   }
 

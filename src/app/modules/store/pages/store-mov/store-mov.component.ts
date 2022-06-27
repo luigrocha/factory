@@ -17,36 +17,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
   selector: 'app-store-mov',
   templateUrl: './store-mov.component.html',
   styleUrls: ['./store-mov.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class StoreMovComponent implements OnInit {
 
@@ -70,7 +41,6 @@ export class StoreMovComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
     private materialService: MaterialService,
     private cellerService: CellerService,
@@ -398,12 +368,7 @@ export class StoreMovComponent implements OnInit {
     this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
 
     if (this.getCellerDetailWeight(index).value < (this.getCellerDetailAvailability(index).value * -1)) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'No se dispone la cantidad seleccionada',
-        life: 3000,
-      });
+      this.toastService.warning('No se dispone la cantidad seleccionada');
     }
   }
 

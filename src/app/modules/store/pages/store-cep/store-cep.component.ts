@@ -17,36 +17,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
   selector: 'app-store-cep',
   templateUrl: './store-cep.component.html',
   styleUrls: ['./store-cep.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class StoreCepComponent implements OnInit {
 
@@ -69,7 +40,6 @@ export class StoreCepComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
     private materialService: MaterialService,
     private cellerService: CellerService,

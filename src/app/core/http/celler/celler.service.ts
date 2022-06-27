@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { Celler, CodeDocument, Document, GenerateReceipt, Location, OptionDocument } from 'src/app/types/celler.types';
 import { environment } from 'src/environments/environment';
 import { getFileFromResponse } from 'src/app/core/utils/http-extract-file';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -84,4 +84,8 @@ export class CellerService {
     });
   }
 
+  anulate(id: number): Observable<any> {
+    return this.http.patch<any>(this.URL_CELLER + '/anulate/' + id + '/'
+      + this.authService.getLoggedUser().preferred_username, this.httpOptions);
+  }
 }
