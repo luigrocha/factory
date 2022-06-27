@@ -305,6 +305,23 @@ export class StoreCepComponent implements OnInit {
     return [...new Map(cellersMap).values()];
   }
 
+  onLocationSelected(e: any, index: number) {
+    const location = e.value;
+    this.calculateWeightAvailable(location, index);
+  }
+
+  calculateWeightAvailable(location: number, index) {
+    let weightTotal = 0;
+    if (this.cellers) {
+      this.cellers.forEach(celler => {
+        if (celler.location.id === location) {
+          weightTotal += celler.weight;
+        }
+      });
+    }
+    // this.cellerItemsFormArray.at(index).get('availability').setValue(weightTotal);
+  }
+
   calculateWeight(index: number) {
     const balance = this.getCellerDetailBalance(index).value;
     const coat = this.getCellerDetailCoat(index).value * this.numberCoat.value;
