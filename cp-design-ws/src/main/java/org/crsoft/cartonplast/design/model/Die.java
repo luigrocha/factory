@@ -173,6 +173,12 @@ public class Die {
     )
     private List<DieMachine> dieMachines = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "die",
+            fetch = FetchType.LAZY
+    )
+    private List<DieDocument> documents = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
         createdDate = LocalDate.now();

@@ -12,6 +12,7 @@ import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
 
@@ -40,6 +41,17 @@ public class OptionDocumentService implements IOptionDocumentService {
             return this.optionDocumentMapper.optionDocumentCollectionToOptionDocumentResCollection(optionDocuments);
         } else {
             log.error("Error to findAllByDocumentCode");
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public OptionDocument findByCode(Integer code) throws NotFoundException {
+        Optional<OptionDocument> optionDocument = this.optionDocumentRepository.findByIdAndValidToIsNull(code);
+        if (optionDocument.isPresent()) {
+            return optionDocument.get();
+        } else {
+            log.error("Error to findByCode {}", code);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }

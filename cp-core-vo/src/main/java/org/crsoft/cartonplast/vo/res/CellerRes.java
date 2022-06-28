@@ -20,16 +20,13 @@ public class CellerRes implements Serializable {
 
     private Integer id;
     private String numberDocument;
-    private String lote;
-    private Integer amount;
-    private Integer balance;
-    private Integer coat;
-    private Integer pallets;
-    private Integer weight;
     private LocalDateTime date;
-    private LocalDateTime createdAt;
+    private LocalDateTime dateDocument;
+    private String reason;
     private String observation;
-    private MaterialRes material;
-    private LocationRes location;
-    private DocumentRes document;
+    private String observations;
+    private String origin;
+    private String destiny;
+    private Boolean state;
+
 }

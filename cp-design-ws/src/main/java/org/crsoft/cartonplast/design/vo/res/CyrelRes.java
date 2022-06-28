@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.vo.res;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.vo.res.CatalogStatusRes;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,8 +23,10 @@ public class CyrelRes implements Serializable {
     private String description;
     private String description2;
     private String observation;
-    private DieShortRes die;
     private String printer;
     private ColorBShortRes mbLeaf;
+    private CatalogStatusRes status;
+    private List<DieProductShortRes> dies;
     private List<CyrelColorRes> cyrelColors;
+    private List<CyrelDocumentRes> documents;
 }

@@ -18,4 +18,6 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
 
     Optional<Material> findByIdAndValidToIsNull(Integer code);
 
+    Optional<Material> findByNameAndValidToIsNull(Integer code);
+
 }

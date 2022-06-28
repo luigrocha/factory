@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.design.service;
 
+import org.crsoft.cartonplast.design.vo.req.CyrelReq;
 import org.crsoft.cartonplast.design.vo.res.CyrelRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,4 +12,6 @@ import org.springframework.data.domain.Pageable;
 public interface ICyrelService {
 
     Page<CyrelRes> findAllValidCyrels(Pageable pageable, String query);
+
+    CyrelRes createCyrel(CyrelReq cyrelReq);
 }

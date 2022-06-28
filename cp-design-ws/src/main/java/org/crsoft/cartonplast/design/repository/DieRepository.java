@@ -15,4 +15,6 @@ public interface DieRepository extends PagingAndSortingRepository<Die, Integer> 
             "OR d.validTo > CURRENT_TIMESTAMP) " +
             "ORDER BY d.name DESC")
     List<Die> findAllValidDies();
+
+    // TODO Restar -1  dia paremetrizable al valid to
 }

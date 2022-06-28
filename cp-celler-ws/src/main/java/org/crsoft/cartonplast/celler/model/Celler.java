@@ -29,29 +29,29 @@ public class Celler {
     @Column(name = "CDTCELL_NUM_DOC", nullable = false)
     private String numberDocument;
 
-    @Column(name = "CDTCELL_LOTE", nullable = false)
-    private String lote;
-
-    @Column(name = "CDTCELL_AMOUNT")
-    private Integer amount;
-
-    @Column(name = "CDTCELL_BALANCE")
-    private Integer balance;
-
-    @Column(name = "CDTCELL_COAT")
-    private Integer coat;
-
-    @Column(name = "CDTCELL_PALLETS")
-    private Integer pallets;
-
-    @Column(name = "CDTCELL_WEIGHT")
-    private Integer weight;
-
     @Column(name = "CDTCELL_DATE", nullable = false)
     private LocalDateTime date;
 
-    @Column(name = "CDTCELL_OBSERVATION", nullable = false)
+    @Column(name = "CDTCELL_DATE_DOCUMENT", nullable = false)
+    private LocalDateTime dateDocument;
+
+    @Column(name = "CDTCELL_REASON")
+    private String reason;
+
+    @Column(name = "CDTCELL_OBSERVATION")
     private String observation;
+
+    @Column(name = "CDTCELL_OBSERVATIONS")
+    private String observations;
+
+    @Column(name = "CDTCELL_ORIGIN")
+    private String origin;
+
+    @Column(name = "CDTCELL_DESTINY")
+    private String destiny;
+
+    @Column(name = "CDTCELL_STATE")
+    private Boolean state;
 
     @Column(
             name = "CDTCELL_VALID_FROM",
@@ -83,29 +83,9 @@ public class Celler {
     )
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "XID_CDTCAT_ID",
-            referencedColumnName = "ID_CDTCAT_CODE"
-    )
-    private Material material;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "XID_CDTLOC_CODE",
-            referencedColumnName = "ID_CDTLOC_CODE"
-    )
-    private Location location;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "XID_CDTDOC_CODE",
-            referencedColumnName = "ID_CDTDOC_CODE"
-    )
-    private Document document;
-
     @PrePersist
     public void prePersist() {
+        this.state = Boolean.TRUE;
         this.validFrom = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
     }

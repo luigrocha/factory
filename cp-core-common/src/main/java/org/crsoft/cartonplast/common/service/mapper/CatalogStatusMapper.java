@@ -12,6 +12,9 @@ import java.util.Collection;
 @Mapper(componentModel = "spring")
 public interface CatalogStatusMapper {
 
+    @WithoutAuditField
+    CatalogStatus toCatalogStatus(CatalogStatusRes catalogStatusRes);
+
     CatalogStatusRes dieStatusToDieStatusRes(CatalogStatus dieStatus);
 
     Collection<CatalogStatusRes> dieStatusCollectionToDieStatusResCollection(Collection<CatalogStatus> catalogStatuses);

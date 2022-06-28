@@ -12,4 +12,5 @@ public class LogMessageConstant {
     public static final String ERROR_FIND_RECORD_MESSAGE = "Error al buscar el registro: ";
 
     public static final String ERROR_DUPLICATE_RECORD_MESSAGE = "Error el registro ya existe: ";
+    public static final String ERROR_FILE_EMPTY_MESSAGE = "El archivo esta vacio: ";
 }

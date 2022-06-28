@@ -50,12 +50,6 @@ public class Machine {
     )
     private Boolean hasDesb;
 
-    @OneToMany(
-            mappedBy = "machine",
-            fetch = FetchType.LAZY
-    )
-    private List<DieMachine> dies = new ArrayList<>();
-
     @Column(
             name = "CATMAQ_VALID_FROM",
             columnDefinition = "TIMESTAMP"
@@ -88,6 +82,12 @@ public class Machine {
     )
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @OneToMany(
+            mappedBy = "machine",
+            fetch = FetchType.LAZY
+    )
+    private List<DieMachine> dies = new ArrayList<>();
 
     @OneToMany(
             fetch = FetchType.LAZY,

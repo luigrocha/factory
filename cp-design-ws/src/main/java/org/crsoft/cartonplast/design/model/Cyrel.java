@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.common.model.CatalogStatus;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -100,8 +101,6 @@ public class Cyrel {
     @JoinColumn(
             name = "XID_CATIMP_CODE",
             referencedColumnName = "ID_CATIMP_CODE",
-            insertable = false,
-            updatable = false,
             nullable = false
     )
     private Printer printer;
@@ -109,21 +108,34 @@ public class Cyrel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "XID_CATCOL_CODE",
-            referencedColumnName = "ID_CATCOL_CODE",
-            insertable = false,
-            updatable = false
+            referencedColumnName = "ID_CATCOL_CODE"
     )
     private ColorB mbLeaf;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATSTATUS_CODE",
+            nullable = false
+    )
+    private CatalogStatus status;
+
     @OneToMany(
             mappedBy = "cyrel",
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
     )
     private List<CyrelDieProduct> dies = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "cyrel",
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
     )
     private List<CyrelColor> cyrelColors = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "cyrel",
+            fetch = FetchType.LAZY
+    )
+    private List<CyrelDocument> documents = new ArrayList<>();
 }
