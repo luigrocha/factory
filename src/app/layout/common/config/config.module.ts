@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { ToastModule } from 'primeng/toast';
 
 
 
@@ -22,7 +23,8 @@ import { RippleModule } from 'primeng/ripple';
     FormsModule,
     InputSwitchModule,
     ButtonModule,
-    RippleModule
+    RippleModule,
+    ToastModule
   ]
 })
 export class ConfigModule { }

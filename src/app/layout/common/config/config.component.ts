@@ -5,6 +5,7 @@ import { LayoutComponent } from '../../layout.component';
 import { PreferencesService } from 'src/app/core/http/preferences/preferences.service';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { Config } from 'src/app/types/config.types';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-config',
@@ -25,8 +26,10 @@ export class ConfigComponent implements OnInit {
     public appMain: LayoutComponent,
     private authService: AuthService,
     private preferenceService: PreferencesService,
-    private layoutService: LayoutService
-  ) { }
+    private layoutService: LayoutService,
+    private toastService: ToastService
+  ) {
+  }
 
   get userName(): string {
     return this.authService.getLoggedUser().preferred_username;
@@ -38,9 +41,9 @@ export class ConfigComponent implements OnInit {
         this.config = config;
       });
     this.themes = [
-      { name: 'denim', color: '#2f8ee5' },
-      { name: 'sea-green', color: '#30A059' },
-      { name: 'amber', color: '#D49341' },
+      {name: 'denim', color: '#2f8ee5'},
+      {name: 'sea-green', color: '#30A059'},
+      {name: 'amber', color: '#D49341'},
     ];
   }
 
@@ -143,11 +146,8 @@ export class ConfigComponent implements OnInit {
     };
     this.preferenceService
       .updatePreferencesByUsername(userName, prefernces)
-      .subscribe(
-        (data) => { },
-        (err) => {
-          console.log(err);
-        }
-      );
+      .subscribe(() => {
+        this.toastService.success("Preferencias actualizadas correctamente");
+      });
   }
 }

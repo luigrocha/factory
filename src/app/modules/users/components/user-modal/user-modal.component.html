@@ -1,0 +1,112 @@
+<form [formGroup]="form" (ngSubmit)="save()" autocomplete="off">
+  <div class="p-fluid grid formgrid">
+    <div *ngIf="!isUpdateMode" class="field col-12">
+      <label for="username">Usuario</label>
+      <input type="text"
+             pInputText
+             id="username"
+             maxlength="32"
+             required
+             formControlName="username"/>
+    </div>
+    <div class="field col-12 lg:col-6">
+      <label for="firstName">Nombre</label>
+      <input type="text"
+             [ngClass]="{'ng-invalid ng-dirty': firstName.touched && firstName.invalid}"
+             pInputText
+             id="firstName"
+             maxlength="32"
+             formControlName="firstName"/>
+      <small *ngIf="firstName.touched && firstName.hasError('required')"
+             id="firstName-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field col-12 lg:col-6">
+      <label for="lastName">Apellido</label>
+      <input type="text"
+             [ngClass]="{'ng-invalid ng-dirty': lastName.touched && lastName.invalid}"
+             pInputText
+             id="lastName"
+             maxlength="32"
+             formControlName="lastName"/>
+      <small *ngIf="lastName.touched && lastName.hasError('required')"
+             id="lastName-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field col-12">
+      <label for="person">Persona Carton Plast</label>
+      <p-autoComplete formControlName="person"
+                      [showEmptyMessage]="true"
+                      [ngClass]="{'ng-invalid ng-dirty': person.touched && person.invalid}"
+                      [suggestions]="persons"
+                      (completeMethod)="filterPersons($event)"
+                      field="fullName"
+                      id="person"
+                      delay="500"
+                      emptyMessage="No se encontraron resultados"
+                      [minLength]="3">
+        <ng-template let-person pTemplate="item">
+          <div>
+            {{person.ci}} |
+            <span class="item-subheading">{{person.fullName}}</span>
+          </div>
+        </ng-template>
+      </p-autoComplete>
+      <small *ngIf="person.touched && person.hasError('required')"
+             id="person-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field col-12">
+      <label for="email">Email</label>
+      <input type="text"
+             [ngClass]="{'ng-invalid ng-dirty': lastName.touched && lastName.invalid}"
+             pInputText
+             id="email"
+             maxlength="50"
+             formControlName="email"/>
+      <small *ngIf="email.touched && email.hasError('required')"
+             id="email-help-required"
+             class="p-error block">{{formErrors.required}}</small>
+      <small *ngIf="email.touched && email.hasError('email')"
+             id="email-help-email"
+             class="p-error block">{{formErrors.email}}</small>
+      <small *ngIf="email.touched && email.hasError('emailAlreadyExists')"
+             id="email-help-already"
+             class="p-error block">{{formErrors.emailTaken}}</small>
+    </div>
+    <div *ngIf="!isUpdateMode" class="field col-12">
+      <label for="password">Contraseña</label>
+      <input type="password"
+             autocomplete="off"
+             name="password"
+             [ngClass]="{'ng-invalid ng-dirty': password.touched && password.invalid}"
+             pInputText
+             id="password"
+             formControlName="password"/>
+      <small *ngIf="password.touched && password.hasError('required')"
+             id="password-help-required"
+             class="p-error block">{{formErrors.required}}</small>
+      <small *ngIf="password.touched && password.hasError('minlength')"
+             id="password-help-min"
+             class="p-error block">{{formErrors.passwordMinlength}}</small>
+    </div>
+  </div>
+  <div class="col-12 pb-0 pt-4 pr-0 pl-0 text-right">
+    <button pButton
+            pRipple
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            (click)="close()"
+            class="p-button-text mr-4">
+    </button>
+    <button pButton
+            pRipple
+            [disabled]="form.invalid || !username.value"
+            type="submit"
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-raised">
+    </button>
+  </div>
+</form>
