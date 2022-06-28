@@ -9,6 +9,7 @@ export interface Celler {
   observation?: string;
   observations?: string;
   origin?: string;
+  state?: boolean;
   destiny?: string;
 }
 

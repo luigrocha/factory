@@ -1,16 +1,15 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { DEFAULT_COAT, DEFAULT_PALLETS, DEFAULT_TYPE_COAT, DEFAULT_TYPE_PALLETS } from 'src/app/core/constants/cellers';
 import { CellerService } from 'src/app/core/http/celler/celler.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Celler, CellerDetail, CodeDocument, DocumentEnum, GenerateReceipt, GenerateReceiptItem, Location, OptionDocument } from 'src/app/types/celler.types';
+import { CellerDetail, CodeDocument, DocumentEnum, GenerateReceipt, Location, OptionDocument } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
-import { Observable } from 'rxjs';
 import { TableColumn } from 'src/app/types/table.types';
 import { CellerDetailService } from 'src/app/core/http/celler/celler-detail.service';
 import { ToastService } from 'src/app/core/services/toast.service';
@@ -19,36 +18,7 @@ import { ToastService } from 'src/app/core/services/toast.service';
   selector: 'app-store-ceb',
   templateUrl: './store-ceb.component.html',
   styleUrls: ['./store-ceb.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class StoreCebComponent implements OnInit {
 
@@ -72,7 +42,6 @@ export class StoreCebComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private messageService: MessageService,
     private breadcrumbService: BreadcrumbService,
     private materialService: MaterialService,
     private cellerService: CellerService,
@@ -253,14 +222,21 @@ export class StoreCebComponent implements OnInit {
     body.destiny = null;
     body.deliveredBy = this.authService.getLoggedUser().name;
     body.receivedBy = null;
-    body.cellerItems.forEach(item => item.document = DocumentEnum.CEB);
+    body.cellerItems.forEach(item => {
+      item.document = DocumentEnum.CEB;
+      item.amount *= -1;
+      item.balance *= -1;
+      item.coat *= -1;
+      item.pallets *= -1;
+      item.weight *= -1;
+    });
 
     this.cellerService.create(body).subscribe(
       (data => {
         this.toastService.success(body.numberDocument + ' Creado');
         this.generateReceipt(body);
       })
-    )
+    );
   }
 
   openNew() {
@@ -371,12 +347,7 @@ export class StoreCebComponent implements OnInit {
     this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
 
     if (this.getCellerDetailWeight(index).value < (this.getCellerDetailAvailability(index).value * -1)) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'No se dispone la cantidad seleccionada',
-        life: 3000,
-      });
+      this.toastService.warning('No se dispone la cantidad seleccionada');
     }
   }
 
@@ -401,5 +372,9 @@ export class StoreCebComponent implements OnInit {
 
   onRowEditCancel() {
     this.cdr.detectChanges();
+  }
+
+  deleteRow(index: number) {
+    this.cellerItemsFormArray.removeAt(index);
   }
 }
