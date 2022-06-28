@@ -349,4 +349,9 @@ export class StoreTm1Component implements OnInit {
   onRowEditCancel() {
     this.cdr.detectChanges();
   }
+
+  deleteRow(index: number) {
+    this.cellerItemsFormArray.removeAt(index);
+  }
+
 }

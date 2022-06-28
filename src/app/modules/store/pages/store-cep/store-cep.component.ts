@@ -204,7 +204,7 @@ export class StoreCepComponent implements OnInit {
         // this.generateReceipt(body);
         this.enableButtons = true;
       })
-    )
+    );
   }
 
   openNew() {
@@ -319,6 +319,10 @@ export class StoreCepComponent implements OnInit {
 
   onRowEditCancel() {
     this.cdr.detectChanges();
+  }
+
+  deleteRow(index: number) {
+    this.cellerItemsFormArray.removeAt(index);
   }
 
 }

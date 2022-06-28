@@ -391,6 +391,17 @@
                   [disabled]="enableButtons"
                 ></button>
                 <button
+                  *ngIf="!editing"
+                  pButton
+                  pRipple
+                  type="button"
+                  pDeleteEditableRow
+                  icon="pi pi-trash"
+                  (click)="deleteRow(index)"
+                  class="p-button-rounded p-button-text p-button-danger"
+                  [disabled]="enableButtons"
+                ></button>
+                <button
                   *ngIf="editing"
                   pButton
                   pRipple

@@ -102,7 +102,7 @@
             >
           </div>
 
-          <div class="field col-6 flex flex-column">
+          <!-- <div class="field col-6 flex flex-column">
             <label class="mb-2" for="numberCoat"
               >Cantidad de sacos: {{ numberCoat.value }}</label
             >
@@ -132,7 +132,7 @@
               [disabled]="enableButtons"
             >
             </p-dropdown>
-          </div>
+          </div> -->
 
           <button
             pButton
@@ -445,6 +445,17 @@
                   pInitEditableRow
                   icon="pi pi-pencil"
                   class="p-button-rounded p-button-text"
+                  [disabled]="enableButtons"
+                ></button>
+                <button
+                  *ngIf="!editing"
+                  pButton
+                  pRipple
+                  type="button"
+                  pDeleteEditableRow
+                  icon="pi pi-trash"
+                  (click)="deleteRow(index)"
+                  class="p-button-rounded p-button-text p-button-danger"
                   [disabled]="enableButtons"
                 ></button>
                 <button

@@ -343,4 +343,9 @@ export class StoreCibComponent implements OnInit {
   onRowEditCancel() {
     this.cdr.detectChanges();
   }
+
+  deleteRow(index: number) {
+    this.cellerItemsFormArray.removeAt(index);
+  }
+
 }
