@@ -1,19 +1,23 @@
 package org.crsoft.cartonplast.users.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.crsoft.cartonplast.users.enums.StatusKeycloakEnum;
-import org.crsoft.cartonplast.users.exception.InsertException;
-import org.crsoft.cartonplast.users.exception.NotFoundException;
-import org.crsoft.cartonplast.users.exception.UpdateException;
+import org.apache.commons.lang3.StringUtils;
+import org.crsoft.cartonplast.users.enums.KeycloakResponseStatus;
+import org.crsoft.cartonplast.users.exception.BusinessException;
+import org.crsoft.cartonplast.users.exception.BusinessExceptionReason;
+import org.crsoft.cartonplast.users.model.Person;
 import org.crsoft.cartonplast.users.model.Preferences;
 import org.crsoft.cartonplast.users.model.User;
-import org.crsoft.cartonplast.users.repository.PreferencesRepository;
+import org.crsoft.cartonplast.users.repository.PersonRepository;
 import org.crsoft.cartonplast.users.repository.UserRepository;
 import org.crsoft.cartonplast.users.service.IUserService;
+import org.crsoft.cartonplast.users.service.mapper.UserMapper;
 import org.crsoft.cartonplast.users.util.KeycloakUtil;
-import org.crsoft.cartonplast.users.vo.req.UserReq;
-import org.crsoft.cartonplast.users.vo.res.MessageRes;
-import org.crsoft.cartonplast.users.vo.res.PreferencesRes;
+import org.crsoft.cartonplast.users.vo.req.GenerateUsernameReq;
+import org.crsoft.cartonplast.users.vo.req.CreateUserReq;
+import org.crsoft.cartonplast.users.vo.req.UpdateUserReq;
+import org.crsoft.cartonplast.users.vo.res.GenerateUsernameRes;
 import org.crsoft.cartonplast.users.vo.res.UserRes;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
@@ -21,13 +25,13 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.Response;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Keycloak Service
@@ -36,44 +40,47 @@ import java.util.Objects;
  */
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-
-    private final PreferencesRepository preferencesRepository;
-
     private final KeycloakUtil keycloakUtil;
+    private final PreferencesService preferencesService;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, PreferencesRepository preferencesRepository, KeycloakUtil keycloakUtil) {
-        this.userRepository = userRepository;
-        this.preferencesRepository = preferencesRepository;
-        this.keycloakUtil = keycloakUtil;
-    }
+    private final PersonRepository personRepository;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageRes createUser(UserReq user) throws InsertException {
-        MessageRes messageRes = MessageRes.builder().build();
+    @Transactional
+    public UserRes createUser(CreateUserReq user) {
+        Person person = personRepository.findById(user.getPersonId())
+                .orElseThrow(() -> {
+                    log.error("Person not found for id: {}", user.getPersonId());
+                    return new BusinessException(BusinessExceptionReason.PERSON_NOT_FOUND);
+                });
+
+        Response response = null;
+        String userIdCode = null;
+
         try {
             UsersResource usersResource = getUsersResource();
             UserRepresentation userRepresentation = new UserRepresentation();
-            userRepresentation.setUsername(user.getUserName());
+            userRepresentation.setUsername(user.getUsername());
             userRepresentation.setEmail(user.getEmail());
             userRepresentation.setFirstName(user.getFirstName());
             userRepresentation.setLastName(user.getLastName());
             userRepresentation.setEnabled(Boolean.TRUE);
 
-            Response response = usersResource.create(userRepresentation);
+            response = usersResource.create(userRepresentation);
             Integer status = response.getStatus();
-            messageRes.setStatus(status);
 
-            if (StatusKeycloakEnum.OK.getCode().equals(status)) {
-                // userRepresentation.getId();
-                createPersistenUser(user);
+            if (KeycloakResponseStatus.OK.getCode().equals(status)) {
                 String path = response.getLocation().getPath();
                 String userId = path.substring(path.lastIndexOf("/") + 1);
+                userIdCode = userId;
                 CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
                 credentialRepresentation.setTemporary(Boolean.FALSE);
                 credentialRepresentation.setType(CredentialRepresentation.PASSWORD);
@@ -83,20 +90,37 @@ public class UserService implements IUserService {
                 RoleRepresentation roleRepresentation = keycloakUtil.getRealmResource().roles().get("realm-user").toRepresentation();
                 keycloakUtil.getRealmResource().users().get(userId).roles().realmLevel().add(List.of(roleRepresentation));
 
-                messageRes.setMessage(user.getUserName() + " usuario creado");
-                log.info("{} user created", user.getUserName());
+                this.createPersistenUser(user, person, userId);
 
-            } else if (StatusKeycloakEnum.EXIST.getCode().equals(status)) {
-                messageRes.setMessage(user.getUserName() + " ya existe");
-                log.info("{} already exists", user.getUserName());
+                return this.userMapper.toUserRes(userRepresentation, userId);
+            } else if (KeycloakResponseStatus.EXIST.getCode().equals(status)) {
+                log.warn("{} already exists", user);
+                throw new BusinessException(BusinessExceptionReason.USER_ALREADY_EXISTS_KEYCLOAK, user.getUsername());
             } else {
-                messageRes.setMessage("Error creando usuario, contacte al administrador");
-                log.info("Error creating user");
+                log.warn("Error creating user" + user);
+                throw new BusinessException(BusinessExceptionReason.CREATED_KEYCLOAK_USER_FAILED, user.getUsername());
             }
-            return messageRes;
+        } catch (BusinessException ex) {
+            if (StringUtils.isNotBlank(userIdCode)) {
+                log.info("Deleting user: {}", userIdCode);
+                this.deleteUserById(userIdCode);
+            }
+
+            throw new BusinessException(BusinessExceptionReason.CREATED_KEYCLOAK_USER_FAILED, user.getUsername());
         } catch (Exception e) {
-            log.error("Error creating user: {}", e.getCause().getMessage());
-            throw new InsertException("createUser", "Error creando usuario, contacte al administrador ");
+            log.error("Error creating user: {}", e.getMessage());
+
+            if (StringUtils.isNotBlank(userIdCode)) {
+                log.info("Deleting user: {}", userIdCode);
+                this.deleteUserById(userIdCode);
+            }
+
+            throw new BusinessException(BusinessExceptionReason.CREATED_KEYCLOAK_USER_FAILED, user.getUsername());
+        } finally {
+            if (response != null) {
+                log.info("Closing response {}", response);
+                response.close();
+            }
         }
     }
 
@@ -104,46 +128,50 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public Collection<UserRes> findAllUsers() throws NotFoundException {
-        try {
-            Collection<UserRes> users = new ArrayList<>(0);
-            Collection<UserRepresentation> userRepresentations = getUsersResource().list();
-
-            for (UserRepresentation userRepresentation : userRepresentations) {
-                users.add(buildUserRes(userRepresentation));
-            }
-            return users;
-        } catch (Exception e) {
-            log.error("findAllUsers Not Found");
-            throw new NotFoundException("No existen datos");
-        }
+    public List<UserRes> findAllUsers() {
+        List<UserRepresentation> userRepresentations = getUsersResource().list();
+        return userRepresentations.stream()
+                .map(userRepresentation -> this.userMapper.toUserRes(userRepresentation, userRepresentation.getId()))
+                .collect(Collectors.toList());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public UserRes findUserById(String id) throws NotFoundException {
+    public UserRes findUserById(String id) {
         UserRepresentation userRepresentation = getUserRepresentationById(id);
-        return buildUserRes(userRepresentation);
+        return this.userMapper.toUserRes(userRepresentation, id);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void updateUserById(String id, UserReq user) throws UpdateException, NotFoundException {
+    @Transactional
+    public void updateUserById(String id, UpdateUserReq user) {
+        Person person = personRepository.findById(user.getPersonId())
+                .orElseThrow(() -> {
+                    log.error("Person not found for id: {}", user.getPersonId());
+                    return new BusinessException(BusinessExceptionReason.PERSON_NOT_FOUND);
+                });
+
+        this.userRepository.findById(id).ifPresent(userEntity -> {
+            log.info("Before update: {}", userEntity);
+            userEntity.setPerson(person);
+            log.info("After update: {}", userEntity);
+        });
+
         UserRepresentation userRepresentation = getUserRepresentationById(id);
         try {
-            userRepresentation.setUsername(user.getUserName());
             userRepresentation.setEmail(user.getEmail());
             userRepresentation.setFirstName(user.getFirstName());
             userRepresentation.setLastName(user.getLastName());
 
             keycloakUtil.getRealmResource().users().get(id).update(userRepresentation);
         } catch (Exception e) {
-            log.error("findUserById Not Found Id {}", id);
-            throw new UpdateException("updateUserById", "No se puede actualizar usuario");
+            log.error("Error updating user: {}", e.getMessage());
+            throw new BusinessException(BusinessExceptionReason.USER_UPDATE_FAILED);
         }
     }
 
@@ -151,12 +179,15 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public void deleteUserById(String id) throws NotFoundException, UpdateException {
+    @Transactional
+    public void deleteUserById(String id) {
+        this.userRepository.findById(id).ifPresent(user -> this.userRepository.deleteById(id));
+
         UserRepresentation userRepresentation = getUserRepresentationById(id);
         try {
             getUsersResource().delete(userRepresentation.getId());
         } catch (Exception e) {
-            throw new UpdateException("deleteUserById", "No se puede eliminar usuario");
+            throw new BusinessException(BusinessExceptionReason.USER_KEYCLOAK_DELETE_FAILED);
         }
     }
 
@@ -164,172 +195,80 @@ public class UserService implements IUserService {
      * {@inheritDoc}
      */
     @Override
-    public UserRes findUserByUserName(String userName) throws NotFoundException {
+    public UserRes findUserByUserName(String userName) {
         Collection<UserRepresentation> userRepresentations = getUsersResource().list();
         UserRepresentation userRepresentation = userRepresentations.stream()
                 .filter(user -> user.getUsername().equals(userName))
                 .findAny()
                 .orElse(null);
         if (Objects.nonNull(userRepresentation)) {
-            return buildUserRes(userRepresentation);
+            return this.userMapper.toUserRes(userRepresentation, userRepresentation.getId());
         } else {
-            throw new NotFoundException("No existe usuario");
+            throw new BusinessException(BusinessExceptionReason.USER_NOT_FOUND_KEYCLOAK);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public PreferencesRes findPreferencesByUsername(String userName) throws NotFoundException {
-        User user = findUserByUsername(userName);
-        return buildPreferencesRes(user.getPreferences());
+    public GenerateUsernameRes generateUsername(GenerateUsernameReq req) {
+        String firstPart = StringUtils.stripAccents(req.getFirstName().substring(0, 1).toLowerCase());
+        String lastName = req.getLastName().toLowerCase();
+
+        if (lastName.contains(" ")) {
+            lastName = lastName.substring(0, lastName.indexOf(" "));
+        }
+
+        String username = firstPart + lastName;
+        int repeatedUsernames = userRepository.countByUsername(username);
+
+        if (repeatedUsernames > 0) {
+            int nextNumber = repeatedUsernames + 1;
+            username = username + nextNumber;
+        }
+
+        return new GenerateUsernameRes(username);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void updatePreferencesByUsername(String userName, Preferences preferences) throws NotFoundException, UpdateException {
-        User user = findUserByUsername(userName);
-        try {
-            Preferences preference = user.getPreferences();
-            preference.setColorMode(preferences.getColorMode());
-            preference.setMenuMode(preferences.getMenuMode());
-            preference.setMenuTheme(preferences.getMenuTheme());
-            preference.setTopBarMode(preferences.getTopBarMode());
-            preference.setColor(preferences.getColor());
-            preference.setUpdatedBy(userName);
-            preference.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-
-            this.preferencesRepository.save(preference);
-        } catch (Exception e) {
-            log.error("updatePreferencesByUsername {}", userName);
-            throw new UpdateException("CBTPRE", "No se puede actualizar preferencias");
-        }
+    public boolean existsByEmail(String email) {
+        Collection<UserRepresentation> userRepresentations = getUsersResource().list();
+        UserRepresentation userRepresentation = userRepresentations.stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findAny()
+                .orElse(null);
+        return Objects.nonNull(userRepresentation);
     }
 
-    /**
-     * Build Preferences Res
-     *
-     * @param preferences preferences
-     * @return PreferencesRes
-     */
-    private PreferencesRes buildPreferencesRes(Preferences preferences) {
-        return PreferencesRes.builder()
-                .code(preferences.getCode())
-                .colorMode(preferences.getColorMode())
-                .menuMode(preferences.getMenuMode())
-                .menuTheme(preferences.getMenuTheme())
-                .topBarMode(preferences.getTopBarMode())
-                .color(preferences.getColor())
-                .build();
-    }
-
-    /**
-     * Find User By Username
-     *
-     * @param userName userName
-     * @return User
-     * @throws NotFoundException Not Found Exception
-     */
-    private User findUserByUsername(String userName) throws NotFoundException {
-        User user = this.userRepository.findByUsername(userName);
-        if (Objects.nonNull(user)) {
-            return user;
-        } else {
-            log.info("findUserByUsername, {} not found", userName);
-            throw new NotFoundException("No existe usuario " + userName);
-        }
-    }
-
-    /**
-     * Build User Res
-     *
-     * @param userRepresentation userRepresentation
-     * @return UserRes
-     */
-    private UserRes buildUserRes(UserRepresentation userRepresentation) {
-        return UserRes.builder()
-                .id(userRepresentation.getId())
-                .userName(userRepresentation.getUsername())
-                .email(userRepresentation.getEmail())
-                .firstName(userRepresentation.getFirstName())
-                .lastName(userRepresentation.getLastName())
-                .roles(getRolesByUserId(userRepresentation.getId()))
-                .build();
-    }
 
     /**
      * Get User Representation By ID
      *
      * @param id id
      * @return UserRepresentation
-     * @throws NotFoundException Not Found Exception
      */
-    public UserRepresentation getUserRepresentationById(String id) throws NotFoundException {
+    public UserRepresentation getUserRepresentationById(String id) {
         try {
             RealmResource realmResource = keycloakUtil.getRealmResource();
             return realmResource.users().get(id).toRepresentation();
         } catch (Exception e) {
             log.error("getUserRepresentationById Not Found Id {}", id);
-            throw new NotFoundException("No existe usuario");
+            throw new BusinessException(BusinessExceptionReason.USER_NOT_FOUND_KEYCLOAK);
         }
     }
 
-
-    /**
-     * Get Users Resource
-     *
-     * @return UsersResource
-     */
     private UsersResource getUsersResource() {
         return keycloakUtil.getRealmResource().users();
     }
 
-    /**
-     * Get Roles By User ID
-     *
-     * @param userId userId
-     * @return Collection String
-     */
-    private Collection<String> getRolesByUserId(String userId) {
-        Collection<String> roles = new ArrayList<>();
-        Collection<RoleRepresentation> roleRepresentations = keycloakUtil.getRealmResource()
-                .users().get(userId).roles().realmLevel().listAll();
-        for (RoleRepresentation roleRepresentation : roleRepresentations) {
-            if (!roleRepresentation.getName().equals("default-roles-tutorial"))
-                roles.add(roleRepresentation.getName());
-        }
-        return roles;
-    }
+    private void createPersistenUser(CreateUserReq createUserReq, Person person, String userId) {
+        User user = User.builder()
+                .code(userId)
+                .username(createUserReq.getUsername())
+                .build();
+        Preferences preferences = preferencesService.getDefaultPreferences();
+        preferences.setUser(user);
+        user.setPreferences(preferences);
+        user.setPerson(person);
 
-    private void createPersistenUser(UserReq userReq) throws InsertException {
-        try {
-            User user = new User();
-            user.setUsername(userReq.getUserName());
-            user.setCreatedBy(userReq.getUserName());
-            user.setPreferences(buildDefaultPreference());
-            this.userRepository.save(user);
-        } catch (Exception e) {
-            log.info("Error to create persistence user {}", userReq.getUserName());
-            throw new InsertException("CBTUSE", "No se puede crear usuario {}" + userReq.getUserName());
-        }
-    }
-
-    private Preferences buildDefaultPreference() throws InsertException {
-        try {
-            Preferences preferences = new Preferences();
-            preferences.setColorMode("light");
-            preferences.setMenuMode("static");
-            preferences.setMenuTheme("light");
-            preferences.setTopBarMode("light");
-            preferences.setColor("#30A059");
-            this.preferencesRepository.save(preferences);
-            return preferences;
-        } catch (Exception e) {
-            log.info("Error to create preferences");
-            throw new InsertException("CBTPRE", "No se puede crear preferencias");
-        }
+        userRepository.save(user);
     }
 }

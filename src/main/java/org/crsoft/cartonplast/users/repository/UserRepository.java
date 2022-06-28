@@ -13,12 +13,17 @@ import java.util.Optional;
  * @author jyepez on 2/5/2022
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
-    User findByUsername(String userName);
+public interface UserRepository extends JpaRepository<User, String> {
+    Optional<User> findByUsername(String userName);
 
     @Query("SELECT u FROM User u WHERE u.username = ?1")
     Optional<User> findByGivenUsername(String userName);
 
     @Query("SELECT u.person.imageName FROM User u WHERE u.username = ?1")
     String findImageNameByUsername(String userName);
+
+    @Query("SELECT COALESCE(COUNT(u.username), 0) " +
+            "FROM User u " +
+            "WHERE u.username LIKE %?1%")
+    int countByUsername(String userName);
 }

@@ -1,10 +1,11 @@
 package org.crsoft.cartonplast.users.controller;
 
-import org.crsoft.cartonplast.users.exception.NotFoundException;
-import org.crsoft.cartonplast.users.exception.UpdateException;
+import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.users.model.Preferences;
 import org.crsoft.cartonplast.users.service.IUserService;
-import org.crsoft.cartonplast.users.vo.res.MessageRes;
+import org.crsoft.cartonplast.users.service.impl.PreferencesService;
+import org.crsoft.cartonplast.users.service.impl.UserService;
+import org.crsoft.cartonplast.users.vo.req.PreferencesReq;
 import org.crsoft.cartonplast.users.vo.res.PreferencesRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,48 +21,25 @@ import static org.crsoft.cartonplast.users.constant.GlobalConstant.V1_API_VERSIO
  * @author jyepez on 2/5/2022
  */
 @RestController
-@RequestMapping(V1_API_VERSION + "/preferences")
+@RequestMapping(V1_API_VERSION + "/users/{username}/preferences")
+@RequiredArgsConstructor
 public class PreferenceController {
 
-    private final IUserService userService;
+    private final PreferencesService preferencesService;
 
-    public PreferenceController(IUserService userService) {
-        this.userService = userService;
+    @GetMapping
+    @RolesAllowed({"backend-admin", "backend-user", "backend-supervisor"})
+    public ResponseEntity<PreferencesRes> findPreferencesByUsername(
+            @PathVariable String username) {
+        return ResponseEntity.ok().body(this.preferencesService.findPreferencesByUsername(username));
     }
 
-    /**
-     * Find Preferences By Username
-     *
-     * @param userName userName
-     * @return PreferencesRes
-     */
-    @GetMapping("/findPreferencesByUsername/{userName}")
+    @PatchMapping
     @RolesAllowed({"backend-admin", "backend-user", "backend-supervisor"})
-    public ResponseEntity<PreferencesRes> findPreferencesByUsername(@PathVariable String userName) {
-        try {
-            return ResponseEntity.ok().body(this.userService.findPreferencesByUsername(userName));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * Update Preferences By Username
-     *
-     * @param userName    userName
-     * @param preferences preferences
-     * @return void
-     */
-    @PatchMapping("/updatePreferencesByUsername/{userName}")
-    @RolesAllowed({"backend-admin", "backend-user", "backend-supervisor"})
-    public ResponseEntity<?> updatePreferencesByUsername(@PathVariable String userName, @RequestBody Preferences preferences) {
-        try {
-            this.userService.updatePreferencesByUsername(userName, preferences);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().body(MessageRes.builder().message(e.getMessage()).build());
-        }
+    public ResponseEntity<Void> updatePreferencesByUsername(
+            @PathVariable String username,
+            @RequestBody PreferencesReq preferences) {
+        this.preferencesService.updatePreferences(username, preferences);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,8 +1,8 @@
 package org.crsoft.cartonplast.users.service.impl;
 
 import lombok.extern.log4j.Log4j2;
-import org.crsoft.cartonplast.users.exception.NotFoundException;
-import org.crsoft.cartonplast.users.exception.UpdateException;
+import org.crsoft.cartonplast.users.exception.BusinessException;
+import org.crsoft.cartonplast.users.exception.BusinessExceptionReason;
 import org.crsoft.cartonplast.users.model.Role;
 import org.crsoft.cartonplast.users.service.IRoleService;
 import org.crsoft.cartonplast.users.util.KeycloakUtil;
@@ -51,8 +51,9 @@ public class RoleService implements IRoleService {
      * {@inheritDoc}
      */
     @Override
-    public Role findRoleByName(String name) throws NotFoundException {
+    public Role findRoleByName(String name) {
         RoleRepresentation roleRepresentation = getRoleRepresentationByName(name);
+
         return buildRole(roleRepresentation);
     }
 
@@ -60,7 +61,7 @@ public class RoleService implements IRoleService {
      * {@inheritDoc}
      */
     @Override
-    public void addRolesUser(String userId, Collection<Role> roles) throws NotFoundException, UpdateException {
+    public void addRolesUser(String userId, Collection<Role> roles) {
         addOrRemoveRoleUser(userId, roles, Boolean.TRUE);
     }
 
@@ -68,7 +69,7 @@ public class RoleService implements IRoleService {
      * {@inheritDoc}
      */
     @Override
-    public void removeRolesUser(String userId, Collection<Role> roles) throws NotFoundException, UpdateException {
+    public void removeRolesUser(String userId, Collection<Role> roles) {
         addOrRemoveRoleUser(userId, roles, Boolean.FALSE);
     }
 
@@ -78,11 +79,8 @@ public class RoleService implements IRoleService {
      * @param userId userId
      * @param roles  roles
      * @param option option
-     * @throws NotFoundException Not Found Exception
-     * @throws UpdateException   Update Exception
      */
-    private void addOrRemoveRoleUser(String userId, Collection<Role> roles, Boolean option) throws NotFoundException, UpdateException {
-        String message = option ? "agregar" : "remover";
+    private void addOrRemoveRoleUser(String userId, Collection<Role> roles, Boolean option) {
         List<RoleRepresentation> roleRepresentations = new ArrayList<>(0);
         UserRepresentation userRepresentation = userService.getUserRepresentationById(userId);
         try {
@@ -90,7 +88,7 @@ public class RoleService implements IRoleService {
                 RoleRepresentation roleRepresentation = getRoleRepresentationByName(role.getName());
                 roleRepresentations.add(roleRepresentation);
             }
-            if (option) {
+            if (Boolean.TRUE.equals(option)) {
                 keycloakUtil.getRealmResource().users()
                         .get(userRepresentation.getId()).roles().realmLevel().add(roleRepresentations);
             } else {
@@ -99,7 +97,7 @@ public class RoleService implements IRoleService {
             }
         } catch (Exception e) {
             log.error("addOrRemoveRoleUser Error: {}", e.getMessage());
-            throw new UpdateException("addOrRemoveRoleUser", "No se puede " + message + " rol a usuario");
+            throw new BusinessException(BusinessExceptionReason.ROLE_USER_UPDATE_FAILED);
         }
     }
 
@@ -122,14 +120,13 @@ public class RoleService implements IRoleService {
      *
      * @param name name
      * @return RoleRepresentation
-     * @throws NotFoundException Not Found Exception
      */
-    private RoleRepresentation getRoleRepresentationByName(String name) throws NotFoundException {
+    private RoleRepresentation getRoleRepresentationByName(String name) {
         try {
             return getRolesResource().get(name).toRepresentation();
         } catch (Exception e) {
             log.error("getRoleRepresentationByName Not Found Role {}", name);
-            throw new NotFoundException("No rol " + name);
+            throw new BusinessException(BusinessExceptionReason.ROLE_NOT_FOUND, name);
         }
     }
 

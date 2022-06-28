@@ -1,12 +1,9 @@
 package org.crsoft.cartonplast.users.service;
 
-import org.crsoft.cartonplast.users.exception.InsertException;
-import org.crsoft.cartonplast.users.exception.NotFoundException;
-import org.crsoft.cartonplast.users.exception.UpdateException;
-import org.crsoft.cartonplast.users.model.Preferences;
-import org.crsoft.cartonplast.users.vo.req.UserReq;
-import org.crsoft.cartonplast.users.vo.res.MessageRes;
-import org.crsoft.cartonplast.users.vo.res.PreferencesRes;
+import org.crsoft.cartonplast.users.vo.req.GenerateUsernameReq;
+import org.crsoft.cartonplast.users.vo.req.CreateUserReq;
+import org.crsoft.cartonplast.users.vo.req.UpdateUserReq;
+import org.crsoft.cartonplast.users.vo.res.GenerateUsernameRes;
 import org.crsoft.cartonplast.users.vo.res.UserRes;
 
 import java.util.Collection;
@@ -22,71 +19,48 @@ public interface IUserService {
      * Create User
      *
      * @param user user
-     * @throws InsertException Insert Exception
      */
-    MessageRes createUser(UserReq user) throws InsertException;
+    UserRes createUser(CreateUserReq user);
 
     /**
      * Find All Users
      *
      * @return Collection User
-     * @throws NotFoundException Not Found Exception
      */
-    Collection<UserRes> findAllUsers() throws NotFoundException;
+    Collection<UserRes> findAllUsers();
 
     /**
      * Find User By Id
      *
      * @param id id
      * @return User
-     * @throws NotFoundException Not Found Exception
      */
-    UserRes findUserById(String id) throws NotFoundException;
+    UserRes findUserById(String id);
 
     /**
      * Update User By Id
      *
      * @param id   id
      * @param user user
-     * @throws NotFoundException Not Found Exception
-     * @throws UpdateException   Update Exception
      */
-    void updateUserById(String id, UserReq user) throws NotFoundException, UpdateException;
+    void updateUserById(String id, UpdateUserReq user);
 
     /**
      * Delete User By Id
      *
      * @param id id
-     * @throws NotFoundException Not Found Exception
-     * @throws UpdateException   Update Exception
      */
-    void deleteUserById(String id) throws NotFoundException, UpdateException;
+    void deleteUserById(String id);
 
     /**
      * Find User By User Name
      *
      * @param userName userName
      * @return User Res
-     * @throws NotFoundException Not Found Exception
      */
-    UserRes findUserByUserName(String userName) throws NotFoundException;
+    UserRes findUserByUserName(String userName);
 
-    /**
-     * Find Preferences By Username
-     *
-     * @param userName userName
-     * @return PreferencesRes
-     * @throws NotFoundException Not Found Exception
-     */
-    PreferencesRes findPreferencesByUsername(String userName) throws NotFoundException;
+    GenerateUsernameRes generateUsername(GenerateUsernameReq req);
 
-    /**
-     * Update Preferences By Username
-     *
-     * @param userName    userName
-     * @param preferences preferences
-     * @throws NotFoundException Not Found Exception
-     * @throws UpdateException   UpdateException
-     */
-    void updatePreferencesByUsername(String userName, Preferences preferences) throws NotFoundException, UpdateException;
+    boolean existsByEmail(String email);
 }

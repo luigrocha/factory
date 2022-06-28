@@ -3,8 +3,9 @@ package org.crsoft.cartonplast.users.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.users.constant.LogMessageConstant;
-import org.crsoft.cartonplast.users.constant.MessageConstant;
-import org.crsoft.cartonplast.users.exception.NotExistException;
+import org.crsoft.cartonplast.users.exception.BusinessException;
+import org.crsoft.cartonplast.users.exception.BusinessExceptionReason;
+import org.crsoft.cartonplast.users.model.Person;
 import org.crsoft.cartonplast.users.model.User;
 import org.crsoft.cartonplast.users.repository.PersonRepository;
 import org.crsoft.cartonplast.users.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.crsoft.cartonplast.users.service.mapper.PersonMapper;
 import org.crsoft.cartonplast.users.util.MinioImageUtil;
 import org.crsoft.cartonplast.users.vo.res.PersonRes;
 import org.crsoft.cartonplast.users.vo.res.ProfileRes;
+import org.crsoft.cartonplast.users.vo.res.ShortPersonRes;
 import org.crsoft.cartonplast.users.vo.res.UserImageRes;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,6 @@ public class PersonService implements IPersonService {
     private final UserRepository userRepository;
     private final PersonMapper personMapper;
     private final UserService userService;
-
     private final MinioImageUtil minioImageUtil;
 
     @Override
@@ -41,11 +42,16 @@ public class PersonService implements IPersonService {
     }
 
     @Override
+    public List<ShortPersonRes> findByQuery(String query) {
+        return personMapper.toShortPersonResList(personRepository.findAllValidPersonsFromQuery(query));
+    }
+
+    @Override
     public ProfileRes findProfileByUsername(String username) {
         Optional<User> userOptional = userRepository.findByGivenUsername(username);
         if (userOptional.isEmpty()) {
             log.info(LogMessageConstant.ERROR_FIND_RECORD_MESSAGE + username);
-            throw new NotExistException(MessageConstant.MESSAGE_NOT_FOUND);
+            throw new BusinessException(BusinessExceptionReason.USER_PROFILE_NOT_FOUND, username);
         }
 
         User user = userOptional.get();
@@ -77,5 +83,13 @@ public class PersonService implements IPersonService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    @Override
+    public ShortPersonRes findPersonByUserId(String userId) {
+        Person person = userRepository.findById(userId)
+                .map(User::getPerson)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionReason.USER_LOCAL_NOT_FOUND, userId));
+        return personMapper.toShortPersonRes(person);
     }
 }

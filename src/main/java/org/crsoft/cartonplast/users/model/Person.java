@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.users.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -189,5 +190,21 @@ public class Person {
     public void prePersist() {
         this.validFrom = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
+    }
+
+    public String getFullName() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(firstName);
+        if (StringUtils.isNotBlank(secondName)) {
+            sb.append(" ");
+            sb.append(secondName);
+        }
+        sb.append(" ");
+        sb.append(firstLastName);
+        if (StringUtils.isNotBlank(secondLastName)) {
+            sb.append(" ");
+            sb.append(secondLastName);
+        }
+        return sb.toString();
     }
 }

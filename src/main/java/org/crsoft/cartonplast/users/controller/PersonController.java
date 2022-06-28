@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.users.service.impl.PersonService;
 import org.crsoft.cartonplast.users.vo.res.PersonRes;
 import org.crsoft.cartonplast.users.vo.res.ProfileRes;
+import org.crsoft.cartonplast.users.vo.res.ShortPersonRes;
 import org.crsoft.cartonplast.users.vo.res.UserImageRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,18 @@ public class PersonController {
     @GetMapping
     public ResponseEntity<List<PersonRes>> findAllPersons() {
         return ResponseEntity.ok(personService.findAllValidPersons());
+    }
+
+    @GetMapping("/search-by-userid/{userId}")
+    public ResponseEntity<ShortPersonRes> findPersonByUserId(
+            @PathVariable String userId) {
+        return ResponseEntity.ok(personService.findPersonByUserId(userId));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ShortPersonRes>> findAllPersons(
+            @RequestParam(value = "query") String query) {
+        return ResponseEntity.ok(personService.findByQuery(query));
     }
 
     @GetMapping("/profile/{username}")

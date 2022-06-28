@@ -1,10 +1,7 @@
 package org.crsoft.cartonplast.users.controller;
 
-import org.crsoft.cartonplast.users.exception.NotFoundException;
-import org.crsoft.cartonplast.users.exception.UpdateException;
 import org.crsoft.cartonplast.users.model.Role;
 import org.crsoft.cartonplast.users.service.IRoleService;
-import org.crsoft.cartonplast.users.vo.res.MessageRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,11 +45,7 @@ public class RoleController {
     @GetMapping("/findRoleByName/{name}")
     @RolesAllowed("backend-admin")
     public ResponseEntity<Role> findRoleByName(@PathVariable("name") String name) {
-        try {
-            return ResponseEntity.ok().body(this.roleService.findRoleByName(name));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(this.roleService.findRoleByName(name));
     }
 
     /**
@@ -64,15 +57,11 @@ public class RoleController {
      */
     @PatchMapping("/addRolesUser/{userId}")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<?> addRolesUser(@PathVariable("userId") String userId, @RequestBody Collection<Role> roles) {
-        try {
-            this.roleService.addRolesUser(userId, roles);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().body(MessageRes.builder().message(e.getMessage()).build());
-        }
+    public ResponseEntity<Void> addRolesUser(
+            @PathVariable("userId") String userId,
+            @RequestBody Collection<Role> roles) {
+        this.roleService.addRolesUser(userId, roles);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -84,14 +73,10 @@ public class RoleController {
      */
     @PatchMapping("/removeRolesUser/{userId}")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<?> removeRolesUser(@PathVariable("userId") String userId, @RequestBody Collection<Role> roles) {
-        try {
-            this.roleService.removeRolesUser(userId, roles);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().body(MessageRes.builder().message(e.getMessage()).build());
-        }
+    public ResponseEntity<Void> removeRolesUser(
+            @PathVariable("userId") String userId,
+            @RequestBody Collection<Role> roles) {
+        this.roleService.removeRolesUser(userId, roles);
+        return ResponseEntity.ok().build();
     }
 }
