@@ -30,6 +30,8 @@ export class GlobalErrorHandler implements ErrorHandler {
           errorMessage,
           error.status
         ));
+
+      console.error('Error from global error handler', error);
     }
   }
 }

@@ -7,6 +7,9 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { InputTextModule } from 'primeng/inputtext';
+import { MenuModule } from 'primeng/menu';
+import { ToastModule } from 'primeng/toast';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 @NgModule({
@@ -19,7 +22,10 @@ import { InputTextModule } from 'primeng/inputtext';
     TableModule,
     ButtonModule,
     RippleModule,
-    InputTextModule
+    InputTextModule,
+    MenuModule,
+    ToastModule,
+    SharedModule
   ]
 })
 export class ProjectsModule { }

@@ -1,4 +1,5 @@
 export interface Talc {
-  id: string;
-  code: string;
+  id: number;
+  percentage: number;
+  lpCode: string;
 }
