@@ -27,5 +27,6 @@ public class CellerRes implements Serializable {
     private String observations;
     private String origin;
     private String destiny;
+    private Boolean state;
 
 }

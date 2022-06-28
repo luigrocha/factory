@@ -5,10 +5,12 @@ import org.crsoft.cartonplast.celler.model.*;
 import org.crsoft.cartonplast.celler.repository.CellerRepository;
 import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerMapper;
+import org.crsoft.cartonplast.celler.util.DocumentEnum;
 import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptItemReq;
 import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
 import org.crsoft.cartonplast.vo.req.CellerReq;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
@@ -18,13 +20,10 @@ import org.keycloak.common.util.CollectionUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
-import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_INSERT;
-import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
+import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
 
 /**
  * @author jyepez on 31/5/2022
@@ -94,23 +93,25 @@ public class CellerService implements ICellerService {
     }
 
     @Override
-    public void createCeller(CellerReq celler,String userName) throws InsertException {
+    public void createCeller(CellerReq celler, String userName) throws InsertException {
         try {
             Celler cellerSave = this.cellerRepository.save(buildCellerToSave(celler, userName));
-            this.cellerDetailService.createCellerDetail(celler.getCellerItems(),cellerSave,userName);
+            this.cellerDetailService.createCellerDetail(celler.getCellerItems(), cellerSave, userName);
         } catch (Exception e) {
             log.error("Error to createCeller: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
     }
 
-    private Celler buildCellerToSave(CellerReq celler,String userName) throws NotFoundException {
-        OptionDocument reason = this.optionDocumentService.findByCode(celler.getReason());
+    private Celler buildCellerToSave(CellerReq celler, String userName) throws NotFoundException {
         Celler cellerNew = new Celler();
         cellerNew.setNumberDocument(celler.getNumberDocument());
         cellerNew.setDate(celler.getDate());
         cellerNew.setDateDocument(celler.getDateDocument());
-        cellerNew.setReason(reason.getName());
+        if (Objects.nonNull(celler.getReason())) {
+            OptionDocument reason = this.optionDocumentService.findByCode(celler.getReason());
+            cellerNew.setReason(reason.getName());
+        }
         cellerNew.setObservation(celler.getObservation());
         cellerNew.setObservations(celler.getObservations());
         cellerNew.setOrigin(celler.getOrigin());
@@ -159,6 +160,20 @@ public class CellerService implements ICellerService {
     }
 
     @Override
+    public void anulateCeller(Integer code, String userName) throws NotFoundException, UpdateException {
+        Celler celler = getCellarByCode(code);
+        try {
+            celler.setState(!celler.getState());
+            celler.setUpdatedBy(userName);
+            celler.setUpdatedAt(LocalDateTime.now());
+            this.cellerRepository.save(celler);
+        } catch (Exception e) {
+            log.error("Error to anulateCeller: {}", e.getMessage());
+            throw new UpdateException(TABLE_NAME, MESSAGE_UPDATE);
+        }
+    }
+
+    @Override
     public GenerateReceiptReq buildRecipeReq(CellerReq cellerReq) throws NotFoundException {
         OptionDocument optionDocument = this.optionDocumentService.findByCode(cellerReq.getReason());
         return GenerateReceiptReq.builder()
@@ -178,11 +193,18 @@ public class CellerService implements ICellerService {
         for (CellerDetailReq celler : cellerDetailReq) {
             Material material = this.materialService.getMaterialByCode(celler.getMaterial());
             Location location = this.locationService.getLocationByCode(celler.getLocation());
-            CellerDetail cellerLote = this.cellerDetailService.getCellarDetailByCode(celler.getLote());
+            String loteString = String.valueOf(celler.getLote());
+            if (celler.getDocument().equals(DocumentEnum.CEB.getCode()) ||
+                    celler.getDocument().equals(DocumentEnum.TM5.getCode()) ||
+                    celler.getDocument().equals(DocumentEnum.MOV.getCode())
+            ) {
+                CellerDetail cellerLote = this.cellerDetailService.getCellarDetailByCode((Integer) celler.getLote());
+                loteString = cellerLote.getLote();
+            }
             generateReceiptItemReqs.add(GenerateReceiptItemReq.builder()
                     .productType(material.getTypeMaterial().getName())
                     .productName(material.getName())
-                    .lot(cellerLote.getLote())
+                    .lot(loteString)
                     .units(celler.getAmount())
                     .bags1KG(celler.getBalance())
                     .bags25KG(celler.getCoat())

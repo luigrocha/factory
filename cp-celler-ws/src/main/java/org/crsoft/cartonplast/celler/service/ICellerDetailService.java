@@ -23,4 +23,8 @@ public interface ICellerDetailService {
     Collection<CellerDetailRes> findCellerDetailByCellerCode(Integer code) throws NotFoundException;
 
     void createCellerDetail(Collection<CellerDetailReq> celler, Celler codeCeller, String userName) throws NotFoundException, InsertException;
+
+    Collection<CellerDetailRes> findIfExistStockByMaterialCode(Integer id) throws NotFoundException;
+
+    Collection<CellerDetailRes> findIfExistStockByMaterialAndLote(Integer material, String lote);
 }
