@@ -4,9 +4,13 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.representations.idm.RoleRepresentation;
+import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -14,7 +18,7 @@ import java.util.Objects;
  * @author jyepez on 27/4/2022
  */
 
-@Service
+@Component
 public class KeycloakUtil {
 
     private static RealmResource realmResource;
@@ -45,4 +49,15 @@ public class KeycloakUtil {
         return realmResource;
     }
 
+    @Named("getRolesByUserId")
+    public List<String> getRolesByUserId(String userId) {
+        List<String> roles = new ArrayList<>();
+        List<RoleRepresentation> roleRepresentations = this.getRealmResource()
+                .users().get(userId).roles().realmLevel().listAll();
+        for (RoleRepresentation roleRepresentation : roleRepresentations) {
+            if (!roleRepresentation.getName().equals("default-roles-tutorial"))
+                roles.add(roleRepresentation.getName());
+        }
+        return roles;
+    }
 }

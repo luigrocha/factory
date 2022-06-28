@@ -3,9 +3,15 @@ package org.crsoft.cartonplast.users.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -19,6 +25,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "CBTPRE")
 public class Preferences {
 
@@ -27,47 +34,47 @@ public class Preferences {
     @Column(name = "ID_CBTPRE_CODE")
     private Integer code;
 
-    @Basic
     @Column(name = "CBTPRE_COLOR_MODE")
     private String colorMode;
 
-    @Basic
     @Column(name = "CBTPRE_MENU_MODE")
     private String menuMode;
 
-    @Basic
     @Column(name = "CBTPRE_MENU_THEME")
     private String menuTheme;
 
-    @Basic
     @Column(name = "CBTPRE_TOPBAR_MODE")
     private String topBarMode;
 
-    @Basic
     @Column(name = "CBTPRE_COLOR")
     private String color;
 
-    @Basic
-    @Column(name = "CBTPRE_VALID_FROM")
-    private Timestamp validFrom;
+    @Column(name = "CBTPRE_VALID_FROM", columnDefinition = "TIMESTAMP")
+    @CreatedDate
+    private LocalDateTime validFrom;
 
-    @Basic
-    @Column(name = "CBTPRE_VALID_TO")
-    private Timestamp validTo;
+    @Column(name = "CBTPRE_VALID_TO", columnDefinition = "TIMESTAMP")
+    private LocalDateTime validTo;
 
-    @Basic
     @Column(name = "CBTPRE_CREATED_BY")
+    @CreatedBy
     private String createdBy;
 
-    @Basic
     @Column(name = "CBTPRE_UPDATED_BY")
+    @LastModifiedBy
     private String updatedBy;
 
-    @Basic
-    @Column(name = "CBTPRE_CREATED_AT")
-    private Timestamp createdAt;
+    @Column(name = "CBTPRE_CREATED_AT", columnDefinition = "TIMESTAMP")
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @Basic
-    @Column(name = "CBTPRE_UPDATED_AT")
-    private Timestamp updatedAt;
+    @Column(name = "CBTPRE_UPDATED_AT", columnDefinition = "TIMESTAMP")
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    @OneToOne(
+            mappedBy = "preferences",
+            fetch = FetchType.LAZY
+    )
+    private User user;
 }

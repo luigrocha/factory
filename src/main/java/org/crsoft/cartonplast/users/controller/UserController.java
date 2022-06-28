@@ -1,16 +1,17 @@
 package org.crsoft.cartonplast.users.controller;
 
-import org.crsoft.cartonplast.users.exception.InsertException;
-import org.crsoft.cartonplast.users.exception.NotFoundException;
-import org.crsoft.cartonplast.users.exception.UpdateException;
+import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.users.service.IUserService;
-import org.crsoft.cartonplast.users.vo.req.UserReq;
-import org.crsoft.cartonplast.users.vo.res.MessageRes;
+import org.crsoft.cartonplast.users.vo.req.CreateUserReq;
+import org.crsoft.cartonplast.users.vo.req.GenerateUsernameReq;
+import org.crsoft.cartonplast.users.vo.req.UpdateUserReq;
+import org.crsoft.cartonplast.users.vo.res.GenerateUsernameRes;
 import org.crsoft.cartonplast.users.vo.res.UserRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.Valid;
 import java.util.Collection;
 
 import static org.crsoft.cartonplast.users.constant.GlobalConstant.V1_API_VERSION;
@@ -22,13 +23,10 @@ import static org.crsoft.cartonplast.users.constant.GlobalConstant.V1_API_VERSIO
  */
 @RestController
 @RequestMapping(V1_API_VERSION + "/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final IUserService userService;
-
-    public UserController(IUserService userService) {
-        this.userService = userService;
-    }
 
     /**
      * Create User
@@ -38,12 +36,8 @@ public class UserController {
      */
     @PostMapping("")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<MessageRes> createUser(@RequestBody UserReq user) {
-        try {
-            return ResponseEntity.ok().body(this.userService.createUser(user));
-        } catch (InsertException e) {
-            return ResponseEntity.badRequest().body(MessageRes.builder().message(e.getMessage()).build());
-        }
+    public ResponseEntity<UserRes> createUser(@Valid @RequestBody CreateUserReq user) {
+        return ResponseEntity.ok().body(this.userService.createUser(user));
     }
 
     /**
@@ -54,11 +48,7 @@ public class UserController {
     @GetMapping("")
     @RolesAllowed("backend-admin")
     public ResponseEntity<Collection<UserRes>> findAllUsers() {
-        try {
-            return ResponseEntity.ok().body(this.userService.findAllUsers());
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(this.userService.findAllUsers());
     }
 
     /**
@@ -70,11 +60,7 @@ public class UserController {
     @GetMapping("/{id}")
     @RolesAllowed("backend-admin")
     public ResponseEntity<UserRes> findUserById(@PathVariable("id") String id) {
-        try {
-            return ResponseEntity.ok().body(this.userService.findUserById(id));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(this.userService.findUserById(id));
     }
 
     /**
@@ -86,15 +72,10 @@ public class UserController {
      */
     @PutMapping("/{id}")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<?> updateUserById(@PathVariable("id") String id, @RequestBody UserReq user) {
-        try {
-            this.userService.updateUserById(id, user);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().body(MessageRes.builder().message(e.getMessage()).build());
-        }
+    public ResponseEntity<Void> updateUserById(@PathVariable("id") String id,
+                                               @Valid @RequestBody UpdateUserReq user) {
+        this.userService.updateUserById(id, user);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -105,24 +86,28 @@ public class UserController {
      */
     @DeleteMapping("/{id}")
     @RolesAllowed("backend-admin")
-    public ResponseEntity<?> deleteUserById(@PathVariable("id") String id) {
-        try {
-            this.userService.deleteUserById(id);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UpdateException e) {
-            return ResponseEntity.badRequest().body(MessageRes.builder().message(e.getMessage()).build());
-        }
+    public ResponseEntity<Void> deleteUserById(@PathVariable("id") String id) {
+        this.userService.deleteUserById(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/findUserByUserName/{userName}")
     @RolesAllowed("backend-admin")
     public ResponseEntity<UserRes> findUserByUserName(@PathVariable("userName") String userName) {
-        try {
-            return ResponseEntity.ok().body(this.userService.findUserByUserName(userName));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok().body(this.userService.findUserByUserName(userName));
+    }
+
+    @PostMapping("/generate-username")
+    @RolesAllowed("backend-admin")
+    public ResponseEntity<GenerateUsernameRes> generateUsername(
+            @RequestBody GenerateUsernameReq req) {
+        return ResponseEntity.ok().body(this.userService.generateUsername(req));
+    }
+
+    @GetMapping("/exists-by-email/{email}")
+    @RolesAllowed("backend-admin")
+    public ResponseEntity<Boolean> existsByEmail(
+            @PathVariable("email") String email) {
+        return ResponseEntity.ok().body(this.userService.existsByEmail(email));
     }
 }

@@ -8,19 +8,14 @@ import lombok.Getter;
  * @author jyepez
  */
 @Getter
-public enum StatusKeycloakEnum {
+public enum KeycloakResponseStatus {
 
     OK(201),
     EXIST(409);
 
     private final Integer code;
 
-    /**
-     * Contructor.
-     *
-     * @param code
-     */
-    StatusKeycloakEnum(Integer code) {
+    KeycloakResponseStatus(Integer code) {
         this.code = code;
     }
 }
