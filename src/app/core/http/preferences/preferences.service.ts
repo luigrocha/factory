@@ -14,14 +14,15 @@ export class PreferencesService {
 
   httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
 
-  URL_PREFERENCES = environment.userApi + '/preferences';
+  URL_PREFERENCES = environment.userApi + '/users/{username}/preferences';
 
   defaultConfig = defaultConfig;
 
   constructor(private http: HttpClient) { }
 
-  getPreferencesByUsername(userName: string): Observable<Config> {
-    return this.http.get<Config>(this.URL_PREFERENCES + '/findPreferencesByUsername/' + userName, this.httpOptions)
+  getPreferencesByUsername(username: string): Observable<Config> {
+    const url = this.URL_PREFERENCES.replace('{username}', username);
+    return this.http.get<Config>(url, this.httpOptions)
       .pipe(
         map((preferences: Preferences) => {
           if (preferences) {
@@ -44,6 +45,7 @@ export class PreferencesService {
   }
 
   updatePreferencesByUsername(userName: string, preferences: Preferences): Observable<any> {
-    return this.http.patch<any>(this.URL_PREFERENCES + '/updatePreferencesByUsername/' + userName, preferences, this.httpOptions);
+    const url = this.URL_PREFERENCES.replace('{username}', userName);
+    return this.http.patch<any>(url, preferences, this.httpOptions);
   }
 }

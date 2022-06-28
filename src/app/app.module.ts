@@ -78,10 +78,10 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: LOCALE_ID,
       useValue: localString
     },
-    // {
-    //   provide: ErrorHandler,
-    //   useClass: GlobalErrorHandler,
-    // },
+    {
+      provide: ErrorHandler,
+      useClass: GlobalErrorHandler,
+    },
     MessageService
   ],
   bootstrap: [AppComponent]

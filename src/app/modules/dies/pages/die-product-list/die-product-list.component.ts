@@ -97,7 +97,7 @@ export class DieProductListComponent implements OnInit {
     this.addDialogRef = this.dialogService.open(DieProductModalComponent, {
       header: 'Crear nuevo producto troquelado',
       width: '450px',
-      contentStyle: {'max-width': '100%', 'overflow': 'hidden'},
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
     });
 
     this.addDialogRef.onClose
@@ -117,7 +117,7 @@ export class DieProductListComponent implements OnInit {
       data: this.selectedDieProduct,
       header: `Actualizar ${this.selectedDieProduct.code}`,
       width: '450px',
-      contentStyle: {'max-width': '100%', 'overflow': 'hidden'},
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
     });
 
     this.addDialogRef.onClose

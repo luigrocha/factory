@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/types/user.types';
+import { UpdateUser, User } from 'src/app/types/user.types';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { RoleType } from 'src/app/types/role.types';
 import { RoleService } from 'src/app/core/http/roles/role.service';
@@ -8,75 +8,40 @@ import { UsersService } from 'src/app/core/http/users/users.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { TypePermission } from 'src/app/types/permission';
 import { PermissionEnum } from 'src/app/core/constants/permisions';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ToastService } from 'src/app/core/services/toast.service';
+import {
+  DieProductModalComponent
+} from 'src/app/modules/dies/components/die-product-modal/die-product-modal.component';
+import { UserModalComponent } from 'src/app/modules/users/components/user-modal/user-modal.component';
 
 @Component({
   selector: 'app-users-list',
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class UsersListComponent implements OnInit {
 
-  userDialog: boolean;
-
   selectedUsers: User[];
-
-  submitted: boolean;
-
   cols: any[];
-
   users: User[];
-
-  user: User;
-
-  loading = true;
-
   permissionsPage: TypePermission[];
-
   items: MenuItem[] = [];
-
   userSelect: User;
+  addDialogRef: DynamicDialogRef;
 
   constructor(
     private userService: UsersService,
     private roleService: RoleService,
-    private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private permissionService: PermissionService,
-  ) {
+    public dialogService: DialogService,
+    private toastService: ToastService) {
     this.breadcrumbService.setItems([
-      { label: 'Administración' },
-      { label: 'Usuarios', routerLink: ['/home/usuarios'] },
+      {label: 'Administración'},
+      {label: 'Usuarios', routerLink: ['/home/usuarios']},
     ]);
   }
 
@@ -87,11 +52,11 @@ export class UsersListComponent implements OnInit {
       this.getMenuItems();
     }, 500);
     this.cols = [
-      { field: 'userName', header: 'Usuario' },
-      { field: 'firstName', header: 'Nombre' },
-      { field: 'lastName', header: 'Apellido' },
-      { field: 'email', header: 'Email' },
-      { field: 'roles', header: 'Roles' },
+      {field: 'username', header: 'Usuario'},
+      {field: 'firstName', header: 'Nombre'},
+      {field: 'lastName', header: 'Apellido'},
+      {field: 'email', header: 'Email'},
+      {field: 'roles', header: 'Roles'},
     ];
   }
 
@@ -113,190 +78,88 @@ export class UsersListComponent implements OnInit {
   }
 
   openNew() {
-    this.user = {};
-    this.submitted = false;
-    this.userDialog = true;
+    this.addDialogRef = this.dialogService.open(UserModalComponent, {
+      header: 'Crear nuevo producto troquelado',
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe(user => {
+        if (user) {
+          this.userService.createUser(user)
+            .subscribe(response => {
+              this.toastService.success('Usuario creado correctamente');
+              this.users = [];
+              this.getAllUsers();
+            });
+        }
+      });
   }
 
   editUser(user: User) {
-    this.user = { ...user };
-    this.userDialog = true;
+    this.addDialogRef = this.dialogService.open(UserModalComponent, {
+      header: 'Crear nuevo producto troquelado',
+      width: '450px',
+      data: user,
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((updatedUser: UpdateUser) => {
+        if (updatedUser) {
+          this.userService.updateUserById(user.id, updatedUser)
+            .subscribe(response => {
+              this.toastService.success('Usuario actualizado correctamente');
+              this.users = [];
+              this.getAllUsers();
+            });
+        }
+      });
   }
 
   deleteUser(user: User) {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar al usuario ' + user.userName + '?',
+        '¿Estas seguro de eliminar al usuario ' + user.username + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.userService.deleteUserById(user.id).subscribe(
-          (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Usuario Eliminado',
-              life: 3000,
-            });
+        this.userService.deleteUserById(user.id)
+          .subscribe(() => {
+            this.toastService.success('Usuario eliminado correctamente');
             this.users = [];
             this.getAllUsers();
-          },
-          (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
-          }
-        );
-
+          });
       },
     });
   }
 
   deleteSelectedUsers() {
     this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar los usuarios seleccionados?',
+      message: '¿Estás seguro de eliminar los usuarios seleccionados?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.selectedUsers.forEach(user => {
-          this.userService.deleteUserById(user.id).subscribe(
-            (res) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Usuario Eliminado',
-                life: 3000,
-              });
+          this.userService.deleteUserById(user.id)
+            .subscribe(() => {
+              this.toastService.success('Usuario eliminado correctamente');
               this.users = [];
               this.getAllUsers();
-            },
-            (err) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error,
-                life: 3000,
-              });
-            }
-          );
-        })
+            });
+        });
 
         this.selectedUsers = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Usuarios Elimnados',
-          life: 3000,
-        });
+        this.toastService.success('Usuarios eliminados correctamente');
       },
     });
-  }
-
-  saveUser() {
-    this.submitted = true;
-
-    if (this.user.userName.trim()) {
-      if (this.user.id) {
-        this.userService.updateUserById(this.user.id, this.user).subscribe(
-          (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Usuario Actualizado',
-              life: 3000,
-            });
-            this.users = [];
-            this.getAllUsers();
-          },
-          (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
-          }
-        );
-      } else {
-        this.userService.createUser(this.user).subscribe(
-          (res) => {
-            if (res.status === 201) {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Usuario Creado',
-                life: 3000,
-              });
-              this.users = [];
-              this.getAllUsers();
-            } else if (res.status === 409) {
-              this.messageService.add({
-                severity: 'warn',
-                summary: 'Alerta',
-                detail: res.message,
-                life: 3000,
-              });
-            }
-          },
-          (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
-          }
-        );
-      }
-
-      this.users = [...this.users];
-      this.userDialog = false;
-      this.user = {};
-    }
-  }
-
-  hideDialog() {
-    this.userDialog = false;
-    this.submitted = false;
   }
 
   getAllUsers() {
     this.userService.getAllUsers().subscribe((users) => {
       this.users = users;
-      this.loading = false;
     });
-  }
-
-  removeAccents(str: string): string {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  }
-
-  createFirstLetterUserName() {
-    if (!this.user.id) {
-      this.user.userName = this.removeAccents(this.user.firstName.charAt(0)).toLowerCase();
-    }
-  }
-
-  createUsername(e: string) {
-    if (!this.user.id) {
-      let lastName = e;
-      if (e.includes(' ')) {
-        lastName = e.split(' ')[0];
-      }
-      this.user.userName = this.removeAccents((this.user.firstName.charAt(0) + lastName).toLowerCase());
-      this.verifyUsername();
-      this.user.email = this.user.userName;
-    }
-  }
-
-  verifyUsername() {
-    const repeatedRecords = this.users.filter(user => user.userName.includes(this.user.userName));
-    if (repeatedRecords.length > 1) {
-      this.user.userName = this.user.userName + (repeatedRecords.length + 1);
-    }
   }
 
   getRoleType(name: string): RoleType {

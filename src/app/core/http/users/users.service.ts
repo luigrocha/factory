@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { User } from 'src/app/types/user.types';
+import { GeneratedUsername, GenerateUsername, User } from 'src/app/types/user.types';
 import { environment } from 'src/environments/environment';
 
 
@@ -41,5 +41,13 @@ export class UsersService {
 
   getUserByUserName(userNane: string) {
     return this.http.get<User>(this.URL_USER + '/findUserByUserName/' + userNane, this.httpOptions);
+  }
+
+  existsByEmail(email: string) {
+    return this.http.get<boolean>(this.URL_USER + '/exists-by-email/' + email, this.httpOptions);
+  }
+
+  generateUsername(body: GenerateUsername) {
+    return this.http.post<GeneratedUsername>(this.URL_USER + '/generate-username', body, this.httpOptions);
   }
 }

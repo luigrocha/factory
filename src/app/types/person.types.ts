@@ -17,6 +17,7 @@ export interface Person {
   secondLastName: string;
   firstName: string;
   secondName: string;
+  fullName: string;
   birthDate: Date;
   mobil1: string;
   mobil2: string;
@@ -31,4 +32,15 @@ export interface Person {
   ethnic: Ethnic;
   gender: Gender;
   group: PersonGroup;
+}
+
+export interface ShortPerson {
+  id: number;
+  ci: string;
+  firstLastName: string;
+  secondLastName: string;
+  firstName: string;
+  secondName: string;
+  fullName: string;
+  email1: string;
 }
