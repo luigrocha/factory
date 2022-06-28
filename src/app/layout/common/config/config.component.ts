@@ -16,8 +16,6 @@ export class ConfigComponent implements OnInit {
 
   theme: string;
 
-  preferences: Preferences;
-
   refreshTrafficChart = 'refreshTrafficChart';
 
   config: Config;
@@ -39,6 +37,7 @@ export class ConfigComponent implements OnInit {
     this.layoutService.config$
       .subscribe(config => {
         this.config = config;
+        this.theme = config.color;
       });
     this.themes = [
       {name: 'denim', color: '#2f8ee5'},
