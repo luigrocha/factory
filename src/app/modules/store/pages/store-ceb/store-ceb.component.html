@@ -101,39 +101,6 @@
               >{{ formErrors.required }}</small
             >
           </div>
-
-          <!-- <div class="field col-6 flex flex-column">
-            <label class="mb-2" for="numberCoat"
-              >Cantidad de sacos: {{ numberCoat.value }}</label
-            >
-            <p-dropdown
-              id="numberCoat"
-              [options]="itemsCoat"
-              formControlName="numberCoat"
-              [editable]="true"
-              placeholder="Selecciona cantidad de sacos"
-              [style]="{ width: '100%' }"
-              [disabled]="enableButtons"
-            >
-            </p-dropdown>
-          </div>
-
-          <div class="field col-6 flex flex-column">
-            <label class="mb-2" for="numberPallet"
-              >Cantidad de sacos en pallet: {{ numberPallet.value }}</label
-            >
-            <p-dropdown
-              id="numberPallet"
-              [options]="itemsPallets"
-              formControlName="numberPallet"
-              [editable]="true"
-              placeholder="Selecciona cantidad de pallets"
-              [style]="{ width: '100%' }"
-              [disabled]="enableButtons"
-            >
-            </p-dropdown>
-          </div> -->
-
           <button
             pButton
             pRipple
@@ -152,13 +119,20 @@
           [value]="cellerItemsFormArray.controls"
           dataKey="value.id"
           editMode="row"
+          [scrollable]="true"
+          scrollHeight="400px"
         >
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th *ngFor="let col of columns">
+              <th style="width: 3rem"></th>
+              <th pFrozenColumn>Tipo</th>
+              <th pFrozenColumn>Producto</th>
+              <th pFrozenColumn>Lote</th>
+              <th pFrozenColumn>Ubicación</th>
+              <th *ngFor="let col of columns" style="max-width: 6rem">
                 {{ col.header }}
               </th>
-              <th class="text-center">
+              <th pFrozenColumn alignFrozen="right" style="max-width: 6rem">
                 <i
                   class="pi pi-cog"
                   style="font-size: 18px"
@@ -176,6 +150,18 @@
           >
             <tr [pEditableRow]="form" [formGroupName]="index">
               <td>
+                <button
+                  type="button"
+                  pButton
+                  pRipple
+                  [pRowToggler]="form"
+                  class="p-button-text p-button-rounded p-button-plain"
+                  [icon]="
+                    expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'
+                  "
+                ></button>
+              </td>
+              <td pFrozenColumn>
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -213,7 +199,10 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td
+                pFrozenColumn
+                [ngStyle]="{ minWidth: isEditing ? '15rem' : '9rem' }"
+              >
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -253,7 +242,10 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td
+                pFrozenColumn
+                [ngStyle]="{ minWidth: isEditing ? '15rem' : '9rem' }"
+              >
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -291,7 +283,10 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td
+                pFrozenColumn
+                [ngStyle]="{ minWidth: isEditing ? '15rem' : '9rem' }"
+              >
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -331,22 +326,11 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
-                <p-cellEditor class="w-full">
-                  <ng-template pTemplate="input">
-                    <input
-                      pInputText
-                      id="availability"
-                      formControlName="availability"
-                      aria-describedby="availability-help"
-                      type="number"
-                      disabled
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    {{ getCellerDetailAvailability(index).value }} Kg
-                  </ng-template>
-                </p-cellEditor>
+              <td style="max-width: 7rem">
+                <p-tag
+                  severity="{{ getSeverityTag(index) }}"
+                  value="{{ getCellerDetailAvailability(index).value }} Kg"
+                ></p-tag>
               </td>
               <td>
                 <p-cellEditor class="w-full">
@@ -357,7 +341,8 @@
                       formControlName="amount"
                       aria-describedby="amount-help"
                       type="number"
-                      max="0"
+                      style="max-width: 6rem"
+                      min="0"
                     />
                   </ng-template>
                   <ng-template pTemplate="output">
@@ -375,7 +360,8 @@
                       aria-describedby="balance-help"
                       type="number"
                       (input)="calculateWeight(index)"
-                      max="0"
+                      style="max-width: 6rem"
+                      min="0"
                     />
                   </ng-template>
                   <ng-template pTemplate="output">
@@ -393,7 +379,8 @@
                       aria-describedby="coat-help"
                       type="number"
                       (input)="calculateWeight(index)"
-                      max="0"
+                      style="max-width: 6rem"
+                      min="0"
                     />
                   </ng-template>
                   <ng-template pTemplate="output">
@@ -411,7 +398,8 @@
                       aria-describedby="pallets-help"
                       type="number"
                       (input)="calculateWeight(index)"
-                      max="0"
+                      style="max-width: 6rem"
+                      min="0"
                     />
                   </ng-template>
                   <ng-template pTemplate="output">
@@ -419,24 +407,13 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
-                <p-cellEditor class="w-full">
-                  <ng-template pTemplate="input">
-                    <input
-                      pInputText
-                      id="weight"
-                      formControlName="weight"
-                      aria-describedby="weight-help"
-                      type="number"
-                      disabled
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    {{ getCellerDetailWeight(index).value }} Kg
-                  </ng-template>
-                </p-cellEditor>
+              <td style="max-width: 7rem">
+                <p-tag
+                  severity="warning"
+                  value="{{ getCellerDetailWeight(index).value }} Kg"
+                ></p-tag>
               </td>
-              <td style="text-align: center">
+              <td style="text-align: center" pFrozenColumn alignFrozen="right">
                 <button
                   *ngIf="!editing"
                   pButton
@@ -444,6 +421,7 @@
                   type="button"
                   pInitEditableRow
                   icon="pi pi-pencil"
+                  (click)="isEditing = !isEditing"
                   class="p-button-rounded p-button-text"
                   [disabled]="enableButtons"
                 ></button>
@@ -481,6 +459,59 @@
               </td>
             </tr>
           </ng-template>
+
+          <ng-template pTemplate="rowexpansion" let-form>
+            <tr>
+              <td colspan="11">
+                <p-table>
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th colspan="5">N° Kg en Sacos</th>
+                      <th colspan="6">N° Sacos en Pallet</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body">
+                    <tr>
+                      <td>1</td>
+                      <td>2</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </td>
+            </tr>
+          </ng-template>
+
+          <!-- <div class="field col-6 flex flex-column">
+            <label class="mb-2" for="numberCoat"
+              >Cantidad de sacos: {{ numberCoat.value }}</label
+            >
+            <p-dropdown
+              id="numberCoat"
+              [options]="itemsCoat"
+              formControlName="numberCoat"
+              [editable]="true"
+              placeholder="Selecciona cantidad de sacos"
+              [style]="{ width: '100%' }"
+              [disabled]="enableButtons"
+            >
+            </p-dropdown>
+          </div>
+
+          <div class="field col-6 flex flex-column">
+            <label class="mb-2" for="numberPallet"
+              >Cantidad de sacos en pallet: {{ numberPallet.value }}</label
+            >
+            <p-dropdown
+              id="numberPallet"
+              [options]="itemsPallets"
+              formControlName="numberPallet"
+              [editable]="true"
+              placeholder="Selecciona cantidad de pallets"
+              [style]="{ width: '100%' }"
+              [disabled]="enableButtons"
+            >
+            </p-dropdown>
+          </div> -->
         </p-table>
 
         <div class="field flex flex-column mt-3">

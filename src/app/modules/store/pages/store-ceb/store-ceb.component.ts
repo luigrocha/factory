@@ -39,6 +39,7 @@ export class StoreCebComponent implements OnInit {
   enableButtons: boolean;
   items: MenuItem[];
   pdfDialog: boolean;
+  isEditing: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -106,11 +107,7 @@ export class StoreCebComponent implements OnInit {
 
   getCellerDetailColums() {
     this.columns = [
-      { field: 'type', header: 'Tipo' },
-      { field: 'material', header: 'Producto' },
-      { field: 'lote', header: 'Lote' },
-      { field: 'location', header: 'Ubicación' },
-      { field: 'availability', header: 'Disponible' },
+      { field: 'availability', header: 'Stock' },
       { field: 'amount', header: 'Unidades' },
       { field: 'balance', header: 'Saldos' },
       { field: 'coat', header: 'Sacos' },
@@ -346,7 +343,7 @@ export class StoreCebComponent implements OnInit {
     const pallets = this.getCellerDetailPallets(index).value * this.numberCoat.value * this.numberPallet.value;
     this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
 
-    if (this.getCellerDetailWeight(index).value < (this.getCellerDetailAvailability(index).value * -1)) {
+    if (this.getCellerDetailWeight(index).value > (this.getCellerDetailAvailability(index).value)) {
       this.toastService.warning('No se dispone la cantidad seleccionada');
     }
   }
@@ -367,14 +364,20 @@ export class StoreCebComponent implements OnInit {
   }
 
   onRowEditSave() {
+    this.isEditing = false;
     this.cdr.detectChanges();
   }
 
   onRowEditCancel() {
+    this.isEditing = false;
     this.cdr.detectChanges();
   }
 
   deleteRow(index: number) {
     this.cellerItemsFormArray.removeAt(index);
+  }
+
+  getSeverityTag(index: number): string {
+    return this.getCellerDetailAvailability(index).value > 0 ? 'success' : 'warning';
   }
 }
