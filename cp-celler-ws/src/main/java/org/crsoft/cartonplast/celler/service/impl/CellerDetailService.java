@@ -5,11 +5,16 @@ import org.crsoft.cartonplast.celler.model.*;
 import org.crsoft.cartonplast.celler.repository.CellerDetailRepository;
 import org.crsoft.cartonplast.celler.service.ICellerDetailService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerDetailMapper;
+import org.crsoft.cartonplast.celler.service.mapper.LocationMapper;
+import org.crsoft.cartonplast.celler.service.mapper.MaterialMapper;
 import org.crsoft.cartonplast.celler.util.DocumentEnum;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
+import org.crsoft.cartonplast.vo.res.CellerStockRes;
+import org.crsoft.cartonplast.vo.res.LocationStockRes;
+import org.crsoft.cartonplast.vo.res.MaterialRes;
 import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 
@@ -34,14 +39,18 @@ public class CellerDetailService implements ICellerDetailService {
     private final DocumentService documentService;
     private final LocationService locationService;
     private final CellerService cellerService;
+    private final LocationMapper locationMapper;
+    private final MaterialMapper materialMapper;
 
-    public CellerDetailService(CellerDetailRepository cellerDetailRepository, CellerDetailMapper cellerDetailMapper, MaterialService materialService, DocumentService documentService, LocationService locationService, CellerService cellerService) {
+    public CellerDetailService(CellerDetailRepository cellerDetailRepository, CellerDetailMapper cellerDetailMapper, MaterialService materialService, DocumentService documentService, LocationService locationService, CellerService cellerService, LocationMapper locationMapper, MaterialMapper materialMapper) {
         this.cellerDetailRepository = cellerDetailRepository;
         this.cellerDetailMapper = cellerDetailMapper;
         this.materialService = materialService;
         this.documentService = documentService;
         this.locationService = locationService;
         this.cellerService = cellerService;
+        this.locationMapper = locationMapper;
+        this.materialMapper = materialMapper;
     }
 
     @Override
@@ -107,13 +116,46 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public Collection<CellerDetailRes> findIfExistStockByMaterialCode(Integer id) throws NotFoundException {
-        this.materialService.getMaterialByCode(id);
-        return null;
+    public CellerStockRes findCellerDetailStock(Integer materialCode, String lote) {
+        Collection<LocationStockRes> locationStockRes = new ArrayList<>(0);
+        Collection<CellerDetail> locationStock = this.cellerDetailRepository.findLocationStock(materialCode, lote);
+        Collection<CellerDetail> detailStock = this.cellerDetailRepository.findDetailStock(materialCode, lote);
+
+        MaterialRes materialRes = this.materialMapper.materialToMaterialRes(locationStock.stream().findFirst().get().getMaterial());
+
+        double sumStock = 0L;
+
+        for (CellerDetail detail : detailStock) {
+            sumStock += detail.getWeight();
+        }
+
+        for (CellerDetail location : locationStock) {
+            double sumStockLocation = 0L;
+            for (CellerDetail detail : detailStock) {
+                if (detail.getLocation().getId().equals(location.getLocation().getId())) {
+                    sumStockLocation += detail.getWeight();
+                }
+            }
+            locationStockRes.add(LocationStockRes.builder()
+                    .location(this.locationMapper.locationToLocationRes(location.getLocation()))
+                    .stock(sumStockLocation)
+                    .build());
+        }
+
+        return CellerStockRes.builder()
+                .material(materialRes)
+                .locationStock(locationStockRes)
+                .stock(sumStock)
+                .build();
     }
 
+
+
     @Override
-    public Collection<CellerDetailRes> findIfExistStockByMaterialAndLote(Integer material, String lote) {
+    public Collection<CellerDetailRes> findByTypeMaterialStock(Integer typeCode) {
+        Collection<CellerDetail> typeMaterialStock = this.cellerDetailRepository.findByTypeMaterialStock(typeCode);
+        Collection<CellerDetail> cellerDetails = new ArrayList<>(0);
+
         return null;
     }
 

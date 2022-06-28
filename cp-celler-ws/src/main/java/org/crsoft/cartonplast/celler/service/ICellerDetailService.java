@@ -6,6 +6,7 @@ import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
+import org.crsoft.cartonplast.vo.res.CellerStockRes;
 
 import java.util.Collection;
 
@@ -24,7 +25,7 @@ public interface ICellerDetailService {
 
     void createCellerDetail(Collection<CellerDetailReq> celler, Celler codeCeller, String userName) throws NotFoundException, InsertException;
 
-    Collection<CellerDetailRes> findIfExistStockByMaterialCode(Integer id) throws NotFoundException;
+    CellerStockRes findCellerDetailStock(Integer materialCode, String lote);
 
-    Collection<CellerDetailRes> findIfExistStockByMaterialAndLote(Integer material, String lote);
+    Collection<CellerDetailRes> findByTypeMaterialStock(Integer typeCode);
 }

@@ -4,11 +4,9 @@ import org.crsoft.cartonplast.celler.service.ICellerDetailService;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
+import org.crsoft.cartonplast.vo.res.CellerStockRes;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -39,5 +37,15 @@ public class CellerDetailController {
     @GetMapping("/findByCellerCode/{code}")
     public ResponseEntity<Collection<CellerDetailRes>> findCellerDetailByCellerCode(@PathVariable("code") Integer code) throws NotFoundException {
         return ResponseEntity.ok(this.cellerDetailService.findCellerDetailByCellerCode(code));
+    }
+
+    @GetMapping("/findStock")
+    public ResponseEntity<CellerStockRes> findCellerDetailStock(@RequestParam("materialCode") Integer materialCode, @RequestParam("lote") String lote) {
+        return ResponseEntity.ok(this.cellerDetailService.findCellerDetailStock(materialCode, lote));
+    }
+
+    @GetMapping("/findByTypeMaterial/{typeCode}")
+    public ResponseEntity<Collection<CellerDetailRes>> findByTypeMaterialStock(@PathVariable("typeCode") Integer typeCode){
+        return ResponseEntity.ok(this.cellerDetailService.findByTypeMaterialStock(typeCode));
     }
 }
