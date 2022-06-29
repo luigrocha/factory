@@ -45,6 +45,24 @@ export interface CodeDocument {
   numDocument?: string;
 }
 
+export interface LoteCeller {
+  id?: number;
+  lote?: string;
+  location: Location;
+}
+
+export interface LocationStock {
+  location?: Location;
+  stock?: number;
+}
+
+export interface Stock {
+  material?: Material;
+  lote?: string;
+  locationStock?: LocationStock[];
+  stock?: number;
+}
+
 export enum DocumentEnum {
   CIB = 1,
   CEB = 2,
@@ -53,7 +71,6 @@ export enum DocumentEnum {
   TM5 = 5,
   CEP = 6,
 }
-
 
 export interface OptionDocument {
   id?: number;

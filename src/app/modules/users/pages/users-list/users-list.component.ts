@@ -40,8 +40,8 @@ export class UsersListComponent implements OnInit {
     public dialogService: DialogService,
     private toastService: ToastService) {
     this.breadcrumbService.setItems([
-      {label: 'Administración'},
-      {label: 'Usuarios', routerLink: ['/home/usuarios']},
+      { label: 'Administración' },
+      { label: 'Usuarios', routerLink: ['/home/usuarios'] },
     ]);
   }
 
@@ -52,11 +52,11 @@ export class UsersListComponent implements OnInit {
       this.getMenuItems();
     }, 500);
     this.cols = [
-      {field: 'username', header: 'Usuario'},
-      {field: 'firstName', header: 'Nombre'},
-      {field: 'lastName', header: 'Apellido'},
-      {field: 'email', header: 'Email'},
-      {field: 'roles', header: 'Roles'},
+      { field: 'username', header: 'Usuario' },
+      { field: 'firstName', header: 'Nombre' },
+      { field: 'lastName', header: 'Apellido' },
+      { field: 'email', header: 'Email' },
+      { field: 'roles', header: 'Roles' },
     ];
   }
 
@@ -81,7 +81,7 @@ export class UsersListComponent implements OnInit {
     this.addDialogRef = this.dialogService.open(UserModalComponent, {
       header: 'Crear nuevo producto troquelado',
       width: '450px',
-      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+      contentStyle: { 'max-width': '100%', overflow: 'auto' },
     });
 
     this.addDialogRef.onClose
@@ -102,7 +102,7 @@ export class UsersListComponent implements OnInit {
       header: 'Crear nuevo producto troquelado',
       width: '450px',
       data: user,
-      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+      contentStyle: { 'max-width': '100%', overflow: 'auto' },
     });
 
     this.addDialogRef.onClose

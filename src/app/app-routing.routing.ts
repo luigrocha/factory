@@ -100,6 +100,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: [RoleEnum.SUPERVISOR] },
         loadChildren: () => import('./modules/material/material.module').then(m => m.MaterialModule)
+      },
+      {
+        path: 'stock',
+        canActivate: [AuthGuard],
+        data: { roles: [RoleEnum.SUPERVISOR] },
+        loadChildren: () => import('./modules/stock/stock.module').then(m => m.StockModule)
       }
     ]
   },
