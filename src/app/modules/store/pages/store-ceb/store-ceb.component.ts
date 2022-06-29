@@ -40,6 +40,7 @@ export class StoreCebComponent implements OnInit {
   items: MenuItem[];
   pdfDialog: boolean;
   isEditing: boolean;
+  isConfig: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -80,8 +81,6 @@ export class StoreCebComponent implements OnInit {
       observations: [null, [
         Validators.required,
       ]],
-      numberCoat: [DEFAULT_COAT],
-      numberPallet: [DEFAULT_PALLETS],
     });
   }
 
@@ -107,6 +106,10 @@ export class StoreCebComponent implements OnInit {
 
   getCellerDetailColums() {
     this.columns = [
+      { field: 'type', header: 'Tipo' },
+      { field: 'material', header: 'Producto' },
+      { field: 'lote', header: 'Lote' },
+      { field: 'location', header: 'Ubicación' },
       { field: 'availability', header: 'Stock' },
       { field: 'amount', header: 'Unidades' },
       { field: 'balance', header: 'Saldos' },
@@ -138,14 +141,6 @@ export class StoreCebComponent implements OnInit {
 
   get observations() {
     return this.form.get('observations');
-  }
-
-  get numberCoat() {
-    return this.form.get('numberCoat');
-  }
-
-  get numberPallet() {
-    return this.form.get('numberPallet');
   }
 
   getCellerDetailType(index: number) {
@@ -208,6 +203,24 @@ export class StoreCebComponent implements OnInit {
     return this.cellerItemsFormArray.at(index).get('weight');
   }
 
+  getCellerDetailNumberCoat(index: number) {
+    return this.cellerItemsFormArray.at(index).get('numberCoat');
+  }
+
+  searchCellerDetailNumberCoat(id: number): number {
+    const coat = this.itemsCoat.find(c => c === id);
+    return coat ? coat : DEFAULT_COAT;
+  }
+
+  getCellerDetailNumberPallet(index: number) {
+    return this.cellerItemsFormArray.at(index).get('numberPallet');
+  }
+
+  searchCellerDetailNumberPallet(id: number): number {
+    const pallet = this.itemsCoat.find(pall => pall === id);
+    return pallet ? pallet : DEFAULT_PALLETS;
+  }
+
   save() {
     if (this.form.invalid) {
       return;
@@ -255,7 +268,9 @@ export class StoreCebComponent implements OnInit {
       balance: [0],
       coat: [0],
       pallets: [0],
-      weight: [0]
+      weight: [0],
+      numberCoat: [DEFAULT_COAT],
+      numberPallet: [DEFAULT_PALLETS],
     }));
   }
 
@@ -339,8 +354,9 @@ export class StoreCebComponent implements OnInit {
 
   calculateWeight(index: number) {
     const balance = this.getCellerDetailBalance(index).value;
-    const coat = this.getCellerDetailCoat(index).value * this.numberCoat.value;
-    const pallets = this.getCellerDetailPallets(index).value * this.numberCoat.value * this.numberPallet.value;
+    const coat = this.getCellerDetailCoat(index).value * this.getCellerDetailNumberCoat(index).value;
+    const pallets = this.getCellerDetailPallets(index).value * this.getCellerDetailNumberCoat(index).value
+      * this.getCellerDetailNumberPallet(index).value;
     this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
 
     if (this.getCellerDetailWeight(index).value > (this.getCellerDetailAvailability(index).value)) {
