@@ -56,6 +56,7 @@ export class StoreComponent implements OnInit {
     private cellerService: CellerService,
     private permissionService: PermissionService,
     private toastService: ToastService,
+    private confirmationService: ConfirmationService,
   ) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
@@ -148,13 +149,23 @@ export class StoreComponent implements OnInit {
   }
 
   anulate(celler: Celler) {
-    this.cellerService.anulate(celler.id).subscribe(
-      (data => {
-        this.cellers = [];
-        this.toastService.success(`${celler.numberDocument} anulado correctamente`);
-        this.getAll();
-      })
-    );
+    if (celler.state) {
+      this.confirmationService.confirm({
+        message:
+          '¿Estas seguro de anular el documento ' + celler.numberDocument + '?',
+        header: 'Confirmación',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.cellerService.anulate(celler.id).subscribe(
+            (data => {
+              this.cellers = [];
+              this.toastService.success(`${celler.numberDocument} anulado correctamente`);
+              this.getAll();
+            })
+          );
+        }
+      });
+    }
   }
 
   getPermissionsPage() {
