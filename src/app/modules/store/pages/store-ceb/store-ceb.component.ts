@@ -359,7 +359,7 @@ export class StoreCebComponent implements OnInit {
       * this.getCellerDetailNumberPallet(index).value;
     this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
 
-    if (this.getCellerDetailWeight(index).value > (this.getCellerDetailAvailability(index).value)) {
+    if (this.getCellerDetailWeight(index).value > this.getCellerDetailAvailability(index).value) {
       this.toastService.warning('No se dispone la cantidad seleccionada');
     }
   }

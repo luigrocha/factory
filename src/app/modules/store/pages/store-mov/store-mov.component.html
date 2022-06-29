@@ -87,13 +87,30 @@
           [value]="cellerItemsFormArray.controls"
           dataKey="value.id"
           editMode="row"
+          [scrollable]="true"
+          scrollHeight="400px"
         >
           <ng-template pTemplate="header" let-columns>
             <tr>
-              <th *ngFor="let col of columns">
+              <th
+                *ngIf="isConfig"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                Kg por saco
+              </th>
+              <th
+                *ngIf="isConfig"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                Sacos por pallet
+              </th>
+              <th
+                *ngFor="let col of columns"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
                 {{ col.header }}
               </th>
-              <th class="text-center">
+              <th pFrozenColumn alignFrozen="right" style="max-width: 10rem">
                 <i
                   class="pi pi-cog"
                   style="font-size: 18px"
@@ -110,7 +127,54 @@
             let-index="rowIndex"
           >
             <tr [pEditableRow]="form" [formGroupName]="index">
-              <td>
+              <td
+                *ngIf="isConfig"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="itemsCoat"
+                      formControlName="numberCoat"
+                      [editable]="true"
+                      [style]="{ width: '100%' }"
+                    >
+                    </p-dropdown>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailNumberCoat(
+                        getCellerDetailNumberCoat(index).value
+                      )
+                    }}
+                    Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td
+                *ngIf="isConfig"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="itemsPallets"
+                      formControlName="numberPallet"
+                      [editable]="true"
+                      [style]="{ width: '100%' }"
+                    >
+                    </p-dropdown>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailNumberPallet(
+                        getCellerDetailNumberPallet(index).value
+                      )
+                    }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -148,7 +212,7 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -188,7 +252,7 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -226,7 +290,7 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -266,7 +330,7 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <p-dropdown
@@ -305,25 +369,13 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
-                <p-cellEditor class="w-full">
-                  <ng-template pTemplate="input">
-                    <input
-                      pInputText
-                      id="availability"
-                      formControlName="availability"
-                      aria-describedby="availability-help"
-                      type="number"
-                      style="max-width: 4rem"
-                      disabled
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    {{ getCellerDetailAvailability(index).value }} Kg
-                  </ng-template>
-                </p-cellEditor>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-tag
+                  severity="{{ getSeverityTag(index) }}"
+                  value="{{ getCellerDetailAvailability(index).value }} Kg"
+                ></p-tag>
               </td>
-              <td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <input
@@ -341,7 +393,7 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor>
                   <ng-template pTemplate="input">
                     <input
@@ -360,7 +412,7 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <input
@@ -379,7 +431,7 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <input
@@ -398,25 +450,13 @@
                   </ng-template>
                 </p-cellEditor>
               </td>
-              <td>
-                <p-cellEditor class="w-full">
-                  <ng-template pTemplate="input">
-                    <input
-                      pInputText
-                      id="weight"
-                      formControlName="weight"
-                      aria-describedby="weight-help"
-                      type="number"
-                      style="max-width: 4rem"
-                      disabled
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    {{ getCellerDetailWeight(index).value }} Kg
-                  </ng-template>
-                </p-cellEditor>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-tag
+                  severity="warning"
+                  value="{{ getCellerDetailWeight(index).value }} Kg"
+                ></p-tag>
               </td>
-              <td style="text-align: center">
+              <td style="width: 10rem" pFrozenColumn alignFrozen="right">
                 <button
                   *ngIf="!editing"
                   pButton
@@ -437,6 +477,15 @@
                   (click)="deleteRow(index)"
                   class="p-button-rounded p-button-text p-button-danger"
                   [disabled]="enableButtons"
+                ></button>
+                <button
+                  *ngIf="editing"
+                  pButton
+                  pRipple
+                  type="button"
+                  (click)="isConfig = !isConfig"
+                  class="p-button-rounded p-button-text mr-2"
+                  [icon]="isConfig ? 'pi pi-sliders-h' : 'pi pi-sliders-v'"
                 ></button>
                 <button
                   *ngIf="editing"
