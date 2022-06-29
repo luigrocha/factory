@@ -6,6 +6,7 @@ import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
+import org.crsoft.cartonplast.vo.res.CellerLoteRes;
 import org.crsoft.cartonplast.vo.res.CellerStockRes;
 
 import java.util.Collection;
@@ -28,4 +29,6 @@ public interface ICellerDetailService {
     CellerStockRes findCellerDetailStock(Integer materialCode, String lote);
 
     Collection<CellerDetailRes> findByTypeMaterialStock(Integer typeCode);
+
+    Collection<CellerLoteRes> findLoteByMaterialCode(Integer code) throws NotFoundException;
 }

@@ -26,19 +26,24 @@ public interface CellerDetailRepository extends JpaRepository<CellerDetail, Inte
     Collection<CellerDetail> findAllByLocationAndMaterialAndValidToIsNull(Location location, Material material);
 
     @Query("SELECT c FROM CellerDetail c " +
-            "WHERE c.material.id = :materialCode AND c.lote = :lote " +
+            "WHERE c.material.id = :materialCode AND c.lote = :lote AND c.validTo IS NULL " +
             "ORDER BY c.createdAt ASC")
     Collection<CellerDetail> findDetailStock(Integer materialCode, String lote);
 
     @Query("SELECT c FROM CellerDetail c " +
-            "WHERE c.material.id = :materialCode AND c.lote = :lote " +
+            "WHERE c.material.id = :materialCode AND c.lote = :lote AND c.validTo IS NULL " +
             "GROUP BY c.location.id")
     Collection<CellerDetail> findLocationStock(Integer materialCode, String lote);
 
     @Query(value = "SELECT * FROM CDTCELL_DET c " +
             "JOIN CDTCAT m on m.ID_CDTCAT_CODE = c.XID_CDTCAT_ID " +
             "JOIN CDTTIP t on t.ID_CDTTIP_ID = m.XID_CDTTIP_ID " +
-            "WHERE t.ID_CDTTIP_ID = :typeCode " +
+            "WHERE t.ID_CDTTIP_ID = :typeCode AND c.CDTCELL_DET_VALID_TO IS NULL " +
             "GROUP BY c.CDTCELL_DET_LOTE",nativeQuery = true)
     Collection<CellerDetail> findByTypeMaterialStock(Integer typeCode);
+
+    @Query("SELECT c FROM CellerDetail c " +
+            "WHERE c.material.id = :materialCode AND c.validTo IS NULL " +
+            "GROUP BY c.location.id")
+    Collection<CellerDetail> findLoteStock(Integer materialCode);
 }

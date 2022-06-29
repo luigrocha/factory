@@ -4,6 +4,7 @@ import org.crsoft.cartonplast.celler.service.ICellerDetailService;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
+import org.crsoft.cartonplast.vo.res.CellerLoteRes;
 import org.crsoft.cartonplast.vo.res.CellerStockRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,11 @@ public class CellerDetailController {
     @GetMapping("/findByMaterialCode/{code}")
     public ResponseEntity<Collection<CellerDetailRes>> findCellerByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
         return ResponseEntity.ok(this.cellerDetailService.findCellerDetailByMaterialCode(code));
+    }
+
+    @GetMapping("/findLoteByMaterialCode/{code}")
+    public ResponseEntity<Collection<CellerLoteRes>> findLoteByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findLoteByMaterialCode(code));
     }
 
     @GetMapping("/findByCellerCode/{code}")

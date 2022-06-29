@@ -11,10 +11,7 @@ import org.crsoft.cartonplast.celler.util.DocumentEnum;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
-import org.crsoft.cartonplast.vo.res.CellerDetailRes;
-import org.crsoft.cartonplast.vo.res.CellerStockRes;
-import org.crsoft.cartonplast.vo.res.LocationStockRes;
-import org.crsoft.cartonplast.vo.res.MaterialRes;
+import org.crsoft.cartonplast.vo.res.*;
 import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 
@@ -157,6 +154,17 @@ public class CellerDetailService implements ICellerDetailService {
         Collection<CellerDetail> cellerDetails = new ArrayList<>(0);
 
         return null;
+    }
+
+    @Override
+    public Collection<CellerLoteRes> findLoteByMaterialCode(Integer code) throws NotFoundException {
+        Collection<CellerDetail> cellers = this.cellerDetailRepository.findLoteStock(code);
+        if (CollectionUtil.isNotEmpty(cellers)) {
+            return this.cellerDetailMapper.cellerDetailCollectionToCellerLoteResCollection(cellers);
+        } else {
+            log.error("Error to findLoteByMaterialCode {}", code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
     }
 
     private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq, Celler codeCeller, String userName) throws NotFoundException {
