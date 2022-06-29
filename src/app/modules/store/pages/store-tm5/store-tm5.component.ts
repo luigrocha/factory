@@ -39,6 +39,8 @@ export class StoreTm5Component implements OnInit {
   enableButtons: boolean;
   items: MenuItem[];
   pdfDialog: boolean;
+  isEditing: boolean;
+  isConfig: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -79,8 +81,6 @@ export class StoreTm5Component implements OnInit {
         Validators.required,
       ]],
       cellerItems: this.fb.array([]),
-      numberCoat: [DEFAULT_COAT],
-      numberPallet: [DEFAULT_PALLETS],
     });
   }
 
@@ -216,6 +216,25 @@ export class StoreTm5Component implements OnInit {
     return this.cellerItemsFormArray.at(index).get('weight');
   }
 
+  getCellerDetailNumberCoat(index: number) {
+    return this.cellerItemsFormArray.at(index).get('numberCoat');
+  }
+
+  searchCellerDetailNumberCoat(id: number): number {
+    const coat = this.itemsCoat.find(c => c === id);
+    return coat ? coat : DEFAULT_COAT;
+  }
+
+  getCellerDetailNumberPallet(index: number) {
+    return this.cellerItemsFormArray.at(index).get('numberPallet');
+  }
+
+  searchCellerDetailNumberPallet(id: number): number {
+    const pallet = this.itemsCoat.find(pall => pall === id);
+    return pallet ? pallet : DEFAULT_PALLETS;
+  }
+
+
   save() {
     if (this.form.invalid) {
       return;
@@ -262,7 +281,9 @@ export class StoreTm5Component implements OnInit {
       balance: [0],
       coat: [0],
       pallets: [0],
-      weight: [0]
+      weight: [0],
+      numberCoat: [DEFAULT_COAT],
+      numberPallet: [DEFAULT_PALLETS],
     }));
   }
 
@@ -351,8 +372,9 @@ export class StoreTm5Component implements OnInit {
 
   calculateWeight(index: number) {
     const balance = this.getCellerDetailBalance(index).value;
-    const coat = this.getCellerDetailCoat(index).value * this.numberCoat.value;
-    const pallets = this.getCellerDetailPallets(index).value * this.numberCoat.value * this.numberPallet.value;
+    const coat = this.getCellerDetailCoat(index).value * this.getCellerDetailNumberCoat(index).value;
+    const pallets = this.getCellerDetailPallets(index).value * this.getCellerDetailNumberCoat(index).value
+      * this.getCellerDetailNumberPallet(index).value;
     this.getCellerDetailWeight(index).setValue(balance + coat + pallets);
   }
 
@@ -371,10 +393,12 @@ export class StoreTm5Component implements OnInit {
   }
 
   onRowEditSave() {
+    this.isEditing = false;
     this.cdr.detectChanges();
   }
 
   onRowEditCancel() {
+    this.isEditing = false;
     this.cdr.detectChanges();
   }
 
