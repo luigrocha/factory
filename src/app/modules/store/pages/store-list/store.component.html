@@ -174,7 +174,7 @@
               >
             </td>
             <td style="justify-content: center">
-              <div class="flex justify-content-evenly" *ngIf="celler.state">
+              <div class="flex justify-content-evenly">
                 <button
                   type="button"
                   pButton
@@ -258,6 +258,12 @@
       </ng-template>
     </p-dialog>
 
+    <p-confirmDialog
+      [style]="{ width: '450px' }"
+      rejectButtonStyleClass="p-button-text"
+      acceptButtonStyleClass="p-button-raised"
+    ></p-confirmDialog>
+
     <p-dialog
       [(visible)]="pdfDialog"
       [style]="{ width: '80%' }"
@@ -273,7 +279,5 @@
       >
       </ngx-extended-pdf-viewer>
     </p-dialog>
-
-    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
   </div>
 </div>
