@@ -117,17 +117,43 @@
           </div>
         </div>
 
-        <div class="flex flex-column align-items-center" *ngIf="isReq">
-          <h6 class="text-left w-full">
-            Disponible <strong> {{ stock.stock }} Kg </strong> de:
-            {{ getMatereialName(material.value) }} en lote: {{ lote.value }}
-          </h6>
-          <p-chart
-            type="pie"
-            [data]="pieData"
-            [options]="pieOptions"
-            [style]="{ width: '30%' }"
-          ></p-chart>
+        <div class="grid p-fluid" *ngIf="isReq">
+          <div class="col-12 lg:col-4">
+            <h6>Resumen Stock</h6>
+            <div>
+              <div
+                class="stock-location"
+                *ngFor="let loc of stock.locationStock"
+              >
+                <div class="stock-location-info">
+                  {{ loc.location.description }}: {{ loc.stock }} Kg
+                </div>
+                <p-progressBar
+                  [value]="loc.stock"
+                  [style]="{ height: '4px', borderRadius: '2px' }"
+                ></p-progressBar>
+              </div>
+              <div class="stock-location">
+                <strong>Total {{ stock.stock }} Kg</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 lg:col-8">
+            <div class="flex flex-column align-items-center">
+              <p-chart
+                type="pie"
+                [data]="pieData"
+                [options]="pieOptions"
+                [style]="{ width: '40%' }"
+                *ngIf="stock.stock > 0"
+              ></p-chart>
+              <h6 class="text-center w-full" *ngIf="stock.stock > 0">
+                Disponible <strong> {{ stock.stock }} Kg </strong> de:
+                {{ getMatereialName(material.value) }} en lote: {{ lote.value }}
+              </h6>
+              <h6 *ngIf="stock.stock <= 0">Stock negativo</h6>
+            </div>
+          </div>
         </div>
       </div>
     </div>

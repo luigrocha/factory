@@ -9,6 +9,7 @@ import { registerLocaleData } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 registerLocaleData(localeEs, 'es');
 
@@ -21,6 +22,7 @@ registerLocaleData(localeEs, 'es');
     DropdownModule,
     ButtonModule,
     ChartModule,
+    ProgressBarModule,
     CommonModule
   ],
   declarations: [StockComponent],

@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
 import { CellerDetailService } from 'src/app/core/http/celler/celler-detail.service';
 import { MaterialService } from 'src/app/core/http/materials/materials.service';
+import { PreferencesService } from 'src/app/core/http/preferences/preferences.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import { LayoutService } from 'src/app/core/services/layout.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { LoteCeller, Stock } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
@@ -31,6 +34,8 @@ export class StockComponent implements OnInit {
     private materialService: MaterialService,
     private cellerDetailService: CellerDetailService,
     private toastService: ToastService,
+    private preferencesService: PreferencesService,
+    private authService: AuthService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Bodega' },
@@ -51,15 +56,7 @@ export class StockComponent implements OnInit {
         Validators.required,
       ]],
     });
-    this.pieOptions = {
-      plugins: {
-        legend: {
-          labels: {
-            color: '#495057'
-          }
-        }
-      }
-    };
+    this.getPreferencesTheme();
   }
 
   getAllTypeMaterial() {
@@ -167,6 +164,34 @@ export class StockComponent implements OnInit {
       aleatoryColor += hexadecimal[posarray]
     }
     return aleatoryColor;
+  }
+
+  getPreferencesTheme() {
+    this.preferencesService.getPreferencesByUsername(this.authService.getLoggedUser().preferred_username).subscribe(
+      (config => {
+        if (config.layoutMode === 'dark') {
+          this.pieOptions = {
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#ebedef'
+                }
+              }
+            }
+          };
+        } else {
+          this.pieOptions = {
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#495057'
+                }
+              }
+            }
+          };
+        }
+      })
+    );
   }
 
 }
