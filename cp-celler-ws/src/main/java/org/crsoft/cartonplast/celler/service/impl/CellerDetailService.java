@@ -8,6 +8,7 @@ import org.crsoft.cartonplast.celler.service.mapper.CellerDetailMapper;
 import org.crsoft.cartonplast.celler.service.mapper.LocationMapper;
 import org.crsoft.cartonplast.celler.service.mapper.MaterialMapper;
 import org.crsoft.cartonplast.celler.util.DocumentEnum;
+import org.crsoft.cartonplast.celler.vo.LoteStockVo;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_INSERT;
@@ -62,24 +64,29 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public Collection<CellerDetailRes> findByLocationCode(Integer codeLocation, Integer codeMaterial) throws NotFoundException {
-        Location location = this.locationService.getLocationByCode(codeLocation);
-        Material material = this.materialService.getMaterialByCode(codeMaterial);
-        Collection<CellerDetail> cellerDetails = this.cellerDetailRepository.findAllByLocationAndMaterialAndValidToIsNull(location, material);
+    public Collection<CellerDetailRes> findByLocationCode(String lote, Integer codeMaterial) throws NotFoundException {
+        Collection<CellerDetail> cellerDetails = this.cellerDetailRepository.findByMaterialAndLote(codeMaterial, lote);
         if (CollectionUtil.isNotEmpty(cellerDetails)) {
             return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellerDetails);
         } else {
-            log.error("Error to findByLocationCode {} - {}", codeLocation, codeMaterial);
+            log.error("Error to findByLocationCode {} - {}", lote, codeMaterial);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
 
     @Override
     public Collection<CellerDetailRes> findCellerDetailByMaterialCode(Integer id) throws NotFoundException {
-        Material material = this.materialService.getMaterialByCode(id);
-        Collection<CellerDetail> cellers = this.cellerDetailRepository.findAllByMaterialAndValidToIsNullOrderByCreatedAtDesc(material);
+        Collection<LoteStockVo> cellers = this.cellerDetailRepository.findAllLoteStockByMaterial(id);
         if (CollectionUtil.isNotEmpty(cellers)) {
-            return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellers);
+            Collection<CellerDetail> cellerLotes = new ArrayList<>(0);
+            for(LoteStockVo loteStockVo:cellers){
+                double weight = Objects.isNull(loteStockVo.getWeight()) ? 0L : loteStockVo.getWeight();
+                if(weight > 0){
+                    CellerDetail cellerDetail = getCellarDetailByCode(loteStockVo.getId());
+                    cellerLotes.add(cellerDetail);
+                }
+            }
+            return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellerLotes);
         } else {
             log.error("Error to findCellerDetailByMaterialCode {}", id);
             throw new NotFoundException(MESSAGE_NOT_FOUND);

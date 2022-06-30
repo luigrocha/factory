@@ -23,11 +23,11 @@ public class CellerDetailController {
         this.cellerDetailService = cellerDetailService;
     }
 
-    @GetMapping("/findByLocationCode/{codeLocation}/{codeMaterial}")
+    @GetMapping("/findByLocationCode/{lote}/{codeMaterial}")
     public ResponseEntity<Collection<CellerDetailRes>> findByLocationCode(
-            @PathVariable("codeLocation") Integer codeLocation,
+            @PathVariable("lote") String lote,
             @PathVariable("codeMaterial") Integer codeMaterial) throws NotFoundException {
-        return ResponseEntity.ok(this.cellerDetailService.findByLocationCode(codeLocation, codeMaterial));
+        return ResponseEntity.ok(this.cellerDetailService.findByLocationCode(lote, codeMaterial));
     }
 
     @GetMapping("/findByMaterialCode/{code}")
