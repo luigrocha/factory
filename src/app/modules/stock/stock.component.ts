@@ -8,7 +8,7 @@ import { PreferencesService } from 'src/app/core/http/preferences/preferences.se
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { ToastService } from 'src/app/core/services/toast.service';
-import { LoteCeller, Stock, TypeMaterialStock } from 'src/app/types/celler.types';
+import { LoteCeller, MaterialStock, Stock, TypeMaterialStock } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 
 @Component({
@@ -25,11 +25,14 @@ export class StockComponent implements OnInit {
   lotes: LoteCeller[] = [];
   stock: Stock;
   typeMaterialStock: TypeMaterialStock[];
+  materialStock: MaterialStock[];
   stockTotal: number;
   pieData: any;
   basicData: any;
+  dougData: any;
   pieOptions: any;
   basicOptions: any;
+  dougOptions: any;
   isReq: boolean;
 
   constructor(
@@ -124,27 +127,29 @@ export class StockComponent implements OnInit {
 
   save() {
     const data = { ...this.form.getRawValue() };
+    this.stockTotal = 0;
     this.stock = null;
     this.typeMaterialStock = null;
+    this.materialStock = null;
     const colors = [];
+    const labels = [];
+    const values = [];
     if (this.lote.value && this.material.value && this.type.value) {
       this.cellerDetailService.getCellerDetailStock(data.material, data.lote).subscribe(
         (stock => {
           this.isReq = true;
           this.stock = stock;
           this.stockTotal = stock.stock;
-          const locations = [];
-          const stocks = [];
           this.stock.locationStock.forEach(location => {
-            locations.push(location.location.description);
-            stocks.push(location.stock);
+            labels.push(location.location.description);
+            values.push(location.stock);
             colors.push(this.generateAleatoryColor());
           });
           this.pieData = {
-            labels: locations,
+            labels,
             datasets: [
               {
-                data: stocks,
+                data: values,
                 backgroundColor: colors,
                 hoverBackgroundColor: colors
               }
@@ -153,14 +158,32 @@ export class StockComponent implements OnInit {
         })
       );
     } else if (this.material.value && this.type.value) {
-
+      this.cellerDetailService.getByMaterialStock(data.material).subscribe(
+        (materialStock => {
+          this.isReq = true;
+          this.materialStock = materialStock;
+          materialStock.forEach(material => {
+            labels.push(material.lote);
+            values.push(material.weight);
+            colors.push(this.generateAleatoryColor());
+            this.stockTotal += material.weight;
+          });
+          this.dougData = {
+            labels,
+            datasets: [
+              {
+                data: values,
+                backgroundColor: colors,
+                hoverBackgroundColor: colors
+              }
+            ]
+          };
+        })
+      )
     } else if (this.type.value) {
       this.cellerDetailService.getByTypeMaterialStock(data.type).subscribe(
         (typeMaterialStock => {
           this.isReq = true;
-          const labels = [];
-          const values = [];
-          this.stockTotal = 0;
           this.typeMaterialStock = typeMaterialStock;
           typeMaterialStock.forEach(type => {
             labels.push(type.name);
@@ -239,6 +262,15 @@ export class StockComponent implements OnInit {
               }
             }
           };
+          this.dougOptions = {
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#ebedef'
+                }
+              }
+            }
+          };
         } else {
           this.pieOptions = {
             plugins: {
@@ -272,6 +304,15 @@ export class StockComponent implements OnInit {
                 },
                 grid: {
                   color: '#ebedef'
+                }
+              }
+            }
+          };
+          this.dougOptions = {
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#495057'
                 }
               }
             }

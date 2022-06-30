@@ -167,6 +167,10 @@
                 <div class="stock-location-info">
                   {{ type.name }}: {{ type.stock }} Kg
                 </div>
+                <p-progressBar
+                  [value]="type.stock"
+                  [style]="{ height: '4px', borderRadius: '2px' }"
+                ></p-progressBar>
               </div>
               <div class="stock-location">
                 <strong>Total {{ stockTotal }} Kg</strong>
@@ -179,6 +183,38 @@
               [data]="basicData"
               [options]="basicOptions"
               [style]="{ width: '80%' }"
+            ></p-chart>
+          </div>
+        </div>
+
+        <div class="grid p-fluid" *ngIf="isReq && materialStock">
+          <div class="col-12 lg:col-5">
+            <h6>Resumen Stock por lote</h6>
+            <div>
+              <div
+                class="stock-location"
+                *ngFor="let material of materialStock"
+              >
+                <div class="stock-location-info">
+                  {{ material.lote }}: {{ material.weight }} Kg
+                </div>
+                <p-progressBar
+                  [value]="material.weight"
+                  [style]="{ height: '4px', borderRadius: '2px' }"
+                ></p-progressBar>
+              </div>
+              <div class="stock-location">
+                <strong>Total {{ stockTotal }} Kg</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 lg:col-7 flex justify-content-center">
+            <p-chart
+              type="doughnut"
+              [data]="dougData"
+              [options]="dougOptions"
+              width="500px"
+              height="500px"
             ></p-chart>
           </div>
         </div>

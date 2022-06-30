@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
-import { Celler, CellerDetail, CodeDocument, Document, GenerateReceipt, Location, LoteCeller, OptionDocument, Stock, TypeMaterialStock } from 'src/app/types/celler.types';
+import { Celler, CellerDetail, CodeDocument, Document, GenerateReceipt, Location, LoteCeller, MaterialStock, OptionDocument, Stock, TypeMaterialStock } from 'src/app/types/celler.types';
 import { environment } from 'src/environments/environment';
 import { getFileFromResponse } from 'src/app/core/utils/http-extract-file';
 import { map, tap } from 'rxjs/operators';
@@ -49,6 +49,10 @@ export class CellerDetailService {
 
   getByTypeMaterialStock(id: number): Observable<TypeMaterialStock[]> {
     return this.http.get<TypeMaterialStock[]>(this.URL_CELLER + '/findByTypeMaterialStock/' + id, this.httpOptions);
+  }
+
+  getByMaterialStock(id: number): Observable<MaterialStock[]> {
+    return this.http.get<MaterialStock[]>(this.URL_CELLER + '/findByMaterialStock/' + id, this.httpOptions);
   }
 
 }
