@@ -8,41 +8,13 @@ import { Role, RoleType } from 'src/app/types/role.types';
 import { IconService } from 'src/app/core/services/icon.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { Permission } from 'src/app/types/permission';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class MenuComponent implements OnInit {
 
@@ -78,10 +50,10 @@ export class MenuComponent implements OnInit {
     private menuService: MenuService,
     private permissionService: PermissionService,
     private roleService: RoleService,
-    private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private iconService: IconService,
+    private toastService: ToastService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Administración' },
@@ -119,20 +91,10 @@ export class MenuComponent implements OnInit {
     this.permissions.forEach(per => {
       this.permissionService.updatePermissionByMenuCode(code, per.id, per.typePermission).subscribe(
         (res => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Item Actualizado',
-            life: 3000,
-          });
+          this.toastService.success('Item Actualizado');
           this.hidePermissionDialog();
         }), (err => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
+          this.toastService.error('Error Actualizando');
         })
       );
     });
@@ -172,22 +134,12 @@ export class MenuComponent implements OnInit {
     if (this.item.id) {
       this.menuService.updateItem(this.item.id, this.item).subscribe(
         (res => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Item Actualizado',
-            life: 3000,
-          });
+          this.toastService.success('Item Actualizado');
           this.menu = [];
           this.getAllItemsTree();
         }),
         (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
+          this.toastService.error('Error Actualizando');
         }
       );
     } else {
@@ -200,31 +152,16 @@ export class MenuComponent implements OnInit {
       if (this.isValidateToSave()) {
         this.menuService.createItem(this.item).subscribe(
           (res => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Item Creado',
-              life: 3000,
-            });
+            this.toastService.success('Item Creado');
             this.menu = [];
             this.getAllItemsTree();
           }),
           (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
+            this.toastService.error('Error creando');
           }
         );
       } else {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Atención',
-          detail: 'Llene todos los campos',
-          life: 3000,
-        });
+        this.toastService.warning('Llene todos los campos');
         this.menuDialog = true;
         return;
       }
@@ -245,22 +182,12 @@ export class MenuComponent implements OnInit {
       accept: () => {
         this.menuService.deleteItem(item.id).subscribe(
           (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Item Eliminado',
-              life: 3000,
-            });
+            this.toastService.success('Item eliminado');
             this.menu = [];
             this.getAllItemsTree()
           },
           (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
+            this.toastService.error('Error eliminando');
           }
         );
 

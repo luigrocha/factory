@@ -3,66 +3,138 @@
     <p-toast></p-toast>
 
     <div class="card">
-      <p-treeTable [value]="menu" [columns]="cols" styleClass="p-datatable-sm">
+      <p-treeTable
+        [value]="menu"
+        [columns]="cols"
+        styleClass="p-datatable-sm"
+        responsiveLayout="scroll"
+        [scrollable]="true"
+      >
         <ng-template pTemplate="caption">
-          <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+          <div
+            class="flex flex-column md:flex-row md:justify-content-between md:align-items-center"
+          >
             <h5 class="m-0">Gestión de Menú</h5>
             <div class="flex">
-              <button pButton pRipple label="Añadir item raíz" icon="pi pi-user-plus" (click)="openNew(0)"></button>
+              <button
+                pButton
+                pRipple
+                label="Añadir item raíz"
+                icon="pi pi-user-plus"
+                (click)="openNew(0)"
+              ></button>
             </div>
           </div>
         </ng-template>
         <ng-template pTemplate="header" let-columns>
           <tr>
-            <th *ngFor="let col of columns">
+            <th
+              *ngFor="let col of columns"
+              [ngStyle]="{ width: col.field == 'permission' ? '8rem' : 'auto' }"
+            >
               {{ col.header }}
             </th>
-            <th style="
-                text-align: center;
-                display: flex;
-                justify-content: space-around;
-              ">
-              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+            <th style="width: 11rem; text-align: center">
+              <i
+                class="pi pi-cog"
+                style="font-size: 18px"
+                pTooltip="Opciones"
+              ></i>
             </th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
+        <ng-template
+          pTemplate="body"
+          let-rowNode
+          let-rowData="rowData"
+          let-columns="columns"
+        >
           <tr>
-            <td *ngFor="let col of columns; let i = index">
+            <td
+              *ngFor="let col of columns; let i = index"
+              [ngStyle]="{ width: col.field == 'permission' ? '8rem' : 'auto' }"
+            >
               <div *ngIf="col.field != 'icon'">
-                <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
-                <i *ngIf="col.field == 'label'" class="{{ rowData['icon'] }}"></i> {{ rowData[col.field] }}
+                <p-treeTableToggler
+                  [rowNode]="rowNode"
+                  *ngIf="i == 0"
+                ></p-treeTableToggler>
+                <i
+                  *ngIf="col.field == 'label'"
+                  class="{{ rowData['icon'] }}"
+                ></i>
+                {{ rowData[col.field] }}
               </div>
               <div *ngIf="col.field == 'permission'">
-                <button pButton pRipple icon="pi pi-user-edit" class="p-button-rounded p-button-outlined"
-                  (click)="openPermission(rowData)"></button>
+                <button
+                  pButton
+                  pRipple
+                  icon="pi pi-user-edit"
+                  class="p-button-rounded p-button-text"
+                  (click)="openPermission(rowData)"
+                ></button>
               </div>
             </td>
-            <td style="text-align: center">
-              <button pButton pRipple icon="pi pi-plus" class="p-button-rounded p-button-outlined mr-2"
-                (click)="openNew(rowData.id)"></button>
-              <button pButton pRipple icon="pi pi-pencil"
-                class="p-button-rounded p-button-outlined p-button-success mr-2" (click)="editItem(rowData)"></button>
-              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-warning"
-                (click)="deleteItem(rowData)"></button>
+            <td style="text-align: center; width: 11rem">
+              <button
+                pButton
+                pRipple
+                icon="pi pi-plus"
+                class="p-button-rounded p-button-text mr-2"
+                (click)="openNew(rowData.id)"
+              ></button>
+              <button
+                pButton
+                pRipple
+                icon="pi pi-pencil"
+                class="p-button-rounded p-button-text p-button-success mr-2"
+                (click)="editItem(rowData)"
+              ></button>
+              <button
+                pButton
+                pRipple
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-text p-button-warning"
+                (click)="deleteItem(rowData)"
+              ></button>
             </td>
           </tr>
         </ng-template>
       </p-treeTable>
     </div>
 
-    <p-dialog [(visible)]="menuDialog" [style]="{ width: '450px', height: '500px' }" header="Detalles de Item Menú"
-      [modal]="true" styleClass="p-fluid">
+    <p-dialog
+      [(visible)]="menuDialog"
+      [style]="{ width: '450px', height: '500px' }"
+      header="Detalles de Item Menú"
+      [modal]="true"
+      styleClass="p-fluid"
+    >
       <ng-template pTemplate="content">
         <div class="p-field">
           <label for="label">Nombre</label>
-          <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !item.label">Campo nombre es requerido.</small>
+          <input
+            type="text"
+            pInputText
+            id="label"
+            [(ngModel)]="item.label"
+            required
+            autofocus
+          />
+          <small class="p-invalid" *ngIf="submitted && !item.label"
+            >Campo nombre es requerido.</small
+          >
         </div>
         <div class="p-field">
           <label for="icon">Icono</label>
-          <p-dropdown [options]="icons" [(ngModel)]="iconSelected" optionLabel="name" [filter]="true" filterBy="name"
-            placeholder="Selecciona un ícono">
+          <p-dropdown
+            [options]="icons"
+            [(ngModel)]="iconSelected"
+            optionLabel="name"
+            [filter]="true"
+            filterBy="name"
+            placeholder="Selecciona un ícono"
+          >
             <ng-template pTemplate="selectedItem">
               <div *ngIf="iconSelected">
                 <div class="icon-item">
@@ -76,11 +148,18 @@
               </div>
             </ng-template>
           </p-dropdown>
-          <small class="p-invalid" *ngIf="submitted && !item.icon">Campo icono es requerido.</small>
+          <small class="p-invalid" *ngIf="submitted && !item.icon"
+            >Campo icono es requerido.</small
+          >
         </div>
         <div class="p-field">
           <label for="role">Rol</label>
-          <p-dropdown id="role" [options]="roles" [(ngModel)]="roleSelected" placeholder="Selecciona un rol">
+          <p-dropdown
+            id="role"
+            [options]="roles"
+            [(ngModel)]="roleSelected"
+            placeholder="Selecciona un rol"
+          >
             <ng-template pTemplate="selectedItem">
               <div *ngIf="roleSelected">
                 {{ roleSelected.name }}
@@ -90,42 +169,83 @@
               {{ role.name }}
             </ng-template>
           </p-dropdown>
-          <small class="p-invalid" *ngIf="submitted && !item.rol">Campo rol es requerido.</small>
+          <small class="p-invalid" *ngIf="submitted && !item.rol"
+            >Campo rol es requerido.</small
+          >
         </div>
         <div class="p-field" *ngIf="childSelected != 0">
           <label for="url">Url</label>
-          <input type="text" pInputText id="url" [(ngModel)]="item.url" required />
-          <small class="p-invalid" *ngIf="submitted && !item.url">Campo url es requerido.</small>
+          <input
+            type="text"
+            pInputText
+            id="url"
+            [(ngModel)]="item.url"
+            required
+          />
+          <small class="p-invalid" *ngIf="submitted && !item.url"
+            >Campo url es requerido.</small
+          >
         </div>
         <div class="p-field">
           <label for="order">Orden</label>
           <div class="p-inputgroup">
-            <input type="number" pInputText id="order" [(ngModel)]="item.order" required />
+            <input
+              type="number"
+              pInputText
+              id="order"
+              [(ngModel)]="item.order"
+              required
+            />
             <span class="p-inputgroup-addon" *ngIf="!item.id">{{
               sugederOrder
-              }}</span>
+            }}</span>
           </div>
-          <small class="p-invalid" *ngIf="submitted && !item.order">Campo orden es requerido.</small>
+          <small class="p-invalid" *ngIf="submitted && !item.order"
+            >Campo orden es requerido.</small
+          >
         </div>
       </ng-template>
 
       <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-          (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
+        <button
+          pButton
+          pRipple
+          label="Cancelar"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="hideDialog()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="Guardar"
+          icon="pi pi-check"
+          class="p-button-text"
+          (click)="saveItem()"
+        ></button>
       </ng-template>
     </p-dialog>
 
-    <p-dialog [(visible)]="permissionDialog" [style]="{ width: '50%', height: '500px' }"
-      [header]="headerPermission + item?.label" [modal]="true" styleClass="p-fluid">
+    <p-dialog
+      [(visible)]="permissionDialog"
+      [style]="{ height: '500px' }"
+      [header]="headerPermission + item?.label"
+      [modal]="true"
+      styleClass="p-fluid dialog-permissions"
+    >
       <ng-template pTemplate="content">
         <div *ngFor="let per of permissions">
-          <h5>{{getRoleType(per.role).name}}</h5>
+          <h5>{{ getRoleType(per.role).name }}</h5>
           <div class="grid">
             <div class="col-6 md:col-2" *ngFor="let item of per.typePermission">
               <div class="field-checkbox">
-                <p-checkbox name="item.name" [value]="item.name" [(ngModel)]="item.flag" binary="true"></p-checkbox>
-                <label>{{item.name}}</label>
+                <p-checkbox
+                  name="item.name"
+                  [value]="item.name"
+                  [(ngModel)]="item.flag"
+                  binary="true"
+                ></p-checkbox>
+                <label>{{ item.name }}</label>
               </div>
             </div>
           </div>
@@ -134,10 +254,22 @@
       </ng-template>
 
       <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-          (click)="hidePermissionDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
-          (click)="savePermisions(item.id)"></button>
+        <button
+          pButton
+          pRipple
+          label="Cancelar"
+          icon="pi pi-times"
+          class="p-button-text"
+          (click)="hidePermissionDialog()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          label="Guardar"
+          icon="pi pi-check"
+          class="p-button-text"
+          (click)="savePermisions(item.id)"
+        ></button>
       </ng-template>
     </p-dialog>
 
