@@ -161,7 +161,7 @@ export class StockComponent implements OnInit {
     let aleatoryColor = '#';
     for (let i = 0; i < 6; i++) {
       const posarray = this.random(0, hexadecimal.length);
-      aleatoryColor += hexadecimal[posarray]
+      aleatoryColor += hexadecimal[posarray];
     }
     return aleatoryColor;
   }
