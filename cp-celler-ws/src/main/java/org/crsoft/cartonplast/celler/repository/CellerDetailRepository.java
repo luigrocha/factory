@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.celler.model.CellerDetail;
 import org.crsoft.cartonplast.celler.model.Location;
 import org.crsoft.cartonplast.celler.model.Material;
 import org.crsoft.cartonplast.celler.vo.LoteStockVo;
+import org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -42,15 +43,19 @@ public interface CellerDetailRepository extends JpaRepository<CellerDetail, Inte
             "ORDER BY c.createdAt ASC")
     Collection<CellerDetail> findByMaterialAndLote(Integer materialCode, String lote);
 
-    @Query(value = "SELECT * FROM CDTCELL_DET c " +
-            "JOIN CDTCAT m on m.ID_CDTCAT_CODE = c.XID_CDTCAT_ID " +
-            "JOIN CDTTIP t on t.ID_CDTTIP_ID = m.XID_CDTTIP_ID " +
-            "WHERE t.ID_CDTTIP_ID = :typeCode AND c.CDTCELL_DET_VALID_TO IS NULL " +
-            "GROUP BY c.CDTCELL_DET_LOTE",nativeQuery = true)
-    Collection<CellerDetail> findByTypeMaterialStock(Integer typeCode);
+    @Query("SELECT new org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo(c.id,c.material.name, SUM(c.weight) ) FROM CellerDetail c " +
+            "WHERE c.material.typeMaterial.id = :typeCode " +
+            "GROUP BY c.material.id")
+    Collection<TypeMaterialStockVo> findByTypeMaterialStock(Integer typeCode);
 
     @Query("SELECT c FROM CellerDetail c " +
             "WHERE c.material.id = :materialCode AND c.validTo IS NULL " +
             "GROUP BY c.lote")
     Collection<CellerDetail> findLoteStock(Integer materialCode);
+
+    /*SELECT C.XID_CDTCAT_ID, M.CDTCAT_NAME, SUM(C.CDTCELL_DET_WEIGHT), C.CDTCELL_DET_CREATED_AT FROM CDTCELL_DET C
+    INNER JOIN  CDTCAT M on C.XID_CDTCAT_ID = M.ID_CDTCAT_CODE
+    INNER JOIN CDTTIP T ON T.ID_CDTTIP_ID = M.XID_CDTTIP_ID
+    WHERE T.ID_CDTTIP_ID = 1
+    GROUP BY C.XID_CDTCAT_ID;*/
 }

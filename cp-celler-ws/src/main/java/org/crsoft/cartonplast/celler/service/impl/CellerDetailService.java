@@ -9,6 +9,7 @@ import org.crsoft.cartonplast.celler.service.mapper.LocationMapper;
 import org.crsoft.cartonplast.celler.service.mapper.MaterialMapper;
 import org.crsoft.cartonplast.celler.util.DocumentEnum;
 import org.crsoft.cartonplast.celler.vo.LoteStockVo;
+import org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
@@ -156,11 +157,14 @@ public class CellerDetailService implements ICellerDetailService {
 
 
     @Override
-    public Collection<CellerDetailRes> findByTypeMaterialStock(Integer typeCode) {
-        Collection<CellerDetail> typeMaterialStock = this.cellerDetailRepository.findByTypeMaterialStock(typeCode);
-        Collection<CellerDetail> cellerDetails = new ArrayList<>(0);
-
-        return null;
+    public Collection<TypeMaterialStockVo> findByTypeMaterialStock(Integer typeCode) throws NotFoundException {
+        Collection<TypeMaterialStockVo> typeMaterialStock = this.cellerDetailRepository.findByTypeMaterialStock(typeCode);
+        if(CollectionUtil.isNotEmpty(typeMaterialStock)){
+            return  typeMaterialStock;
+        } else {
+            log.error("Error to findByTypeMaterialStock {}", typeCode);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
     }
 
     @Override
@@ -170,6 +174,17 @@ public class CellerDetailService implements ICellerDetailService {
             return this.cellerDetailMapper.cellerDetailCollectionToCellerLoteResCollection(cellers);
         } else {
             log.error("Error to findLoteByMaterialCode {}", code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Collection<LoteStockVo> findByMaterialStock(Integer code) throws NotFoundException {
+        Collection<LoteStockVo> loteStockVos = this.cellerDetailRepository.findAllLoteStockByMaterial(code);
+        if(CollectionUtil.isNotEmpty(loteStockVos)){
+            return loteStockVos;
+        }else {
+            log.error("Error to findByMaterialStock {}", code);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }

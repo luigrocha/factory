@@ -1,6 +1,8 @@
 package org.crsoft.cartonplast.celler.controller;
 
 import org.crsoft.cartonplast.celler.service.ICellerDetailService;
+import org.crsoft.cartonplast.celler.vo.LoteStockVo;
+import org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
@@ -50,8 +52,13 @@ public class CellerDetailController {
         return ResponseEntity.ok(this.cellerDetailService.findCellerDetailStock(materialCode, lote));
     }
 
-    @GetMapping("/findByTypeMaterial/{typeCode}")
-    public ResponseEntity<Collection<CellerDetailRes>> findByTypeMaterialStock(@PathVariable("typeCode") Integer typeCode){
+    @GetMapping("/findByTypeMaterialStock/{typeCode}")
+    public ResponseEntity<Collection<TypeMaterialStockVo>> findByTypeMaterialStock(@PathVariable("typeCode") Integer typeCode) throws NotFoundException {
         return ResponseEntity.ok(this.cellerDetailService.findByTypeMaterialStock(typeCode));
+    }
+
+    @GetMapping("/findByMaterialStock/{materialCode}")
+    public ResponseEntity<Collection<LoteStockVo>> findByMaterialStock(@PathVariable("materialCode") Integer materialCode) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findByMaterialStock(materialCode));
     }
 }
