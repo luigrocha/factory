@@ -315,8 +315,8 @@ export class StoreTm5Component implements OnInit {
     this.lotes = [];
     this.cellerDetailService.getByMaterialCode(id).subscribe(
       (cellers => {
-        const lotes = this.deleteCellerDuplicateByLote(cellers);
-        this.lotes = lotes.filter((lote: CellerDetail) => lote.weight > 0);
+        this.lotes = cellers; // this.deleteCellerDuplicateByLote(cellers);
+        // this.lotes = lotes.filter((lote: CellerDetail) => lote.weight > 0);
       }),
       (err) => {
         this.lotes = [];
@@ -327,13 +327,13 @@ export class StoreTm5Component implements OnInit {
   onLoteSelected(e: any) {
     const lote = e.value;
     const celler = this.lotes.find(lo => lo.id === lote);
-    this.getCellerByLocationCode(celler.location.id, celler.material.id);
+    this.getCellerByLocationCode(celler.lote, celler.material.id);
   }
 
-  getCellerByLocationCode(codeLocation: number, codeMaterial: number) {
+  getCellerByLocationCode(lote: string, codeMaterial: number) {
     this.locations = [];
     this.cellers = [];
-    this.cellerDetailService.getByLocationCode(codeLocation, codeMaterial).subscribe(
+    this.cellerDetailService.getByLocationCode(lote, codeMaterial).subscribe(
       (locations) => {
         this.cellers = locations;
         this.deleteCellerDuplicateByLocation(locations).forEach((location: CellerDetail) => this.locations.push(location.location));
