@@ -2,6 +2,7 @@ package org.crsoft.cartonplast.celler.service.mapper;
 
 import org.crsoft.cartonplast.celler.model.CellerDetail;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
+import org.crsoft.cartonplast.vo.res.CellerLoteRes;
 import org.mapstruct.Mapper;
 
 import java.util.Collection;
@@ -19,5 +20,9 @@ public interface CellerDetailMapper {
     CellerDetailRes cellerDetailToCellerDetailRes(CellerDetail celler);
 
     Collection<CellerDetailRes> cellerDetailCollectionToCellerDetailResCollection(Collection<CellerDetail> cellers);
+
+    CellerLoteRes cellerDetailToCellerLoteRes(CellerDetail celler);
+
+    Collection<CellerLoteRes> cellerDetailCollectionToCellerLoteResCollection(Collection<CellerDetail> celler);
 
 }

@@ -1,14 +1,15 @@
 package org.crsoft.cartonplast.celler.controller;
 
 import org.crsoft.cartonplast.celler.service.ICellerDetailService;
+import org.crsoft.cartonplast.celler.vo.LoteStockVo;
+import org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
+import org.crsoft.cartonplast.vo.res.CellerLoteRes;
+import org.crsoft.cartonplast.vo.res.CellerStockRes;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -24,11 +25,11 @@ public class CellerDetailController {
         this.cellerDetailService = cellerDetailService;
     }
 
-    @GetMapping("/findByLocationCode/{codeLocation}/{codeMaterial}")
+    @GetMapping("/findByLocationCode/{lote}/{codeMaterial}")
     public ResponseEntity<Collection<CellerDetailRes>> findByLocationCode(
-            @PathVariable("codeLocation") Integer codeLocation,
+            @PathVariable("lote") String lote,
             @PathVariable("codeMaterial") Integer codeMaterial) throws NotFoundException {
-        return ResponseEntity.ok(this.cellerDetailService.findByLocationCode(codeLocation, codeMaterial));
+        return ResponseEntity.ok(this.cellerDetailService.findByLocationCode(lote, codeMaterial));
     }
 
     @GetMapping("/findByMaterialCode/{code}")
@@ -36,8 +37,28 @@ public class CellerDetailController {
         return ResponseEntity.ok(this.cellerDetailService.findCellerDetailByMaterialCode(code));
     }
 
+    @GetMapping("/findLoteByMaterialCode/{code}")
+    public ResponseEntity<Collection<CellerLoteRes>> findLoteByMaterialCode(@PathVariable("code") Integer code) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findLoteByMaterialCode(code));
+    }
+
     @GetMapping("/findByCellerCode/{code}")
     public ResponseEntity<Collection<CellerDetailRes>> findCellerDetailByCellerCode(@PathVariable("code") Integer code) throws NotFoundException {
         return ResponseEntity.ok(this.cellerDetailService.findCellerDetailByCellerCode(code));
+    }
+
+    @GetMapping("/findStock")
+    public ResponseEntity<CellerStockRes> findCellerDetailStock(@RequestParam("materialCode") Integer materialCode, @RequestParam("lote") String lote) {
+        return ResponseEntity.ok(this.cellerDetailService.findCellerDetailStock(materialCode, lote));
+    }
+
+    @GetMapping("/findByTypeMaterialStock/{typeCode}")
+    public ResponseEntity<Collection<TypeMaterialStockVo>> findByTypeMaterialStock(@PathVariable("typeCode") Integer typeCode) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findByTypeMaterialStock(typeCode));
+    }
+
+    @GetMapping("/findByMaterialStock/{materialCode}")
+    public ResponseEntity<Collection<LoteStockVo>> findByMaterialStock(@PathVariable("materialCode") Integer materialCode) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findByMaterialStock(materialCode));
     }
 }

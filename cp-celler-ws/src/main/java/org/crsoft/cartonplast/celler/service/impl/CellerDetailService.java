@@ -5,16 +5,21 @@ import org.crsoft.cartonplast.celler.model.*;
 import org.crsoft.cartonplast.celler.repository.CellerDetailRepository;
 import org.crsoft.cartonplast.celler.service.ICellerDetailService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerDetailMapper;
+import org.crsoft.cartonplast.celler.service.mapper.LocationMapper;
+import org.crsoft.cartonplast.celler.service.mapper.MaterialMapper;
 import org.crsoft.cartonplast.celler.util.DocumentEnum;
+import org.crsoft.cartonplast.celler.vo.LoteStockVo;
+import org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
-import org.crsoft.cartonplast.vo.res.CellerDetailRes;
+import org.crsoft.cartonplast.vo.res.*;
 import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_INSERT;
@@ -34,14 +39,18 @@ public class CellerDetailService implements ICellerDetailService {
     private final DocumentService documentService;
     private final LocationService locationService;
     private final CellerService cellerService;
+    private final LocationMapper locationMapper;
+    private final MaterialMapper materialMapper;
 
-    public CellerDetailService(CellerDetailRepository cellerDetailRepository, CellerDetailMapper cellerDetailMapper, MaterialService materialService, DocumentService documentService, LocationService locationService, CellerService cellerService) {
+    public CellerDetailService(CellerDetailRepository cellerDetailRepository, CellerDetailMapper cellerDetailMapper, MaterialService materialService, DocumentService documentService, LocationService locationService, CellerService cellerService, LocationMapper locationMapper, MaterialMapper materialMapper) {
         this.cellerDetailRepository = cellerDetailRepository;
         this.cellerDetailMapper = cellerDetailMapper;
         this.materialService = materialService;
         this.documentService = documentService;
         this.locationService = locationService;
         this.cellerService = cellerService;
+        this.locationMapper = locationMapper;
+        this.materialMapper = materialMapper;
     }
 
     @Override
@@ -56,24 +65,29 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public Collection<CellerDetailRes> findByLocationCode(Integer codeLocation, Integer codeMaterial) throws NotFoundException {
-        Location location = this.locationService.getLocationByCode(codeLocation);
-        Material material = this.materialService.getMaterialByCode(codeMaterial);
-        Collection<CellerDetail> cellerDetails = this.cellerDetailRepository.findAllByLocationAndMaterialAndValidToIsNull(location, material);
+    public Collection<CellerDetailRes> findByLocationCode(String lote, Integer codeMaterial) throws NotFoundException {
+        Collection<CellerDetail> cellerDetails = this.cellerDetailRepository.findByMaterialAndLote(codeMaterial, lote);
         if (CollectionUtil.isNotEmpty(cellerDetails)) {
             return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellerDetails);
         } else {
-            log.error("Error to findByLocationCode {} - {}", codeLocation, codeMaterial);
+            log.error("Error to findByLocationCode {} - {}", lote, codeMaterial);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
 
     @Override
     public Collection<CellerDetailRes> findCellerDetailByMaterialCode(Integer id) throws NotFoundException {
-        Material material = this.materialService.getMaterialByCode(id);
-        Collection<CellerDetail> cellers = this.cellerDetailRepository.findAllByMaterialAndValidToIsNullOrderByCreatedAtDesc(material);
+        Collection<LoteStockVo> cellers = this.cellerDetailRepository.findAllLoteStockByMaterial(id);
         if (CollectionUtil.isNotEmpty(cellers)) {
-            return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellers);
+            Collection<CellerDetail> cellerLotes = new ArrayList<>(0);
+            for(LoteStockVo loteStockVo:cellers){
+                double weight = Objects.isNull(loteStockVo.getWeight()) ? 0L : loteStockVo.getWeight();
+                if(weight > 0){
+                    CellerDetail cellerDetail = getCellarDetailByCode(loteStockVo.getId());
+                    cellerLotes.add(cellerDetail);
+                }
+            }
+            return this.cellerDetailMapper.cellerDetailCollectionToCellerDetailResCollection(cellerLotes);
         } else {
             log.error("Error to findCellerDetailByMaterialCode {}", id);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
@@ -107,14 +121,72 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public Collection<CellerDetailRes> findIfExistStockByMaterialCode(Integer id) throws NotFoundException {
-        this.materialService.getMaterialByCode(id);
-        return null;
+    public CellerStockRes findCellerDetailStock(Integer materialCode, String lote) {
+        Collection<LocationStockRes> locationStockRes = new ArrayList<>(0);
+        Collection<CellerDetail> locationStock = this.cellerDetailRepository.findLocationStock(materialCode, lote);
+        Collection<CellerDetail> detailStock = this.cellerDetailRepository.findDetailStock(materialCode, lote);
+
+        MaterialRes materialRes = this.materialMapper.materialToMaterialRes(locationStock.stream().findFirst().get().getMaterial());
+
+        double sumStock = 0L;
+
+        for (CellerDetail detail : detailStock) {
+            sumStock += detail.getWeight();
+        }
+
+        for (CellerDetail location : locationStock) {
+            double sumStockLocation = 0L;
+            for (CellerDetail detail : detailStock) {
+                if (detail.getLocation().getId().equals(location.getLocation().getId())) {
+                    sumStockLocation += detail.getWeight();
+                }
+            }
+            locationStockRes.add(LocationStockRes.builder()
+                    .location(this.locationMapper.locationToLocationRes(location.getLocation()))
+                    .stock(sumStockLocation)
+                    .build());
+        }
+
+        return CellerStockRes.builder()
+                .material(materialRes)
+                .locationStock(locationStockRes)
+                .stock(sumStock)
+                .build();
+    }
+
+
+
+    @Override
+    public Collection<TypeMaterialStockVo> findByTypeMaterialStock(Integer typeCode) throws NotFoundException {
+        Collection<TypeMaterialStockVo> typeMaterialStock = this.cellerDetailRepository.findByTypeMaterialStock(typeCode);
+        if(CollectionUtil.isNotEmpty(typeMaterialStock)){
+            return  typeMaterialStock;
+        } else {
+            log.error("Error to findByTypeMaterialStock {}", typeCode);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
     }
 
     @Override
-    public Collection<CellerDetailRes> findIfExistStockByMaterialAndLote(Integer material, String lote) {
-        return null;
+    public Collection<CellerLoteRes> findLoteByMaterialCode(Integer code) throws NotFoundException {
+        Collection<CellerDetail> cellers = this.cellerDetailRepository.findLoteStock(code);
+        if (CollectionUtil.isNotEmpty(cellers)) {
+            return this.cellerDetailMapper.cellerDetailCollectionToCellerLoteResCollection(cellers);
+        } else {
+            log.error("Error to findLoteByMaterialCode {}", code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Collection<LoteStockVo> findByMaterialStock(Integer code) throws NotFoundException {
+        Collection<LoteStockVo> loteStockVos = this.cellerDetailRepository.findAllLoteStockByMaterial(code);
+        if(CollectionUtil.isNotEmpty(loteStockVos)){
+            return loteStockVos;
+        }else {
+            log.error("Error to findByMaterialStock {}", code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
     }
 
     private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq, Celler codeCeller, String userName) throws NotFoundException {
