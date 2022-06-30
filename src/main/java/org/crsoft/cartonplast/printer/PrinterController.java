@@ -1,9 +1,8 @@
-package org.crsoft.cartonplast.design.controller;
+package org.crsoft.cartonplast.printer;
 
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.design.model.Printer;
 import org.crsoft.cartonplast.design.service.impl.PrinterService;
 import org.crsoft.cartonplast.design.vo.res.PrinterRes;
 import org.springframework.http.ResponseEntity;

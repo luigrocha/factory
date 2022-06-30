@@ -14,5 +14,5 @@ public interface IClientService {
 
     ClientRes saveClient(CreateClientReq client);
 
-    boolean deleteClient(String clientId);
+    boolean deleteClient(Integer clientId);
 }

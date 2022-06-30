@@ -1,9 +1,7 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
 import org.crsoft.cartonplast.common.util.MinioUrlFileUtil;
-import org.crsoft.cartonplast.design.model.CyrelDocument;
 import org.crsoft.cartonplast.design.model.DieDocument;
-import org.crsoft.cartonplast.design.vo.res.CyrelDocumentRes;
 import org.crsoft.cartonplast.design.vo.res.DieDocumentRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

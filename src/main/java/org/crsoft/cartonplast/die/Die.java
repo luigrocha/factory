@@ -1,9 +1,11 @@
-package org.crsoft.cartonplast.design.model;
+package org.crsoft.cartonplast.die;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.crsoft.cartonplast.common.model.CatalogStatus;
+import org.crsoft.cartonplast.design.model.Manufacturer;
+import org.crsoft.cartonplast.dieproduct.DieProduct;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

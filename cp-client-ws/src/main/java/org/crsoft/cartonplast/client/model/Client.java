@@ -17,13 +17,20 @@ import java.time.LocalDateTime;
 public class Client {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
             name = "ID_CATCLI_CODE",
             updatable = false,
+            nullable = false
+    )
+    private Integer id;
+
+    @Column(
+            name = "CATCLI_CODE",
             nullable = false,
             length = 16
     )
-    private String id;
+    private String code;
 
     @Column(
             name = "CATCLI_NAME",

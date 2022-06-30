@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.design.model.pk;
+package org.crsoft.cartonplast.die;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

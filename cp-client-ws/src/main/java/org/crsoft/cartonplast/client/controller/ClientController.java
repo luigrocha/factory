@@ -28,12 +28,12 @@ public class ClientController {
 
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<ClientRes> createClient(
-            @RequestParam("id") String id,
+            @RequestParam("code") String code,
             @RequestParam("name") String name,
             @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam(value = "categoryId", required = false) Integer categoryId) {
         CreateClientReq createClientReq = CreateClientReq.builder()
-                .id(id)
+                .code(code)
                 .name(name)
                 .categoryId(categoryId)
                 .logo(file)
@@ -43,7 +43,7 @@ public class ClientController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteClient(
-            @PathVariable("id") String id) {
+            @PathVariable("id") Integer id) {
         return ResponseEntity.ok(this.clientService.deleteClient(id));
     }
 }

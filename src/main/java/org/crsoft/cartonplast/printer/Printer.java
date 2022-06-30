@@ -1,100 +1,98 @@
-package org.crsoft.cartonplast.design.model;
+package org.crsoft.cartonplast.printer;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.design.model.Cyrel;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author lpillaga on 21/06/2022
+ * @author lpillaga on 12/05/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Builder
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "CATTRODOC")
-public class DieDocument {
+@Table(
+        name = "CATIMP",
+        indexes = {
+                @Index(name = "CAIIMP_NAME", columnList = "CATIMP_NAME"),
+        }
+)
+public class Printer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "ID_CATTRODOC_CODE",
+            name = "ID_CATIMP_CODE",
             updatable = false,
             nullable = false
     )
     private Integer id;
 
     @Column(
-            name = "CATTRODOC_VERSION",
-            nullable = false
-    )
-    private Integer version;
-
-    @Column(
-            name = "CATTRODOC_NAME",
+            name = "CATIMP_NAME",
             nullable = false,
-            length = 256
+            length = 64
     )
     private String name;
 
     @Column(
-            name = "CATTRODOC_VERSION_DATE",
-            columnDefinition = "TIMESTAMP",
+            name = "CATIMP_NUM_COLORS",
             nullable = false
     )
-    private LocalDateTime versionDate;
+    private Integer numColors;
 
     @Column(
-            name = "CATTRODOC_VALID_FROM",
+            name = "CATIMP_DESCRIPTION",
+            length = 64
+    )
+    private String description;
+
+    @Column(
+            name = "CATIMP_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
     @CreatedDate
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CATTRODOC_VALID_TO",
+            name = "CATIMP_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CATTRODOC_CREATED_BY", length = 16)
+    @Column(name = "CATIMP_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CATTRODOC_UPDATED_BY", length = 16)
+    @Column(name = "CATIMP_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CATTRODOC_CREATED_AT",
+            name = "CATIMP_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CATTRODOC_UPDATED_AT",
+            name = "CATIMP_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "XID_CATTRO_CODE",
-            referencedColumnName = "ID_CATTRO_CODE",
-            nullable = false
+    @OneToMany(
+            mappedBy = "printer",
+            fetch = FetchType.LAZY
     )
-    private Die die;
-
-    @PrePersist
-    public void prePersist() {
-        this.versionDate = LocalDateTime.now();
-    }
+    private List<Cyrel> cyrels = new ArrayList<>();
 }

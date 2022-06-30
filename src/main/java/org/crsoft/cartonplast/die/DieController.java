@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.design.controller;
+package org.crsoft.cartonplast.die;
 
 import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.design.service.impl.DieService;

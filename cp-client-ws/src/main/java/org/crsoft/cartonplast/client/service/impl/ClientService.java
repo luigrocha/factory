@@ -1,5 +1,7 @@
 package org.crsoft.cartonplast.client.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.client.model.ClientCategory;
 import org.crsoft.cartonplast.client.repository.ClientCategoryRepository;
@@ -9,6 +11,7 @@ import org.crsoft.cartonplast.client.service.mapper.ClientMapper;
 import org.crsoft.cartonplast.client.vo.req.CreateClientReq;
 import org.crsoft.cartonplast.common.client.MinioClient;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
+import org.crsoft.cartonplast.common.constant.LogMessageConstant;
 import org.crsoft.cartonplast.common.exception.ConflictException;
 import org.crsoft.cartonplast.vo.req.UploadFileReq;
 import org.crsoft.cartonplast.vo.res.ClientRes;
@@ -24,6 +27,8 @@ import java.util.List;
  * @author lpillaga on 12/05/2022
  */
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class ClientService implements IClientService {
 
     private final ClientMapper clientMapper;
@@ -34,17 +39,6 @@ public class ClientService implements IClientService {
     @Value("${minio.images.bucket-name}")
     private String imagesBucketName;
 
-    public ClientService(
-            ClientMapper clientMapper,
-            ClientRepository clientRepository,
-            ClientCategoryRepository clientCategoryRepository,
-            MinioClient minioClient) {
-        this.clientMapper = clientMapper;
-        this.clientRepository = clientRepository;
-        this.clientCategoryRepository = clientCategoryRepository;
-        this.minioClient = minioClient;
-    }
-
     @Override
     public List<ClientRes> findAllValidClients() {
         return this.clientMapper.clientsToClientsRes(
@@ -54,8 +48,10 @@ public class ClientService implements IClientService {
 
     @Override
     public ClientRes saveClient(CreateClientReq createClientReq) {
-        if (this.clientRepository.existsById(createClientReq.getId())) {
-            throw new ConflictException("El cliente ya se encuentra registrado");
+        boolean alreadyExist = this.clientRepository.existsByCodeAndIsNotDeleted(createClientReq.getCode());
+        if (alreadyExist) {
+            log.error(LogMessageConstant.ERROR_DUPLICATE_RECORD_MESSAGE + createClientReq);
+            throw new ConflictException("Ya existe un cliente con el código: " + createClientReq.getCode());
         }
 
         ClientCategory clientCategory = null;
@@ -68,7 +64,7 @@ public class ClientService implements IClientService {
         String logoName = null;
         if (createClientReq.getLogo() != null) {
             UploadFileReq uploadFileReq = UploadFileReq.builder()
-                    .name(createClientReq.getId())
+                    .name(createClientReq.getCode())
                     .bucketName(this.imagesBucketName)
                     .directory(GlobalConstant.CLIENTS_IMAGES_DIRECTORY)
                     .file(createClientReq.getLogo())
@@ -78,7 +74,7 @@ public class ClientService implements IClientService {
         }
 
         Client client = Client.builder()
-                .id(createClientReq.getId())
+                .code(createClientReq.getCode())
                 .name(createClientReq.getName())
                 .imageName(logoName)
                 .category(clientCategory)
@@ -91,7 +87,7 @@ public class ClientService implements IClientService {
 
     @Override
     @Transactional
-    public boolean deleteClient(String clientId) {
+    public boolean deleteClient(Integer clientId) {
         return this.clientRepository.findById(clientId)
                 .map(client -> {
                     client.setValidTo(LocalDateTime.now());

@@ -1,6 +1,5 @@
-package org.crsoft.cartonplast.design.repository;
+package org.crsoft.cartonplast.printer;
 
-import org.crsoft.cartonplast.design.model.Printer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

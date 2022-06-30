@@ -20,4 +20,5 @@ public class CatalogPriorityRes implements Serializable {
     private String name;
     private String icon;
     private String color;
+    private Integer index;
 }

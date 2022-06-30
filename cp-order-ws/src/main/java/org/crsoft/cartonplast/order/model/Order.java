@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.common.model.CatalogPriority;
 import org.crsoft.cartonplast.common.model.CatalogStatus;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,80 +22,155 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CCTORD")
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "COTORD")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "ID_CCTORD_CODE",
+            name = "ID_COTORD_CODE",
             updatable = false,
             nullable = false
     )
     private Integer id;
 
-    @Column(name = "CCTORD_LOTE")
-    private String lote;
+    @Column(
+            name = "COTORD_CODE",
+            nullable = false,
+            length = 8
+    )
+    private String code;
 
     @Column(
-            name = "CCTORD_AMOUNT",
+            name = "COTORD_PRODUCT_CODE",
+            nullable = false,
+            length = 128
+    )
+    private String productCode;
+
+    @Column(
+            name = "COTORD_NAME",
+            nullable = false,
+            length = 128
+    )
+    private String name;
+
+    @Column(
+            name = "COTORD_QUANTITY",
             nullable = false
     )
-    private Integer amount;
+    private Integer quantity;
 
     @Column(
-            name = "CCTORD_DELIVER_AT",
-            nullable = false
-    )
-    private LocalDateTime deliverAt;
-
-    @Column(
-            name = "CCTORD_ORDER"
-    )
-    private Integer order;
-
-    @Column(name = "CCTORD_OBSERVATION")
-    private String observation;
-
-    @Column(name = "CCTORD_DIFERENCE")
-    private Integer difference;
-
-    @Column(
-            name = "CCTORD_VALID_FROM",
+            name = "COTORD_ORDERED_AT",
+            nullable = false,
             columnDefinition = "TIMESTAMP"
     )
+    private LocalDateTime orderedAt;
+
+    @Column(
+            name = "COTORD_LOTE",
+            length = 16
+    )
+    private String lot;
+
+    @Column(
+            name = "COTORD_ESTIMATED_DELIVERED_AT",
+            nullable = false
+    )
+    private LocalDateTime estimatedDeliveryAt;
+
+    @Column(
+            name = "COTORD_CLIENT_ORDER_CODE",
+            length = 64
+    )
+    private String clientOrderCode;
+
+    @Column(
+            name = "COTORD_OBSERVATION",
+            length = 256
+    )
+    private String observation;
+
+    @Column(
+            name = "COTORD_COMPLETED_AT",
+            columnDefinition = "TIMESTAMP"
+    )
+    private LocalDateTime completedAt;
+
+    @Column(
+            name = "COTORD_CANCELED_AT",
+            columnDefinition = "TIMESTAMP"
+    )
+    private LocalDateTime canceledAt;
+
+    @Column(
+            name = "COTORD_PRODUCTION_STARTED_AT",
+            columnDefinition = "TIMESTAMP"
+    )
+    private LocalDateTime productionStartedAt;
+
+    @Column(
+            name = "COTORD_CANCELLATION_REASON",
+            length = 256
+    )
+    private String cancellationReason;
+
+    @Column(
+            name = "COTORD_LAST_MODIFICATION_AT",
+            columnDefinition = "TIMESTAMP",
+            nullable = false
+    )
+    @LastModifiedDate
+    private LocalDateTime lastModifiedAt;
+
+    @Column(
+            name = "COTORD_VALID_FROM",
+            columnDefinition = "TIMESTAMP"
+    )
+    @CreatedDate
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CCTORD_VALID_TO",
+            name = "COTORD_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CCTORD_CREATED_BY", length = 16)
+    @Column(
+            name = "COTORD_CREATED_BY",
+            length = 16
+    )
+    @CreatedBy
     private String createdBy;
 
-    @Column(name = "CCTORD_UPDATED_BY", length = 16)
+    @Column(
+            name = "COTORD_UPDATED_BY",
+            length = 16
+    )
+    @LastModifiedBy
     private String updatedBy;
 
     @Column(
-            name = "CCTORD_CREATED_AT",
+            name = "COTORD_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CCTORD_UPDATED_AT",
+            name = "COTORD_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "XID_CATCLI_CODE",
             referencedColumnName = "ID_CATCLI_CODE",
-            insertable = false,
-            updatable = false
+            nullable = false
     )
     private Client client;
 
@@ -98,8 +178,7 @@ public class Order {
     @JoinColumn(
             name = "XID_CATSTATUS_CODE",
             referencedColumnName = "ID_CATSTATUS_CODE",
-            insertable = false,
-            updatable = false
+            nullable = false
     )
     private CatalogStatus status;
 
@@ -107,8 +186,12 @@ public class Order {
     @JoinColumn(
             name = "XID_CATPRI_CODE",
             referencedColumnName = "ID_CATPRI_CODE",
-            insertable = false,
-            updatable = false
+            nullable = false
     )
     private CatalogPriority priority;
+
+    @PrePersist
+    public void prePersist() {
+        this.orderedAt = LocalDateTime.now();
+    }
 }

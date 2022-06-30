@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.design.repository;
+package org.crsoft.cartonplast.die;
 
 import org.crsoft.cartonplast.design.model.DieDocument;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -5,10 +5,12 @@ import org.crsoft.cartonplast.common.service.mapper.CatalogPriorityMapper;
 import org.crsoft.cartonplast.common.service.mapper.CatalogStatusMapper;
 import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
 import org.crsoft.cartonplast.order.model.Order;
+import org.crsoft.cartonplast.vo.req.CreateOrderReq;
 import org.crsoft.cartonplast.vo.res.OrderRes;
 import org.mapstruct.Mapper;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author jyepez on 14/5/2022
@@ -25,5 +27,8 @@ public interface OrderMapper {
     @WithoutAuditField
     Order orderResToOrder(OrderRes orderRes);
 
-    Collection<OrderRes> ordersToOrdersRes(Collection<Order> orders);
+    @WithoutAuditField
+    Order orderReqToOrder(CreateOrderReq orderReq);
+
+    List<OrderRes> ordersToOrdersRes(Collection<Order> orders);
 }
