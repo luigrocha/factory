@@ -8,7 +8,7 @@ import { PreferencesService } from 'src/app/core/http/preferences/preferences.se
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { ToastService } from 'src/app/core/services/toast.service';
-import { LoteCeller, Stock } from 'src/app/types/celler.types';
+import { LoteCeller, Stock, TypeMaterialStock } from 'src/app/types/celler.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 
 @Component({
@@ -24,8 +24,12 @@ export class StockComponent implements OnInit {
   materials: Material[] = [];
   lotes: LoteCeller[] = [];
   stock: Stock;
+  typeMaterialStock: TypeMaterialStock[];
+  stockTotal: number;
   pieData: any;
+  basicData: any;
   pieOptions: any;
+  basicOptions: any;
   isReq: boolean;
 
   constructor(
@@ -119,37 +123,66 @@ export class StockComponent implements OnInit {
   }
 
   save() {
-    if (this.form.invalid) {
-      return;
-    }
     const data = { ...this.form.getRawValue() };
-
     this.stock = null;
+    this.typeMaterialStock = null;
+    const colors = [];
+    if (this.lote.value && this.material.value && this.type.value) {
+      this.cellerDetailService.getCellerDetailStock(data.material, data.lote).subscribe(
+        (stock => {
+          this.isReq = true;
+          this.stock = stock;
+          this.stockTotal = stock.stock;
+          const locations = [];
+          const stocks = [];
+          this.stock.locationStock.forEach(location => {
+            locations.push(location.location.description);
+            stocks.push(location.stock);
+            colors.push(this.generateAleatoryColor());
+          });
+          this.pieData = {
+            labels: locations,
+            datasets: [
+              {
+                data: stocks,
+                backgroundColor: colors,
+                hoverBackgroundColor: colors
+              }
+            ]
+          };
+        })
+      );
+    } else if (this.material.value && this.type.value) {
 
-    this.cellerDetailService.getCellerDetailStock(data.material, data.lote).subscribe(
-      (stock => {
-        this.isReq = true;
-        this.stock = stock;
-        const locations = [];
-        const stocks = [];
-        const colors = [];
-        this.stock.locationStock.forEach(location => {
-          locations.push(location.location.description);
-          stocks.push(location.stock);
-          colors.push(this.generateAleatoryColor());
-        });
-        this.pieData = {
-          labels: locations,
-          datasets: [
-            {
-              data: stocks,
-              backgroundColor: colors,
-              hoverBackgroundColor: colors
-            }
-          ]
-        };
-      })
-    );
+    } else if (this.type.value) {
+      this.cellerDetailService.getByTypeMaterialStock(data.type).subscribe(
+        (typeMaterialStock => {
+          this.isReq = true;
+          const labels = [];
+          const values = [];
+          this.stockTotal = 0;
+          this.typeMaterialStock = typeMaterialStock;
+          typeMaterialStock.forEach(type => {
+            labels.push(type.name);
+            values.push(type.stock);
+            colors.push(this.generateAleatoryColor());
+            this.stockTotal += type.stock;
+          });
+          this.basicData = {
+            labels,
+            datasets: [
+              {
+                label: this.types.find(type => this.type.value === type.id).name,
+                data: values,
+                backgroundColor: colors,
+                hoverBackgroundColor: colors
+              }
+            ]
+          };
+        })
+      );
+    }
+
   }
 
   random(min: number, max: number) {
@@ -179,12 +212,66 @@ export class StockComponent implements OnInit {
               }
             }
           };
+          this.basicOptions = {
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#ebedef'
+                }
+              }
+            },
+            scales: {
+              x: {
+                ticks: {
+                  color: '#ebedef'
+                },
+                grid: {
+                  color: 'rgba(255,255,255,0.2)'
+                }
+              },
+              y: {
+                ticks: {
+                  color: '#ebedef'
+                },
+                grid: {
+                  color: 'rgba(255,255,255,0.2)'
+                }
+              }
+            }
+          };
         } else {
           this.pieOptions = {
             plugins: {
               legend: {
                 labels: {
                   color: '#495057'
+                }
+              }
+            }
+          };
+          this.basicOptions = {
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#495057'
+                }
+              }
+            },
+            scales: {
+              x: {
+                ticks: {
+                  color: '#495057'
+                },
+                grid: {
+                  color: '#ebedef'
+                }
+              },
+              y: {
+                ticks: {
+                  color: '#495057'
+                },
+                grid: {
+                  color: '#ebedef'
                 }
               }
             }

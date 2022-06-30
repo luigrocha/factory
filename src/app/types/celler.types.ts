@@ -63,6 +63,12 @@ export interface Stock {
   stock?: number;
 }
 
+export interface TypeMaterialStock {
+  id?: number;
+  name?: string;
+  stock?: number;
+}
+
 export enum DocumentEnum {
   CIB = 1,
   CEB = 2,

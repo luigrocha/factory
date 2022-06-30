@@ -112,14 +112,13 @@
               icon="pi pi-plus"
               type="submit"
               class="w-full mt-0 md:mt-4"
-              [disabled]="form.invalid"
             ></button>
           </div>
         </div>
 
-        <div class="grid p-fluid" *ngIf="isReq">
+        <div class="grid p-fluid" *ngIf="isReq && stock">
           <div class="col-12 lg:col-4">
-            <h6>Resumen Stock</h6>
+            <h6>Resumen Stock por ubicación</h6>
             <div>
               <div
                 class="stock-location"
@@ -134,7 +133,7 @@
                 ></p-progressBar>
               </div>
               <div class="stock-location">
-                <strong>Total {{ stock.stock }} Kg</strong>
+                <strong>Total {{ stockTotal }} Kg</strong>
               </div>
             </div>
           </div>
@@ -145,14 +144,42 @@
                 [data]="pieData"
                 [options]="pieOptions"
                 [style]="{ width: '40%' }"
-                *ngIf="stock.stock > 0"
+                *ngIf="stockTotal > 0"
               ></p-chart>
               <h6 class="text-center w-full" *ngIf="stock.stock > 0">
                 Disponible <strong> {{ stock.stock }} Kg </strong> de:
-                {{ getMatereialName(material.value) }} en lote: {{ lote.value }}
+                {{ getMatereialName(material.value) }} en lote:
+                {{ lote.value }}
               </h6>
-              <h6 *ngIf="stock.stock <= 0">Stock negativo</h6>
+              <h6 *ngIf="stockTotal <= 0">Stock negativo</h6>
             </div>
+          </div>
+        </div>
+
+        <div class="grid p-fluid" *ngIf="isReq && typeMaterialStock">
+          <div class="col-12 lg:col-4">
+            <h6>Resumen Stock por material</h6>
+            <div>
+              <div
+                class="stock-location"
+                *ngFor="let type of typeMaterialStock"
+              >
+                <div class="stock-location-info">
+                  {{ type.name }}: {{ type.stock }} Kg
+                </div>
+              </div>
+              <div class="stock-location">
+                <strong>Total {{ stockTotal }} Kg</strong>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 lg:col-8">
+            <p-chart
+              type="bar"
+              [data]="basicData"
+              [options]="basicOptions"
+              [style]="{ width: '80%' }"
+            ></p-chart>
           </div>
         </div>
       </div>
