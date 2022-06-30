@@ -1,6 +1,6 @@
-package org.crsoft.cartonplast.order.repository;
+package org.crsoft.cartonplast.orders.repository;
 
-import org.crsoft.cartonplast.order.model.Order;
+import org.crsoft.cartonplast.orders.model.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

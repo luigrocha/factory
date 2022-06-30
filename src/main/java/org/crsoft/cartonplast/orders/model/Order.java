@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.order.model;
+package org.crsoft.cartonplast.orders.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

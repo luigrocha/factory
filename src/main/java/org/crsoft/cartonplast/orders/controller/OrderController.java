@@ -1,7 +1,7 @@
-package org.crsoft.cartonplast.order.controller;
+package org.crsoft.cartonplast.orders.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.crsoft.cartonplast.order.service.IOrderService;
+import org.crsoft.cartonplast.orders.service.IOrderService;
 import org.crsoft.cartonplast.vo.res.OrderRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

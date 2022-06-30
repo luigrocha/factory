@@ -91,5 +91,4 @@ dependencies {
     implementation project(":cp-core-common")
 
     implementation project(":cp-design-ws")
-    implementation project(":cp-order-ws")
 }

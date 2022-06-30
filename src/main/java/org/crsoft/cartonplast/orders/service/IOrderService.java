@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.order.service;
+package org.crsoft.cartonplast.orders.service;
 
 import org.crsoft.cartonplast.vo.req.CreateOrderReq;
 import org.crsoft.cartonplast.vo.res.OrderRes;
