@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.client.vo.req;
+package org.crsoft.cartonplast.vo.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

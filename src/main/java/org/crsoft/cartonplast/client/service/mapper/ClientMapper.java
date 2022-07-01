@@ -2,7 +2,7 @@ package org.crsoft.cartonplast.client.service.mapper;
 
 import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.vo.res.ClientShortRes;
-import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
+import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.common.util.MinioUrlFileUtil;
 import org.crsoft.cartonplast.vo.res.ClientRes;
 import org.mapstruct.Mapper;

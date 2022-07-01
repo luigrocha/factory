@@ -1,7 +1,7 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
 
-import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
+import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.ColorCatalog;
 import org.crsoft.cartonplast.vo.res.ColorCatalogRes;
 import org.mapstruct.Mapper;

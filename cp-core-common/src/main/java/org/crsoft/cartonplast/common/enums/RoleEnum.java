@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.enums;
+package org.crsoft.cartonplast.common.enums;
 
 import lombok.Getter;
 

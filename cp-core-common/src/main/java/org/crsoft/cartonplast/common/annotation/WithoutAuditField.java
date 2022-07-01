@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.common.service.mapper;
+package org.crsoft.cartonplast.common.annotation;
 
 import org.mapstruct.Mapping;
 

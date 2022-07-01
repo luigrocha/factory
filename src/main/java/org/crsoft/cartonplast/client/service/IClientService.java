@@ -1,6 +1,6 @@
 package org.crsoft.cartonplast.client.service;
 
-import org.crsoft.cartonplast.client.vo.req.CreateClientReq;
+import org.crsoft.cartonplast.vo.req.CreateClientReq;
 import org.crsoft.cartonplast.vo.res.ClientRes;
 
 import java.util.List;

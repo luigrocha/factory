@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.common.service;
+package org.crsoft.cartonplast.common.client;
 
 import org.crsoft.cartonplast.vo.RoleVo;
 import org.crsoft.cartonplast.vo.TokenVo;

@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.common.service;
+package org.crsoft.cartonplast.catalog.service;
 
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.res.CatalogPriorityRes;

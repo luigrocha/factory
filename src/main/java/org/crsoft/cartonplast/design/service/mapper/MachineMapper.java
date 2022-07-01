@@ -1,6 +1,6 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
-import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
+import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Machine;
 import org.crsoft.cartonplast.vo.req.MachineReq;
 import org.crsoft.cartonplast.vo.res.MachineRes;

@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.common.util;
+package org.crsoft.cartonplast.common.constant;
 
 /**
  * @author lpillaga on 30/04/2022

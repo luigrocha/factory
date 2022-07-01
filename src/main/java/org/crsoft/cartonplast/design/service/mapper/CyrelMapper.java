@@ -1,7 +1,7 @@
 package org.crsoft.cartonplast.design.service.mapper;
 
-import org.crsoft.cartonplast.common.service.mapper.CatalogStatusMapper;
-import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
+import org.crsoft.cartonplast.catalog.service.mapper.CatalogStatusMapper;
+import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Cyrel;
 import org.crsoft.cartonplast.design.model.CyrelDieProduct;
 import org.crsoft.cartonplast.vo.req.CyrelReq;

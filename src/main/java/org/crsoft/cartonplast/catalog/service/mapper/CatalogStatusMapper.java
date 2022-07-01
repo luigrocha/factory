@@ -1,6 +1,7 @@
-package org.crsoft.cartonplast.common.service.mapper;
+package org.crsoft.cartonplast.catalog.service.mapper;
 
-import org.crsoft.cartonplast.common.model.CatalogStatus;
+import org.crsoft.cartonplast.catalog.model.CatalogStatus;
+import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.vo.res.CatalogStatusRes;
 import org.mapstruct.Mapper;
 

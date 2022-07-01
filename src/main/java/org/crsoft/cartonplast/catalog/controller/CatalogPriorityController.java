@@ -1,7 +1,7 @@
-package org.crsoft.cartonplast.common.controller;
+package org.crsoft.cartonplast.catalog.controller;
 
 import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.service.ICatalogPriorityService;
+import org.crsoft.cartonplast.catalog.service.ICatalogPriorityService;
 import org.crsoft.cartonplast.vo.res.CatalogPriorityRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

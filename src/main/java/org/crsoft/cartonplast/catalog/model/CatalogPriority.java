@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.common.model;
+package org.crsoft.cartonplast.catalog.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

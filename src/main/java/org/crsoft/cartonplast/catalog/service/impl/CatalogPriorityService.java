@@ -1,10 +1,10 @@
-package org.crsoft.cartonplast.common.service.impl;
+package org.crsoft.cartonplast.catalog.service.impl;
 
+import org.crsoft.cartonplast.catalog.service.ICatalogPriorityService;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.model.CatalogPriority;
-import org.crsoft.cartonplast.common.repository.CatalogPriorityRepository;
-import org.crsoft.cartonplast.common.service.ICatalogPriorityService;
-import org.crsoft.cartonplast.common.service.mapper.CatalogPriorityMapper;
+import org.crsoft.cartonplast.catalog.model.CatalogPriority;
+import org.crsoft.cartonplast.catalog.repository.CatalogPriorityRepository;
+import org.crsoft.cartonplast.catalog.service.mapper.CatalogPriorityMapper;
 import org.crsoft.cartonplast.vo.res.CatalogPriorityRes;
 import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;

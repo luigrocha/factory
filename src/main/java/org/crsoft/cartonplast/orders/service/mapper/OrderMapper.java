@@ -1,9 +1,9 @@
 package org.crsoft.cartonplast.orders.service.mapper;
 
 import org.crsoft.cartonplast.client.service.mapper.ClientMapper;
-import org.crsoft.cartonplast.common.service.mapper.CatalogPriorityMapper;
-import org.crsoft.cartonplast.common.service.mapper.CatalogStatusMapper;
-import org.crsoft.cartonplast.common.service.mapper.WithoutAuditField;
+import org.crsoft.cartonplast.catalog.service.mapper.CatalogPriorityMapper;
+import org.crsoft.cartonplast.catalog.service.mapper.CatalogStatusMapper;
+import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.orders.model.Order;
 import org.crsoft.cartonplast.vo.req.CreateOrderReq;
 import org.crsoft.cartonplast.vo.res.OrderRes;

@@ -1,6 +1,6 @@
-package org.crsoft.cartonplast.common.repository;
+package org.crsoft.cartonplast.catalog.repository;
 
-import org.crsoft.cartonplast.common.model.CatalogStatus;
+import org.crsoft.cartonplast.catalog.model.CatalogStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

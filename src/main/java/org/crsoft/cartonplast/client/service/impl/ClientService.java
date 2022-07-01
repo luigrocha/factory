@@ -8,7 +8,7 @@ import org.crsoft.cartonplast.client.repository.ClientCategoryRepository;
 import org.crsoft.cartonplast.client.repository.ClientRepository;
 import org.crsoft.cartonplast.client.service.IClientService;
 import org.crsoft.cartonplast.client.service.mapper.ClientMapper;
-import org.crsoft.cartonplast.client.vo.req.CreateClientReq;
+import org.crsoft.cartonplast.vo.req.CreateClientReq;
 import org.crsoft.cartonplast.common.client.MinioClient;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.constant.LogMessageConstant;

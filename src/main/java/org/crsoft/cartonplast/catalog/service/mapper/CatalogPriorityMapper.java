@@ -1,6 +1,6 @@
-package org.crsoft.cartonplast.common.service.mapper;
+package org.crsoft.cartonplast.catalog.service.mapper;
 
-import org.crsoft.cartonplast.common.model.CatalogPriority;
+import org.crsoft.cartonplast.catalog.model.CatalogPriority;
 import org.crsoft.cartonplast.vo.res.CatalogPriorityRes;
 import org.mapstruct.Mapper;
 
