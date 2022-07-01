@@ -1,0 +1,24 @@
+package org.crsoft.cartonplast.menu.service;
+
+import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.UpdateException;
+import org.crsoft.cartonplast.menu.model.Menu;
+import org.crsoft.cartonplast.vo.req.TypePermissionReq;
+import org.crsoft.cartonplast.vo.res.PermissionRes;
+import org.crsoft.cartonplast.vo.res.TypePermissionRes;
+
+import java.util.Collection;
+
+/**
+ * @author jyepez on 19/5/2022
+ */
+public interface IPermissionService {
+
+    void createToMenu(Menu menu) throws Exception;
+
+    Collection<PermissionRes> findPermissionsByMenuCode(Integer code) throws NotFoundException;
+
+    void updatePermissionByMenuCode(Collection<TypePermissionReq> typePermissionReqs, Integer codeMenu, Integer codePermission) throws NotFoundException, UpdateException;
+
+    Collection<TypePermissionRes> findPermissionsPage(String url, Collection<String> roles) throws NotFoundException;
+}
