@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.model;
+package org.crsoft.cartonplast.menu.model;
 
 /**
  * @author jyepez on 6/5/2022

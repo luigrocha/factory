@@ -1,8 +1,8 @@
-package org.crsoft.cartonplast.controller;
+package org.crsoft.cartonplast.menu.controller;
 
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.service.IPermissionService;
+import org.crsoft.cartonplast.menu.service.IPermissionService;
 import org.crsoft.cartonplast.vo.req.PermissionsPageReq;
 import org.crsoft.cartonplast.vo.req.TypePermissionReq;
 import org.crsoft.cartonplast.vo.res.PermissionRes;

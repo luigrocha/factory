@@ -1,7 +1,7 @@
-package org.crsoft.cartonplast.repository;
+package org.crsoft.cartonplast.menu.repository;
 
-import org.crsoft.cartonplast.model.Menu;
-import org.crsoft.cartonplast.model.Permission;
+import org.crsoft.cartonplast.menu.model.Menu;
+import org.crsoft.cartonplast.menu.model.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
-package org.crsoft.cartonplast.service.mapper;
+package org.crsoft.cartonplast.menu.service.mapper;
 
-import org.crsoft.cartonplast.model.Permission;
+import org.crsoft.cartonplast.menu.model.Permission;
 import org.crsoft.cartonplast.vo.res.PermissionRes;
 
 /**

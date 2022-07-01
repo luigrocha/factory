@@ -1,6 +1,6 @@
-package org.crsoft.cartonplast.service.mapper;
+package org.crsoft.cartonplast.menu.service.mapper;
 
-import org.crsoft.cartonplast.model.Menu;
+import org.crsoft.cartonplast.menu.model.Menu;
 import org.crsoft.cartonplast.vo.res.MenuRes;
 
 /**

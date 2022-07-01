@@ -1,9 +1,9 @@
-package org.crsoft.cartonplast.controller;
+package org.crsoft.cartonplast.menu.controller;
 
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.service.IMenuService;
+import org.crsoft.cartonplast.menu.service.IMenuService;
 import org.crsoft.cartonplast.vo.req.MenuReq;
 import org.crsoft.cartonplast.vo.res.MenuRes;
 import org.crsoft.cartonplast.vo.res.TreeNodeRes;

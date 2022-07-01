@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.model;
+package org.crsoft.cartonplast.menu.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,63 +10,73 @@ import java.time.LocalDateTime;
 import static javax.persistence.GenerationType.IDENTITY;
 
 /**
- * @author jyepez on 18/5/2022
+ * @author jyepez on 20/5/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "CBTPER", schema = "carton_plast_test")
-public class Permission {
+@Table(name = "CBTPER_TYPE", schema = "carton_plast_test")
+public class TypePermission {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "ID_CBTPER_CODE")
+    @Column(name = "ID_CBTPER_TYPE")
     private Integer id;
 
-    @Column(name = "CBTPER_ROLE")
-    private String role;
+
+    @Column(name = "CBTPER_TYPE_FLAG")
+    private Boolean flag;
 
     @Column(
-            name = "CBTPER_VALID_FROM",
+            name = "CBTPER_TYPE_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validFrom;
 
     @Column(
-            name = "CBTPER_VALID_TO",
+            name = "CBTPER_TYPE_VALID_TO",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime validTo;
 
-    @Column(name = "CBTPER_CREATED_BY", length = 16)
+    @Column(name = "CBTPER_TYPE_CREATED_BY", length = 16)
     private String createdBy;
 
-    @Column(name = "CBTPER_UPDATED_BY", length = 16)
+    @Column(name = "CBTPER_TYPE_UPDATED_BY", length = 16)
     private String updatedBy;
 
     @Column(
-            name = "CBTPER_CREATED_AT",
+            name = "CBTPER_TYPE_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime createdAt;
 
     @Column(
-            name = "CBTPER_UPDATED_AT",
+            name = "CBTPER_TYPE_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "CBTMEN_CODE",
-            referencedColumnName = "CBTMEN_CODE",
+            name = "XID_CBTPER_CAT_CODE",
+            referencedColumnName = "ID_CBTPER_CAT_CODE",
             updatable = false
     )
-    private Menu menu;
+    private CatalogPermission catalog;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CBTPER_CODE",
+            referencedColumnName = "ID_CBTPER_CODE",
+            updatable = false
+    )
+    private Permission permission;
 
     @PrePersist
     public void prePersist() {
+        this.flag = Boolean.FALSE;
         this.validFrom = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
     }
