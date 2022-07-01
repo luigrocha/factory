@@ -2,10 +2,8 @@ package org.crsoft.cartonplast.celler.repository;
 
 import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.celler.model.CellerDetail;
-import org.crsoft.cartonplast.celler.model.Location;
-import org.crsoft.cartonplast.celler.model.Material;
 import org.crsoft.cartonplast.celler.vo.LoteStockVo;
-import org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo;
+import org.crsoft.cartonplast.celler.vo.AllStockVo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,11 +18,6 @@ import java.util.Optional;
 public interface CellerDetailRepository extends JpaRepository<CellerDetail, Integer> {
 
     Optional<CellerDetail> findByIdAndValidToIsNull(Integer code);
-
-    @Query("SELECT new org.crsoft.cartonplast.celler.vo.LoteStockVo(c.id, SUM(c.weight) ,c.lote) FROM CellerDetail c " +
-            "WHERE c.material.id =:material AND c.validTo IS NULL " +
-            "GROUP BY c.lote ")
-    Collection<LoteStockVo> findAllLoteStockByMaterial(Integer material);
 
     Collection<CellerDetail> findAllByCellerAndValidToIsNull(Celler celler);
 
@@ -43,19 +36,34 @@ public interface CellerDetailRepository extends JpaRepository<CellerDetail, Inte
             "ORDER BY c.createdAt ASC")
     Collection<CellerDetail> findByMaterialAndLote(Integer materialCode, String lote);
 
-    @Query("SELECT new org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo(c.id,c.material.name, SUM(c.weight) ) FROM CellerDetail c " +
-            "WHERE c.material.typeMaterial.id = :typeCode " +
-            "GROUP BY c.material.id")
-    Collection<TypeMaterialStockVo> findByTypeMaterialStock(Integer typeCode);
+    @Query("SELECT new org.crsoft.cartonplast.celler.vo.LoteStockVo(c.id, SUM(c.weight) ,c.lote) FROM CellerDetail c " +
+            "WHERE c.material.id =:material AND c.validTo IS NULL " +
+            "GROUP BY c.lote " +
+            "ORDER BY SUM(c.weight) DESC ")
+    Collection<LoteStockVo> findAllLoteStockByMaterial(Integer material);
 
     @Query("SELECT c FROM CellerDetail c " +
             "WHERE c.material.id = :materialCode AND c.validTo IS NULL " +
             "GROUP BY c.lote")
-    Collection<CellerDetail> findLoteStock(Integer materialCode);
+    Collection<CellerDetail> findAllLoteStock(Integer materialCode);
 
-    /*SELECT C.XID_CDTCAT_ID, M.CDTCAT_NAME, SUM(C.CDTCELL_DET_WEIGHT), C.CDTCELL_DET_CREATED_AT FROM CDTCELL_DET C
-    INNER JOIN  CDTCAT M on C.XID_CDTCAT_ID = M.ID_CDTCAT_CODE
-    INNER JOIN CDTTIP T ON T.ID_CDTTIP_ID = M.XID_CDTTIP_ID
-    WHERE T.ID_CDTTIP_ID = 1
-    GROUP BY C.XID_CDTCAT_ID;*/
+    @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
+            "GROUP BY c.material.id, c.lote, c.location.id ")
+    Collection<AllStockVo> findAllStock();
+
+    @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
+            "WHERE c.material.typeMaterial.id = :typeCode " +
+            "GROUP BY c.material.id, c.lote, c.location.id ")
+    Collection<AllStockVo> findByTypeMaterialStock(Integer typeCode);
+
+    @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
+            "WHERE c.material.id = :materialCode " +
+            "GROUP BY c.material.id, c.lote, c.location.id ")
+    Collection<AllStockVo> findMaterialStock(Integer materialCode);
+
+    @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
+            "WHERE c.material.id = :materialCode AND c.lote = :lote " +
+            "GROUP BY c.material.id, c.lote, c.location.id ")
+    Collection<AllStockVo> findMaterialLoteStock(Integer materialCode,String lote);
+
 }

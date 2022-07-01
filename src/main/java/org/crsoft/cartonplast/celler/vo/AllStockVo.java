@@ -14,11 +14,14 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TypeMaterialStockVo implements Serializable {
+public class AllStockVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer id;
+    private String type;
     private String name;
+    private String lote;
+    private String location;
     private Double stock;
 }
