@@ -63,9 +63,12 @@ export interface Stock {
   stock?: number;
 }
 
-export interface TypeMaterialStock {
+export interface AllStock {
   id?: number;
+  type?: string;
   name?: string;
+  lote?: string;
+  location?: string;
   stock?: number;
 }
 

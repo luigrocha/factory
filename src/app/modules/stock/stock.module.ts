@@ -10,6 +10,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { ChartModule } from 'primeng/chart';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { TableModule } from 'primeng/table';
+import { RippleModule } from 'primeng/ripple';
+import { InputTextModule } from 'primeng/inputtext';
 
 registerLocaleData(localeEs, 'es');
 
@@ -23,6 +26,9 @@ registerLocaleData(localeEs, 'es');
     ButtonModule,
     ChartModule,
     ProgressBarModule,
+    TableModule,
+    RippleModule,
+    InputTextModule,
     CommonModule
   ],
   declarations: [StockComponent],
