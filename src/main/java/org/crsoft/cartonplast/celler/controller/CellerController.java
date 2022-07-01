@@ -1,7 +1,7 @@
 package org.crsoft.cartonplast.celler.controller;
 
 import org.crsoft.cartonplast.celler.service.ICellerService;
-import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
+import org.crsoft.cartonplast.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import org.crsoft.cartonplast.celler.service.IReceiptService;
 import org.crsoft.cartonplast.celler.util.ReceiptGeneratorUtil;
-import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
+import org.crsoft.cartonplast.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.constant.ReceiptConstant;
 import org.crsoft.cartonplast.common.enums.ReceiptType;
 import org.crsoft.cartonplast.common.exception.ReceiptGeneratorException;

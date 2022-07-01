@@ -1,7 +1,7 @@
 package org.crsoft.cartonplast.celler.service;
 
 import org.crsoft.cartonplast.celler.model.Celler;
-import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
+import org.crsoft.cartonplast.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.exception.UpdateException;

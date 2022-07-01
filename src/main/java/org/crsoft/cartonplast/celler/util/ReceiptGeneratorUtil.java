@@ -5,7 +5,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.crsoft.cartonplast.celler.vo.req.GenerateReceiptReq;
+import org.crsoft.cartonplast.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.constant.ReceiptConstant;
 import org.crsoft.cartonplast.common.exception.ReceiptGeneratorException;
