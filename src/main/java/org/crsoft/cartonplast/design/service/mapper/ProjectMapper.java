@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.service.mapper;
 import org.crsoft.cartonplast.client.service.mapper.ClientMapper;
 import org.crsoft.cartonplast.design.model.Project;
 import org.crsoft.cartonplast.vo.res.ProjectRes;
+import org.crsoft.cartonplast.vo.res.ProjectShortRes;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -23,6 +24,10 @@ import java.util.List;
 public interface ProjectMapper {
 
     ProjectRes toProjectRes(Project project);
+
+    ProjectShortRes toProjectShortRes(Project project);
+
+    List<ProjectShortRes> toProjectShortResList(List<Project> projects);
 
     List<ProjectRes> toProjectResList(List<Project> projectList);
 }

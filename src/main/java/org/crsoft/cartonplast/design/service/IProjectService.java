@@ -1,6 +1,7 @@
 package org.crsoft.cartonplast.design.service;
 
 import org.crsoft.cartonplast.vo.res.ProjectRes;
+import org.crsoft.cartonplast.vo.res.ProjectShortRes;
 
 import java.util.List;
 
@@ -10,4 +11,6 @@ import java.util.List;
 public interface IProjectService {
 
     List<ProjectRes> findAllValidProjects();
+
+    List<ProjectShortRes> findProjectsByClientId(Integer clientId);
 }

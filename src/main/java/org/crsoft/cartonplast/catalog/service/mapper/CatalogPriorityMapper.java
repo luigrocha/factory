@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.vo.res.CatalogPriorityRes;
 import org.mapstruct.Mapper;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author jyepez on 14/5/2022
@@ -14,5 +15,5 @@ public interface CatalogPriorityMapper {
 
     CatalogPriorityRes catalogPriorityToCatalogRes(CatalogPriority catalogPriority);
 
-    Collection<CatalogPriorityRes> catalogPriorityCollectionToCatalogResCollection(Collection<CatalogPriority> catalogPriorities);
+    List<CatalogPriorityRes> catalogPriorityCollectionToCatalogResCollection(List<CatalogPriority> catalogPriorities);
 }

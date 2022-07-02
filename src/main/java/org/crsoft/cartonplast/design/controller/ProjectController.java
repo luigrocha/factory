@@ -3,10 +3,9 @@ package org.crsoft.cartonplast.design.controller;
 import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.design.service.impl.ProjectService;
 import org.crsoft.cartonplast.vo.res.ProjectRes;
+import org.crsoft.cartonplast.vo.res.ProjectShortRes;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +24,11 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<List<ProjectRes>> getAllProjects() {
         return ResponseEntity.ok(this.projectService.findAllValidProjects());
+    }
+
+    @GetMapping("/search/client/{clientId}")
+    public ResponseEntity<List<ProjectShortRes>> searchProjects(
+            @PathVariable("clientId") Integer clientId) {
+        return ResponseEntity.ok(this.projectService.findProjectsByClientId(clientId));
     }
 }
