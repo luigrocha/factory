@@ -3,27 +3,69 @@
     <p-toast></p-toast>
 
     <div class="card">
-      <p-table #dt [value]="orders" [columns]="cols" [rows]="7" [paginator]="true"
-        [globalFilterFields]="['lote','client.name','code','name','amount','deliverAt','observation','difference','priority','status']"
-        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50,100]" [(selection)]="selectedOrder"
-        [rowHover]="true" dataKey="id" styleClass="p-datatable-customers p-datatable-sm" responsiveLayout="scroll">
+      <p-table
+        #dt
+        [value]="orders"
+        [rows]="pageSize"
+        [paginator]="true"
+        [globalFilterFields]="globalFilterFields"
+        [rowHover]="true"
+        dataKey="id"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="tableReportTemplate"
+        [rowsPerPageOptions]="rowsPerPageOptions"
+        styleClass="p-datatable-sm"
+        responsiveLayout="scroll"
+      >
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
-            <h5 class="h-100 align-self-center mb-2 md:mb-0">Gestión de Pedidos</h5>
+            <h5 class="h-100 align-self-center mb-2 md:mb-0">
+              Gestión de Pedidos
+            </h5>
             <span class="flex-auto"></span>
-            <button pButton pRipple label="Limpiar" icon="pi pi-filter-slash"
-              class="p-button-outlined mb-2 md:mr-2 md:mb-0" (click)="clear(dt)"></button>
-            <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mb-2 md:mr-2 md:mb-0"
-              (click)="openNew()"></button>
-            <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mb-2 md:mr-2 md:mb-0"
-              (click)="deleteSelectedOrders()" [disabled]="!selectedOrder || !selectedOrder.length"></button>
-            <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help mb-2 md:mr-2 md:mb-0"
-              (click)="dt.exportCSV()"></button>
+            <button
+              pButton
+              pRipple
+              label="Limpiar"
+              icon="pi pi-filter-slash"
+              class="p-button-outlined mb-2 md:mr-2 md:mb-0"
+              (click)="clear(dt)"
+            ></button>
+            <button
+              pButton
+              pRipple
+              label="Nuevo"
+              icon="pi pi-plus"
+              class="mb-2 md:mr-2 md:mb-0"
+              (click)="createNewOrder()"
+            ></button>
+            <button
+              pButton
+              pRipple
+              label="Eliminar"
+              icon="pi pi-trash"
+              class="p-button-danger mb-2 md:mr-2 md:mb-0"
+              (click)="deleteSelectedOrders()"
+              [disabled]="!selectedOrders || !selectedOrders.length"
+            ></button>
+            <button
+              pButton
+              pRipple
+              label="Export"
+              icon="pi pi-upload"
+              class="p-button-help mb-2 md:mr-2 md:mb-0"
+              (click)="dt.exportCSV()"
+            ></button>
 
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <input pInputText #filter type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
-                placeholder="Buscar..." class="w-full" />
+              <input
+                pInputText
+                type="text"
+                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Buscar..."
+                class="w-full"
+              />
             </span>
           </div>
         </ng-template>
@@ -33,70 +75,158 @@
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
             <th>
-              Lote <p-columnFilter type="text" field="lote" display="menu" placeholder="Buscar por nombre">
+              Código
+              <p-columnFilter
+                type="text"
+                field="code"
+                display="menu"
+                placeholder="Buscar por código"
+              >
               </p-columnFilter>
             </th>
             <th>
-              Cliente <p-columnFilter type="text" field="client.name" display="menu" placeholder="Buscar por cliente">
+              Lote
+              <p-columnFilter
+                type="text"
+                field="lot"
+                display="menu"
+                placeholder="Buscar por lote"
+              >
               </p-columnFilter>
             </th>
-            <!-- <th>
-              Código
+            <th>
+              Cliente
+              <p-columnFilter
+                type="text"
+                field="client.name"
+                display="menu"
+                placeholder="Buscar por cliente"
+              >
+              </p-columnFilter>
+            </th>
+            <th>
+              Código producto
+              <p-columnFilter
+                type="text"
+                field="productCode"
+                display="menu"
+                placeholder="Buscar por código"
+              >
+              </p-columnFilter>
             </th>
             <th>
               Nombre
-            </th> -->
-            <th>
-              Cantidad
+              <p-columnFilter
+                type="text"
+                field="name"
+                display="menu"
+                placeholder="Buscar por código"
+              >
+              </p-columnFilter>
             </th>
+            <th>Cantidad</th>
             <th>
-              Fecha Entrega <p-columnFilter type="date" field="deliverAt" display="menu" placeholder="dd-mm-aaaa">
+              Fecha Entrega
+              <p-columnFilter
+                type="date"
+                field="estimatedDeliveryAt"
+                display="menu"
+                placeholder="dd-mm-aaaa"
+              >
               </p-columnFilter>
             </th>
             <th>
               Prioridad
-              <p-columnFilter type="status" field="priority.name" display="menu">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [ngModel]="value" [options]="priorities" (onChange)="filter($event.value.name)"
-                    placeholder="{{ value ?  value : 'Selecciona prioridad' }}" [style]="{'min-width': '12rem'}">
+              <p-columnFilter
+                type="status"
+                field="priority.name"
+                display="menu"
+              >
+                <ng-template
+                  pTemplate="filter"
+                  let-value
+                  let-filter="filterCallback"
+                >
+                  <p-dropdown
+                    [ngModel]="value"
+                    [options]="priorities"
+                    (onChange)="filter($event.value.name)"
+                    placeholder="{{ value ? value : 'Selecciona prioridad' }}"
+                    [style]="{ 'min-width': '12rem' }"
+                  >
                     <ng-template let-option pTemplate="item">
                       <div class="flex align-items-center">
-                        <button pButton pRipple type="button" icon="pi {{option.icon}}"
-                          class="p-button-rounded p-button-text" [ngClass]="option.color ? option.color:''"></button>
-                        {{option.name}}
+                        <button
+                          pButton
+                          pRipple
+                          type="button"
+                          icon="pi {{ option.icon }}"
+                          class="p-button-rounded p-button-text"
+                          [ngClass]="option.color ? option.color : ''"
+                        ></button>
+                        {{ option.name }}
                       </div>
                     </ng-template>
                   </p-dropdown>
                 </ng-template>
               </p-columnFilter>
             </th>
-            <th>
-              Observación
-            </th>
-            <th>
-              Diferencia
-            </th>
+            <th>Observación</th>
+            <th>Diferencia</th>
             <th>
               Estado
-              <p-columnFilter type="status" field="status.name" display="menu">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [ngModel]="value" [options]="status" (onChange)="filter($event.value.name)"
-                    placeholder="{{ value ?  value : 'Selecciona Estado' }}" [style]="{'min-width': '12rem'}">
+              <p-columnFilter
+                field="status"
+                matchMode="in"
+                display="menu"
+                [showMatchModes]="false"
+                [showOperator]="false"
+                [showAddButton]="false"
+                class="p-ml-auto"
+              >
+                <ng-template pTemplate="header">
+                  <div class="p-px-3 p-pt-3 p-pb-0">
+                    <span class="p-text-bold">Estados</span>
+                  </div>
+                </ng-template>
+                <ng-template
+                  pTemplate="filter"
+                  let-value
+                  let-filter="filterCallback"
+                >
+                  <p-multiSelect
+                    [ngModel]="value"
+                    [options]="orderStatus"
+                    placeholder="Estados"
+                    (onChange)="filter($event.value)"
+                    optionLabel="name"
+                  >
                     <ng-template let-option pTemplate="item">
-                      <span class="order-badge" [style.color]="option.color"
-                        [style.backgroundColor]="option.backgroundColor">{{option.name}}</span>
+                      <div class="p-multiselect-representative-option">
+                        <span class="p-ml-1">{{ option.name }}</span>
+                      </div>
                     </ng-template>
-                  </p-dropdown>
+                  </p-multiSelect>
                 </ng-template>
               </p-columnFilter>
+              <!--              <p-columnFilter type="status" field="status.name" display="menu">-->
+              <!--                <ng-template pTemplate="filter" let-value let-filter="filterCallback">-->
+              <!--                  <p-dropdown [ngModel]="value" [options]="orderStatus" (onChange)="filter($event.value.name)"-->
+              <!--                              placeholder="{{ value ?  value : 'Selecciona Estado' }}" [style]="{'min-width': '12rem'}">-->
+              <!--                    <ng-template let-option pTemplate="item">-->
+              <!--                      <span class="order-badge" [style.color]="option.color"-->
+              <!--                            [style.backgroundColor]="option.backgroundColor">{{option.name}}</span>-->
+              <!--                    </ng-template>-->
+              <!--                  </p-dropdown>-->
+              <!--                </ng-template>-->
+              <!--              </p-columnFilter>-->
             </th>
-            <th style="                
-                text-align: center;
-                display: flex;
-                justify-content: space-around;
-                min-height: 42.5px;
-              ">
-              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+            <th>
+              <i
+                class="pi pi-cog"
+                style="font-size: 18px"
+                pTooltip="Opciones"
+              ></i>
             </th>
           </tr>
         </ng-template>
@@ -106,34 +236,37 @@
               <p-tableCheckbox [value]="order"></p-tableCheckbox>
             </td>
             <td style="min-width: 8rem">
-              <span class="p-column-title">Lote</span>
-              {{ order.lote }}
+              {{ order.code }}
+            </td>
+            <td style="min-width: 8rem">
+              {{ order.lot }}
             </td>
             <td style="min-width: 10rem">
-              <span class="p-column-title">Cliente</span>
               {{ order.client.name }}
             </td>
-            <!-- <td style="min-width: 10rem">
-              <span class="p-column-title">Codigo</span>
-
+            <td style="min-width: 12rem">
+              {{ order.productCode }}
             </td>
             <td style="min-width: 12rem">
-              <span class="p-column-title">Nombre</span>
-
-            </td> -->
+              {{ order.name }}
+            </td>
             <td>
-              <span class="p-column-title">Cantidad</span>
-              {{ order.amount }}
+              {{ order.quantity }}
             </td>
             <td style="min-width: 11rem">
-              <span class="p-column-title">Fecha Entrega</span>
-              {{ order.deliverAt | date: "dd-MM-yyyy" }}
+              {{ order.estimatedDeliveryAt | date: "dd-MM-yyyy" }}
             </td>
-            <td style="min-width: 8rem; text-align: center;">
+            <td style="min-width: 8rem; text-align: center">
               <span class="p-column-title">Prioridad</span>
-              <button pButton pRipple type="button" icon="pi {{order.priority.icon}}"
-                class="p-button-rounded p-button-text" [ngClass]="order.priority.color ? order.priority.color:''"
-                pTooltip="{{order.priority.name}}"></button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi {{ order.priority.icon }}"
+                class="p-button-rounded p-button-text"
+                [ngClass]="order.priority.color ? order.priority.color : ''"
+                pTooltip="{{ order.priority.name }}"
+              ></button>
             </td>
             <td style="min-width: 12rem">
               <span class="p-column-title">Observación</span>
@@ -144,17 +277,24 @@
               {{ order.difference }}
             </td>
             <td style="min-width: 8rem">
-              <span class="p-column-title">Estado</span>
-              <span class="order-badge" [style.color]="order.status.color"
-                [style.backgroundColor]="order.status.backgroundColor">{{order.status.name}}</span>
+              <span
+                class="order-badge"
+                appStatusHighlight
+                [status]="order.status"
+              >
+                {{ order.status.name }}
+              </span>
             </td>
-            <td style="justify-content: center;">
-              <div class="flex justify-content-evenly">
-                <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
-                  (click)="orderSelect = order;menu.toggle($event)">
-                </button>
+            <td>
+              <div class="flex justify-content-center">
+                <button
+                  type="button"
+                  pButton
+                  icon="pi pi-ellipsis-v"
+                  class="p-button-secondary p-button-outlined"
+                  (click)="selectedOrder = order; menu.toggle($event)"
+                ></button>
               </div>
-              <p-menu #menu [popup]="true" [model]="items" appendTo="body"></p-menu>
             </td>
           </tr>
         </ng-template>
@@ -167,28 +307,11 @@
       </p-table>
     </div>
 
-    <p-dialog [(visible)]="orderDialog" [style]="{ width: '450px' }" header="Detalles de Orderes A" [modal]="true"
-      styleClass="p-fluid">
-      <ng-template pTemplate="content">
-        <div class="p-field">
-          <label for="id">ID</label>
-          <input type="text" pInputText id="id" [(ngModel)]="order.id" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !order.id">Campo id es requerido.</small>
-        </div>
-        <div class="p-field">
-          <label for="name">Nombre</label>
-          <input type="text" pInputText id="name" [(ngModel)]="order.name" required />
-          <small class="p-invalid" *ngIf="submitted && !order.name">Campo nombre es requerido.</small>
-        </div>
-      </ng-template>
-
-      <ng-template pTemplate="footer">
-        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
-          (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveOrder()"></button>
-      </ng-template>
-    </p-dialog>
-
-    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+    <p-confirmDialog
+      [style]="{ width: '450px' }"
+      rejectButtonStyleClass="p-button-text"
+      acceptButtonStyleClass="p-button-raised"
+    ></p-confirmDialog>
   </div>
 </div>
+<p-menu #menu [popup]="true" [model]="menuItems" appendTo="body"></p-menu>

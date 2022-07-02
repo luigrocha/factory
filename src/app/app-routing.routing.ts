@@ -106,6 +106,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { roles: [RoleEnum.SUPERVISOR] },
         loadChildren: () => import('./modules/stock/stock.module').then(m => m.StockModule)
+      }, {
+        path: 'mezcla',
+        canActivate: [AuthGuard],
+        data: { roles: [RoleEnum.SUPERVISOR] },
+        loadChildren: () => import('./modules/mixture/mixture.module').then(m => m.MixtureModule)
       }
     ]
   },

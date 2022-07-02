@@ -9,20 +9,12 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class PriorityService {
-  httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json',
-        userName: this.authService.getLoggedUser().preferred_username
-      })
-  };
 
-  URL_PRIORITY = environment.appApiUrl + '/priority';
+  private readonly URL = environment.appApiUrl + '/priorities';
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient) { }
 
   getAllByType(type: string): Observable<Priority[]> {
-    return this.http.get<Priority[]>(this.URL_PRIORITY + '/' + type, this.httpOptions);
+    return this.http.get<Priority[]>(`${this.URL}/${type}`);
   }
-
 }

@@ -45,7 +45,7 @@ export class ClientsListComponent implements OnInit, OnDestroy {
     this.getAllClients();
     this.getMenuItems();
     this.columns = [
-      {field: 'id', header: 'Id'},
+      {field: 'code', header: 'Código'},
       {field: 'name', header: 'Nombre'},
     ];
   }
@@ -69,7 +69,6 @@ export class ClientsListComponent implements OnInit, OnDestroy {
       accept: () => {
         this.clientService.deleteClient(this.selectedClient.id)
           .subscribe(deleted => {
-            console.log(deleted);
             if (deleted) {
               this.toastService.success('Cliente eliminado correctamente');
               this.getAllClients();

@@ -1,17 +1,17 @@
 <form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
   <div class="p-fluid">
     <div class="field">
-      <label for="id">Código</label>
+      <label for="code">Código</label>
       <input pInputText
-             id="id"
+             id="code"
              formControlName="id"
-             [ngClass]="{'ng-invalid ng-dirty': id.touched && id.invalid}"
+             [ngClass]="{'ng-invalid ng-dirty': code.touched && code.invalid}"
              aria-describedby="id-help"
              maxlength="16"
              appInputUppercase
              type="text"/>
-      <small *ngIf="id.touched && id.hasError('required')"
-             id="id-help"
+      <small *ngIf="code.touched && code.hasError('required')"
+             id="code-help"
              class="p-error block">{{formErrors.required}}</small>
     </div>
     <div class="field">
