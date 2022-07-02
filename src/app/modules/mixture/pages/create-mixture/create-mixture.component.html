@@ -1,0 +1,69 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <div class="card">
+      <div class="flex justify-content-between">
+        <h5 class="m-0 mb-5">Orden de mezcla {{ 1 }}</h5>
+        <i
+          class="pi pi pi-info-circle"
+          style="font-size: 2rem"
+          (click)="showFilters = true"
+        ></i>
+      </div>
+
+      <div
+        class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center mb-5"
+      >
+        <div class="field col-6 flex flex-column"></div>
+
+        <div class="field col-6 flex flex-column"></div>
+
+        <div class="field col-6 flex flex-column"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-sidebar [(visible)]="showFilters" position="right" [baseZIndex]="10000">
+  <h3 style="font-weight: normal">Mezclas Anteriores</h3>
+  <h5>Última mezcla: 1</h5>
+  <div class="p-fluid formgrid">
+    <div class="field">
+      <label for="person">Cliente</label>
+      <input type="text" pInputText id="firstName" maxlength="32" />
+    </div>
+    <div class="field">
+      <label for="person">Troquel</label>
+      <input type="text" pInputText id="firstName" maxlength="32" />
+    </div>
+    <div class="field">
+      <label for="person">Cirel</label>
+      <input type="text" pInputText id="firstName" maxlength="32" />
+    </div>
+    <div class="field">
+      <label for="person">Mezcla de</label>
+      <input type="text" pInputText id="firstName" maxlength="32" />
+    </div>
+    <div class="field">
+      <label for="person">Numero</label>
+      <input type="text" pInputText id="firstName" maxlength="32" />
+    </div>
+  </div>
+  <div class="flex justify-content-evenly mt-5">
+    <button
+      pButton
+      pRipple
+      label="Traer"
+      icon="pi pi-copy"
+      class="p-button-raised"
+    ></button>
+    <button
+      pButton
+      pRipple
+      label="Limpiar"
+      icon="pi pi-filter-slash"
+      class="p-button-raised"
+    ></button>
+  </div>
+</p-sidebar>
