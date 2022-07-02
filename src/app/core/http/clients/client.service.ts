@@ -14,12 +14,12 @@ export class ClientService {
   constructor(private http: HttpClient) { }
 
   getAllClients(): Observable<Client[]> {
-    return this.http.get<Client[]>(this.URL); 
+    return this.http.get<Client[]>(this.URL);
   }
 
   createClient(client: CreateClient): Observable<Client> {
     const body: FormData = new FormData();
-    body.append('id', client.id);
+    body.append('code', client.code);
     body.append('name', client.name);
 
     if (client.file) {
@@ -29,7 +29,7 @@ export class ClientService {
     return this.http.post<Client>(this.URL, body);
   }
 
-  deleteClient(id: string): Observable<boolean> {
+  deleteClient(id: number): Observable<boolean> {
     return this.http.delete<boolean>(`${this.URL}/${id}`);
   }
 }

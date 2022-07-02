@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Table } from 'primeng/table';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PriorityService } from 'src/app/core/http/catalogs/priority/priority.service';
 import { StatusService } from 'src/app/core/http/catalogs/status/status.service';
 import { OrderService } from 'src/app/core/http/orders/order.service';
@@ -11,74 +11,45 @@ import { TypePermission } from 'src/app/types/permission';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { Router } from '@angular/router';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { ORDER_STATUS_TYPE } from 'src/app/core/constants/status-types';
 
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
   styleUrls: ['./order.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class OrderComponent implements OnInit {
 
-  orderDialog: boolean;
-
-  selectedOrder: Order[];
-
-  submitted: boolean;
-
-  cols: any[];
-
+  pageSize: number = 10;
   orders: Order[];
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+  selectedOrder: Order;
+  menuItems: MenuItem[];
+  orderStatus: Status[] = [];
+  priorities: Priority[] = [];
+  selectedOrders: Order[] = [];
 
-  order: Order;
-
-  loading = true;
-
-  priorities: Priority[];
-
-  status: Status[];
-
-  @ViewChild('dt') table: Table;
-
-  @ViewChild('filter') filter: ElementRef;
-
+  globalFilterFields: string[] = [
+    'lote',
+    'client.name',
+    'code',
+    'name',
+    'amount',
+    'deliverAt',
+    'observation',
+    'difference',
+    'priority',
+    'status'
+  ];
   permissionsPage: TypePermission[];
-
-  items: MenuItem[] = [];
-
-  orderSelect: Order;
+  orderStatusCode = ORDER_STATUS_TYPE;
 
   constructor(
-    private messageService: MessageService,
+    private toastService: ToastService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private orderService: OrderService,
@@ -88,220 +59,80 @@ export class OrderComponent implements OnInit {
     private route: Router
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Pedidos' },
-      { label: 'Gestión de Pedidos', routerLink: ['pedidos'] },
+      {label: 'Pedidos'},
+      {label: 'Gestión de Pedidos', routerLink: ['/home/pedidos']},
     ]);
   }
 
   ngOnInit() {
     this.getPermissionsPage();
-    this.getAll();
+    this.getOrders();
     this.getPriorities();
     this.getStatus();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 500);
-    this.cols = [
-      { field: 'lote', header: 'Lote' },
-      { field: 'client', header: 'Cliente' },
-      { field: 'code', header: 'Codigo' },
-      { field: 'name', header: 'Nombre' },
-      { field: 'amount', header: 'Cantidad' },
-      { field: 'deliverAt', header: 'Fecha Entrega' },
-      { field: 'observation', header: 'Observación' },
-      { field: 'difference', header: 'Diferencia' },
-      { field: 'priority', header: 'Prioriodad' },
-      { field: 'status', header: 'Estado' },
-    ];
+    // setTimeout(() => {
+    //   this.getMenuItems();
+    // }, 500);
+    // this.cols = [
+    //   { field: 'lote', header: 'Lote' },
+    //   { field: 'client', header: 'Cliente' },
+    //   { field: 'code', header: 'Codigo' },
+    //   { field: 'name', header: 'Nombre' },
+    //   { field: 'amount', header: 'Cantidad' },
+    //   { field: 'deliverAt', header: 'Fecha Entrega' },
+    //   { field: 'observation', header: 'Observación' },
+    //   { field: 'difference', header: 'Diferencia' },
+    //   { field: 'priority', header: 'Prioriodad' },
+    //   { field: 'status', header: 'Estado' },
+    // ];
   }
 
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Editar',
         icon: 'pi pi-pencil',
-        command: (e) => this.editOrder(this.orderSelect)
+        command: () => this.editOrder()
       });
     }
     if (this.isAllow(PermissionEnum.DELETE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Eliminar',
         icon: 'pi pi-trash',
-        command: (e) => this.deleteOrder(this.orderSelect)
+        command: () => this.deleteOrder()
       });
     }
-    this.items.push({
+    this.menuItems.push({
       label: 'Ver Estado',
       icon: 'pi pi-search-plus',
-      command: (e) => this.route.navigate(['/home/pedidos/status/' + this.orderSelect.lote])
+      command: () => this.route.navigate(['/home/pedidos/status/' + this.selectedOrder.lot])
     });
 
   }
 
-  openNew() {
-    this.order = {};
-    this.submitted = false;
-    this.orderDialog = true;
-  }
-
-  editOrder(order: Order) {
-    this.order = { ...order };
-    this.orderDialog = true;
-  }
-
-  deleteOrder(order: Order) {
-    this.confirmationService.confirm({
-      message:
-        'Estas seguro de eliminar el order ' + order.lote + '?',
-      header: 'Confirmación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // this.orderService.delete(order.id).subscribe(
-        //   (res) => {
-        //     this.messageService.add({
-        //       severity: 'success',
-        //       summary: 'Éxito',
-        //       detail: 'Homopolímero Eliminado',
-        //       life: 3000,
-        //     });
-        //     this.orders = [];
-        //     this.getAllUsers();
-        //   },
-        //   (err) => {
-        //     this.messageService.add({
-        //       severity: 'error',
-        //       summary: 'Error',
-        //       detail: err.error,
-        //       life: 3000,
-        //     });
-        //   }
-        // );
-
-      },
-    });
-  }
-
-  deleteSelectedOrders() {
-    this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar los orderes seleccionados?',
-      header: 'Confirmación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        // this.selectedHomo.forEach(order => {
-        //   this.orderService.delete(order.id).subscribe(
-        //     (res) => {
-        //       this.messageService.add({
-        //         severity: 'success',
-        //         summary: 'Éxito',
-        //         detail: 'Homopolímero Eliminado',
-        //         life: 3000,
-        //       });
-        //       this.orders = [];
-        //       this.getAllUsers();
-        //     },
-        //     (err) => {
-        //       this.messageService.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: err.error,
-        //         life: 3000,
-        //       });
-        //     }
-        //   );
-        // })
-
-        this.selectedOrder = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Homopolímeros Elimnados',
-          life: 3000,
-        });
-      },
-    });
-  }
-
-  saveOrder() {
-    this.submitted = true;
-
-    if (this.order.id) {
-      // this.orderService.update(this.order.id, this.order).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Actualizado',
-      //       life: 3000,
-      //     });
-      //     this.orders = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.error,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
-    } else {
-      // this.orderService.create(this.order).subscribe(
-      //   (res) => {
-      //     this.messageService.add({
-      //       severity: 'success',
-      //       summary: 'Éxito',
-      //       detail: 'Homopolímero Creado',
-      //       life: 3000,
-      //     });
-      //     this.orders = [];
-      //     this.getAllUsers();
-      //   },
-      //   (err) => {
-      //     this.messageService.add({
-      //       severity: 'error',
-      //       summary: 'Error',
-      //       detail: err.error,
-      //       life: 3000,
-      //     });
-      //   }
-      // );
-    }
-
-    this.orders = [...this.orders];
-    this.orderDialog = false;
-    this.order = {};
-  }
-
-  hideDialog() {
-    this.orderDialog = false;
-    this.submitted = false;
-  }
-
-  getAll() {
+  getOrders() {
     this.priorities = [];
-    this.orderService.getAll().subscribe((orders) => {
-      this.orders = orders;
-      this.orders.forEach(order => order.deliverAt = new Date(order.deliverAt));
-      this.loading = false;
-    });
+    this.orderService.getAll()
+      .subscribe(orders => {
+        this.orders = orders;
+      });
   }
 
   getPriorities() {
-    this.priorityService.getAllByType('P').subscribe((priorities) => {
-      this.priorities = priorities;
-    });
+    this.priorityService.getAllByType(this.orderStatusCode)
+      .subscribe((priorities) => {
+        this.priorities = priorities;
+      });
   }
 
   getStatus() {
-    this.statusService.getAllByType('P').subscribe((status) => {
-      this.status = status;
-    });
+    this.statusService.getAllByType('P')
+      .subscribe((status) => {
+        this.orderStatus = status;
+      });
   }
 
   clear(table: Table) {
     table.clear();
-    this.filter.nativeElement.value = '';
   }
 
   getPermissionsPage() {
@@ -319,5 +150,17 @@ export class OrderComponent implements OnInit {
     return false;
   }
 
+  private editOrder() {
+    this.route.navigate(['/home/pedidos/editar/' + this.selectedOrder.lot]);
+  }
 
+  private deleteOrder() {
+  }
+
+  createNewOrder() {
+    this.route.navigate(['/home/pedidos/crear']);
+  }
+
+  deleteSelectedOrders() {
+  }
 }

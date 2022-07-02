@@ -12,6 +12,7 @@ import { SafePipe } from './pipes/safe.pipe';
 import { UploadFileComponent } from './components/upload-file/upload-file.component';
 import { FileUploadModule } from 'primeng/fileupload';
 import { YesNoPipe } from './pipes/yes-no.pipe';
+import { NumericDirective } from './directives/numeric.directive';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { YesNoPipe } from './pipes/yes-no.pipe';
     DocumentViewerComponent,
     SafePipe,
     UploadFileComponent,
-    YesNoPipe
+    YesNoPipe,
+    NumericDirective
   ],
   exports: [
     LoadingComponent,
@@ -30,7 +32,8 @@ import { YesNoPipe } from './pipes/yes-no.pipe';
     InputUppercaseDirective,
     UserAvatarComponent,
     SafePipe,
-    YesNoPipe
+    YesNoPipe,
+    NumericDirective
   ],
   imports: [
     CommonModule,

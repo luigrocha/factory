@@ -23,7 +23,7 @@ export class AddClientComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      id: [null, [
+      code: [null, [
         Validators.required,
         Validators.maxLength(16)
       ]],
@@ -35,8 +35,8 @@ export class AddClientComponent implements OnInit {
     });
   }
 
-  get id() {
-    return this.form.get('id');
+  get code() {
+    return this.form.get('code');
   }
 
   get name() {

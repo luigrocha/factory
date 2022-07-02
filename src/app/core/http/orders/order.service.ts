@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Order } from 'src/app/types/order.types';
 
@@ -8,13 +8,13 @@ import { Order } from 'src/app/types/order.types';
   providedIn: 'root'
 })
 export class OrderService {
-  httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
 
-  URL_USER = environment.appApiUrl + '/order';
+  private readonly URL = environment.appApiUrl + '/orders';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getAll(): Observable<Order[]> {
-    return this.http.get<Order[]>(this.URL_USER + '', this.httpOptions);
+    return this.http.get<Order[]>(this.URL);
   }
 }
