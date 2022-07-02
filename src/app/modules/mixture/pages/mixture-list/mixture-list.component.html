@@ -1,0 +1,123 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <h5>Diseño de Mezcla</h5>
+
+    <div class="grid p-fluid">
+      <div class="col-12 md:col-6">
+        <div class="card leaderboard">
+          <div class="card-header">
+            <h6>Premesclas Disponibles</h6>
+          </div>
+          <ul class="mixture-ul mt-5">
+            <li class="mixture-item">
+              <div class="flex justify-content-start align-items-center">
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-bars"
+                  class="p-button-rounded p-button-text p-button-success"
+                  pTooltip="Media"
+                ></button>
+                L190421
+              </div>
+              <div class="mixture-btn-create">
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-plus-circle"
+                  class="p-button-rounded p-button-text p-button-lg"
+                ></button>
+              </div>
+            </li>
+            <p-divider></p-divider>
+            <li class="mixture-item">
+              <div class="flex justify-content-start align-items-center">
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-bars"
+                  class="p-button-rounded p-button-text p-button-success"
+                  pTooltip="Media"
+                ></button>
+                L190421
+              </div>
+              <div class="mixture-btn-create">
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-plus-circle"
+                  class="p-button-rounded p-button-text p-button-lg"
+                ></button>
+              </div>
+            </li>
+            <p-divider></p-divider>
+            <li class="mixture-item">
+              <div class="flex justify-content-start align-items-center">
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-bars"
+                  class="p-button-rounded p-button-text p-button-success"
+                  pTooltip="Media"
+                ></button>
+                L190421
+              </div>
+              <div class="mixture-btn-create">
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  icon="pi pi-plus-circle"
+                  class="p-button-rounded p-button-text p-button-lg"
+                ></button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="card leaderboard">
+          <div class="card-header">
+            <h6>Consultar Mezcla</h6>
+          </div>
+          <div class="p-fluid grid formgrid mt-5">
+            <div class="field col-12">
+              <label for="person">Numero Mezcla | Lote</label>
+              <!-- <p-autoComplete formControlName="person"
+                              [showEmptyMessage]="true"                                
+                              [suggestions]="persons"
+                              (completeMethod)="filterPersons($event)"
+                              field="fullName"
+                              id="lote"
+                              delay="500"
+                              emptyMessage="No se encontraron resultados"
+                              [minLength]="3">
+                <ng-template let-person pTemplate="item">
+                  <div>
+                    {{person.ci}} |
+                    <span class="item-subheading">{{person.fullName}}</span>
+                  </div>
+                </ng-template>
+              </p-autoComplete>                 -->
+              <input type="text" pInputText id="firstName" maxlength="32" />
+            </div>
+            <button
+              pButton
+              pRipple
+              label="Buscar"
+              icon="pi pi-search"
+              class="p-button-raised m-3"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
