@@ -1,12 +1,13 @@
 export interface Client {
-  id?: string;
+  id?: number;
+  code?: string;
   name?: string;
   imageUrl?: string;
   imageName?: string;
 }
 
 export interface CreateClient {
-  id: string;
+  code: string;
   name: string;
   file?: File;
 }

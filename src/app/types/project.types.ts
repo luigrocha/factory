@@ -28,6 +28,12 @@ export interface Project {
   projectType: ProjectType;
 }
 
+export interface ProjectShort {
+  id: number;
+  name: string;
+  codeGen: string;
+}
+
 export interface ProjectType {
   id: number;
   name: string;
