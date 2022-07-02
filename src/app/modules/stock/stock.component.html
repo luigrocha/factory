@@ -116,107 +116,91 @@
           </div>
         </div>
 
-        <div class="grid p-fluid" *ngIf="isReq && stock">
-          <div class="col-12 lg:col-4">
-            <h6>Resumen Stock por ubicación</h6>
-            <div>
-              <div
-                class="stock-location"
-                *ngFor="let loc of stock.locationStock"
-              >
-                <div class="stock-location-info">
-                  {{ loc.location.description }}: {{ loc.stock }} Kg
-                </div>
-                <p-progressBar
-                  [value]="loc.stock"
-                  [style]="{ height: '4px', borderRadius: '2px' }"
-                ></p-progressBar>
+        <div class="col-12" *ngIf="isReq">
+          <p-table
+            #dt
+            [value]="allStock"
+            [columns]="cols"
+            [showCurrentPageReport]="true"
+            [rowHover]="true"
+            [globalFilterFields]="['name', 'lote']"
+            dataKey="id"
+            styleClass="p-datatable-sm mb-5"
+            rowGroupMode="rowspan"
+            groupRowsBy="name"
+            sortField="stock"
+            sortMode="single"
+            sortOrder="-1"
+          >
+            <ng-template pTemplate="caption">
+              <div class="flex justify-content-between flex-column sm:flex-row">
+                <h5 class="h-100 align-self-center mb-2 md:mb-0">
+                  {{ getNameConsult() }}
+                </h5>
+                <span class="flex-auto"></span>
+                <button
+                  pButton
+                  pRipple
+                  label="Export"
+                  icon="pi pi-upload"
+                  class="buttons-manage p-button-help mb-2 md:mr-2 md:mb-0"
+                  (click)="dt.exportCSV()"
+                ></button>
+                <span class="p-input-icon-left">
+                  <i class="pi pi-search"></i>
+                  <input
+                    pInputText
+                    type="text"
+                    (input)="dt.filterGlobal($event.target.value, 'contains')"
+                    placeholder="Buscar..."
+                    class="w-full"
+                  />
+                </span>
               </div>
-              <div class="stock-location">
-                <strong>Total {{ stockTotal }} Kg</strong>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 lg:col-8">
-            <div class="flex flex-column align-items-center">
-              <p-chart
-                type="pie"
-                [data]="pieData"
-                [options]="pieOptions"
-                [style]="{ width: '40%' }"
-                *ngIf="stockTotal > 0"
-              ></p-chart>
-              <h6 class="text-center w-full" *ngIf="stock.stock > 0">
-                Disponible <strong> {{ stock.stock }} Kg </strong> de:
-                {{ getMatereialName(material.value) }} en lote:
-                {{ lote.value }}
-              </h6>
-              <h6 *ngIf="stockTotal <= 0">Stock negativo</h6>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid p-fluid" *ngIf="isReq && typeMaterialStock">
-          <div class="col-12 lg:col-4">
-            <h6>Resumen Stock por material</h6>
-            <div>
-              <div
-                class="stock-location"
-                *ngFor="let type of typeMaterialStock"
-              >
-                <div class="stock-location-info">
-                  {{ type.name }}: {{ type.stock }} Kg
-                </div>
-                <p-progressBar
-                  [value]="type.stock"
-                  [style]="{ height: '4px', borderRadius: '2px' }"
-                ></p-progressBar>
-              </div>
-              <div class="stock-location">
-                <strong>Total {{ stockTotal }} Kg</strong>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 lg:col-8">
-            <p-chart
-              type="bar"
-              [data]="basicData"
-              [options]="basicOptions"
-              [style]="{ width: '80%' }"
-            ></p-chart>
-          </div>
-        </div>
-
-        <div class="grid p-fluid" *ngIf="isReq && materialStock">
-          <div class="col-12 lg:col-5">
-            <h6>Resumen Stock por lote</h6>
-            <div>
-              <div
-                class="stock-location"
-                *ngFor="let material of materialStock"
-              >
-                <div class="stock-location-info">
-                  {{ material.lote }}: {{ material.weight }} Kg
-                </div>
-                <p-progressBar
-                  [value]="material.weight"
-                  [style]="{ height: '4px', borderRadius: '2px' }"
-                ></p-progressBar>
-              </div>
-              <div class="stock-location">
-                <strong>Total {{ stockTotal }} Kg</strong>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 lg:col-7 flex justify-content-center">
-            <p-chart
-              type="doughnut"
-              [data]="dougData"
-              [options]="dougOptions"
-              width="500px"
-              height="500px"
-            ></p-chart>
-          </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of cols">
+                  {{ col.header }}
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template
+              pTemplate="body"
+              let-type
+              let-rowgroup="rowgroup"
+              let-rowspan="rowspan"
+            >
+              <tr>
+                <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                  <span class="p-column-title">Nombre</span>
+                  {{ type.name }}
+                </td>
+                <td>
+                  {{ type.lote }}
+                </td>
+                <td>
+                  {{ type.location }}
+                </td>
+                <td>
+                  <span class="p-column-title">Stock</span>
+                  {{ type.stock | number: "":"es" }} Kg
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <tr>
+                <td colspan="3">Total</td>
+                <td>{{ stockTotal | number: "":"es" }} Kg</td>
+              </tr>
+            </ng-template>
+          </p-table>
+          <p-chart
+            type="bar"
+            [data]="basicData"
+            [options]="basicOptions"
+            [style]="{ width: '100%' }"
+          ></p-chart>
         </div>
       </div>
     </div>

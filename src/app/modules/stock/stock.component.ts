@@ -8,7 +8,8 @@ import { PreferencesService } from 'src/app/core/http/preferences/preferences.se
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { LayoutService } from 'src/app/core/services/layout.service';
 import { ToastService } from 'src/app/core/services/toast.service';
-import { LoteCeller, MaterialStock, Stock, TypeMaterialStock } from 'src/app/types/celler.types';
+import { AllStock, LoteCeller, MaterialStock, Stock } from 'src/app/types/celler.types';
+import { Config } from 'src/app/types/config.types';
 import { Material, TypeMaterial } from 'src/app/types/material.types';
 
 @Component({
@@ -23,17 +24,19 @@ export class StockComponent implements OnInit {
   types: TypeMaterial[];
   materials: Material[] = [];
   lotes: LoteCeller[] = [];
-  stock: Stock;
-  typeMaterialStock: TypeMaterialStock[];
-  materialStock: MaterialStock[];
   stockTotal: number;
-  pieData: any;
+
   basicData: any;
-  dougData: any;
-  pieOptions: any;
   basicOptions: any;
-  dougOptions: any;
+  config: Config;
+
   isReq: boolean;
+  cols: any[] = [];
+  isAll: boolean;
+  isType: boolean;
+  isMaterial: boolean;
+  isLote: boolean;
+  allStock: AllStock[];
 
   constructor(
     private fb: FormBuilder,
@@ -51,6 +54,8 @@ export class StockComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getPreferencesTheme();
+    this.getAllStock();
     this.getAllTypeMaterial();
     this.form = this.fb.group({
       type: [null, [
@@ -63,7 +68,21 @@ export class StockComponent implements OnInit {
         Validators.required,
       ]],
     });
-    this.getPreferencesTheme();
+    this.cols = [
+      { field: 'material', header: 'Material' },
+      { field: 'lote', header: 'Lote' },
+      { field: 'location', header: 'Ubicación' },
+      { field: 'stock', header: 'Stock' },
+    ];
+  }
+
+  getAllStock() {
+    this.cellerDetailService.getAllStock().subscribe(allStock => {
+      this.allStock = allStock;
+      this.isAll = true;
+      this.isReq = true;
+      this.buildDataChart();
+    });
   }
 
   getAllTypeMaterial() {
@@ -75,7 +94,10 @@ export class StockComponent implements OnInit {
   onTypeSelected(e: any) {
     const type = e.value;
     this.isReq = false;
-    this.getAllMaterialByType(type);
+    this.resetAll();
+    if (type) {
+      this.getAllMaterialByType(type);
+    }
   }
 
   getAllMaterialByType(id: number) {
@@ -89,8 +111,11 @@ export class StockComponent implements OnInit {
 
   onMaterialSelected(e: any) {
     const material = e.value;
+    this.resetAll();
     this.isReq = false;
-    this.getLoteByMaterialCode(material);
+    if (material) {
+      this.getLoteByMaterialCode(material);
+    }
   }
 
   getLoteByMaterialCode(id: number) {
@@ -107,10 +132,24 @@ export class StockComponent implements OnInit {
 
   onLoteSelected(e: any) {
     this.isReq = false;
+    this.resetAll();
   }
 
-  getMatereialName(id: number) {
-    return this.materials.find(material => material.id === id).name;
+  getNameConsult(): string {
+    if (this.isAll) {
+      return 'Stock de Bodega Total';
+    } else if (this.isType) {
+      return `Stock Tipo: ${this.types.find(type => this.type.value === type.id).name}`;
+    } else if (this.isMaterial) {
+      return `Stock Tipo: ${this.types.find(type => this.type.value === type.id).name} y Material: ${this.materials.find(material => this.material.value === material.id).name}`;
+    } else if (this.isLote) {
+      return `Stock Tipo: ${this.types.find(type => this.type.value === type.id).name} y Material: ${this.materials.find(material => this.material.value === material.id).name} en Lote : ${this.lote.value}`;
+    }
+    return '';
+  }
+
+  resetAll() {
+    this.isAll = this.isType = this.isMaterial = this.isLote = false;
   }
 
   get type() {
@@ -128,84 +167,83 @@ export class StockComponent implements OnInit {
   save() {
     const data = { ...this.form.getRawValue() };
     this.stockTotal = 0;
-    this.stock = null;
-    this.typeMaterialStock = null;
-    this.materialStock = null;
-    const colors = [];
-    const labels = [];
-    const values = [];
+    this.allStock = [];
     if (this.lote.value && this.material.value && this.type.value) {
-      this.cellerDetailService.getCellerDetailStock(data.material, data.lote).subscribe(
-        (stock => {
+      this.cellerDetailService.getMaterialLoteStock(data.material, data.lote).subscribe(
+        (allStock => {
           this.isReq = true;
-          this.stock = stock;
-          this.stockTotal = stock.stock;
-          this.stock.locationStock.forEach(location => {
-            labels.push(location.location.description);
-            values.push(location.stock);
-            colors.push(this.generateAleatoryColor());
+          this.resetAll();
+          this.isLote = true;
+          this.allStock = allStock;
+          allStock.forEach(type => {
+            this.stockTotal += type.stock;
           });
-          this.pieData = {
-            labels,
-            datasets: [
-              {
-                data: values,
-                backgroundColor: colors,
-                hoverBackgroundColor: colors
-              }
-            ]
-          };
+          this.buildDataChart();
         })
       );
     } else if (this.material.value && this.type.value) {
-      this.cellerDetailService.getByMaterialStock(data.material).subscribe(
-        (materialStock => {
+      this.cellerDetailService.getMaterialStock(data.material).subscribe(
+        (allStock => {
           this.isReq = true;
-          this.materialStock = materialStock;
-          materialStock.forEach(material => {
-            labels.push(material.lote);
-            values.push(material.weight);
-            colors.push(this.generateAleatoryColor());
-            this.stockTotal += material.weight;
+          this.resetAll();
+          this.isMaterial = true;
+          this.allStock = allStock;
+          allStock.forEach(type => {
+            this.stockTotal += type.stock;
           });
-          this.dougData = {
-            labels,
-            datasets: [
-              {
-                data: values,
-                backgroundColor: colors,
-                hoverBackgroundColor: colors
-              }
-            ]
-          };
+          this.buildDataChart();
         })
       )
     } else if (this.type.value) {
       this.cellerDetailService.getByTypeMaterialStock(data.type).subscribe(
-        (typeMaterialStock => {
+        (allStock => {
           this.isReq = true;
-          this.typeMaterialStock = typeMaterialStock;
-          typeMaterialStock.forEach(type => {
-            labels.push(type.name);
-            values.push(type.stock);
-            colors.push(this.generateAleatoryColor());
+          this.resetAll();
+          this.isType = true;
+          this.allStock = allStock;
+          allStock.forEach(type => {
             this.stockTotal += type.stock;
           });
-          this.basicData = {
-            labels,
-            datasets: [
-              {
-                label: this.types.find(type => this.type.value === type.id).name,
-                data: values,
-                backgroundColor: colors,
-                hoverBackgroundColor: colors
-              }
-            ]
-          };
+          this.buildDataChart();
         })
       );
+    } else {
+      this.getAllStock();
     }
 
+
+  }
+
+  buildDataChart() {
+    const labels = [];
+    const hash = {};
+    const names = this.allStock.filter(row => hash[row.name] ? false : hash[row.name] = true);
+
+
+    const lotesStock = [];
+
+    names.forEach(name => {
+      labels.push(name.name);
+      let sumLotes = 0;
+      this.allStock.forEach(lote => {
+        if (lote.name === name.name) {
+          sumLotes += lote.stock;
+        }
+      });
+      lotesStock.push(sumLotes);
+    });
+
+    this.basicData = {
+      labels,
+      datasets: [
+        {
+          label: 'Kg en Lotes',
+          data: lotesStock,
+          backgroundColor: this.config.color,
+          hoverBackgroundColor: this.config.color
+        }
+      ]
+    };
   }
 
   random(min: number, max: number) {
@@ -225,16 +263,16 @@ export class StockComponent implements OnInit {
   getPreferencesTheme() {
     this.preferencesService.getPreferencesByUsername(this.authService.getLoggedUser().preferred_username).subscribe(
       (config => {
+        this.config = config;
+
+        const themes = [
+          { name: 'denim', color: '#2f8ee5' },
+          { name: 'sea-green', color: '#30A059' },
+          { name: 'amber', color: '#D49341' },
+        ];
+        this.config.color = themes.find(theme => theme.name == config.color).color;
+
         if (config.layoutMode === 'dark') {
-          this.pieOptions = {
-            plugins: {
-              legend: {
-                labels: {
-                  color: '#ebedef'
-                }
-              }
-            }
-          };
           this.basicOptions = {
             plugins: {
               legend: {
@@ -262,25 +300,9 @@ export class StockComponent implements OnInit {
               }
             }
           };
-          this.dougOptions = {
-            plugins: {
-              legend: {
-                labels: {
-                  color: '#ebedef'
-                }
-              }
-            }
-          };
+
         } else {
-          this.pieOptions = {
-            plugins: {
-              legend: {
-                labels: {
-                  color: '#495057'
-                }
-              }
-            }
-          };
+
           this.basicOptions = {
             plugins: {
               legend: {
@@ -308,15 +330,7 @@ export class StockComponent implements OnInit {
               }
             }
           };
-          this.dougOptions = {
-            plugins: {
-              legend: {
-                labels: {
-                  color: '#495057'
-                }
-              }
-            }
-          };
+
         }
       })
     );

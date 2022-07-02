@@ -184,7 +184,7 @@ export class MenuComponent implements OnInit {
           (res) => {
             this.toastService.success('Item eliminado');
             this.menu = [];
-            this.getAllItemsTree()
+            this.getAllItemsTree();
           },
           (err) => {
             this.toastService.error('Error eliminando');
