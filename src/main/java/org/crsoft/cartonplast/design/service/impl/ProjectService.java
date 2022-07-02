@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.design.repository.ProjectRepository;
 import org.crsoft.cartonplast.design.service.IProjectService;
 import org.crsoft.cartonplast.design.service.mapper.ProjectMapper;
 import org.crsoft.cartonplast.vo.res.ProjectRes;
+import org.crsoft.cartonplast.vo.res.ProjectShortRes;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,5 +23,10 @@ public class ProjectService implements IProjectService {
     @Override
     public List<ProjectRes> findAllValidProjects() {
         return projectMapper.toProjectResList(projectRepository.findAllValidProjects());
+    }
+
+    @Override
+    public List<ProjectShortRes> findProjectsByClientId(Integer clientId) {
+        return projectMapper.toProjectShortResList(projectRepository.findProjectsByClientId(clientId));
     }
 }

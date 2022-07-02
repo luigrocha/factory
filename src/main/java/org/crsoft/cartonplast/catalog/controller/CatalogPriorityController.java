@@ -1,6 +1,6 @@
 package org.crsoft.cartonplast.catalog.controller;
 
-import org.crsoft.cartonplast.common.exception.NotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.catalog.service.ICatalogPriorityService;
 import org.crsoft.cartonplast.vo.res.CatalogPriorityRes;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +17,15 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  * @author jyepez on 25/5/2022
  */
 @RestController
-@RequestMapping(V1_API_VERSION + "/priority")
+@RequestMapping(V1_API_VERSION + "/priorities")
+@RequiredArgsConstructor
 public class CatalogPriorityController {
 
     private final ICatalogPriorityService catalogPriorityService;
 
-    public CatalogPriorityController(ICatalogPriorityService catalogPriorityService) {
-        this.catalogPriorityService = catalogPriorityService;
-    }
-
     @GetMapping("/{type}")
-    private ResponseEntity<Collection<CatalogPriorityRes>> getAllPrioritiesByType(@PathVariable("type") String type) throws NotFoundException {
+    private ResponseEntity<Collection<CatalogPriorityRes>> getAllPrioritiesByType(
+            @PathVariable("type") String type) {
         return ResponseEntity.ok().body(this.catalogPriorityService.findAllPriorityByType(type));
     }
 }

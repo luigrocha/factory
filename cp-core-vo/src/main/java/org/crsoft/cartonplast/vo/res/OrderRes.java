@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -20,13 +21,14 @@ public class OrderRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private Integer id;
     private String code;
     private String productCode;
     private String name;
     private Integer quantity;
     private LocalDateTime orderedAt;
     private String lot;
-    private LocalDateTime estimatedDeliveryAt;
+    private LocalDate estimatedDeliveryAt;
     private String clientOrderCode;
     private String observation;
     private LocalDateTime completedAt;

@@ -13,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -79,7 +80,7 @@ public class Order {
             name = "COTORD_ESTIMATED_DELIVERED_AT",
             nullable = false
     )
-    private LocalDateTime estimatedDeliveryAt;
+    private LocalDate estimatedDeliveryAt;
 
     @Column(
             name = "COTORD_CLIENT_ORDER_CODE",
