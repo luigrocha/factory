@@ -81,6 +81,12 @@ public class CellerDetailController {
         return ResponseEntity.ok(this.cellerDetailService.findMaterialLoteStock(materialCode,lote));
     }
 
+    @GetMapping("/findTotalStockByMaterial/{materialCode}")
+    public ResponseEntity<Collection<AllStockVo>> findTotalStockByMaterial(
+            @PathVariable("materialCode") Integer materialCode) throws NotFoundException {
+        return ResponseEntity.ok(this.cellerDetailService.findTotalStockByMaterial(materialCode));
+    }
+
     @GetMapping("/findByMaterialStock/{materialCode}")
     public ResponseEntity<Collection<LoteStockVo>> findByMaterialStock(
             @PathVariable("materialCode") Integer materialCode) throws NotFoundException {
