@@ -16,7 +16,8 @@ import { ToastService } from 'src/app/core/services/toast.service';
 import { ORDER_PRIORITY_TYPE } from 'src/app/core/constants/priority-type';
 import { debounceTime } from 'rxjs/operators';
 import { OrderStatus } from 'src/app/types/enums/order-status';
-import { SearchRequest } from 'src/app/types/pageable.types';
+import { SearchCriteria, SearchRequest } from 'src/app/types/pageable.types';
+import { PFilterElement } from "../../../../types/filter.types";
 
 @Component({
   selector: 'app-order',
@@ -110,13 +111,34 @@ export class OrderComponent implements OnInit, AfterViewInit {
         this.getOrders();
       });
     this.table.onFilter
-      .pipe(
-        debounceTime(500)
-      )
       .subscribe(({filters}) => {
         console.log(filters);
+        this.buildSearchCriteria(filters);
       });
   }
+
+  buildSearchCriteria(filters: any): void {
+    this.searchRequest.searchCriteria = [];
+    const primeFilters: Array<string> = Object.keys(filters);
+    const filterFields: Array<Array<PFilterElement>> = [];
+    primeFilters.forEach(field => {
+      filterFields.push(filters[field]);
+    });
+    console.log(filterFields);
+    const clientNameFilters: Array<PFilterElement> = filters['client.name'];
+    const codeFilters: Array<PFilterElement> = filters['code'];
+    const estimatedDeliveryDateFilters: Array<PFilterElement> = filters['estimatedDeliveryAt'];
+    const lotFilters: Array<PFilterElement> = filters['lot'];
+    const nameFilters: Array<PFilterElement> = filters['name'];
+    const priorityNameFilters: Array<PFilterElement> = filters['priority.name'];
+    const productCodeFilters: Array<PFilterElement> = filters['productCode'];
+    const statusFilters: Array<PFilterElement> = filters['status'];
+    console.log(clientNameFilters);
+    console.log(primeFilters);
+  }
+
+  // getSearchCriteria(filters: ): SearchCriteria[] {
+  // }
 
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
