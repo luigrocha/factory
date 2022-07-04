@@ -5,7 +5,7 @@
     <div class="card">
       <p-table #dt
                [value]="orders"
-               [rows]="pageSize"
+               [rows]="searchRequest.size"
                [paginator]="true"
                [globalFilterFields]="globalFilterFields"
                [rowHover]="true"
@@ -14,6 +14,7 @@
                [currentPageReportTemplate]="tableReportTemplate"
                [rowsPerPageOptions]="rowsPerPageOptions"
                styleClass="p-datatable-sm"
+               lazy="true"
                responsiveLayout="scroll">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row">
@@ -100,6 +101,9 @@
               </p-columnFilter>
             </th>
             <th>
+              Orden
+            </th>
+            <th>
               Prioridad
               <p-columnFilter type="status" field="priority.name" display="menu">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
@@ -108,9 +112,7 @@
                               [style]="{'min-width': '12rem'}">
                     <ng-template let-option pTemplate="item">
                       <div class="flex align-items-center">
-                        <button pButton pRipple type="button" icon="pi {{option.icon}}"
-                                class="p-button-rounded p-button-text"
-                                [ngClass]="option.color ? option.color:''"></button>
+                        <i [ngStyle]="{'color': option.color ? option.color:''}"  class="pi {{option.icon}} pr-2"></i>
                         {{option.name}}
                       </div>
                     </ng-template>
@@ -194,15 +196,13 @@
             <td style="min-width: 11rem">
               {{ order.estimatedDeliveryAt | date: "dd-MM-yyyy" }}
             </td>
-            <td style="min-width: 8rem; text-align: center;">
-              <span class="p-column-title">Prioridad</span>
-              <button pButton
-                      pRipple
-                      type="button"
-                      icon="pi {{order.priority.icon}}"
-                      class="p-button-rounded p-button-text"
-                      [ngClass]="order.priority.color ? order.priority.color:''"
-                      pTooltip="{{order.priority.name}}"></button>
+            <td style="min-width: 8rem">
+              {{ order.clientOrderCode }}
+            </td>
+            <td style="min-width: 8rem;">
+              <i [ngStyle]="{'color': order.priority.color ? order.priority.color:''}"
+                 class="pi {{order.priority.icon}} pr-2"></i>
+              {{order.priority.name}}
             </td>
             <td style="min-width: 12rem">
               <span class="p-column-title">Observación</span>
@@ -234,7 +234,7 @@
         <ng-template pTemplate="summary">
           <div class="p-d-flex p-ai-center p-jc-between">
             Total de Pedidos:
-            {{ orders ? orders.length : 0 }}
+            {{ table ? table.totalRecords : 0 }}
           </div>
         </ng-template>
       </p-table>
