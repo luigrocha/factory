@@ -6,9 +6,9 @@
       <div class="flex justify-content-between">
         <h5 class="m-0 mb-5">Orden de mezcla {{ 1 }}</h5>
         <i
+          (click)="showFilters = true"
           class="pi pi pi-info-circle"
           style="font-size: 2rem"
-          (click)="showFilters = true"
         ></i>
       </div>
 
@@ -25,45 +25,45 @@
   </div>
 </div>
 
-<p-sidebar [(visible)]="showFilters" position="right" [baseZIndex]="10000">
+<p-sidebar [(visible)]="showFilters" [baseZIndex]="10000" position="right">
   <h3 style="font-weight: normal">Mezclas Anteriores</h3>
   <h5>Última mezcla: 1</h5>
   <div class="p-fluid formgrid">
     <div class="field">
-      <label for="person">Cliente</label>
-      <input type="text" pInputText id="firstName" maxlength="32" />
+      <label for="client">Cliente</label>
+      <input id="client" maxlength="32" pInputText type="text"/>
     </div>
     <div class="field">
-      <label for="person">Troquel</label>
-      <input type="text" pInputText id="firstName" maxlength="32" />
+      <label for="die">Troquel</label>
+      <input id="die" maxlength="32" pInputText type="text"/>
     </div>
     <div class="field">
-      <label for="person">Cirel</label>
-      <input type="text" pInputText id="firstName" maxlength="32" />
+      <label for="cirel">Cirel</label>
+      <input id="cirel" maxlength="32" pInputText type="text"/>
     </div>
     <div class="field">
-      <label for="person">Mezcla de</label>
-      <input type="text" pInputText id="firstName" maxlength="32" />
+      <label for="mix">Mezcla de</label>
+      <input id="mix" maxlength="32" pInputText type="text"/>
     </div>
     <div class="field">
-      <label for="person">Numero</label>
-      <input type="text" pInputText id="firstName" maxlength="32" />
+      <label for="number">Numero</label>
+      <input id="number" maxlength="32" pInputText type="text"/>
     </div>
   </div>
   <div class="flex justify-content-evenly mt-5">
     <button
+      class="p-button-raised"
+      icon="pi pi-copy"
+      label="Traer"
       pButton
       pRipple
-      label="Traer"
-      icon="pi pi-copy"
-      class="p-button-raised"
     ></button>
     <button
+      class="p-button-raised"
+      icon="pi pi-filter-slash"
+      label="Limpiar"
       pButton
       pRipple
-      label="Limpiar"
-      icon="pi pi-filter-slash"
-      class="p-button-raised"
     ></button>
   </div>
 </p-sidebar>
