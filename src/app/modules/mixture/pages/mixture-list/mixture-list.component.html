@@ -11,17 +11,19 @@
             <h6>Premesclas Disponibles</h6>
           </div>
           <ul class="mixture-ul mt-5">
-            <li class="mixture-item">
+            <li class="mixture-li" *ngFor="let order of orders">
+              <div class="mixture-item" >
               <div class="flex justify-content-start align-items-center">
                 <button
                   pButton
                   pRipple
                   type="button"
-                  icon="pi pi-bars"
-                  class="p-button-rounded p-button-text p-button-success"
-                  pTooltip="Media"
+                  icon="pi {{ order.priority.icon }}"
+                  class="p-button-rounded p-button-text"
+                  [ngClass]="order.priority.color ? order.priority.color : ''"
+                  pTooltip="{{ order.priority.name }}"
                 ></button>
-                L190421
+                {{order.lot}}
               </div>
               <div class="mixture-btn-create">
                 <button
@@ -30,55 +32,12 @@
                   type="button"
                   icon="pi pi-plus-circle"
                   class="p-button-rounded p-button-text p-button-lg"
-                  routerLink="/home/mezcla/crear/L190421"
+                  routerLink="/home/mezcla/crear/{{order.lot}}"
+                  pTooltip="Crear Diseño"
                 ></button>
               </div>
-            </li>
-            <p-divider></p-divider>
-            <li class="mixture-item">
-              <div class="flex justify-content-start align-items-center">
-                <button
-                  pButton
-                  pRipple
-                  type="button"
-                  icon="pi pi-bars"
-                  class="p-button-rounded p-button-text p-button-success"
-                  pTooltip="Media"
-                ></button>
-                L190421
               </div>
-              <div class="mixture-btn-create">
-                <button
-                  pButton
-                  pRipple
-                  type="button"
-                  icon="pi pi-plus-circle"
-                  class="p-button-rounded p-button-text p-button-lg"
-                ></button>
-              </div>
-            </li>
-            <p-divider></p-divider>
-            <li class="mixture-item">
-              <div class="flex justify-content-start align-items-center">
-                <button
-                  pButton
-                  pRipple
-                  type="button"
-                  icon="pi pi-bars"
-                  class="p-button-rounded p-button-text p-button-success"
-                  pTooltip="Media"
-                ></button>
-                L190421
-              </div>
-              <div class="mixture-btn-create">
-                <button
-                  pButton
-                  pRipple
-                  type="button"
-                  icon="pi pi-plus-circle"
-                  class="p-button-rounded p-button-text p-button-lg"
-                ></button>
-              </div>
+              <p-divider></p-divider>
             </li>
           </ul>
         </div>
@@ -92,7 +51,7 @@
             <div class="field col-12">
               <label for="person">Numero Mezcla | Lote</label>
               <!-- <p-autoComplete formControlName="person"
-                              [showEmptyMessage]="true"                                
+                              [showEmptyMessage]="true"
                               [suggestions]="persons"
                               (completeMethod)="filterPersons($event)"
                               field="fullName"

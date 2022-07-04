@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { CreateMixtureComponent } from './pages/create-mixture/create-mixture.component';
 import { SidebarModule } from 'primeng/sidebar';
+import {TooltipModule} from 'primeng/tooltip';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { SidebarModule } from 'primeng/sidebar';
     AutoCompleteModule,
     FormsModule,
     InputTextModule,
+    TooltipModule,
     SidebarModule
   ],
   declarations: [

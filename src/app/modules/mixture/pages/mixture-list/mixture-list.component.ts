@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import {OrderService} from '../../../../core/http/orders/order.service';
+import {Order} from '../../../../types/order.types';
 
 @Component({
   selector: 'app-mixture-list',
@@ -8,8 +10,11 @@ import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 })
 export class MixtureListComponent implements OnInit {
 
+  orders: Order[];
+
   constructor(
     private breadcrumbService: BreadcrumbService,
+    private orderService: OrderService,
   ) {
     this.breadcrumbService.setItems([
       { label: 'Módulo de Mezcla' },
@@ -18,6 +23,13 @@ export class MixtureListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getOrdersByStatus();
+  }
+
+  getOrdersByStatus(){
+    this.orderService.getOrdersByStatus('EPP').subscribe(orders => {
+      this.orders = orders;
+    });
   }
 
 }
