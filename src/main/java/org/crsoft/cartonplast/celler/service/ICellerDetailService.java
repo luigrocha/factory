@@ -3,7 +3,7 @@ package org.crsoft.cartonplast.celler.service;
 import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.celler.model.CellerDetail;
 import org.crsoft.cartonplast.celler.vo.LoteStockVo;
-import org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo;
+import org.crsoft.cartonplast.celler.vo.AllStockVo;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
@@ -30,7 +30,13 @@ public interface ICellerDetailService {
 
     CellerStockRes findCellerDetailStock(Integer materialCode, String lote);
 
-    Collection<TypeMaterialStockVo> findByTypeMaterialStock(Integer typeCode) throws NotFoundException;
+    Collection<AllStockVo> findByTypeMaterialStock(Integer typeCode) throws NotFoundException;
+
+    Collection<AllStockVo> findAllStock() throws NotFoundException;
+
+    Collection<AllStockVo> findMaterialStock(Integer code) throws NotFoundException;
+
+    Collection<AllStockVo> findMaterialLoteStock(Integer code, String lote) throws NotFoundException;
 
     Collection<CellerLoteRes> findLoteByMaterialCode(Integer code) throws NotFoundException;
 

@@ -9,7 +9,7 @@ import org.crsoft.cartonplast.celler.service.mapper.LocationMapper;
 import org.crsoft.cartonplast.celler.service.mapper.MaterialMapper;
 import org.crsoft.cartonplast.celler.util.DocumentEnum;
 import org.crsoft.cartonplast.celler.vo.LoteStockVo;
-import org.crsoft.cartonplast.celler.vo.TypeMaterialStockVo;
+import org.crsoft.cartonplast.celler.vo.AllStockVo;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
@@ -42,7 +42,10 @@ public class CellerDetailService implements ICellerDetailService {
     private final LocationMapper locationMapper;
     private final MaterialMapper materialMapper;
 
-    public CellerDetailService(CellerDetailRepository cellerDetailRepository, CellerDetailMapper cellerDetailMapper, MaterialService materialService, DocumentService documentService, LocationService locationService, CellerService cellerService, LocationMapper locationMapper, MaterialMapper materialMapper) {
+    public CellerDetailService(CellerDetailRepository cellerDetailRepository, CellerDetailMapper cellerDetailMapper,
+                               MaterialService materialService, DocumentService documentService,
+                               LocationService locationService, CellerService cellerService,
+                               LocationMapper locationMapper, MaterialMapper materialMapper) {
         this.cellerDetailRepository = cellerDetailRepository;
         this.cellerDetailMapper = cellerDetailMapper;
         this.materialService = materialService;
@@ -107,7 +110,8 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public void createCellerDetail(Collection<CellerDetailReq> cellers, Celler codeCeller, String userName) throws InsertException, NotFoundException {
+    public void createCellerDetail(Collection<CellerDetailReq> cellers, Celler codeCeller, String userName)
+            throws InsertException, NotFoundException {
         Collection<CellerDetail> cellersSave = new ArrayList<>(0);
         for (CellerDetailReq cellerDetail : cellers) {
             cellersSave.add(buildCellerDetailToSave(cellerDetail, codeCeller, userName));
@@ -126,7 +130,8 @@ public class CellerDetailService implements ICellerDetailService {
         Collection<CellerDetail> locationStock = this.cellerDetailRepository.findLocationStock(materialCode, lote);
         Collection<CellerDetail> detailStock = this.cellerDetailRepository.findDetailStock(materialCode, lote);
 
-        MaterialRes materialRes = this.materialMapper.materialToMaterialRes(locationStock.stream().findFirst().get().getMaterial());
+        MaterialRes materialRes = this.materialMapper.materialToMaterialRes(
+                locationStock.stream().findFirst().get().getMaterial());
 
         double sumStock = 0L;
 
@@ -157,8 +162,8 @@ public class CellerDetailService implements ICellerDetailService {
 
 
     @Override
-    public Collection<TypeMaterialStockVo> findByTypeMaterialStock(Integer typeCode) throws NotFoundException {
-        Collection<TypeMaterialStockVo> typeMaterialStock = this.cellerDetailRepository.findByTypeMaterialStock(typeCode);
+    public Collection<AllStockVo> findByTypeMaterialStock(Integer typeCode) throws NotFoundException {
+        Collection<AllStockVo> typeMaterialStock = this.cellerDetailRepository.findByTypeMaterialStock(typeCode);
         if(CollectionUtil.isNotEmpty(typeMaterialStock)){
             return  typeMaterialStock;
         } else {
@@ -168,8 +173,41 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
+    public Collection<AllStockVo> findAllStock() throws NotFoundException {
+        Collection<AllStockVo> allStock = this.cellerDetailRepository.findAllStock();
+        if(CollectionUtil.isNotEmpty(allStock)){
+            return  allStock;
+        } else {
+            log.error("Error to findAllStock ");
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Collection<AllStockVo> findMaterialStock(Integer code) throws NotFoundException {
+        Collection<AllStockVo> typeMaterialStock = this.cellerDetailRepository.findMaterialStock(code);
+        if(CollectionUtil.isNotEmpty(typeMaterialStock)){
+            return  typeMaterialStock;
+        } else {
+            log.error("Error to findMaterialStock {}", code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Collection<AllStockVo> findMaterialLoteStock(Integer code, String lote) throws NotFoundException {
+        Collection<AllStockVo> typeMaterialStock = this.cellerDetailRepository.findMaterialLoteStock(code,lote);
+        if(CollectionUtil.isNotEmpty(typeMaterialStock)){
+            return  typeMaterialStock;
+        } else {
+            log.error("Error to findMaterialLoteStock {} - {}", code, lote);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
     public Collection<CellerLoteRes> findLoteByMaterialCode(Integer code) throws NotFoundException {
-        Collection<CellerDetail> cellers = this.cellerDetailRepository.findLoteStock(code);
+        Collection<CellerDetail> cellers = this.cellerDetailRepository.findAllLoteStock(code);
         if (CollectionUtil.isNotEmpty(cellers)) {
             return this.cellerDetailMapper.cellerDetailCollectionToCellerLoteResCollection(cellers);
         } else {
@@ -189,7 +227,8 @@ public class CellerDetailService implements ICellerDetailService {
         }
     }
 
-    private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq, Celler codeCeller, String userName) throws NotFoundException {
+    private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq, Celler codeCeller,
+                                                 String userName) throws NotFoundException {
         Material material = this.materialService.getMaterialByCode(cellerDetailReq.getMaterial());
         Document document = this.documentService.getDocumentById(cellerDetailReq.getDocument());
         Location location = this.locationService.getLocationByCode(cellerDetailReq.getLocation());
