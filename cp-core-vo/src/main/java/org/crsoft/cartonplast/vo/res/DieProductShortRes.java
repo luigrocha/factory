@@ -22,4 +22,6 @@ public class DieProductShortRes implements Serializable {
     private Integer id;
     private String code;
     private String name;
+    private Double length;
+    private Double width;
 }

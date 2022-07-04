@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
 
@@ -68,6 +69,17 @@ public class OrderService implements IOrderService {
             return this.orderMapper.ordersToOrdersRes(orders);
         }else{
             log.error("Error to findOrdersByStatus {}", status);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public OrderRes findOrderByLot(String lot) throws NotFoundException {
+        Optional<Order> order = this.orderRepository.findOrderByLot(lot);
+        if(order.isPresent()){
+            return this.orderMapper.orderToOrderRes(order.get());
+        }else{
+            log.error("Error to findOrdersByLot {}", lot);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }

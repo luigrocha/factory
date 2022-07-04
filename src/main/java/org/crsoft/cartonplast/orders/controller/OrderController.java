@@ -30,6 +30,11 @@ public class OrderController {
         return ResponseEntity.ok(orderService.findVisibleOrders());
     }
 
+    @GetMapping("/findOrderByLot/{lot}")
+    public ResponseEntity<OrderRes> findOrderByLot(@PathVariable("lot") String lot) throws NotFoundException {
+        return ResponseEntity.ok(orderService.findOrderByLot(lot));
+    }
+
     @GetMapping("/findOrdersByStatus/{status}")
     public ResponseEntity<Collection<OrderRes>> findOrdersByStatus(@PathVariable("status") String status) throws NotFoundException {
         return ResponseEntity.ok(orderService.findOrdersByStatus(status));

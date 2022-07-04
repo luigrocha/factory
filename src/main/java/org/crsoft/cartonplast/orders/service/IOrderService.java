@@ -17,4 +17,6 @@ public interface IOrderService {
     OrderRes saveOrder(CreateOrderReq orderReq);
 
     Collection<OrderRes> findOrdersByStatus(String status) throws NotFoundException;
+
+    OrderRes findOrderByLot(String lot) throws NotFoundException;
 }

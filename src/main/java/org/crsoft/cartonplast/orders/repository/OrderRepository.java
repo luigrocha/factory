@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author jyepez on 14/5/2022
@@ -27,4 +28,11 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "AND o.status.isVisible = true AND o.status.id = :status " +
             "ORDER BY o.priority.index ASC , o.orderedAt ASC")
     Collection<Order> findOrdersByStatus(String status);
+
+    @Query("SELECT DISTINCT o FROM Order o " +
+            "WHERE (o.validTo IS NULL " +
+            "OR o.validTo > CURRENT_TIMESTAMP) " +
+            "AND o.status.isVisible = true AND o.lot = :lot " +
+            "ORDER BY o.priority.index DESC, o.orderedAt ASC")
+    Optional<Order> findOrderByLot(String lot);
 }
