@@ -21,4 +21,9 @@ export class OrderService {
   getOrdersByStatus(status: string): Observable<Order[]> {
     return this.http.get<Order[]>(this.URL + '/findOrdersByStatus/' + status);
   }
+
+  getOrderByLot(lot: string): Observable<Order> {
+    return this.http.get<Order>(this.URL + '/findOrderByLot/' + lot);
+  }
+
 }

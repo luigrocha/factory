@@ -15,6 +15,8 @@ export interface ShortDieProduct {
   id: number;
   code: string;
   name: string;
+  length: number;
+  width: number;
 }
 
 

@@ -11,31 +11,31 @@
             <h6>Premesclas Disponibles</h6>
           </div>
           <ul class="mixture-ul mt-5">
-            <li class="mixture-li" *ngFor="let order of orders">
-              <div class="mixture-item" >
-              <div class="flex justify-content-start align-items-center">
-                <button
-                  pButton
-                  pRipple
-                  type="button"
-                  icon="pi {{ order.priority.icon }}"
-                  class="p-button-rounded p-button-text"
-                  [ngClass]="order.priority.color ? order.priority.color : ''"
-                  pTooltip="{{ order.priority.name }}"
-                ></button>
-                {{order.lot}}
-              </div>
-              <div class="mixture-btn-create">
-                <button
-                  pButton
-                  pRipple
-                  type="button"
-                  icon="pi pi-plus-circle"
-                  class="p-button-rounded p-button-text p-button-lg"
-                  routerLink="/home/mezcla/crear/{{order.lot}}"
-                  pTooltip="Crear Diseño"
-                ></button>
-              </div>
+            <li *ngFor="let order of orders" class="mixture-li">
+              <div class="mixture-item">
+                <div class="flex justify-content-start align-items-center">
+                  <button
+                    [ngClass]="order.priority.color ? order.priority.color : ''"
+                    class="p-button-rounded p-button-text"
+                    icon="pi {{ order.priority.icon }}"
+                    pButton
+                    pRipple
+                    pTooltip="{{ order.priority.name }}"
+                    type="button"
+                  ></button>
+                  {{order.lot}}
+                </div>
+                <div class="mixture-btn-create">
+                  <button
+                    class="p-button-rounded p-button-text p-button-lg"
+                    icon="pi pi-plus-circle"
+                    pButton
+                    pRipple
+                    pTooltip="Crear Diseño"
+                    routerLink="/home/mezcla/crear/{{order.lot}}"
+                    type="button"
+                  ></button>
+                </div>
               </div>
               <p-divider></p-divider>
             </li>
@@ -66,14 +66,14 @@
                   </div>
                 </ng-template>
               </p-autoComplete>                 -->
-              <input type="text" pInputText id="firstName" maxlength="32" />
+              <input id="firstName" maxlength="32" pInputText type="text"/>
             </div>
             <button
+              class="p-button-raised m-3"
+              icon="pi pi-search"
+              label="Buscar"
               pButton
               pRipple
-              label="Buscar"
-              icon="pi pi-search"
-              class="p-button-raised m-3"
             ></button>
           </div>
         </div>
