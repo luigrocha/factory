@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  * @author lpillaga on 30/06/2022
@@ -35,6 +36,9 @@ public class CreateOrderReq implements Serializable {
 
     @NotEmpty
     private String observation;
+
+    @NotNull
+    private LocalDate estimatedDeliveryAt;
 
     @NotNull
     private Integer clientId;

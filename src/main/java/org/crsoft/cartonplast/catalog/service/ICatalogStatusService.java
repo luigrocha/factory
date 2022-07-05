@@ -5,6 +5,7 @@ import org.crsoft.cartonplast.catalog.model.CatalogStatus;
 import org.crsoft.cartonplast.vo.res.CatalogStatusRes;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +17,6 @@ public interface ICatalogStatusService {
 
     Optional<CatalogStatus> findByTypeAndIsDefault(String type);
     Optional<CatalogStatus> findById(String id);
+
+    List<CatalogStatus> findByIds(List<String> ids);
 }
