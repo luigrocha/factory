@@ -112,14 +112,27 @@ export class OrderComponent implements OnInit, AfterViewInit {
       });
     this.table.onFilter
       .subscribe(({filters}) => {
-        console.log(filters);
-        this.buildSearchCriteria(filters);
+        const statusFilters: Array<PFilterElement> = filters['status'];
+        if (statusFilters && statusFilters.length > 0) {
+          const selectedStates: string[] = statusFilters[0].value;
+          if (selectedStates) {
+            this.searchRequest.filters = selectedStates;
+          }
+        } else {
+          this.buildSearchCriteria(filters);
+        }
+        this.getOrders();
       });
   }
 
   buildSearchCriteria(filters: any): void {
     this.searchRequest.searchCriteria = [];
-    const primeFilters: Array<string> = Object.keys(filters);
+    // Get objects keys from filters except global filter fields and status
+    const keys = Object.keys(filters).filter(key => !this.globalFilterFields.includes(key));
+    let primeFilters: Array<string> = Object.keys(filters);
+    // Remove status from prime filters
+    primeFilters = primeFilters.filter(filter => filter !== 'status');
+
     const filterFields: Array<Array<PFilterElement>> = [];
     primeFilters.forEach(field => {
       filterFields.push(filters[field]);
@@ -216,5 +229,9 @@ export class OrderComponent implements OnInit, AfterViewInit {
   }
 
   deleteSelectedOrders() {
+  }
+
+  searchByStates(value) {
+    console.log(value);
   }
 }
