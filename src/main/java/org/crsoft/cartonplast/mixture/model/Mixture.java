@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.mixture.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.orders.model.Order;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -77,6 +78,13 @@ public class Mixture {
             columnDefinition = "TIMESTAMP"
     )
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_COTORD_CODE",
+            referencedColumnName = "ID_COTORD_CODE"
+    )
+    private Order order;
 
     @PrePersist
     public void prePersist() {
