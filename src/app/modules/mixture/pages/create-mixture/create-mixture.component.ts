@@ -38,6 +38,7 @@ export class CreateMixtureComponent implements OnInit {
   materials: Material[] = [];
   dies: Die[];
   mixtureTo: string;
+  sheets = 78000;
 
   columns: TableColumn<MixtureDetail>[];
 
@@ -81,10 +82,6 @@ export class CreateMixtureComponent implements OnInit {
     return this.form.get('preMixture');
   }
 
-  get sheets() {
-    return this.form.get('sheets');
-  }
-
   get rowsFormArray() {
     return this.form.get('rows') as FormArray;
   }
@@ -105,9 +102,6 @@ export class CreateMixtureComponent implements OnInit {
         Validators.required,
       ]],
       preMixture: [200, [
-        Validators.required,
-      ]],
-      sheets: [78000, [
         Validators.required,
       ]],
       rows: this.fb.array([]),
@@ -169,17 +163,22 @@ export class CreateMixtureComponent implements OnInit {
   }
 
   getNumberCut(id: number) {
-    return this.sheets.value / this.getSheetPerCut(id);
+    return this.sheets / this.getSheetPerCut(id);
   }
 
   getDifference(id: number) {
     const leafLength = this.searchDie(id).leafLength / 1000;
     const gsm = this.project.gsm / 1000;
-    return this.weightNominal * leafLength * gsm * this.getNumberCut(id);
+    const total = this.weightNominal * leafLength * gsm * this.getNumberCut(id);
+    return this.totalToCreate - total;
   }
 
   save() {
     if (this.form.invalid) {
+      return;
+    }
+    if (this.totalPercent !== 100) {
+      this.toastService.warning('No se puede crear mezcla, verifique los porcentajes');
       return;
     }
     const body: MixtureCreate = {...this.form.getRawValue()};
@@ -261,31 +260,30 @@ export class CreateMixtureComponent implements OnInit {
     return this.rowsFormArray.at(index).get('total');
   }
 
-  calculatePercent(index: number) {
+  calculateRows(){
     const length = this.rowsFormArray.length;
     this.totalPercent = 0;
     this.totalToStop = 0;
     this.totalToCreate = 0;
     for (let i = 0; i < length; i++) {
-      this.totalPercent += this.getRowsPercent(i).value;
-      this.totalToStop += this.getRowsStop(i).value;
-      this.totalToCreate += this.getRowsTotal(i).value;
-    }
-    if (this.totalPercent > 100) {
-      this.toastService.warning('La mezcla no se puede realizar');
-      this.getRowsPercent(index).setValue(0);
-      this.totalPercent = 0;
-      this.totalToStop = 0;
-      this.totalToCreate = 0;
-    }
-  }
+      const rowStop = Math.round(this.preMixture.value * this.getRowsPercent(i).value) / 100;
+      const rowTotal = rowStop * this.prepare.value;
 
-  calculateRows() {
-    // this.preMixture();
+      this.getRowsStop(i).setValue(rowStop);
+      this.getRowsTotal(i).setValue(rowTotal);
+
+      this.totalPercent += this.getRowsPercent(i).value;
+      this.totalToStop += rowStop;
+      this.totalToCreate += rowTotal;
+    }
   }
 
   onRowEditSave() {
-    this.cdr.detectChanges();
+    if ( this.totalPercent === 100){
+      this.cdr.detectChanges();
+    }else{
+      this.toastService.warning('No se puede crear mezcla, verifique los porcentajes');
+    }
   }
 
   onRowEditCancel() {

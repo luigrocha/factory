@@ -61,11 +61,31 @@
             Gramaje: {{project.gsm}}
           </p>
           <p class="col-2">
+            Diferencia: {{getDifference(die.value)  | number: "":"es" }}
+          </p>
+          <p class="col-2">
             Total:
             <p-tag
               severity="primary"
-              value="{{ totalToCreate }} Kg"
+              value="{{ totalToCreate | number: '':'es' }} Kg"
             ></p-tag>
+          </p>
+        </div>
+        <div *ngIf="die.value" class="grid">
+          <p class="col-2">
+            Ancho nominal: {{weightNominal}}
+          </p>
+          <p class="col-2">
+            Ancho extrusión: {{weightExtrusion}}
+          </p>
+          <p class="col-2">
+            Láminas por corte: {{getSheetPerCut(die.value) }}
+          </p>
+          <p class="col-2">
+            Numero cortes: {{getNumberCut(die.value)  | number: "":"es" }}
+          </p>
+          <p class="col-2">
+            Láminas: {{ sheets | number: "":"es"}} u.
           </p>
           <p class="col-2">
             <button
@@ -78,31 +98,15 @@
             ></button>
           </p>
         </div>
-        <div *ngIf="die.value" class="grid">
-          <p class="col-2">
-            Ancho nominal: {{weightNominal}}
-          </p>
-          <p class="col-2">
-            Ancho extrusión: {{weightExtrusion}}
-          </p>
-          <p class="col-2">
-            Láminas por corte: {{getSheetPerCut(die.value)}}
-          </p>
-          <p class="col-2">
-            Numero cortes: {{getNumberCut(die.value)  | number: "":"es" }}
-          </p>
-          <p class="col-2">
-            Diferencia: {{getDifference(die.value)  | number: "":"es" }}
-          </p>
-        </div>
 
         <div
           class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center"
         >
-          <div class="field col-3 flex flex-column">
+          <div class="field col-4 flex flex-column">
             <label for="prepare">Cantidad de Paradas</label>
             <div class="p-inputgroup">
               <input
+                (input)="calculateRows()"
                 [ngClass]="{
                 'ng-invalid ng-dirty':
                   prepare.touched && prepare.invalid
@@ -121,10 +125,11 @@
               class="p-error block"
             >{{ formErrors.required }}</small>
           </div>
-          <div class="field col-3 flex flex-column">
+          <div class="field col-4 flex flex-column">
             <label for="preMixture">Kg Premezcla</label>
             <div class="p-inputgroup">
               <input
+                (input)="calculateRows()"
                 [ngClass]="{
                 'ng-invalid ng-dirty':
                   preMixture.touched && preMixture.invalid
@@ -140,28 +145,6 @@
             </div>
             <small
               *ngIf="preMixture.touched && preMixture.hasError('required')"
-              class="p-error block"
-            >{{ formErrors.required }}</small>
-          </div>
-          <div class="field col-3 flex flex-column">
-            <label for="sheets">Láminas</label>
-            <div class="p-inputgroup">
-              <input
-                [ngClass]="{
-                'ng-invalid ng-dirty':
-                  sheets.touched && sheets.invalid
-              }"
-                aria-describedby="sheets-help"
-                formControlName="sheets"
-                id="sheets"
-                min="0"
-                pInputText
-                type="number"
-              />
-              <span class="p-inputgroup-addon">u</span>
-            </div>
-            <small
-              *ngIf="sheets.touched && sheets.hasError('required')"
               class="p-error block"
             >{{ formErrors.required }}</small>
           </div>
@@ -284,7 +267,7 @@
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
                     <input
-                      (input)="calculatePercent(index)"
+                      (input)="calculateRows()"
                       aria-describedby="percent-help"
                       formControlName="percent"
                       id="percent"
@@ -299,42 +282,10 @@
                 </p-cellEditor>
               </td>
               <td>
-                {{getRowsStop(index).value}}
-                <!--<p-cellEditor class="w-full">
-                  <ng-template pTemplate="input">
-                    <input
-                      (input)="calculateStop()"
-                      aria-describedby="percent-help"
-                      formControlName="stop"
-                      id="stop"
-                      min="0"
-                      pInputText
-                      type="number"
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    {{ getRowsStop(index).value }} Kg
-                  </ng-template>
-                </p-cellEditor>-->
+                {{getRowsStop(index).value  | number: "":"es"}}
               </td>
               <td>
-                {{getRowsTotal(index).value}}
-                <!--<p-cellEditor class="w-full">
-                  <ng-template pTemplate="input">
-                    <input
-                      (input)="calculateTotal()"
-                      aria-describedby="percent-help"
-                      formControlName="total"
-                      id="total"
-                      min="0"
-                      pInputText
-                      type="number"
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    {{ getRowsTotal(index).value }} Kg
-                  </ng-template>
-                </p-cellEditor>-->
+                {{getRowsTotal(index).value  | number: "":"es"}}
               </td>
               <td>
                 <button
