@@ -17,7 +17,8 @@ import { ORDER_PRIORITY_TYPE } from 'src/app/core/constants/priority-type';
 import { debounceTime } from 'rxjs/operators';
 import { OrderStatus } from 'src/app/types/enums/order-status';
 import { SearchCriteria, SearchRequest } from 'src/app/types/pageable.types';
-import { PFilterElement } from "../../../../types/filter.types";
+import { PFilter, PFilterElement } from "../../../../types/filter.types";
+import { getSearchCriteria } from 'src/app/core/utils/filter-table';
 
 @Component({
   selector: 'app-order',
@@ -118,40 +119,27 @@ export class OrderComponent implements OnInit, AfterViewInit {
           if (selectedStates) {
             this.searchRequest.filters = selectedStates;
           }
-        } else {
-          this.buildSearchCriteria(filters);
         }
+        this.buildSearchCriteria(filters);
         this.getOrders();
       });
   }
 
   buildSearchCriteria(filters: any): void {
     this.searchRequest.searchCriteria = [];
-    // Get objects keys from filters except global filter fields and status
-    const keys = Object.keys(filters).filter(key => !this.globalFilterFields.includes(key));
     let primeFilters: Array<string> = Object.keys(filters);
-    // Remove status from prime filters
     primeFilters = primeFilters.filter(filter => filter !== 'status');
 
-    const filterFields: Array<Array<PFilterElement>> = [];
+    const filterFields: Array<PFilter> = [];
     primeFilters.forEach(field => {
-      filterFields.push(filters[field]);
+      const filter: PFilter = {
+        key: field,
+        values: filters[field]
+      };
+      filterFields.push(filter);
     });
-    console.log(filterFields);
-    const clientNameFilters: Array<PFilterElement> = filters['client.name'];
-    const codeFilters: Array<PFilterElement> = filters['code'];
-    const estimatedDeliveryDateFilters: Array<PFilterElement> = filters['estimatedDeliveryAt'];
-    const lotFilters: Array<PFilterElement> = filters['lot'];
-    const nameFilters: Array<PFilterElement> = filters['name'];
-    const priorityNameFilters: Array<PFilterElement> = filters['priority.name'];
-    const productCodeFilters: Array<PFilterElement> = filters['productCode'];
-    const statusFilters: Array<PFilterElement> = filters['status'];
-    console.log(clientNameFilters);
-    console.log(primeFilters);
+    this.searchRequest.searchCriteria = getSearchCriteria(filterFields);
   }
-
-  // getSearchCriteria(filters: ): SearchCriteria[] {
-  // }
 
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
