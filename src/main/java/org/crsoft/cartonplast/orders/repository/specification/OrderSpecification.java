@@ -18,6 +18,10 @@ public class OrderSpecification {
 
     public static Specification<Order> filterByStates(List<CatalogStatus> states) {
         return (root, query, builder) -> {
+            if (states == null || states.isEmpty()) {
+                return null;
+            }
+
             List<Predicate> predicates = new ArrayList<>();
             for (CatalogStatus state : states) {
                 predicates.add(builder.or(

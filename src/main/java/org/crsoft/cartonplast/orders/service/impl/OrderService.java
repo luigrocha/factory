@@ -30,7 +30,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +59,11 @@ public class OrderService implements IOrderService {
                 specificationBuilder.buildSpecification(searchCriteria);
 
         Page<Order> orders = orderRepository.findAll(
-                orderSpecification.and(OrderSpecification.filterByStates(catalogStatuses)), pageable);
+                Specification
+                        .where(orderSpecification)
+                        .and(OrderSpecification.filterByStates(catalogStatuses)),
+                pageable);
+
         return orders.map(orderMapper::orderToOrderRes);
     }
 
