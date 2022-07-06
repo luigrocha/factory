@@ -1,8 +1,9 @@
-import {Injectable} from '@angular/core';
-import {environment} from 'src/environments/environment';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Order} from 'src/app/types/order.types';
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { CreateOrder, GeneratedOrderCode, Order, OrderPageable } from 'src/app/types/order.types';
+import { SearchRequest } from 'src/app/types/pageable.types';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,24 @@ export class OrderService {
   constructor(private http: HttpClient) {
   }
 
-  getAll(): Observable<Order[]> {
-    return this.http.get<Order[]>(this.URL);
+  getOrders(searchRequest: SearchRequest): Observable<OrderPageable> {
+    let parameters = `/search?page=${searchRequest.page}&size=${searchRequest.size}`;
+
+    if (searchRequest.query) {
+      parameters += `&query=${searchRequest.query}`;
+    }
+
+    parameters += `&states=${searchRequest.filters.join(',')}`;
+
+    return this.http.post<OrderPageable>(this.URL + parameters, searchRequest.searchCriteria);
+  }
+
+  createNewOrder(order: CreateOrder): Observable<Order> {
+    return this.http.post<Order>(this.URL, order);
+  }
+
+  generateNextOrderCode(): Observable<GeneratedOrderCode> {
+    return this.http.get<GeneratedOrderCode>(`${this.URL}/generate-code`);
   }
 
   getOrdersByStatus(status: string): Observable<Order[]> {
