@@ -7,18 +7,16 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * @author lpillaga on 12/05/2022
+ * @author lpillaga on 01/07/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientShortRes implements Serializable {
+public class ProjectShortRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer id;
-    private String code;
     private String name;
-    private String imageUrl;
-    private String imageName;
+    private String codeGen;
 }

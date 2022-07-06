@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.catalog.model.CatalogPriority;
 import org.crsoft.cartonplast.catalog.model.CatalogStatus;
+import org.crsoft.cartonplast.design.model.Project;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -13,6 +14,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -23,7 +25,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "COTORD")
+@Table(name = "COTORD",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "COIORD_CODE", columnNames = "COTORD_CODE")
+        }
+)
 public class Order {
 
     @Id
@@ -79,7 +85,7 @@ public class Order {
             name = "COTORD_ESTIMATED_DELIVERED_AT",
             nullable = false
     )
-    private LocalDateTime estimatedDeliveryAt;
+    private LocalDate estimatedDeliveryAt;
 
     @Column(
             name = "COTORD_CLIENT_ORDER_CODE",
@@ -189,6 +195,14 @@ public class Order {
             nullable = false
     )
     private CatalogPriority priority;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATPROY_CODE",
+            referencedColumnName = "ID_CATPROY_CODE",
+            nullable = false
+    )
+    private Project project;
 
     @PrePersist
     public void prePersist() {

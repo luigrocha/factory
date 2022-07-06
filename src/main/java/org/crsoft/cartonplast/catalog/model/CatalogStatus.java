@@ -3,6 +3,11 @@ package org.crsoft.cartonplast.catalog.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "CATSTATUS")
 public class CatalogStatus {
 
@@ -68,6 +74,7 @@ public class CatalogStatus {
             name = "CATSTATUS_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime validFrom;
 
     @Column(
@@ -77,26 +84,24 @@ public class CatalogStatus {
     private LocalDateTime validTo;
 
     @Column(name = "CATSTATUS_CREATED_BY", length = 16)
+    @CreatedBy
     private String createdBy;
 
     @Column(name = "CATSTATUS_UPDATED_BY", length = 16)
+    @LastModifiedBy
     private String updatedBy;
 
     @Column(
             name = "CATSTATUS_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
             name = "CATSTATUS_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    public void prePersist() {
-        this.validFrom = LocalDateTime.now();
-        this.createdAt = LocalDateTime.now();
-    }
 }
