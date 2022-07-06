@@ -1,4 +1,4 @@
-import { Status } from "./catalogs.types";
+import { Status } from './catalogs.types';
 
 export interface DieProduct {
   id: number;
@@ -15,8 +15,6 @@ export interface ShortDieProduct {
   id: number;
   code: string;
   name: string;
-  length: number;
-  width: number;
 }
 
 

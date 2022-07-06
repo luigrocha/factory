@@ -11,7 +11,12 @@ import {FORM_ERROR_MESSAGES} from '../../../../core/constants/form-error';
 import {MaterialService} from '../../../../core/http/materials/materials.service';
 import {Material, TypeMaterial} from '../../../../types/material.types';
 import {TableColumn} from '../../../../types/table.types';
-import {MixtureDetail} from '../../../../types/mixture.types';
+import {MixtureCreate, MixtureDetail} from '../../../../types/mixture.types';
+import {ToastService} from '../../../../core/services/toast.service';
+import {AuthService} from '../../../../core/auth/service/auth.service';
+import {DieService} from '../../../../core/http/dies/die.service';
+import {Die} from '../../../../types/dies.types';
+import {WEIGHT_EXTRUSION, WEIGHT_NOMINAL} from '../../../../core/constants/mixture';
 
 @Component({
   selector: 'app-create-mixture',
@@ -31,6 +36,8 @@ export class CreateMixtureComponent implements OnInit {
   totalToCreate = 0;
   types: TypeMaterial[];
   materials: Material[] = [];
+  dies: Die[];
+  mixtureTo: string;
 
   columns: TableColumn<MixtureDetail>[];
 
@@ -43,6 +50,9 @@ export class CreateMixtureComponent implements OnInit {
     private projectService: ProjectService,
     private mixtureService: MixtureService,
     private materialService: MaterialService,
+    private dieService: DieService,
+    private toastService: ToastService,
+    private authService: AuthService,
   ) {
     this.breadcrumbService.setItems([
       {label: 'Módulo de Mezcla'},
@@ -51,12 +61,36 @@ export class CreateMixtureComponent implements OnInit {
     ]);
   }
 
+  get weightNominal() {
+    return WEIGHT_NOMINAL;
+  }
+
+  get weightExtrusion() {
+    return WEIGHT_EXTRUSION;
+  }
+
+  get die() {
+    return this.form.get('die');
+  }
+
   get prepare() {
     return this.form.get('prepare');
   }
 
+  get preMixture() {
+    return this.form.get('preMixture');
+  }
+
+  get sheets() {
+    return this.form.get('sheets');
+  }
+
   get rowsFormArray() {
     return this.form.get('rows') as FormArray;
+  }
+
+  get observation() {
+    return this.form.get('observation');
   }
 
   ngOnInit() {
@@ -64,10 +98,22 @@ export class CreateMixtureComponent implements OnInit {
     this.getNumberToCreate();
     this.getAllTypeMaterial();
     this.form = this.fb.group({
-      prepare: [null, [
+      die: [null, [
+        Validators.required,
+      ]],
+      prepare: [0, [
+        Validators.required,
+      ]],
+      preMixture: [200, [
+        Validators.required,
+      ]],
+      sheets: [78000, [
         Validators.required,
       ]],
       rows: this.fb.array([]),
+      observation: [null, [
+        Validators.required,
+      ]],
     });
     this.columns = [
       {field: 'type', header: 'Tipo'},
@@ -85,10 +131,11 @@ export class CreateMixtureComponent implements OnInit {
   }
 
   getOrderByLot() {
-    const lot = this.activatedRoute.snapshot.params.lote;
-    this.orderService.getOrderByLot(lot).subscribe(order => {
-      this.order = order;
-      this.getProjectToCodeGen(order.productCode);
+    this.activatedRoute.params.subscribe(params => {
+      this.orderService.getOrderByLot(params.lote).subscribe(order => {
+        this.order = order;
+        this.getProjectToCodeGen(order.productCode);
+      });
     });
   }
 
@@ -101,11 +148,53 @@ export class CreateMixtureComponent implements OnInit {
   getProjectToCodeGen(codeGen: string) {
     this.projectService.getProjectToCodeGen(codeGen).subscribe(project => {
       this.project = project;
+      this.getByDieProduct(project.dieProduct.id);
+      this.mixtureTo = `${project.homoPolymer.hpCode}${project.talc ? project.talc.lpCode : ''}${project.colorB.id}`;
     });
   }
 
+  getByDieProduct(code: number) {
+    this.dieService.getByDieProduct(code).subscribe(dies => {
+      this.dies = dies;
+    });
+  }
+
+  searchDie(id: number): Die {
+    return this.dies.find(die => die.id === id);
+  }
+
+  getSheetPerCut(id: number) {
+    const leafWidth = this.searchDie(id).leafWidth / 1000;
+    return Math.trunc(this.weightExtrusion * leafWidth);
+  }
+
+  getNumberCut(id: number) {
+    return this.sheets.value / this.getSheetPerCut(id);
+  }
+
+  getDifference(id: number) {
+    const leafLength = this.searchDie(id).leafLength / 1000;
+    const gsm = this.project.gsm / 1000;
+    return this.weightNominal * leafLength * gsm * this.getNumberCut(id);
+  }
+
   save() {
-    //
+    if (this.form.invalid) {
+      return;
+    }
+    const body: MixtureCreate = {...this.form.getRawValue()};
+    body.order = this.order.id;
+    body.number = this.numberMixture;
+    body.documentBy = this.authService.getLoggedUser().name;
+    body.documentTo = 'Responsables Mezcla';
+    body.date = new Date();
+    body.total = this.totalToCreate;
+
+    this.mixtureService.create(body).subscribe(
+      (data => {
+        this.toastService.success('Mezcla creada');
+      })
+    );
   }
 
   onTypeSelected(e: any) {
@@ -170,6 +259,29 @@ export class CreateMixtureComponent implements OnInit {
 
   getRowsTotal(index: number) {
     return this.rowsFormArray.at(index).get('total');
+  }
+
+  calculatePercent(index: number) {
+    const length = this.rowsFormArray.length;
+    this.totalPercent = 0;
+    this.totalToStop = 0;
+    this.totalToCreate = 0;
+    for (let i = 0; i < length; i++) {
+      this.totalPercent += this.getRowsPercent(i).value;
+      this.totalToStop += this.getRowsStop(i).value;
+      this.totalToCreate += this.getRowsTotal(i).value;
+    }
+    if (this.totalPercent > 100) {
+      this.toastService.warning('La mezcla no se puede realizar');
+      this.getRowsPercent(index).setValue(0);
+      this.totalPercent = 0;
+      this.totalToStop = 0;
+      this.totalToCreate = 0;
+    }
+  }
+
+  calculateRows() {
+    // this.preMixture();
   }
 
   onRowEditSave() {

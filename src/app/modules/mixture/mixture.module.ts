@@ -17,6 +17,7 @@ import {TagModule} from 'primeng/tag';
 import {TableModule} from 'primeng/table';
 import {DropdownModule} from 'primeng/dropdown';
 import localeEs from '@angular/common/locales/es';
+import {InputTextareaModule} from 'primeng/inputtextarea';
 
 registerLocaleData(localeEs, 'es');
 
@@ -36,7 +37,8 @@ registerLocaleData(localeEs, 'es');
     ReactiveFormsModule,
     TagModule,
     TableModule,
-    DropdownModule
+    DropdownModule,
+    InputTextareaModule,
   ],
   declarations: [
     MixtureListComponent,

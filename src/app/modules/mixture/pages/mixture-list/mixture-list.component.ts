@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {BreadcrumbService} from 'src/app/core/services/breadcrumb.service';
 import {OrderService} from '../../../../core/http/orders/order.service';
 import {Order} from '../../../../types/order.types';
+import {OrderStatus} from '../../../../types/enums/order-status';
 
 @Component({
   selector: 'app-mixture-list',
@@ -27,7 +28,7 @@ export class MixtureListComponent implements OnInit {
   }
 
   getOrdersByStatus() {
-    this.orderService.getOrdersByStatus('EPP').subscribe(orders => {
+    this.orderService.getOrdersByStatus(OrderStatus.PENDING).subscribe(orders => {
       this.orders = orders;
     });
   }

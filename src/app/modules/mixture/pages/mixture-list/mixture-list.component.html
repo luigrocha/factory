@@ -23,7 +23,10 @@
                     pTooltip="{{ order.priority.name }}"
                     type="button"
                   ></button>
-                  {{order.lot}}
+                  <div class="mixture-orders">
+                    <p>{{order.lot}}</p>
+                    <span>{{order.code}} - {{order.productCode}}</span>
+                  </div>
                 </div>
                 <div class="mixture-btn-create">
                   <button
