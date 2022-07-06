@@ -20,6 +20,7 @@ import org.crsoft.cartonplast.vo.res.DieRes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -94,5 +95,10 @@ public class DieService implements IDieService {
     @Override
     public boolean delete(Integer id) {
         return false;
+    }
+
+    @Override
+    public Collection<DieRes> findByDieProduct(Integer code) {
+        return this.dieMapper.diesToDiesResList(this.dieRepository.findByDieProduct(code));
     }
 }

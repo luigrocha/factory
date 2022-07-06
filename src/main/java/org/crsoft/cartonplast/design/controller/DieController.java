@@ -1,13 +1,14 @@
 package org.crsoft.cartonplast.design.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.crsoft.cartonplast.design.service.IDieService;
 import org.crsoft.cartonplast.vo.req.DieReq;
 import org.crsoft.cartonplast.vo.res.DieRes;
-import org.crsoft.cartonplast.design.service.impl.DieService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
@@ -20,7 +21,7 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
 @RequestMapping(V1_API_VERSION + "/dies")
 public class DieController {
 
-    private final DieService dieService;
+    private final IDieService dieService;
 
     @GetMapping
     public ResponseEntity<List<DieRes>> findAllValidDies() {
@@ -44,5 +45,10 @@ public class DieController {
     public ResponseEntity<Boolean> deleteDie(
             @PathVariable("id") Integer id) {
         return ResponseEntity.ok(dieService.delete(id));
+    }
+
+    @GetMapping("/search/die-product/{code}")
+    public ResponseEntity<Collection<DieRes>> findByDieProduct(@PathVariable("code") Integer code){
+        return ResponseEntity.ok(dieService.findByDieProduct(code));
     }
 }
