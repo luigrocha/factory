@@ -26,3 +26,18 @@ export interface Sort {
   sorted: boolean,
   unsorted: boolean
 }
+
+export interface SearchRequest {
+  page: number;
+  size: number;
+  searchCriteria: SearchCriteria[];
+  query?: string;
+  filters?: string[];
+}
+
+export interface SearchCriteria {
+  key: string;
+  value: any;
+  operation: string;
+  values?: string[];
+}

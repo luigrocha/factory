@@ -2,7 +2,7 @@
   <div class="grid">
     <div class="col-12">
       <div class="card">
-        <h5>Crear nuevo pedido</h5>
+        <h5>Crear nuevo pedido: {{generateNextOrderCode?.nextOrderCode}}</h5>
 
         <p-toast></p-toast>
 
@@ -71,7 +71,7 @@
                    id="project-help"
                    class="p-error block">{{formErrors.required}}</small>
           </div>
-          <div class="field col-12 md:col-6">
+          <div class="field col-12 md:col-4 lg:col-4">
             <label for="productCode">Código producto</label>
             <input pInputText
                    id="productCode"
@@ -84,7 +84,7 @@
                    id="productCode-help"
                    class="p-error block">{{formErrors.required}}</small>
           </div>
-          <div class="field col-12 md:col-6">
+          <div class="field col-12 md:col-4 lg:col-4">
             <label for="name">Nombre</label>
             <input pInputText
                    id="name"
@@ -98,6 +98,18 @@
                    class="p-error block">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-4 lg:col-4">
+            <label for="stock">Stock</label>
+            <input pInputText
+                   appNumeric
+                   decimals="0"
+                   id="stock"
+                   formControlName="stock"
+                   min="1"
+                   step="1"
+                   aria-describedby="stock-help"
+                   type="number"/>
+          </div>
+          <div class="field col-12 md:col-6 lg:col-3">
             <label for="quantity">Cantidad</label>
             <input pInputText
                    appNumeric
@@ -113,8 +125,35 @@
                    id="quantity-help"
                    class="p-error block">{{formErrors.required}}</small>
           </div>
-          <div class="field col-12 md:col-4 lg:col-4">
-            <label for="estimatedDeliveryAt">Fecha estimada de entrega</label>
+          <div class="field col-12 md:col-6 lg:col-3">
+            <label for="priority">Prioridad</label>
+            <p-dropdown [options]="priorities$ | async"
+                        id="priority"
+                        formControlName="priority"
+                        [ngClass]="{'ng-invalid ng-dirty': priority.touched && priority.invalid}"
+                        placeholder="Seleccione una prioridad"
+                        emptyMessage="No se encontraron resultados"
+                        optionLabel="name"
+                        [showClear]="true">
+              <ng-template let-option pTemplate="item">
+                <div class="flex align-items-center">
+                  <i [ngStyle]="{'color': option.color ? option.color:''}"  class="pi {{option.icon}} pr-2"></i>
+                  {{option.name}}
+                </div>
+              </ng-template>
+              <ng-template let-option pTemplate="selectedItem">
+                <div class="flex align-items-center">
+                  <i [ngStyle]="{'color': option.color ? option.color:''}"  class="pi {{option.icon}} pr-2"></i>
+                  {{option.name}}
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small *ngIf="priority.touched && priority.hasError('required')"
+                   id="priority-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-6 lg:col-3">
+            <label for="estimatedDeliveryAt">Fecha entrega</label>
             <p-calendar formControlName="estimatedDeliveryAt"
                         [readonlyInput]="true"
                         id="estimatedDeliveryAt"
@@ -123,7 +162,7 @@
                         inputId="estimatedDeliveryAt"></p-calendar>
 
           </div>
-          <div class="field col-12 md:col-4 lg:col-4">
+          <div class="field col-12 md:col-6 lg:col-3">
             <label for="clientOrderCode">Orden cliente</label>
             <input pInputText
                    id="clientOrderCode"
@@ -142,205 +181,12 @@
                       rows="2"></textarea>
           </div>
         </div>
-
-<!--        <div class="p-fluid p-formgrid grid">-->
-<!--          <div class="field col-12 md:col-6">-->
-<!--            <label for="name">Nombre</label>-->
-<!--            <input pInputText-->
-<!--                   id="name"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': name.touched && name.invalid}"-->
-<!--                   formControlName="name"-->
-<!--                   aria-describedby="name-help"-->
-<!--                   maxlength="64"-->
-<!--                   type="text"  />-->
-<!--            <small *ngIf="name.touched && name.hasError('required')"-->
-<!--                   id="code-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-6">-->
-<!--            <label for="manufacturer">Fabricante</label>-->
-<!--            <p-dropdown [options]="manufacturers$ | async"-->
-<!--                        id="manufacturer"-->
-<!--                        formControlName="manufacturer"-->
-<!--                        placeholder="Seleccione un fabricante"-->
-<!--                        optionLabel="name"-->
-<!--                        [showClear]="true"></p-dropdown>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-6">-->
-<!--            <label for="machines">Máquinas</label>-->
-<!--            <p-multiSelect [options]="machines$ | async"-->
-<!--                           id="machines"-->
-<!--                           formControlName="machines"-->
-<!--                           placeholder="Seleccione una o varias máquinas"-->
-<!--                           optionLabel="name"-->
-<!--                           display="chip">-->
-<!--              <ng-template let-machine pTemplate="item">-->
-<!--                <div>-->
-<!--                  {{machine.name}} |-->
-<!--                  <span class="item-subheading">Desbrozador: {{machine.hasDesb ? 'Si' : 'No'}}</span>-->
-<!--                </div>-->
-<!--              </ng-template>-->
-<!--            </p-multiSelect>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-6">-->
-<!--            <label for="dsbMultiple">Desbrozador múltiple</label>-->
-<!--            <input pInputText-->
-<!--                   id="dsbMultiple"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': dsbMultiple.touched && dsbMultiple.invalid}"-->
-<!--                   formControlName="dsbMultiple"-->
-<!--                   aria-describedby="dsbMultiple-help"-->
-<!--                   maxlength="32"-->
-<!--                   type="text"  />-->
-<!--            <small *ngIf="dsbMultiple.touched && dsbMultiple.hasError('required')"-->
-<!--                   id="dsbMultiple-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-6">-->
-<!--            <label for="observations">Observaciones</label>-->
-<!--            <input pInputTextarea-->
-<!--                   id="observations"-->
-<!--                   maxlength="128"-->
-<!--                   formControlName="observations"/>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="length">Largo</label>-->
-<!--            <input pInputText-->
-<!--                   id="length"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': length.touched && length.invalid}"-->
-<!--                   formControlName="length"-->
-<!--                   aria-describedby="length-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="length.touched && length.hasError('required')"-->
-<!--                   id="length-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="width">Ancho</label>-->
-<!--            <input pInputText-->
-<!--                   id="width"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': width.touched && width.invalid}"-->
-<!--                   formControlName="width"-->
-<!--                   aria-describedby="width-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="width.touched && width.hasError('required')"-->
-<!--                   id="width-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="quantity">Cant 1</label>-->
-<!--            <input pInputText-->
-<!--                   id="quantity"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': quantity.touched && quantity.invalid}"-->
-<!--                   formControlName="quantity"-->
-<!--                   aria-describedby="quantity-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="quantity.touched && quantity.hasError('required')"-->
-<!--                   id="quantity-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="quantityLength">Cant largo</label>-->
-<!--            <input pInputText-->
-<!--                   id="quantityLength"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': quantityLength.touched && quantityLength.invalid}"-->
-<!--                   formControlName="quantityLength"-->
-<!--                   aria-describedby="quantityLength-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="quantityLength.touched && quantityLength.hasError('required')"-->
-<!--                   id="quantityLength-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="separationLength">Sep largo</label>-->
-<!--            <input pInputText-->
-<!--                   id="separationLength"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': separationLength.touched && separationLength.invalid}"-->
-<!--                   formControlName="separationLength"-->
-<!--                   aria-describedby="separationLength-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="separationLength.touched && separationLength.hasError('required')"-->
-<!--                   id="separationLength-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="quantityWidth">Cant ancho</label>-->
-<!--            <input pInputText-->
-<!--                   id="quantityWidth"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': quantityWidth.touched && quantityWidth.invalid}"-->
-<!--                   formControlName="quantityWidth"-->
-<!--                   aria-describedby="quantityWidth-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="quantityWidth.touched && quantityWidth.hasError('required')"-->
-<!--                   id="quantityWidth-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="separationWidth">Sep ancho</label>-->
-<!--            <input pInputText-->
-<!--                   id="separationWidth"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': separationWidth.touched && separationWidth.invalid}"-->
-<!--                   formControlName="separationWidth"-->
-<!--                   aria-describedby="separationWidth-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="separationWidth.touched && separationWidth.hasError('required')"-->
-<!--                   id="separationWidth-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="borderLength">Bordes largo</label>-->
-<!--            <input pInputText-->
-<!--                   id="borderLength"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': borderLength.touched && borderLength.invalid}"-->
-<!--                   formControlName="borderLength"-->
-<!--                   aria-describedby="borderLength-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="borderLength.touched && borderLength.hasError('required')"-->
-<!--                   id="borderLength-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="borderWidth">Bordes archo</label>-->
-<!--            <input pInputText-->
-<!--                   id="borderWidth"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': borderWidth.touched && borderWidth.invalid}"-->
-<!--                   formControlName="borderWidth"-->
-<!--                   aria-describedby="borderWidth-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="borderWidth.touched && borderWidth.hasError('required')"-->
-<!--                   id="borderWidth-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="leafLength">Largo lámina</label>-->
-<!--            <input pInputText-->
-<!--                   id="leafLength"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': leafLength.touched && leafLength.invalid}"-->
-<!--                   formControlName="leafLength"-->
-<!--                   aria-describedby="leafLength-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="leafLength.touched && leafLength.hasError('required')"-->
-<!--                   id="leafLength-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--          <div class="field col-12 md:col-4 lg:col-4">-->
-<!--            <label for="leafWidth">Ancho lámina</label>-->
-<!--            <input pInputText-->
-<!--                   id="leafWidth"-->
-<!--                   [ngClass]="{'ng-invalid ng-dirty': leafWidth.touched && leafWidth.invalid}"-->
-<!--                   formControlName="leafWidth"-->
-<!--                   aria-describedby="leafWidth-help"-->
-<!--                   type="number"  />-->
-<!--            <small *ngIf="leafWidth.touched && leafWidth.hasError('required')"-->
-<!--                   id="leafWidth-help"-->
-<!--                   class="p-error block">{{formErrors.required}}</small>-->
-<!--          </div>-->
-<!--        </div>-->
-
         <div class="col-12 text-right">
           <button pButton
                   pRipple
                   type="button"
                   label="Cancelar"
+                  (click)="back()"
                   icon="pi pi-times"
                   class="p-button-text mr-4">
           </button>

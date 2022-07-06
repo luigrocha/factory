@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PriorityService } from 'src/app/core/http/catalogs/priority/priority.service';
@@ -13,7 +13,12 @@ import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { Router } from '@angular/router';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { ToastService } from 'src/app/core/services/toast.service';
-import { ORDER_STATUS_TYPE } from 'src/app/core/constants/status-types';
+import { ORDER_PRIORITY_TYPE } from 'src/app/core/constants/priority-type';
+import { debounceTime } from 'rxjs/operators';
+import { OrderStatus } from 'src/app/types/enums/order-status';
+import { SearchCriteria, SearchRequest } from 'src/app/types/pageable.types';
+import { PFilter, PFilterElement } from "../../../../types/filter.types";
+import { getSearchCriteria } from 'src/app/core/utils/filter-table';
 
 @Component({
   selector: 'app-order',
@@ -21,9 +26,8 @@ import { ORDER_STATUS_TYPE } from 'src/app/core/constants/status-types';
   styleUrls: ['./order.component.scss'],
   providers: [ConfirmationService],
 })
-export class OrderComponent implements OnInit {
+export class OrderComponent implements OnInit, AfterViewInit {
 
-  pageSize: number = 10;
   orders: Order[];
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
@@ -32,6 +36,18 @@ export class OrderComponent implements OnInit {
   orderStatus: Status[] = [];
   priorities: Priority[] = [];
   selectedOrders: Order[] = [];
+  searchRequest: SearchRequest = {
+    page: 0,
+    size: 20,
+    filters: [
+      OrderStatus.PENDING,
+      OrderStatus.IN_PROGRESS,
+      OrderStatus.DONE,
+      OrderStatus.TO_START
+    ],
+    query: '',
+    searchCriteria: []
+  };
 
   globalFilterFields: string[] = [
     'lote',
@@ -46,7 +62,9 @@ export class OrderComponent implements OnInit {
     'status'
   ];
   permissionsPage: TypePermission[];
-  orderStatusCode = ORDER_STATUS_TYPE;
+  orderPriorityType = ORDER_PRIORITY_TYPE;
+
+  @ViewChild('dt', {static: true}) table: Table;
 
   constructor(
     private toastService: ToastService,
@@ -86,6 +104,43 @@ export class OrderComponent implements OnInit {
     // ];
   }
 
+  ngAfterViewInit() {
+    this.table.onPage
+      .subscribe(({first, rows}) => {
+        this.searchRequest.page = first / rows;
+        this.searchRequest.size = rows;
+        this.getOrders();
+      });
+    this.table.onFilter
+      .subscribe(({filters}) => {
+        const statusFilters: Array<PFilterElement> = filters['status'];
+        if (statusFilters && statusFilters.length > 0) {
+          const selectedStates: string[] = statusFilters[0].value;
+          if (selectedStates) {
+            this.searchRequest.filters = selectedStates;
+          }
+        }
+        this.buildSearchCriteria(filters);
+        this.getOrders();
+      });
+  }
+
+  buildSearchCriteria(filters: any): void {
+    this.searchRequest.searchCriteria = [];
+    let primeFilters: Array<string> = Object.keys(filters);
+    primeFilters = primeFilters.filter(filter => filter !== 'status');
+
+    const filterFields: Array<PFilter> = [];
+    primeFilters.forEach(field => {
+      const filter: PFilter = {
+        key: field,
+        values: filters[field]
+      };
+      filterFields.push(filter);
+    });
+    this.searchRequest.searchCriteria = getSearchCriteria(filterFields);
+  }
+
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
       this.menuItems.push({
@@ -110,15 +165,15 @@ export class OrderComponent implements OnInit {
   }
 
   getOrders() {
-    this.priorities = [];
-    this.orderService.getAll()
+    this.orderService.getOrders(this.searchRequest)
       .subscribe(orders => {
-        this.orders = orders;
+        this.orders = orders.content;
+        this.table.totalRecords = orders.totalElements;
       });
   }
 
   getPriorities() {
-    this.priorityService.getAllByType(this.orderStatusCode)
+    this.priorityService.getAllByType(this.orderPriorityType)
       .subscribe((priorities) => {
         this.priorities = priorities;
       });
@@ -162,5 +217,9 @@ export class OrderComponent implements OnInit {
   }
 
   deleteSelectedOrders() {
+  }
+
+  searchByStates(value) {
+    console.log(value);
   }
 }
