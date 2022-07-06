@@ -17,7 +17,7 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  * @author jyepez on 25/5/2022
  */
 @RestController
-@RequestMapping(V1_API_VERSION + "/priority")
+@RequestMapping(V1_API_VERSION + "/priorities")
 public class CatalogPriorityController {
 
     private final ICatalogPriorityService catalogPriorityService;
