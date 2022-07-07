@@ -1,10 +1,6 @@
-export interface PFilterElement {
-  value: any;
-  matchMode: string;
-  operator: string;
-}
+import { FilterMetadata } from 'primeng/api';
 
 export interface PFilter {
   key: string;
-  values: PFilterElement[];
+  values: FilterMetadata[];
 }

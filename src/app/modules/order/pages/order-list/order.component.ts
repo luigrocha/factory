@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
-import { ConfirmationService, MenuItem } from 'primeng/api';
+import { ConfirmationService, FilterMetadata, MenuItem } from 'primeng/api';
 import { PriorityService } from 'src/app/core/http/catalogs/priority/priority.service';
 import { StatusService } from 'src/app/core/http/catalogs/status/status.service';
 import { OrderService } from 'src/app/core/http/orders/order.service';
@@ -14,11 +14,13 @@ import { Router } from '@angular/router';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { ORDER_PRIORITY_TYPE } from 'src/app/core/constants/priority-type';
-import { debounceTime } from 'rxjs/operators';
 import { OrderStatus } from 'src/app/types/enums/order-status';
-import { SearchCriteria, SearchRequest } from 'src/app/types/pageable.types';
-import { PFilter, PFilterElement } from "../../../../types/filter.types";
+import { SearchRequest } from 'src/app/types/pageable.types';
+import { PFilter } from 'src/app/types/filter.types';
 import { getSearchCriteria } from 'src/app/core/utils/filter-table';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { TableColumn } from 'src/app/types/table.types';
 
 @Component({
   selector: 'app-order',
@@ -49,23 +51,12 @@ export class OrderComponent implements OnInit, AfterViewInit {
     searchCriteria: []
   };
 
-  globalFilterFields: string[] = [
-    'lote',
-    'client.name',
-    'code',
-    'name',
-    'amount',
-    'deliverAt',
-    'observation',
-    'difference',
-    'priority',
-    'status'
-  ];
   permissionsPage: TypePermission[];
   orderPriorityType = ORDER_PRIORITY_TYPE;
+  searchFomControl = new FormControl();
+  columns: TableColumn<Order>[];
 
   @ViewChild('dt', {static: true}) table: Table;
-
   constructor(
     private toastService: ToastService,
     private confirmationService: ConfirmationService,
@@ -87,21 +78,38 @@ export class OrderComponent implements OnInit, AfterViewInit {
     this.getOrders();
     this.getPriorities();
     this.getStatus();
-    // setTimeout(() => {
-    //   this.getMenuItems();
-    // }, 500);
-    // this.cols = [
-    //   { field: 'lote', header: 'Lote' },
-    //   { field: 'client', header: 'Cliente' },
-    //   { field: 'code', header: 'Codigo' },
-    //   { field: 'name', header: 'Nombre' },
-    //   { field: 'amount', header: 'Cantidad' },
-    //   { field: 'deliverAt', header: 'Fecha Entrega' },
-    //   { field: 'observation', header: 'Observación' },
-    //   { field: 'difference', header: 'Diferencia' },
-    //   { field: 'priority', header: 'Prioriodad' },
-    //   { field: 'status', header: 'Estado' },
-    // ];
+    this.setDefaultFilters();
+    this.searchByInput();
+    setTimeout(() => {
+      this.getMenuItems();
+    }, 500);
+    this.columns = [
+      { field: 'code', header: 'Código' },
+      { field: 'lot', header: 'Lote' },
+      { field: 'client.name', header: 'Cliente' },
+      { field: 'productCode', header: 'Código producto' },
+      { field: 'name', header: 'Nombre' },
+      { field: 'quantity', header: 'Cantidad' },
+      { field: 'estimatedDeliveryAt', header: 'Fecha Entrega' },
+      { field: 'priority.name', header: 'Prioriodad' },
+      { field: 'status.name', header: 'Estado' },
+      { field: 'clientOrderCode', header: 'Orden' },
+      { field: 'observation', header: 'Observaciones' },
+      { field: 'pendingQuantity', header: 'Cantidad pendiente' },
+      { field: 'shippedQuantity', header: 'Despachos' }
+    ];
+  }
+
+  setDefaultFilters(): void {
+    this.table.filters = {
+      ...this.table.filters,
+      'status': [
+        {
+          value: this.searchRequest.filters,
+          matchMode: 'in',
+          operator: 'and'
+        }]
+    };
   }
 
   ngAfterViewInit() {
@@ -113,11 +121,13 @@ export class OrderComponent implements OnInit, AfterViewInit {
       });
     this.table.onFilter
       .subscribe(({filters}) => {
-        const statusFilters: Array<PFilterElement> = filters['status'];
+        const statusFilters: Array<FilterMetadata> = filters['status'];
         if (statusFilters && statusFilters.length > 0) {
           const selectedStates: string[] = statusFilters[0].value;
           if (selectedStates) {
             this.searchRequest.filters = selectedStates;
+          } else {
+            this.searchRequest.filters = [];
           }
         }
         this.buildSearchCriteria(filters);
@@ -129,7 +139,6 @@ export class OrderComponent implements OnInit, AfterViewInit {
     this.searchRequest.searchCriteria = [];
     let primeFilters: Array<string> = Object.keys(filters);
     primeFilters = primeFilters.filter(filter => filter !== 'status');
-
     const filterFields: Array<PFilter> = [];
     primeFilters.forEach(field => {
       const filter: PFilter = {
@@ -219,7 +228,12 @@ export class OrderComponent implements OnInit, AfterViewInit {
   deleteSelectedOrders() {
   }
 
-  searchByStates(value) {
-    console.log(value);
+  searchByInput() {
+    this.searchFomControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe(query => {
+        this.searchRequest.query = query;
+        this.getOrders();
+      });
   }
 }

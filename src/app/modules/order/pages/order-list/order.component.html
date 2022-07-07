@@ -6,8 +6,8 @@
       <p-table #dt
                [value]="orders"
                [rows]="searchRequest.size"
+               [columns]="columns"
                [paginator]="true"
-               [globalFilterFields]="globalFilterFields"
                [rowHover]="true"
                dataKey="id"
                [showCurrentPageReport]="true"
@@ -50,7 +50,7 @@
               <i class="pi pi-search"></i>
               <input pInputText
                      type="text"
-                     (input)="dt.filterGlobal($event.target.value, 'contains')"
+                     [formControl]="searchFomControl"
                      placeholder="Buscar..."
                      class="w-full"/>
             </span>
@@ -61,7 +61,7 @@
             <th style="width: 3rem">
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
-            <th>
+            <th style="min-width: 8rem">
               Código
               <p-columnFilter type="text"
                               field="code"
@@ -70,7 +70,7 @@
                               placeholder="Buscar por código">
               </p-columnFilter>
             </th>
-            <th>
+            <th style="min-width: 8rem">
               Lote
               <p-columnFilter type="text"
                               field="lot"
@@ -79,7 +79,7 @@
                               placeholder="Buscar por lote">
               </p-columnFilter>
             </th>
-            <th>
+            <th style="min-width: 10rem">
               Cliente
               <p-columnFilter type="text"
                               field="client.name"
@@ -88,7 +88,7 @@
                               placeholder="Buscar por cliente">
               </p-columnFilter>
             </th>
-            <th>
+            <th style="min-width: 12rem">
               Código producto
               <p-columnFilter type="text"
                               field="productCode"
@@ -97,42 +97,38 @@
                               placeholder="Buscar por código">
               </p-columnFilter>
             </th>
-            <th>
+            <th style="min-width: 12rem">
               Nombre
               <p-columnFilter type="text" field="name" display="menu" placeholder="Buscar por código">
               </p-columnFilter>
             </th>
             <th>
               Cantidad
-              <p-columnFilter type="numeric"
-                              field="quantity"
-                              [showOperator]="false"
-                              display="menu"
-                              placeholder="Buscar por cliente">
-              </p-columnFilter>
             </th>
-            <th>
+            <th style="min-width: 11rem">
               Fecha Entrega
               <p-columnFilter type="date"
                               field="estimatedDeliveryAt"
-                              [showMatchModes]="false"
+                              [showOperator]="false"
                               display="menu"
                               placeholder="dd-mm-aaaa">
               </p-columnFilter>
             </th>
             <th>
-              Orden
-            </th>
-            <th>
               Prioridad
               <p-columnFilter type="status"
                               [showMatchModes]="false"
+                              [showOperator]="false"
                               [showAddButton]="false"
                               field="priority.name"
                               display="menu">
-                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-                  <p-dropdown [ngModel]="value" [options]="priorities" (onChange)="filter($event.value.name)"
-                              placeholder="{{ value ?  value : 'Selecciona prioridad' }}"
+                <ng-template pTemplate="filter"
+                             let-value
+                             let-filter="filterCallback">
+                  <p-dropdown [ngModel]="value"
+                              [options]="priorities"
+                              (onChange)="filter($event.value.name)"
+                              placeholder="{{ value ?  value : 'Seleccione prioridad' }}"
                               [style]="{'min-width': '12rem'}">
                     <ng-template let-option pTemplate="item">
                       <div class="flex align-items-center">
@@ -144,13 +140,7 @@
                 </ng-template>
               </p-columnFilter>
             </th>
-            <th>
-              Observaciones
-            </th>
-            <th>
-              Cantidad pendiente
-            </th>
-            <th>
+            <th style="min-width: 8rem">
               Estado
               <p-columnFilter field="status"
                               matchMode="in"
@@ -163,7 +153,7 @@
                              let-filter="filterCallback">
                   <p-multiSelect [ngModel]="value"
                                  [options]="orderStatus"
-                                 placeholder="Estados"
+                                 placeholder="Seleccione uno o más estados"
                                  display="chip"
                                  optionValue="id"
                                  (onChange)="filter($event.value)"
@@ -176,6 +166,15 @@
                   </p-multiSelect>
                 </ng-template>
               </p-columnFilter>
+            </th>
+            <th style="min-width: 8rem">
+              Orden
+            </th>
+            <th style="min-width: 12rem">
+              Observaciones
+            </th>
+            <th>
+              Cantidad pendiente
             </th>
             <th>
               Despachos
@@ -211,19 +210,10 @@
             <td style="min-width: 11rem">
               {{ order.estimatedDeliveryAt | date: "dd-MM-yyyy" }}
             </td>
-            <td style="min-width: 8rem">
-              {{ order.clientOrderCode }}
-            </td>
             <td style="min-width: 8rem;">
               <i [ngStyle]="{'color': order.priority.color ? order.priority.color:''}"
                  class="pi {{order.priority.icon}} pr-2"></i>
               {{order.priority.name}}
-            </td>
-            <td style="min-width: 12rem">
-              {{ order.observation }}
-            </td>
-            <td style="min-width: 12rem">
-              {{ order.pendingQuantity }}
             </td>
             <td style="min-width: 8rem">
               <span class="order-badge"
@@ -231,6 +221,15 @@
                     [status]="order.status">
                 {{order.status.name}}
               </span>
+            </td>
+            <td style="min-width: 8rem">
+              {{ order.clientOrderCode }}
+            </td>
+            <td style="min-width: 12rem">
+              {{ order.observation }}
+            </td>
+            <td style="min-width: 12rem">
+              {{ order.pendingQuantity }}
             </td>
             <td style="min-width: 8rem">
               {{ order.shippedQuantity }}
