@@ -26,6 +26,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from 'primeng/api';
 import { GlobalErrorHandler } from 'src/app/core/error/global-error-handler';
+import { HeadersService } from 'src/app/core/interceptors/headers.service';
 
 FullCalendarModule.registerPlugins([
   dayGridPlugin,
@@ -72,6 +73,11 @@ export function HttpLoaderFactory(http: HttpClient) {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoaderInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HeadersService,
       multi: true
     },
     {

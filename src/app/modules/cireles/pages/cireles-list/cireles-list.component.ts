@@ -1,4 +1,4 @@
-import { Component, OnInit, SecurityContext, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { CirelService } from 'src/app/core/http/cirel/cirel.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -12,9 +12,6 @@ import { TypePermission } from 'src/app/types/permission';
 import { Router } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DocumentViewerComponent } from 'src/app/shared/components/document-viewer/document-viewer.component';
-import { DomSanitizer } from '@angular/platform-browser';
-import { formatDate } from '@angular/common';
-import { dateFormat, dateTimeFormat, localString } from 'src/app/core/constants/date';
 import { UploadFileComponent } from 'src/app/shared/components/upload-file/upload-file.component';
 import { CirelDocumentService } from 'src/app/core/http/cirel/cirel-document.service';
 import { ToastService } from 'src/app/core/services/toast.service';
@@ -43,9 +40,9 @@ export class CirelesListComponent implements OnInit {
   selectedDocument: CirelDocument;
 
   subHeaders: TableHeader<CirelColor>[] = [
-    { label: 'Tipo', property: 'colorType' },
-    { label: 'Color', property: 'color' },
-    { label: 'Observación', property: 'observation' }
+    {label: 'Tipo', property: 'colorType'},
+    {label: 'Color', property: 'color'},
+    {label: 'Observación', property: 'observation'}
   ];
 
   @ViewChild('dt') table: Table;
@@ -64,8 +61,8 @@ export class CirelesListComponent implements OnInit {
     private toastService: ToastService,
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Cireles', routerLink: ['/home/cireles'] },
+      {label: 'Diseño'},
+      {label: 'Cireles', routerLink: ['/home/cireles']},
     ]);
   }
 
@@ -74,12 +71,12 @@ export class CirelesListComponent implements OnInit {
     this.getMenuItems();
     this.getCirels(this.initialPage, this.pageSize, this.query);
     this.columns = [
-      { field: 'print', header: 'Impresión' },
-      { field: 'printer', header: 'Impresora' },
-      { field: 'description', header: 'Descripción' },
-      { field: 'cyrelColors', header: 'Colores' },
-      { field: 'dies', header: 'Troquel' },
-      { field: 'observation', header: 'Observaciones' },
+      {field: 'print', header: 'Impresión'},
+      {field: 'printer', header: 'Impresora'},
+      {field: 'description', header: 'Descripción'},
+      {field: 'cyrelColors', header: 'Colores'},
+      {field: 'dies', header: 'Troquel'},
+      {field: 'observation', header: 'Observaciones'},
     ];
   }
 
@@ -104,8 +101,8 @@ export class CirelesListComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.table.onPage
-      .subscribe(({ first, rows }) => {
-        this.actualPage = first / rows
+      .subscribe(({first, rows}) => {
+        this.actualPage = first / rows;
         this.pageSize = rows;
         this.getCirels(this.actualPage, this.pageSize, this.query);
       });
@@ -113,7 +110,7 @@ export class CirelesListComponent implements OnInit {
       .pipe(
         debounceTime(500)
       )
-      .subscribe(({ filters }) => {
+      .subscribe(({filters}) => {
         const isEmpty = Object.keys(filters).length === 0;
         if (isEmpty) {
           this.query = null;
@@ -230,7 +227,7 @@ export class CirelesListComponent implements OnInit {
               this.toastService.success(`Documento actualizado correctamente`);
             });
         }
-      })
+      });
   }
 
   ngOnDestroy(): void {
