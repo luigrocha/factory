@@ -71,6 +71,12 @@ public class CatalogStatus {
     private Boolean isDefault;
 
     @Column(
+            name = "CATSTATUS_INDEX",
+            nullable = false
+    )
+    private Integer index;
+
+    @Column(
             name = "CATSTATUS_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )

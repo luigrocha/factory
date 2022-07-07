@@ -60,7 +60,7 @@ pipeline {
       stage('SonarQube Analysis') {
           when {
               not {
-                  expression { BRANCH_NAME ==~ /(master|develop)/ }
+                  expression { BRANCH_NAME ==~ /(main|test|develop)/ }
               }
           }
           steps {
@@ -74,7 +74,7 @@ pipeline {
       }
       stage('Build project') {
           when {
-              expression { BRANCH_NAME ==~ /(master|develop)/ }
+              expression { BRANCH_NAME ==~ /(main|test|develop)/ }
           }
           steps {
               container('gradle') {
@@ -86,7 +86,7 @@ pipeline {
       }
       stage('Build docker image') {
           when {
-              expression { BRANCH_NAME ==~ /(master|develop)/ }
+              expression { BRANCH_NAME ==~ /(main|test|develop)/ }
           }
           steps {
               container('dind') {
@@ -99,7 +99,7 @@ pipeline {
       }
       stage('Publish container') {
           when {
-              expression { BRANCH_NAME ==~ /(master|develop)/ }
+              expression { BRANCH_NAME ==~ /(main|test|develop)/ }
           }
           steps {
               container('dind') {
@@ -112,9 +112,9 @@ pipeline {
               }
           }
       }
-      stage('Deploy project develop') {
+      stage('Deploy project test') {
           when {
-            expression { BRANCH_NAME ==~ /(develop)/ }
+            expression { BRANCH_NAME ==~ /(test)/ }
           }
           steps {
               container('kustomize') {

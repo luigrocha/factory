@@ -32,4 +32,19 @@ public class OrderSpecification {
             return builder.or(predicates.toArray(new Predicate[0]));
         };
     }
+
+    public static Specification<Order> filterByQuery(String searchQuery) {
+        return (root, query, builder) -> {
+            if (searchQuery == null || searchQuery.isEmpty()) {
+                return null;
+            }
+            return builder.or(
+                    builder.like(root.get("code"), "%" + searchQuery + "%"),
+                    builder.like(root.get("name"), "%" + searchQuery + "%"),
+                    builder.like(root.get("lot"), "%" + searchQuery + "%"),
+                    builder.like(root.get("productCode"), "%" + searchQuery + "%"),
+                    builder.like(root.get("client").get("name"), "%" + searchQuery + "%")
+            );
+        };
+    }
 }

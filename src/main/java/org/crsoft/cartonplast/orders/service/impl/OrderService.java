@@ -52,7 +52,8 @@ public class OrderService implements IOrderService {
     public Page<OrderRes> findVisibleOrders(
             List<SearchCriteriaReq> searchCriteria,
             Pageable pageable,
-            List<String> states) {
+            List<String> states,
+            String query) {
         List<CatalogStatus> catalogStatuses = this.catalogStatusService.findByIds(states);
 
         Specification<Order> orderSpecification =
@@ -61,7 +62,8 @@ public class OrderService implements IOrderService {
         Page<Order> orders = orderRepository.findAll(
                 Specification
                         .where(orderSpecification)
-                        .and(OrderSpecification.filterByStates(catalogStatuses)),
+                        .and(OrderSpecification.filterByStates(catalogStatuses))
+                        .and(OrderSpecification.filterByQuery(query)),
                 pageable);
 
         return orders.map(orderMapper::orderToOrderRes);
