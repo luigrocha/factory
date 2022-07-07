@@ -1,0 +1,16 @@
+export enum Operations {
+  LIKE_END= 'startsWith',
+  LIKE = 'contains',
+  LIKE_START = 'endsWith',
+  LIKE_NOT = 'notContains',
+  NOT_EQUAL = 'notEquals',
+  EQUAL = 'equals',
+  DATE_IS = 'dateIs',
+  DATE_IS_NOT = 'dateIsNot',
+  DATE_BEFORE = 'dateBefore',
+  DATE_AFTER = 'dateAfter',
+  GREATER_THAN = 'gt',
+  LESS_THAN = 'lt',
+  GREATER_THAN_EQUAL = 'gte',
+  LESS_THAN_EQUAL = 'lte',
+}

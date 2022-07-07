@@ -3,3 +3,8 @@ export interface PFilterElement {
   matchMode: string;
   operator: string;
 }
+
+export interface PFilter {
+  key: string;
+  values: PFilterElement[];
+}
