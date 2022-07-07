@@ -7,28 +7,21 @@
         <h5 class="m-0 mb-5">Orden de mezcla N° {{ numberMixture }}</h5>
 
         <div *ngIf="order && project" class="grid">
-          <p class="col-2">
+          <p class="col-6 md:col-2 ">
             Lote: {{order.lot}}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2 ">
             Export (XP): {{project.projectType.id == 1 ? 'SI' : 'NO'}}
           </p>
-          <p class="col-2">
-            Troquel: {{project.dieProduct.code}}
-          </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Cirel: {{project.cyrel ? project.cyrel.print : 'N/A'}}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Prod Troquelado: {{project.dieProduct.code}}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             <p-dropdown
-              [ngClass]="{
-                        'ng-invalid ng-dirty':
-                          die.touched &&
-                          die.invalid
-                      }"
+              [ngClass]="{'ng-invalid ng-dirty':die.touched &&die.invalid}"
               [options]="dies"
               [style]="{ width: '100%' }"
               emptyMessage="No se encontraron resultados"
@@ -38,32 +31,31 @@
               placeholder="Seleccione un troquel"
             ></p-dropdown>
             <small
-              *ngIf="
-                        die.touched &&
-                        die.hasError('required')
-                      "
+              *ngIf="die.touched &&die.hasError('required')"
               class="p-error block"
-            >{{ formErrors.required }}</small
-            >
+            >{{ formErrors.required }}</small>
+          </p>
+          <p class="col-6 md:col-2">
+              Total Real: {{totalReal | number: "":"es"}}
           </p>
         </div>
         <div *ngIf="die.value" class="grid">
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Largo: {{searchDie(die.value).leafLength}} cm
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Ancho: {{searchDie(die.value).leafWidth}} cm
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Mezcla de: {{mixtureTo}}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Gramaje: {{project.gsm}}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Diferencia: {{getDifference(die.value)  | number: "":"es" }}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Total:
             <p-tag
               severity="primary"
@@ -72,22 +64,22 @@
           </p>
         </div>
         <div *ngIf="die.value" class="grid">
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Ancho nominal: {{weightNominal}}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Ancho extrusión: {{weightExtrusion}}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Láminas por corte: {{getSheetPerCut(die.value) }}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Numero cortes: {{getNumberCut(die.value)  | number: "":"es" }}
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             Láminas: {{ sheets | number: "":"es"}} u.
           </p>
-          <p class="col-2">
+          <p class="col-6 md:col-2">
             <button
               (click)="showFilters = true"
               class="flex-grow-1"
@@ -102,7 +94,7 @@
         <div
           class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center"
         >
-          <div class="field col-4 flex flex-column">
+          <div class="field col-12 md:col-4 flex flex-column">
             <label for="prepare">Cantidad de Paradas</label>
             <div class="p-inputgroup">
               <input
@@ -125,7 +117,7 @@
               class="p-error block"
             >{{ formErrors.required }}</small>
           </div>
-          <div class="field col-4 flex flex-column">
+          <div class="field col-12 md:col-4 flex flex-column">
             <label for="preMixture">Kg Premezcla</label>
             <div class="p-inputgroup">
               <input
@@ -163,7 +155,7 @@
           [columns]="columns"
           [value]="rowsFormArray.controls"
           class="pb-5"
-          dataKey="value.id"
+          dataKey="value.index"
           editMode="row"
         >
           <ng-template let-columns pTemplate="header">
@@ -193,37 +185,27 @@
               <td>
                 <p-cellEditor class="w-full">
                   <ng-template pTemplate="input">
-                    <p-dropdown
-                      (onChange)="onTypeSelected($event)"
-                      [filter]="true"
-                      [ngClass]="{
-                        'ng-invalid ng-dirty':
-                          getRowsType(index).touched &&
-                          getRowsType(index).invalid
-                      }"
-                      [options]="types"
-                      [showClear]="true"
-                      [style]="{ width: '100%' }"
-                      emptyMessage="No se encontraron resultados"
-                      filterBy="name"
-                      formControlName="type"
-                      optionLabel="name"
-                      optionValue="id"
-                      placeholder="Seleccione un tipo"
+                    <p-dropdown (onChange)="onTypeSelected($event)"
+                                [filter]="true"
+                                [ngClass]="{'ng-invalid ng-dirty':getRowsType(index).touched &&getRowsType(index).invalid}"
+                                [options]="types"
+                                [showClear]="true"
+                                [style]="{ width: '100%' }"
+                                emptyMessage="No se encontraron resultados"
+                                filterBy="name"
+                                formControlName="type"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Seleccione un tipo"
                     ></p-dropdown>
                     <small
-                      *ngIf="
-                        getRowsType(index).touched &&
-                        getRowsType(index).hasError('required')
-                      "
+                      *ngIf="getRowsType(index).touched &&getRowsType(index).hasError('required')"
                       class="p-error block"
                     >{{ formErrors.required }}</small
                     >
                   </ng-template>
                   <ng-template pTemplate="output">
-                    {{
-                    searchRowsType(getRowsType(index).value)
-                    }}
+                    {{searchRowsType(getRowsType(index).value)}}
                   </ng-template>
                 </p-cellEditor>
               </td>
@@ -232,11 +214,7 @@
                   <ng-template pTemplate="input">
                     <p-dropdown
                       [filter]="true"
-                      [ngClass]="{
-                        'ng-invalid ng-dirty':
-                          getRowsMaterial(index).touched &&
-                          getRowsMaterial(index).invalid
-                      }"
+                      [ngClass]="{'ng-invalid ng-dirty':getRowsMaterial(index).touched &&getRowsMaterial(index).invalid}"
                       [options]="materials"
                       [showClear]="true"
                       [style]="{ width: '100%' }"
@@ -248,18 +226,13 @@
                       placeholder="Seleccione Material"
                     ></p-dropdown>
                     <small
-                      *ngIf="
-                        getRowsMaterial(index).touched &&
-                        getRowsMaterial(index).hasError('required')
-                      "
+                      *ngIf="getRowsMaterial(index).touched &&getRowsMaterial(index).hasError('required')"
                       class="p-error block"
                     >{{ formErrors.required }}</small
                     >
                   </ng-template>
                   <ng-template pTemplate="output">
-                    {{
-                    searchRowsMaterial(getRowsMaterial(index).value)
-                    }}
+                    {{searchRowsMaterial(getRowsMaterial(index).value)}}
                   </ng-template>
                 </p-cellEditor>
               </td>
@@ -338,6 +311,10 @@
             </tr>
           </ng-template>
         </p-table>
+
+        <pre>
+          {{rowsFormArray.controls}}
+        </pre>
 
         <div class="field flex flex-column mt-3">
           <label for="observation">Observacion</label>

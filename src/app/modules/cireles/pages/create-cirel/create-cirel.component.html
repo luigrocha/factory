@@ -9,43 +9,43 @@
         <div class="p-fluid p-formgrid grid">
           <div class="field col-12 md:col-6 lg:col-4">
             <label for="print">Impresión</label>
-            <input pInputText
-                   id="print"
-                   [ngClass]="{'ng-invalid ng-dirty': print.touched && print.invalid}"
-                   formControlName="print"
-                   aria-describedby="print-help"
+            <input [ngClass]="{'ng-invalid ng-dirty': print.touched && print.invalid}"
                    appInputUppercase
+                   aria-describedby="print-help"
+                   formControlName="print"
+                   id="print"
                    maxlength="8"
+                   pInputText
                    type="text"/>
             <small *ngIf="print.touched && print.hasError('required')"
-                   id="print-help"
-                   class="p-error block">{{formErrors.required}}</small>
+                   class="p-error block"
+                   id="print-help">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-6 lg:col-4">
             <label for="description">Descripción</label>
-            <input pInputText
-                   id="description"
-                   [ngClass]="{'ng-invalid ng-dirty': description.touched && description.invalid}"
-                   formControlName="description"
+            <input [ngClass]="{'ng-invalid ng-dirty': description.touched && description.invalid}"
                    aria-describedby="description-help"
+                   formControlName="description"
+                   id="description"
                    maxlength="128"
+                   pInputText
                    type="text"/>
             <small *ngIf="description.touched && description.hasError('required')"
-                   id="description-help"
-                   class="p-error block">{{formErrors.required}}</small>
+                   class="p-error block"
+                   id="description-help">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-6 lg:col-4">
             <label for="mbLeafId">MB Lámina</label>
-            <p-dropdown [options]="colorsB$ | async"
-                        id="mbLeafId"
+            <p-dropdown [filter]="true"
+                        [options]="colorsB$ | async"
+                        [showClear]="true"
+                        filterBy="id,description"
                         formControlName="mbLeafId"
-                        placeholder="Seleccione un color"
+                        id="mbLeafId"
                         optionLabel="description"
                         optionValue="id"
-                        [filter]="true"
-                        filterBy="id,description"
-                        [showClear]="true">
-              <ng-template pTemplate="selectedItem" let-color>
+                        placeholder="Seleccione un color">
+              <ng-template let-color pTemplate="selectedItem">
                 <div>
                   {{color.id}} |
                   <span class="item-subheading">{{color.description}}</span>
@@ -61,14 +61,14 @@
           </div>
           <div class="field col-12 md:col-6">
             <label for="dieProductIds">Productos troquelados</label>
-            <p-multiSelect [options]="dieProducts$ | async"
-                           id="dieProductIds"
+            <p-multiSelect [ngClass]="{'ng-invalid ng-dirty': dieProductIds.touched && dieProductIds.invalid}"
+                           [options]="dieProducts$ | async"
+                           display="chip"
                            formControlName="dieProductIds"
-                           [ngClass]="{'ng-invalid ng-dirty': dieProductIds.touched && dieProductIds.invalid}"
-                           placeholder="Seleccione uno o varios productos"
+                           id="dieProductIds"
                            optionLabel="code"
                            optionValue="id"
-                           display="chip">
+                           placeholder="Seleccione uno o varios productos">
               <ng-template let-die pTemplate="item">
                 <div>
                   {{die.code}} |
@@ -77,20 +77,20 @@
               </ng-template>
             </p-multiSelect>
             <small *ngIf="dieProductIds.touched && dieProductIds.hasError('required')"
-                   id="dieProductIds-help"
-                   class="p-error block">{{formErrors.required}}</small>
+                   class="p-error block"
+                   id="dieProductIds-help">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-6">
             <label for="printer">Impresora</label>
-            <p-dropdown [options]="printers$ | async"
-                        id="printer"
-                        formControlName="printer"
+            <p-dropdown (onChange)="createDieColors($event)"
                         [ngClass]="{'ng-invalid ng-dirty': printer.touched && printer.invalid}"
-                        placeholder="Seleccione una impresora"
+                        [options]="printers$ | async"
+                        [showClear]="true"
+                        formControlName="printer"
+                        id="printer"
                         optionLabel="name"
-                        (onChange)="createDieColors($event)"
-                        [showClear]="true">
-              <ng-template pTemplate="selectedItem" let-printer>
+                        placeholder="Seleccione una impresora">
+              <ng-template let-printer pTemplate="selectedItem">
                 <div>
                   {{printer.name}} |
                   <span class="item-subheading">Número colores: {{printer.numColors}}</span>
@@ -104,73 +104,73 @@
               </ng-template>
             </p-dropdown>
             <small *ngIf="printer.touched && printer.hasError('required')"
-                   id="printer-help"
-                   class="p-error block">{{formErrors.required}}</small>
+                   class="p-error block"
+                   id="printer-help">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-6">
             <label for="observation">Observaciones</label>
-            <input pInputTextarea
+            <input formControlName="observation"
                    id="observation"
                    maxlength="128"
-                   formControlName="observation"/>
+                   pInputTextarea/>
           </div>
           <div class="field col-12 md:col-6">
             <label for="description2">Descripción 2</label>
-            <input pInputTextarea
+            <input formControlName="description2"
                    id="description2"
                    maxlength="128"
-                   formControlName="description2"/>
+                   pInputTextarea/>
           </div>
           <div class="field col-12">
             <p-table [columns]="columns"
-                     class="pb-5"
                      [value]="cyrelColorsFormArray.controls"
+                     class="pb-5"
                      dataKey="value.id"
-                     styleClass="p-datatable-sm"
-                     editMode="row">
-              <ng-template pTemplate="header"
-                           let-columns>
+                     editMode="row"
+                     styleClass="p-datatable-sm">
+              <ng-template let-columns
+                           pTemplate="header">
                 <tr>
-<!--                  <th style="width:3rem"></th>-->
+                  <!--                  <th style="width:3rem"></th>-->
                   <th *ngFor="let col of columns">
                     {{col.header}}
                   </th>
                   <th class="text-center">
-                    <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+                    <i class="pi pi-cog" pTooltip="Opciones" style="font-size: 18px"></i>
                   </th>
                 </tr>
               </ng-template>
-              <ng-template pTemplate="body"
-                           let-form
+              <ng-template formArrayName="cyrelColors"
                            let-editing="editing"
-                           formArrayName="cyrelColors"
-                           let-index="rowIndex">
-                <tr [pEditableRow]="form" [formGroupName]="index">
+                           let-form
+                           let-index="rowIndex"
+                           pTemplate="body">
+                <tr [formGroupName]="index" [pEditableRow]="form">
                   <td style="max-width: 1rem">
                     <p-cellEditor class="w-full">
                       <ng-template pTemplate="input">
-                        <input pInputText
-                               type="number"
-                               formControlName="index">
+                        <input formControlName="index"
+                               pInputText
+                               type="number">
                       </ng-template>
                       <ng-template pTemplate="output">
                         {{getColorIndex(index).value}}
                       </ng-template>
                     </p-cellEditor>
-<!--                    <span class="pi pi-bars" pReorderableRowHandle></span>-->
+                    <!--                    <span class="pi pi-bars" pReorderableRowHandle></span>-->
                   </td>
                   <td>
                     <p-cellEditor class="w-full">
                       <ng-template pTemplate="input">
-                        <p-dropdown [options]="colorTypes"
+                        <p-dropdown [ngClass]="{'ng-invalid ng-dirty': getColorType(index).touched && getColorType(index).invalid}"
+                                    [options]="colorTypes"
+                                    [showClear]="true"
+                                    [style]="{'width':'100%'}"
+                                    emptyMessage="No se encontraron resultados"
                                     formControlName="colorType"
                                     optionLabel="name"
-                                    [ngClass]="{'ng-invalid ng-dirty': getColorType(index).touched && getColorType(index).invalid}"
-                                    [showClear]="true"
-                                    emptyMessage="No se encontraron resultados"
-                                    placeholder="Seleccione un tipo"
                                     optionValue="id"
-                                    [style]="{'width':'100%'}"></p-dropdown>
+                                    placeholder="Seleccione un tipo"></p-dropdown>
                       </ng-template>
                       <ng-template pTemplate="output">
                         {{searchColorType(getColorType(index).value)}}
@@ -180,16 +180,16 @@
                   <td>
                     <p-cellEditor class="w-full">
                       <ng-template pTemplate="input">
-                        <p-dropdown [options]="colors"
+                        <p-dropdown [ngClass]="{'ng-invalid ng-dirty': getColor(index).touched && getColor(index).invalid}"
+                                    [options]="colors"
+                                    [showClear]="true"
+                                    [style]="{'width':'100%'}"
+                                    emptyFilterMessage="No se encontraron resultados"
+                                    emptyMessage="No se encontraron resultados"
+                                    filter="true"
                                     formControlName="color"
                                     optionLabel="name"
-                                    [ngClass]="{'ng-invalid ng-dirty': getColor(index).touched && getColor(index).invalid}"
-                                    [showClear]="true"
-                                    filter="true"
-                                    emptyMessage="No se encontraron resultados"
-                                    emptyFilterMessage="No se encontraron resultados"
-                                    placeholder="Seleccione un color"
-                                    [style]="{'width':'100%'}"></p-dropdown>
+                                    placeholder="Seleccione un color"></p-dropdown>
                       </ng-template>
                       <ng-template pTemplate="output">
                         {{getColor(index).value?.name}}
@@ -199,10 +199,10 @@
                   <td>
                     <p-cellEditor class="w-full">
                       <ng-template pTemplate="input">
-                        <input pInputText
-                               type="text"
+                        <input formControlName="observation"
                                maxlength="256"
-                               formControlName="observation">
+                               pInputText
+                               type="text">
                       </ng-template>
                       <ng-template pTemplate="output">
                         {{getObservation(index).value}}
@@ -211,28 +211,28 @@
                   </td>
                   <td class="text-center">
                     <button *ngIf="!editing"
-                            pButton
-                            pRipple
-                            type="button"
-                            pInitEditableRow
+                            class="p-button-rounded p-button-text"
                             icon="pi pi-pencil"
-                            class="p-button-rounded p-button-text"></button>
-                    <button *ngIf="editing"
                             pButton
+                            pInitEditableRow
                             pRipple
-                            type="button"
-                            pSaveEditableRow
-                            (click)="onRowEditSave()"
+                            type="button"></button>
+                    <button (click)="onRowEditSave()"
+                            *ngIf="editing"
+                            class="p-button-rounded p-button-text p-button-success mr-2"
                             icon="pi pi-check"
-                            class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                    <button *ngIf="editing"
                             pButton
                             pRipple
-                            type="button"
-                            pCancelEditableRow
-                            (click)="onRowEditCancel()"
+                            pSaveEditableRow
+                            type="button"></button>
+                    <button (click)="onRowEditCancel()"
+                            *ngIf="editing"
+                            class="p-button-rounded p-button-text p-button-danger"
                             icon="pi pi-times"
-                            class="p-button-rounded p-button-text p-button-danger"></button>
+                            pButton
+                            pCancelEditableRow
+                            pRipple
+                            type="button"></button>
                   </td>
                 </tr>
               </ng-template>
@@ -241,20 +241,20 @@
         </div>
 
         <div class="col-12 text-right">
-          <button pButton
-                  pRipple
-                  type="button"
-                  label="Cancelar"
+          <button class="p-button-text mr-4"
                   icon="pi pi-times"
-                  class="p-button-text mr-4">
-          </button>
-          <button pButton
+                  label="Cancelar"
+                  pButton
                   pRipple
-                  [disabled]="form.invalid"
-                  type="submit"
-                  label="Guardar"
+                  type="button">
+          </button>
+          <button [disabled]="form.invalid"
+                  class="p-button-raised"
                   icon="pi pi-check"
-                  class="p-button-raised">
+                  label="Guardar"
+                  pButton
+                  pRipple
+                  type="submit">
           </button>
         </div>
       </div>

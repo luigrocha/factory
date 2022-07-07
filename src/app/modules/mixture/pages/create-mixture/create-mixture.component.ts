@@ -27,6 +27,10 @@ export class CreateMixtureComponent implements OnInit {
 
   form: FormGroup;
   formErrors = FORM_ERROR_MESSAGES;
+  types: TypeMaterial[];
+  materials: Material[] = [];
+  allMaterials: Material[] = [];
+  dies: Die[];
   showFilters: boolean;
   numberMixture: number;
   order: Order;
@@ -34,11 +38,9 @@ export class CreateMixtureComponent implements OnInit {
   totalPercent = 0;
   totalToStop = 0;
   totalToCreate = 0;
-  types: TypeMaterial[];
-  materials: Material[] = [];
-  dies: Die[];
+  totalReal = 0;
   mixtureTo: string;
-  sheets = 78000;
+  sheets: number;
 
   columns: TableColumn<MixtureDetail>[];
 
@@ -128,6 +130,7 @@ export class CreateMixtureComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.orderService.getOrderByLot(params.lote).subscribe(order => {
         this.order = order;
+        this.sheets = order.quantity;
         this.getProjectToCodeGen(order.productCode);
       });
     });
@@ -159,18 +162,22 @@ export class CreateMixtureComponent implements OnInit {
 
   getSheetPerCut(id: number) {
     const leafWidth = this.searchDie(id).leafWidth / 1000;
-    return Math.trunc(this.weightExtrusion * leafWidth);
+    return Math.trunc(this.weightExtrusion / leafWidth);
   }
 
   getNumberCut(id: number) {
     return this.sheets / this.getSheetPerCut(id);
   }
 
-  getDifference(id: number) {
+  getTotalReal(id: number){
     const leafLength = this.searchDie(id).leafLength / 1000;
     const gsm = this.project.gsm / 1000;
-    const total = this.weightNominal * leafLength * gsm * this.getNumberCut(id);
-    return this.totalToCreate - total;
+    this.totalReal = this.weightNominal * leafLength * gsm * this.getNumberCut(id);
+  }
+
+  getDifference(id: number) {
+    this.getTotalReal(id);
+    return this.totalToCreate - this.totalReal;
   }
 
   save() {
@@ -186,8 +193,10 @@ export class CreateMixtureComponent implements OnInit {
     body.number = this.numberMixture;
     body.documentBy = this.authService.getLoggedUser().name;
     body.documentTo = 'Responsables Mezcla';
+    body.mixture = this.mixtureTo;
     body.date = new Date();
     body.total = this.totalToCreate;
+    body.totalReal = this.totalReal;
 
     this.mixtureService.create(body).subscribe(
       (data => {
@@ -206,12 +215,14 @@ export class CreateMixtureComponent implements OnInit {
     this.materialService.getAllMaterialByType(id).subscribe(
       (materials => {
         this.materials = materials;
+        materials.forEach(material => this.allMaterials.push(material));
       })
     );
   }
 
   addRow() {
     this.rowsFormArray.push(this.fb.group({
+      index: this.rowsFormArray.length,
       type: [null, [
         Validators.required,
       ]],
@@ -244,7 +255,7 @@ export class CreateMixtureComponent implements OnInit {
   }
 
   searchRowsMaterial(id: number): string {
-    const material = this.materials.find(mat => mat.id === id);
+    const material = this.allMaterials.find(mat => mat.id === id);
     return material ? material.name : 'Selecciona Material';
   }
 
@@ -279,11 +290,10 @@ export class CreateMixtureComponent implements OnInit {
   }
 
   onRowEditSave() {
-    if ( this.totalPercent === 100){
-      this.cdr.detectChanges();
-    }else{
+    if ( this.totalPercent !== 100){
       this.toastService.warning('No se puede crear mezcla, verifique los porcentajes');
     }
+    this.cdr.detectChanges();
   }
 
   onRowEditCancel() {

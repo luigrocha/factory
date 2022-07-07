@@ -20,8 +20,12 @@ export interface MixtureCreate{
   documentTo: string;
   documentBy: string;
   date: Date;
+  mixture: string;
   prepare: number;
+  preMixture: number;
   total: number;
+  totalReal: number;
+  die: number;
   observation?: string;
   rows: MixtureDetailCreate[];
 }
