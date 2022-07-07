@@ -15,5 +15,9 @@ public enum SearchOperation {
     LIKE_START,
     LIKE_END,
     IN,
-    NOT_IN
+    NOT_IN,
+    DATE_IS,
+    DATE_IS_NOT,
+    DATE_BEFORE,
+    DATE_AFTER
 }

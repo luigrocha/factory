@@ -9,6 +9,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -38,6 +40,81 @@ public class SpecificationBuilder<T> {
                     CriteriaBuilder criteriaBuilder) {
                 String[] keys = criteria.getKey().split("\\.");
                 switch (criteria.getOperation()) {
+                    case LIKE_END:
+                        if (keys.length == 2) {
+                            return criteriaBuilder.like(
+                                    criteriaBuilder.lower(
+                                            root.get(keys[0]).get(keys[1])), criteria.getValue().toString().toLowerCase() + "%");
+                        } else {
+                            return criteriaBuilder.like(
+                                    criteriaBuilder.lower(
+                                            root.get(criteria.getKey())), criteria.getValue().toString().toLowerCase() + "%");
+                        }
+                    case LIKE:
+                        if (keys.length == 2) {
+                            return criteriaBuilder.like(
+                                    criteriaBuilder.lower(
+                                            root.get(keys[0]).get(keys[1])), "%" + criteria.getValue().toString().toLowerCase() + "%");
+                        } else {
+                            return criteriaBuilder.like(
+                                    criteriaBuilder.lower(
+                                            root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%");
+                        }
+                    case LIKE_START:
+                        if (keys.length == 2) {
+                            return criteriaBuilder.like(
+                                    criteriaBuilder.lower(
+                                            root.get(keys[0]).get(keys[1])), "%" + criteria.getValue().toString().toLowerCase());
+                        } else {
+                            return criteriaBuilder.like(
+                                    criteriaBuilder.lower(
+                                            root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase());
+                        }
+                    case LIKE_NOT:
+                        if (keys.length == 2) {
+                            return criteriaBuilder.notLike(
+                                    criteriaBuilder.lower(
+                                            root.get(keys[0]).get(keys[1])), "%" + criteria.getValue().toString().toLowerCase() + "%");
+                        } else {
+                            return criteriaBuilder.notLike(
+                                    criteriaBuilder.lower(
+                                            root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%");
+                        }
+                    case EQUAL:
+                        if (keys.length == 2) {
+                            return criteriaBuilder.equal(
+                                    root.get(keys[0]).get(keys[1]),
+                                    criteria.getValue()
+                            );
+                        } else {
+                            return criteriaBuilder.equal(
+                                    root.get(criteria.getKey()),
+                                    criteria.getValue()
+                            );
+                        }
+                    case NOT_EQUAL:
+                        if (keys.length == 2) {
+                            return criteriaBuilder.notEqual(
+                                    root.get(keys[0]).get(keys[1]),
+                                    criteria.getValue().toString()
+                            );
+                        } else {
+                            return criteriaBuilder.notEqual(
+                                    root.get(criteria.getKey()),
+                                    criteria.getValue()
+                            );
+                        }
+                    case DATE_AFTER:
+                        LocalDate dateAfter = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
+                        if (keys.length == 2) {
+                            return criteriaBuilder.greaterThan(
+                                    root.get(keys[0]).get(keys[1]),
+                                    dateAfter);
+                        } else {
+                            return criteriaBuilder.greaterThan(
+                                    root.get(criteria.getKey()),
+                                    dateAfter);
+                        }
                     case GREATER_THAN:
                         if (keys.length == 2) {
                             return criteriaBuilder.greaterThan(
@@ -50,7 +127,17 @@ public class SpecificationBuilder<T> {
                                     criteria.getValue().toString()
                             );
                         }
-
+                    case DATE_BEFORE:
+                        LocalDate dateBefore = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
+                        if (keys.length == 2) {
+                            return criteriaBuilder.lessThan(
+                                    root.get(keys[0]).get(keys[1]),
+                                    dateBefore);
+                        } else {
+                            return criteriaBuilder.lessThan(
+                                    root.get(criteria.getKey()),
+                                    dateBefore);
+                        }
                     case LESS_THAN:
                         if (keys.length == 2) {
                             return criteriaBuilder.lessThan(
@@ -64,7 +151,7 @@ public class SpecificationBuilder<T> {
                             );
                         }
                     case GREATER_THAN_EQUAL:
-                        if (keys.length == 2 ) {
+                        if (keys.length == 2) {
                             return criteriaBuilder.greaterThanOrEqualTo(
                                     root.get(keys[0]).get(keys[1]),
                                     criteria.getValue().toString()
@@ -87,69 +174,27 @@ public class SpecificationBuilder<T> {
                                     criteria.getValue().toString()
                             );
                         }
-                    case NOT_EQUAL:
+                    case DATE_IS_NOT:
+                        LocalDate dateIsNot = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
                         if (keys.length == 2) {
                             return criteriaBuilder.notEqual(
                                     root.get(keys[0]).get(keys[1]),
-                                    criteria.getValue().toString()
-                            );
+                                    dateIsNot);
                         } else {
                             return criteriaBuilder.notEqual(
                                     root.get(criteria.getKey()),
-                                    criteria.getValue()
-                            );
+                                    dateIsNot);
                         }
-                    case EQUAL:
+                    case DATE_IS:
+                        LocalDate dateIs = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
                         if (keys.length == 2) {
                             return criteriaBuilder.equal(
                                     root.get(keys[0]).get(keys[1]),
-                                    criteria.getValue()
-                            );
+                                    dateIs);
                         } else {
                             return criteriaBuilder.equal(
                                     root.get(criteria.getKey()),
-                                    criteria.getValue()
-                            );
-                        }
-                    case LIKE:
-                        if (keys.length == 2) {
-                            return criteriaBuilder.like(
-                                    criteriaBuilder.lower(
-                                            root.get(keys[0]).get(keys[1])), "%" + criteria.getValue().toString().toLowerCase() + "%");
-                        } else {
-                            return criteriaBuilder.like(
-                                    criteriaBuilder.lower(
-                                            root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%");
-                        }
-                    case LIKE_END:
-                        if (keys.length == 2) {
-                            return criteriaBuilder.like(
-                                    criteriaBuilder.lower(
-                                            root.get(keys[0]).get(keys[1])), criteria.getValue().toString().toLowerCase() + "%");
-                        } else {
-                            return criteriaBuilder.like(
-                                    criteriaBuilder.lower(
-                                            root.get(criteria.getKey())), criteria.getValue().toString().toLowerCase() + "%");
-                        }
-                    case LIKE_START:
-                        if (keys.length == 2) {
-                            return criteriaBuilder.like(
-                                    criteriaBuilder.lower(
-                                            root.get(keys[0]).get(keys[1])), "%" + criteria.getValue().toString().toLowerCase());
-                        } else {
-                            return criteriaBuilder.like(
-                                    criteriaBuilder.lower(
-                                            root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase());
-                        }
-                    case LIKE_NOT:
-                        if (keys.length == 2) {
-                            return criteriaBuilder.notLike(
-                                    criteriaBuilder.lower(
-                                            root.get(keys[0]).get(keys[1])), "%" + criteria.getValue().toString().toLowerCase() + "%");
-                        } else {
-                            return criteriaBuilder.notLike(
-                                    criteriaBuilder.lower(
-                                            root.get(criteria.getKey())), "%" + criteria.getValue().toString().toLowerCase() + "%");
+                                    dateIs);
                         }
                     case IN:
                         if (keys.length == 2) {

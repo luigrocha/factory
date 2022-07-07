@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface IOrderService {
 
-    Page<OrderRes> findVisibleOrders(List<SearchCriteriaReq> searchCriteria, Pageable pageable, List<String> states);
+    Page<OrderRes> findVisibleOrders(List<SearchCriteriaReq> searchCriteria, Pageable pageable, List<String> states, String query);
 
     OrderRes saveOrder(CreateOrderReq orderReq);
 

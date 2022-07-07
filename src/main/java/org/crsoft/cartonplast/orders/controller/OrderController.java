@@ -33,12 +33,13 @@ public class OrderController {
     public ResponseEntity<Page<OrderRes>> findAllVisibleOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String query,
             @RequestParam List<String> states,
             @Valid @RequestBody List<SearchCriteriaReq> searchCriteria){
         Pageable paging = PageRequest.of(page, size);
 
         return ResponseEntity.ok(orderService.findVisibleOrders(
-                searchCriteria, paging, states));
+                searchCriteria, paging, states, query));
     }
 
     @PostMapping

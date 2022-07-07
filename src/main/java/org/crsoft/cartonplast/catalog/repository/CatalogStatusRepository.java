@@ -14,6 +14,11 @@ import java.util.Optional;
 @Repository
 public interface CatalogStatusRepository extends JpaRepository<CatalogStatus, String> {
 
+    @Query("SELECT c FROM CatalogStatus c " +
+            "WHERE (c.validTo IS NULL " +
+            "OR c.validTo > CURRENT_TIMESTAMP) " +
+            "AND c.type = ?1 " +
+            "ORDER BY c.index ASC")
     Collection<CatalogStatus> findAllByTypeAndValidToIsNull(String type);
 
     @Query("SELECT c FROM CatalogStatus c WHERE c.type = ?1 AND c.isDefault = true")

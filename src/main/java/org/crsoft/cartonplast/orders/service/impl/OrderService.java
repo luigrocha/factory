@@ -12,15 +12,10 @@ import org.crsoft.cartonplast.common.constant.CatalogStatusConstant;
 import org.crsoft.cartonplast.common.constant.OrderConstant;
 import org.crsoft.cartonplast.common.exception.BusinessException;
 import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.filter.SpecificationBuilder;
 import org.crsoft.cartonplast.design.model.Project;
 import org.crsoft.cartonplast.design.repository.ProjectRepository;
-import org.crsoft.cartonplast.catalog.model.CatalogPriority;
-import org.crsoft.cartonplast.catalog.repository.CatalogPriorityRepository;
-import org.crsoft.cartonplast.client.model.Client;
-import org.crsoft.cartonplast.client.repository.ClientRepository;
-import org.crsoft.cartonplast.common.exception.NotExistException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.orders.model.Order;
 import org.crsoft.cartonplast.orders.repository.OrderRepository;
 import org.crsoft.cartonplast.orders.repository.specification.OrderSpecification;
@@ -30,17 +25,15 @@ import org.crsoft.cartonplast.vo.req.CreateOrderReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
 import org.crsoft.cartonplast.vo.res.GeneratedOrderCodeRes;
 import org.crsoft.cartonplast.vo.res.OrderRes;
+import org.keycloak.common.util.CollectionUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
@@ -64,7 +57,8 @@ public class OrderService implements IOrderService {
     public Page<OrderRes> findVisibleOrders(
             List<SearchCriteriaReq> searchCriteria,
             Pageable pageable,
-            List<String> states) {
+            List<String> states,
+            String query) {
         List<CatalogStatus> catalogStatuses = this.catalogStatusService.findByIds(states);
 
         Specification<Order> orderSpecification =
@@ -73,7 +67,8 @@ public class OrderService implements IOrderService {
         Page<Order> orders = orderRepository.findAll(
                 Specification
                         .where(orderSpecification)
-                        .and(OrderSpecification.filterByStates(catalogStatuses)),
+                        .and(OrderSpecification.filterByStates(catalogStatuses))
+                        .and(OrderSpecification.filterByQuery(query)),
                 pageable);
 
         return orders.map(orderMapper::orderToOrderRes);
