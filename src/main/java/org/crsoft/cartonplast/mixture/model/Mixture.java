@@ -28,26 +28,38 @@ public class Mixture {
     )
     private Integer id;
 
-    @Column(name = "CETMIX_NUMBER", nullable = false)
-    private Integer number;
-
-    @Column(name = "CETMIX_DOCUMENT_TO", nullable = false)
-    private String documentTo;
-
-    @Column(name = "CETMIX_DOCUMENT_BY", nullable = false)
-    private String documentBy;
-
-    @Column(name = "CETMIX_DATE", nullable = false)
-    private Timestamp date;
+    @Column(name = "CETMIX_DIE", nullable = false)
+    private String die;
 
     @Column(name = "CETMIX_PREPARE", nullable = false)
     private Integer prepare;
 
-    @Column(name = "CETMIX_TOTAL", nullable = false)
-    private Double total;
+    @Column(name = "CETMIX_PRE_MIXTURE", nullable = false)
+    private Integer preMixture;
 
     @Column(name = "CETMIX_OBSERVATION")
     private String observation;
+
+    @Column(name = "CETMIX_NUMBER", nullable = false)
+    private Integer number;
+
+    @Column(name = "CETMIX_DOCUMENT_BY", nullable = false)
+    private String documentBy;
+
+    @Column(name = "CETMIX_DOCUMENT_TO", nullable = false)
+    private String documentTo;
+
+    @Column(name = "CETMIX_MIXTURE", nullable = false)
+    private String mixture;
+
+    @Column(name = "CETMIX_DATE", nullable = false)
+    private Timestamp date;
+
+    @Column(name = "CETMIX_TOTAL", nullable = false)
+    private Double total;
+
+    @Column(name = "CETMIX_TOTAL_REAL", nullable = false)
+    private Double totalReal;
 
     @Column(
             name = "CETMIX_VALID_FROM",

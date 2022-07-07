@@ -39,10 +39,7 @@ public class MixtureService implements IMixtureService {
             Mixture mixtureSave = this.mixtureRepository.save(mixture);
             Collection<MixtureDetail> mixtureDetails =
                     this.mixtureDetailMapper.mixtureDetailResCollectionToMixtureDetailCollection(mixtureDetailsReq);
-            mixtureDetails.forEach(mixtureDetail -> {
-                mixtureDetail.setMixture(mixtureSave);
-                mixtureDetail.setCreatedBy(mixtureSave.getCreatedBy());
-            });
+            mixtureDetails.forEach(mixtureDetail -> {mixtureDetail.setMixture(mixtureSave);});
             this.mixtureDetailService.createAll(mixtureDetails);
         } catch (Exception e) {
             log.error("Error to create mixture: {}", e.getMessage());
