@@ -112,7 +112,34 @@ pipeline {
               }
           }
       }
-      stage('Deploy project test') {
+      stage('Deploy project to develop') {
+          when {
+            expression { BRANCH_NAME ==~ /(test)/ }
+          }
+          steps {
+              container('kustomize') {
+                  echo 'Deploying to develop environment..'
+                  checkout([$class: 'GitSCM',
+                      branches: [[name: '*/main' ]],
+                      extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'argocd-develop-apps'], [$class: 'ScmName', name: 'argocd-develop-apps']],
+                      userRemoteConfigs: [[
+                          url: 'https://gitlab.crsoft.org/devops/kubernetes/argocd-develop-apps.git',
+                          credentialsId: gitlabCredential
+                      ]]
+                  ])
+                  dir('./argocd-develop-apps/' + argoCDFolderApp + '/settings' ) {
+                      sh('kustomize edit set image ' + env.REGISTRY + imageName + ':' + env.GIT_COMMIT)
+                      sh('git config --global user.email jenkinsci@ci.com')
+                      sh('git config --global user.name Jenkins Pipeline')
+                      sh "git commit -am 'Publish new version ${argoCDFolderApp}'"
+                      withCredentials([usernamePassword(credentialsId: gitlabCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                          sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.ARGO_APPS_DEVELOP} HEAD:main || echo 'no changes'"
+                      }
+                  }
+              }
+          }
+      }
+      stage('Deploy project to test') {
           when {
             expression { BRANCH_NAME ==~ /(test)/ }
           }
