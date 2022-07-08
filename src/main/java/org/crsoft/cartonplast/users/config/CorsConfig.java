@@ -20,6 +20,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 GlobalConstant.LOCALHOST_URI,
+                                GlobalConstant.WEBAPP_DEV_URI,
                                 GlobalConstant.WEBAPP_TEST_URI,
                                 GlobalConstant.CROSS_PRODUCTION
                         )
