@@ -4,7 +4,7 @@ import { DocumentInfo } from 'src/app/types/document.types';
 export interface Die {
   id: number;
   name: string;
-  createdDate: string;
+  createdDate: Date;
   dsbMultiple: number;
   observations: string;
   quantity: number;
