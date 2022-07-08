@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum BusinessExceptionReason implements BusinessExceptionPolicy {
 
+    THICKNESS_NOT_FOUND("thickness_not_found", "No se encontró el grosor para el id %s", HttpStatus.NOT_FOUND),
     CLIENT_NOT_FOUND("client_not_found", "No se encontró el cliente con el id %s", HttpStatus.NOT_FOUND),
     CATALOG_PRIORITY_NOT_FOUND("catalog_priority_not_found", "No se encontró la prioridad con el id %s", HttpStatus.NOT_FOUND),
     PROJECT_NOT_FOUND("project_not_found", "No se encontró el proyecto con el id %s", HttpStatus.NOT_FOUND),

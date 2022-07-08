@@ -1,9 +1,6 @@
 package org.crsoft.cartonplast.design.service;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.design.model.Thickness;
+import org.crsoft.cartonplast.vo.req.ThicknessReq;
 import org.crsoft.cartonplast.vo.res.ThicknessRes;
 
 import java.util.Collection;
@@ -13,14 +10,14 @@ import java.util.Collection;
  */
 public interface IThicknessService {
 
-    Collection<ThicknessRes> findAllValidThickness() throws NotFoundException;
+    Collection<ThicknessRes> findAllValidThickness();
 
-    void createThickness(Thickness thickness) throws InsertException;
+    ThicknessRes createThickness(ThicknessReq thickness);
 
-    ThicknessRes findThicknessByCode(Integer code) throws NotFoundException;
+    ThicknessRes findThicknessByCode(Integer code);
 
-    void updateThicknessByCode(Integer code, Thickness thickness) throws NotFoundException, UpdateException;
+    ThicknessRes updateThicknessByCode(Integer code, ThicknessReq thickness);
 
-    void deleteThicknessByCode(Integer code, String userName) throws NotFoundException, UpdateException;
+    boolean deleteThicknessByCode(Integer code);
 
 }
