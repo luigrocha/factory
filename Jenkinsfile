@@ -114,7 +114,7 @@ pipeline {
       }
       stage('Deploy project to develop') {
           when {
-            expression { BRANCH_NAME ==~ /(test)/ }
+            expression { BRANCH_NAME ==~ /(develop)/ }
           }
           steps {
               container('kustomize') {
