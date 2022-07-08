@@ -2,8 +2,9 @@ package org.crsoft.cartonplast.mixture.service;
 
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.mixture.model.Mixture;
-import org.crsoft.cartonplast.mixture.model.MixtureDetail;
 import org.crsoft.cartonplast.vo.req.MixtureDetailReq;
+import org.crsoft.cartonplast.vo.res.MixtureRes;
+import org.crsoft.cartonplast.vo.res.MixtureShortRes;
 
 import java.util.Collection;
 
@@ -15,5 +16,9 @@ public interface IMixtureService {
     long findNumber();
 
     void create(Mixture mixture, Collection<MixtureDetailReq> mixtureDetailsReq) throws InsertException;
+
+    Collection<MixtureShortRes> findByQuery(String query);
+
+    MixtureRes findByNumber(Integer number);
 
 }

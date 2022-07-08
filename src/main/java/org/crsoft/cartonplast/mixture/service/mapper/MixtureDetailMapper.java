@@ -2,8 +2,10 @@ package org.crsoft.cartonplast.mixture.service.mapper;
 
 import org.crsoft.cartonplast.celler.service.mapper.MaterialMapper;
 import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
+import org.crsoft.cartonplast.mixture.model.Mixture;
 import org.crsoft.cartonplast.mixture.model.MixtureDetail;
 import org.crsoft.cartonplast.vo.req.MixtureDetailReq;
+import org.crsoft.cartonplast.vo.res.MixtureDetailRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -25,5 +27,9 @@ public interface MixtureDetailMapper {
 
     @WithoutAuditField
     Collection<MixtureDetail> mixtureDetailResCollectionToMixtureDetailCollection(Collection<MixtureDetailReq> mixtureDetailReq);
+
+    MixtureDetailRes mixtureDetailToMixtureDetailRes(MixtureDetail mixtureDetail);
+
+    Collection<MixtureDetailRes> mixtureDetailCollectionToMixtureDetailRes(Collection<MixtureDetail> mixtureDetail);
 
 }

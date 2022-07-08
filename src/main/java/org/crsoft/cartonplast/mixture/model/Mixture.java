@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.crsoft.cartonplast.orders.model.Order;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,6 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "CETMIX")
 public class Mixture {
 
@@ -74,21 +80,25 @@ public class Mixture {
     private LocalDateTime validTo;
 
     @Column(name = "CETMIX_CREATED_BY", length = 16)
+    @CreatedBy
     private String createdBy;
 
     @Column(name = "CETMIX_UPDATED_BY", length = 16)
+    @LastModifiedBy
     private String updatedBy;
 
     @Column(
             name = "CETMIX_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
             name = "CETMIX_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

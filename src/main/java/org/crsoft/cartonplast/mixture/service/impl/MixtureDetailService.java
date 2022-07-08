@@ -6,6 +6,8 @@ import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.mixture.model.MixtureDetail;
 import org.crsoft.cartonplast.mixture.repository.MixtureDetailRepository;
 import org.crsoft.cartonplast.mixture.service.IMixtureDetailService;
+import org.crsoft.cartonplast.mixture.service.mapper.MixtureDetailMapper;
+import org.crsoft.cartonplast.vo.res.MixtureDetailRes;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -21,6 +23,7 @@ import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_IN
 public class MixtureDetailService implements IMixtureDetailService {
     private static final String TABLE_NAME = "CETMIX_DET";
     private final MixtureDetailRepository mixtureDetailRepository;
+    private final MixtureDetailMapper mixtureDetailMapper;
 
     @Override
     public void create(MixtureDetail mixtureDetail) throws InsertException {
@@ -40,5 +43,11 @@ public class MixtureDetailService implements IMixtureDetailService {
             log.error("Error to create all mixture detail: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
+    }
+
+    @Override
+    public Collection<MixtureDetailRes> findAllByMixtureCode(Integer mixtureCode) {
+        return this.mixtureDetailMapper.mixtureDetailCollectionToMixtureDetailRes(
+                this.mixtureDetailRepository.findAllValidMixtureByMixtureCode(mixtureCode));
     }
 }

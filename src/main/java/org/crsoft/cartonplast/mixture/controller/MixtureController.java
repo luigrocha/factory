@@ -7,8 +7,12 @@ import org.crsoft.cartonplast.mixture.model.Mixture;
 import org.crsoft.cartonplast.mixture.service.IMixtureService;
 import org.crsoft.cartonplast.mixture.service.mapper.MixtureMapper;
 import org.crsoft.cartonplast.vo.req.MixtureReq;
+import org.crsoft.cartonplast.vo.res.MixtureRes;
+import org.crsoft.cartonplast.vo.res.MixtureShortRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 /**
  * @author jyepez on 3/7/2022
@@ -26,11 +30,26 @@ public class MixtureController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> create(@RequestBody MixtureReq mixtureReq, @RequestHeader("userName") String userName)
+    public ResponseEntity<?> create(@RequestBody MixtureReq mixtureReq)
             throws InsertException {
         Mixture mixture = this.mixtureMapper.mixtureResToMixture(mixtureReq);
-        mixture.setCreatedBy(userName);
         this.mixtureService.create(mixture,mixtureReq.getRows());
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<Collection<MixtureShortRes>> findAllMixture(@RequestParam(value = "query") String query){
+        return ResponseEntity.ok(mixtureService.findByQuery(query));
+    }
+
+    @GetMapping("/search/{number}")
+    public ResponseEntity<MixtureRes> findMixtureByNumber(@PathVariable("number") Integer number){
+        try {
+            return ResponseEntity.ok(mixtureService.findByNumber(number));
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+
+    }
+
 }

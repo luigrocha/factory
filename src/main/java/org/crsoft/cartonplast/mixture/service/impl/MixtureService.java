@@ -8,7 +8,10 @@ import org.crsoft.cartonplast.mixture.model.MixtureDetail;
 import org.crsoft.cartonplast.mixture.repository.MixtureRepository;
 import org.crsoft.cartonplast.mixture.service.IMixtureService;
 import org.crsoft.cartonplast.mixture.service.mapper.MixtureDetailMapper;
+import org.crsoft.cartonplast.mixture.service.mapper.MixtureMapper;
 import org.crsoft.cartonplast.vo.req.MixtureDetailReq;
+import org.crsoft.cartonplast.vo.res.MixtureRes;
+import org.crsoft.cartonplast.vo.res.MixtureShortRes;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -25,6 +28,7 @@ public class MixtureService implements IMixtureService {
 
     private static final String TABLE_NAME = "CETMIX";
     private final MixtureRepository mixtureRepository;
+    private final MixtureMapper mixtureMapper;
     private final MixtureDetailMapper mixtureDetailMapper;
     private final MixtureDetailService mixtureDetailService;
 
@@ -45,5 +49,20 @@ public class MixtureService implements IMixtureService {
             log.error("Error to create mixture: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
+    }
+
+    @Override
+    public Collection<MixtureShortRes> findByQuery(String query) {
+        return this.mixtureMapper.mixtureCollectionToMixtureShort(
+                this.mixtureRepository.findAllValidMixtureFromQuery(query));
+    }
+
+    @Override
+    public MixtureRes findByNumber(Integer number) {
+        MixtureRes mixture = this.mixtureMapper.mixtureToMixtureRes(
+                this.mixtureRepository.findValidMixtureByNumber(number)
+        );
+        mixture.setRows(this.mixtureDetailService.findAllByMixtureCode(mixture.getId()));
+        return mixture;
     }
 }
