@@ -1,3 +1,11 @@
+import {Order} from './order.types';
+
+export interface MixtureShort{
+  number?: number;
+  mixture?: string;
+  order?: Order;
+}
+
 export interface MixtureDetail {
   type?: string;
   product?: string;

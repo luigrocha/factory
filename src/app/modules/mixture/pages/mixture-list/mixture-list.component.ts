@@ -3,6 +3,13 @@ import {BreadcrumbService} from 'src/app/core/services/breadcrumb.service';
 import {OrderService} from '../../../../core/http/orders/order.service';
 import {Order} from '../../../../types/order.types';
 import {OrderStatus} from '../../../../types/enums/order-status';
+import {MixtureShort} from '../../../../types/mixture.types';
+import {ShortPerson} from '../../../../types/person.types';
+import {MixtureService} from '../../../../core/http/mixture/mixture.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FORM_ERROR_MESSAGES} from '../../../../core/constants/form-error';
+import {CreateUser, UpdateUser} from '../../../../types/user.types';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-mixture-list',
@@ -11,11 +18,17 @@ import {OrderStatus} from '../../../../types/enums/order-status';
 })
 export class MixtureListComponent implements OnInit {
 
+  form: FormGroup;
+  formErrors = FORM_ERROR_MESSAGES;
   orders: Order[];
+  mixtures: MixtureShort[];
 
   constructor(
+    private fb: FormBuilder,
     private breadcrumbService: BreadcrumbService,
     private orderService: OrderService,
+    private mixtureService: MixtureService,
+    private router: Router,
   ) {
     this.breadcrumbService.setItems([
       {label: 'Módulo de Mezcla'},
@@ -25,13 +38,53 @@ export class MixtureListComponent implements OnInit {
 
   ngOnInit() {
     this.getOrdersByStatus();
+    this.form = this.fb.group({
+      mixture: [null, [
+        Validators.required
+      ]],
+      lot: [null, [
+        Validators.required
+      ]]
+    });
+  }
+
+  get mixture(){
+    return this.form.get('mixture');
+  }
+
+  get lot(){
+    return this.form.get('lot');
   }
 
   getOrdersByStatus() {
-    // TODO get by TO START
     this.orderService.getOrdersByStatus(OrderStatus.PENDING).subscribe(orders => {
       this.orders = orders;
     });
   }
+
+  filterMixtures($event: any){
+    const query = $event.query;
+    if (query) {
+      this.mixtureService.search(query)
+        .subscribe((res: MixtureShort[]) => {
+          this.mixtures = res;
+        });
+    }
+  }
+
+  onSelect(e: any){
+    this.lot.setValue(e);
+  }
+
+  save(){
+    if (this.form.invalid) {
+      return;
+    }
+    const mixture: MixtureShort = this.form.getRawValue().lot;
+    this.router.navigate(['/home/mezcla/crear/' + mixture.order.lot]);
+  }
+
+
+
 
 }

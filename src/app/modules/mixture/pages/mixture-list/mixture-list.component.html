@@ -50,35 +50,46 @@
           <div class="card-header">
             <h6>Consultar Mezcla</h6>
           </div>
-          <div class="p-fluid grid formgrid mt-5">
-            <div class="field col-12">
-              <label for="person">Numero Mezcla | Lote</label>
-              <!-- <p-autoComplete formControlName="person"
-                              [showEmptyMessage]="true"
-                              [suggestions]="persons"
-                              (completeMethod)="filterPersons($event)"
-                              field="fullName"
-                              id="lote"
-                              delay="500"
-                              emptyMessage="No se encontraron resultados"
-                              [minLength]="3">
-                <ng-template let-person pTemplate="item">
-                  <div>
-                    {{person.ci}} |
-                    <span class="item-subheading">{{person.fullName}}</span>
-                  </div>
-                </ng-template>
-              </p-autoComplete>                 -->
-              <input id="firstName" maxlength="32" pInputText type="text"/>
+          <form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+            <div class="p-fluid grid formgrid mt-5">
+              <div class="field col-12">
+                <label for="mixture">Numero Mezcla | Lote</label>
+                <p-autoComplete (completeMethod)="filterMixtures($event)"
+                                (onSelect)="onSelect($event)"
+                                [minLength]="3"
+                                [ngClass]="{'ng-invalid ng-dirty': mixture.touched && mixture.invalid}"
+                                [showEmptyMessage]="true"
+                                [suggestions]="mixtures"
+                                delay="500"
+                                emptyMessage="No se encontraron resultados"
+                                field="order.lot"
+                                formControlName="mixture"
+                                id="mixture">
+                  <ng-template let-mixture pTemplate="item">
+                    <div>
+                      {{mixture.order.lot }} |
+                      <span class="item-subheading">{{mixture.order.code}}</span> |
+                      <span class="item-subheading">{{mixture.order.productCode}}</span> |
+                      <span class="item-subheading">{{mixture.mixture}}</span> |
+                      <span class="item-subheading">{{mixture.number}}</span>
+                    </div>
+                  </ng-template>
+                  <small *ngIf="mixture.touched && mixture.hasError('required')"
+                         class="p-error block"
+                         id="person-help">{{formErrors.required}}</small>
+                </p-autoComplete>
+              </div>
+              <button
+                [disabled]="form.invalid || !lot.value"
+                class="p-button-raised m-3"
+                icon="pi pi-search"
+                label="Buscar"
+                pButton
+                pRipple
+                type="submit"
+              ></button>
             </div>
-            <button
-              class="p-button-raised m-3"
-              icon="pi pi-search"
-              label="Buscar"
-              pButton
-              pRipple
-            ></button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
