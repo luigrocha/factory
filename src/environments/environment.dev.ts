@@ -6,7 +6,7 @@ export const environment = {
   configApiUrl: 'https://config-api-dev.carton-plast.com/api/v1',
   imagesBucketName: 'images-dev',
   keycloak: {
-    url: 'https://auth-test.carton-plast.com',
+    url: 'https://auth-dev.carton-plast.com',
     realm: 'carton-plast',
     clientId: 'carton-plast-frontend'
   },
