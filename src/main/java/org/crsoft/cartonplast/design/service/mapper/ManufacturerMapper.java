@@ -2,6 +2,7 @@ package org.crsoft.cartonplast.design.service.mapper;
 
 import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.Manufacturer;
+import org.crsoft.cartonplast.vo.req.ManufacturerReq;
 import org.crsoft.cartonplast.vo.res.ManufacturerRes;
 import org.mapstruct.Mapper;
 
@@ -17,6 +18,8 @@ public interface ManufacturerMapper {
 
     @WithoutAuditField
     Manufacturer manufacturerResToManufacturer(ManufacturerRes manufacturerRes);
+
+    Manufacturer manufacturerReqToManufacturer(ManufacturerReq manufacturerReq);
 
     List<ManufacturerRes> manufacturersToManufacturersRes(List<Manufacturer> manufacturers);
 }

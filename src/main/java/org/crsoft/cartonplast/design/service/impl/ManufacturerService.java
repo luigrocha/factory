@@ -9,6 +9,7 @@ import org.crsoft.cartonplast.design.model.Manufacturer;
 import org.crsoft.cartonplast.design.repository.ManufacturerRepository;
 import org.crsoft.cartonplast.design.service.IManufacturerService;
 import org.crsoft.cartonplast.design.service.mapper.ManufacturerMapper;
+import org.crsoft.cartonplast.vo.req.ManufacturerReq;
 import org.crsoft.cartonplast.vo.res.ManufacturerRes;
 import org.springframework.stereotype.Service;
 
@@ -54,9 +55,9 @@ public class ManufacturerService implements IManufacturerService {
     }
 
     @Override
-    public void createManufacturer(Manufacturer manufacturer) throws InsertException {
+    public void createManufacturer(ManufacturerReq manufacturerReq) throws InsertException {
         try {
-            this.manufacturerRepository.save(manufacturer);
+            this.manufacturerRepository.save(this.manufacturerMapper.manufacturerReqToManufacturer(manufacturerReq));
         } catch (Exception e) {
             log.error("Error to createManufacturer: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
@@ -69,10 +70,10 @@ public class ManufacturerService implements IManufacturerService {
     }
 
     @Override
-    public void updateManufacturerByCode(Integer code, Manufacturer manufacturer) throws NotFoundException, UpdateException {
+    public void updateManufacturerByCode(Integer code, ManufacturerReq manufacturerReq) throws NotFoundException, UpdateException {
         Manufacturer manufacturerBD = getManufacturerByCode(code);
         try {
-            manufacturerBD.setName(manufacturer.getName());
+            manufacturerBD.setName(manufacturerReq.getName());
             this.manufacturerRepository.save(manufacturerBD);
         } catch (Exception e) {
             log.error("Error to updateManufacturer: {}", e.getMessage());
