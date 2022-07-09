@@ -26,6 +26,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MachineModalComponent } from './components/machine-modal/machine-modal.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ThicknessModalComponent } from './components/thickness-modal/thickness-modal.component';
+import { ManufacturerComponent } from './pages/manufacturer/manufacturer.component';
 
 @NgModule({
   imports: [
@@ -58,6 +59,7 @@ import { ThicknessModalComponent } from './components/thickness-modal/thickness-
     MachinesComponent,
     MachineModalComponent,
     ThicknessModalComponent,
+    ManufacturerComponent,
   ],
   providers: [
     DialogService

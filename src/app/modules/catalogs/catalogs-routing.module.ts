@@ -8,6 +8,7 @@ import { LocationComponent } from './pages/location/location.component';
 import { PrintersComponent } from './pages/printers/printers.component';
 import { ThicknessComponent } from './pages/thickness/thickness.component';
 import { MachinesComponent } from 'src/app/modules/catalogs/pages/machines/machines.component';
+import { ManufacturerComponent } from './pages/manufacturer/manufacturer.component';
 
 const routes: Routes = [
   {
@@ -42,6 +43,10 @@ const routes: Routes = [
     path: 'maquinas',
     component: MachinesComponent
   },
+  {
+    path: 'fabricantes',
+    component: ManufacturerComponent
+  }
 ];
 
 @NgModule({
