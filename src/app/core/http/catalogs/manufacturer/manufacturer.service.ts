@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from "../../../../../environments/environment";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Manufacturer } from "../../../../types/manufacturer.types";
 import { Observable } from "rxjs";
 
@@ -8,6 +8,12 @@ import { Observable } from "rxjs";
   providedIn: 'root'
 })
 export class ManufacturerService {
+  httpOptions = {
+    headers: new HttpHeaders(
+      {
+        'Content-type': 'application/json'
+      })
+  };
 
   private readonly URL = environment.appApiUrl + '/manufacturers';
 
@@ -15,5 +21,17 @@ export class ManufacturerService {
 
   getAllManufacturers(): Observable<Manufacturer[]> {
     return this.http.get<Manufacturer[]>(this.URL);
+  }
+
+  create(manufacturer: Manufacturer): Observable<Manufacturer> {
+    return this.http.post<Manufacturer>(this.URL, manufacturer);
+  }
+
+  update(code: number, manufacturer: Manufacturer): Observable<Manufacturer> {
+    return this.http.put<Manufacturer>(`${this.URL}/${code}`, manufacturer);
+  }
+
+  delete(code: number): Observable<any> {
+    return this.http.delete(`${this.URL}/${code}`);
   }
 }
