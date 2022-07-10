@@ -14,7 +14,8 @@ public interface MixtureDetailRepository extends JpaRepository<MixtureDetail, In
     @Query("SELECT m FROM MixtureDetail m " +
             "WHERE (m.validTo IS NULL OR " +
             "m.validTo > CURRENT_TIMESTAMP ) AND " +
-            "m.mixture.id = :mixtureCode ")
+            "m.mixture.id = :mixtureCode " +
+            "ORDER BY m.id ASC ")
     Collection<MixtureDetail> findAllValidMixtureByMixtureCode(Integer mixtureCode);
 
 }

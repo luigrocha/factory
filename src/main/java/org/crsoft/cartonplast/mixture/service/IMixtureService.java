@@ -21,4 +21,8 @@ public interface IMixtureService {
 
     MixtureRes findByNumber(Integer number);
 
+    Integer findNumberByLot(String lote);
+
+    void edit(Integer id, Mixture mixture, Collection<MixtureDetailReq> mixtureDetailsReq);
+
 }

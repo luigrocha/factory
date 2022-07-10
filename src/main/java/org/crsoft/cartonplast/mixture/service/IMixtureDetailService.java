@@ -16,4 +16,6 @@ public interface IMixtureDetailService {
     void createAll(Collection<MixtureDetail> mixtureDetails) throws InsertException;
 
     Collection<MixtureDetailRes> findAllByMixtureCode(Integer mixtureCode);
+
+    void edit(Collection<MixtureDetail> mixtureDetails);
 }

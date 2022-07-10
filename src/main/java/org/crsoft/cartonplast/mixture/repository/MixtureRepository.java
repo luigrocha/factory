@@ -28,4 +28,10 @@ public interface MixtureRepository extends JpaRepository<Mixture, Integer> {
             "m.validTo > CURRENT_TIMESTAMP ) AND " +
             "m.number = :number ")
     Mixture findValidMixtureByNumber(Integer number);
+
+    @Query("SELECT m FROM Mixture m " +
+            "WHERE (m.validTo IS NULL OR " +
+            "m.validTo > CURRENT_TIMESTAMP ) AND " +
+            "m.order.lot = :lot ")
+    Mixture findValidMixtureByLot(String lot);
 }

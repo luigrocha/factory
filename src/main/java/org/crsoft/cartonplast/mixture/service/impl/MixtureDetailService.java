@@ -11,6 +11,7 @@ import org.crsoft.cartonplast.vo.res.MixtureDetailRes;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_INSERT;
 
@@ -50,4 +51,17 @@ public class MixtureDetailService implements IMixtureDetailService {
         return this.mixtureDetailMapper.mixtureDetailCollectionToMixtureDetailRes(
                 this.mixtureDetailRepository.findAllValidMixtureByMixtureCode(mixtureCode));
     }
+
+    @Override
+    public void edit(Collection<MixtureDetail> mixtureDetails) {
+        Integer idMixture = mixtureDetails.stream().findAny().get().getMixture().getId();
+        Collection<MixtureDetail> mixtureDetailsFind = this.mixtureDetailRepository
+                .findAllValidMixtureByMixtureCode(idMixture);
+
+        this.mixtureDetailRepository.deleteAll(mixtureDetailsFind);
+        this.mixtureDetailRepository.saveAll(mixtureDetails);
+
+    }
+
+
 }

@@ -33,23 +33,29 @@ public class MixtureController {
     public ResponseEntity<?> create(@RequestBody MixtureReq mixtureReq)
             throws InsertException {
         Mixture mixture = this.mixtureMapper.mixtureResToMixture(mixtureReq);
-        this.mixtureService.create(mixture,mixtureReq.getRows());
+        this.mixtureService.create(mixture, mixtureReq.getRows());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Collection<MixtureShortRes>> findAllMixture(@RequestParam(value = "query") String query){
+    public ResponseEntity<Collection<MixtureShortRes>> findAllMixture(@RequestParam(value = "query") String query) {
         return ResponseEntity.ok(mixtureService.findByQuery(query));
     }
 
     @GetMapping("/search/{number}")
-    public ResponseEntity<MixtureRes> findMixtureByNumber(@PathVariable("number") Integer number){
-        try {
-            return ResponseEntity.ok(mixtureService.findByNumber(number));
-        }catch (Exception e){
-            return ResponseEntity.notFound().build();
-        }
-
+    public ResponseEntity<MixtureRes> findMixtureByNumber(@PathVariable("number") Integer number) {
+        return ResponseEntity.ok(mixtureService.findByNumber(number));
     }
 
+    @GetMapping("/findNumberByLot/{lot}")
+    public ResponseEntity<Integer> findNumberByLot(@PathVariable("lot") String lot){
+        return ResponseEntity.ok(mixtureService.findNumberByLot(lot));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editMixture(@PathVariable("id") Integer id, @RequestBody MixtureReq mixtureReq){
+        Mixture mixture = this.mixtureMapper.mixtureResToMixture(mixtureReq);
+        this.mixtureService.edit(id, mixture, mixtureReq.getRows());
+        return ResponseEntity.ok().build();
+    }
 }
