@@ -16,7 +16,9 @@ public enum BusinessExceptionReason implements BusinessExceptionPolicy {
     CATALOG_PRIORITY_NOT_FOUND("catalog_priority_not_found", "No se encontró la prioridad con el id %s", HttpStatus.NOT_FOUND),
     PROJECT_NOT_FOUND("project_not_found", "No se encontró el proyecto con el id %s", HttpStatus.NOT_FOUND),
     DEFAULT_ORDER_STATUS_NOT_FOUND("default_order_status_not_found", "No se encontró el estado de orden por defecto", HttpStatus.NOT_FOUND),
-    REPEATED_ORDER_CODE("repeated_order_code", "El código de orden '%s' ya existe", HttpStatus.BAD_REQUEST);
+    REPEATED_ORDER_CODE("repeated_order_code", "El código de orden '%s' ya existe", HttpStatus.BAD_REQUEST),
+    MIXTURE_NOT_FOUND("mixture_not_found", "No se encontró la orden de mezcla para el id %s", HttpStatus.NOT_FOUND),
+    MIXTURE_RECEIPT_FAILED("mixture_receipt_failed", "No se pudo generar el comprobante de mezcla", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
     private final String message;

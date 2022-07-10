@@ -5,6 +5,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.crsoft.cartonplast.common.exception.BusinessException;
+import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
 import org.crsoft.cartonplast.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.constant.ReceiptConstant;
@@ -38,7 +40,7 @@ public class ReceiptGeneratorUtil {
         }
     }
 
-    public Map<String, Object> getReportCommonData(GenerateReceiptReq generateReceiptReq) {
+    public Map<String, Object> getStoreReportCommonData(GenerateReceiptReq generateReceiptReq) {
         final Map<String, Object> parameters = new HashMap<>();
         try {
             Resource resource = resourceLoader.getResource(GlobalConstant.LOGO_CP_PATH);
@@ -58,4 +60,14 @@ public class ReceiptGeneratorUtil {
         return parameters;
     }
 
+    public Map<String, Object> getReportCommonData() {
+        final Map<String, Object> parameters = new HashMap<>();
+        try {
+            Resource resource = resourceLoader.getResource(GlobalConstant.LOGO_CP_PATH);
+            parameters.put("cpLogo", resource.getInputStream());
+        } catch (IOException e) {
+            throw new BusinessException(BusinessExceptionReason.MIXTURE_RECEIPT_FAILED);
+        }
+        return parameters;
+    }
 }

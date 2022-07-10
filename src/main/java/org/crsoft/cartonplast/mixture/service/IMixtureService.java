@@ -2,6 +2,7 @@ package org.crsoft.cartonplast.mixture.service;
 
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.mixture.model.Mixture;
+import org.crsoft.cartonplast.vo.req.GenerateMixtureReceiptReq;
 import org.crsoft.cartonplast.vo.req.MixtureDetailReq;
 import org.crsoft.cartonplast.vo.res.MixtureRes;
 import org.crsoft.cartonplast.vo.res.MixtureShortRes;
@@ -21,4 +22,7 @@ public interface IMixtureService {
 
     MixtureRes findByNumber(Integer number);
 
+    byte[] generateReceipt(GenerateMixtureReceiptReq receiptReq);
+
+    GenerateMixtureReceiptReq generateReceiptData(Integer mixtureId);
 }

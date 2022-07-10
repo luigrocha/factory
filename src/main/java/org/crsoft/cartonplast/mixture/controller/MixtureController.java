@@ -3,12 +3,16 @@ package org.crsoft.cartonplast.mixture.controller;
 import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
 import org.crsoft.cartonplast.common.exception.InsertException;
+import org.crsoft.cartonplast.common.util.HttpUtil;
 import org.crsoft.cartonplast.mixture.model.Mixture;
 import org.crsoft.cartonplast.mixture.service.IMixtureService;
 import org.crsoft.cartonplast.mixture.service.mapper.MixtureMapper;
+import org.crsoft.cartonplast.vo.req.GenerateMixtureReceiptReq;
+import org.crsoft.cartonplast.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.vo.req.MixtureReq;
 import org.crsoft.cartonplast.vo.res.MixtureRes;
 import org.crsoft.cartonplast.vo.res.MixtureShortRes;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,4 +56,14 @@ public class MixtureController {
 
     }
 
+    @GetMapping(value = "/get-receipt/{mixtureId}", produces = "application/pdf")
+    public ResponseEntity<byte[]> getReceipt(
+            @PathVariable("mixtureId") Integer mixtureId){
+        GenerateMixtureReceiptReq receiptReq = this.mixtureService.generateReceiptData(mixtureId);
+        byte[] pdf = mixtureService.generateReceipt(receiptReq);
+        return new ResponseEntity<>(
+                pdf,
+                HttpUtil.getDefaultPDFHeaders(receiptReq.getNumber()),
+                HttpStatus.OK);
+    }
 }
