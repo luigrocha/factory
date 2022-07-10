@@ -26,6 +26,7 @@ export interface Order {
   pendingQuantity: number;
   shippedQuantity: number;
   priority: Priority;
+  numberMixture?: number;
 }
 
 export interface CreateOrder {

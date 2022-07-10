@@ -36,7 +36,7 @@
             >{{ formErrors.required }}</small>
           </p>
           <p class="col-6 md:col-2">
-              Total Real: {{totalReal | number: "":"es"}}
+            Total Real: {{totalReal | number: "":"es"}}
           </p>
         </div>
         <div *ngIf="die.value" class="grid">
@@ -87,6 +87,7 @@
               label="Obtener mezclas"
               pButton
               pRipple
+              [disabled]="isEdit"
             ></button>
           </p>
         </div>
@@ -109,6 +110,7 @@
                 min="0"
                 pInputText
                 type="number"
+                [disabled]="isEdit"
               />
               <span class="p-inputgroup-addon">Kg</span>
             </div>
@@ -132,6 +134,7 @@
                 min="0"
                 pInputText
                 type="number"
+                [disabled]="isEdit"
               />
               <span class="p-inputgroup-addon">Kg c/u</span>
             </div>
@@ -147,6 +150,7 @@
             label="Añadir Item"
             pButton
             pRipple
+            [disabled]="isEdit"
           ></button>
         </div>
 
@@ -269,6 +273,8 @@
                   pInitEditableRow
                   pRipple
                   type="button"
+                  (click)="onEditing(index)"
+                  [disabled]="isEdit"
                 ></button>
                 <button
                   (click)="deleteRow(index)"
@@ -278,6 +284,7 @@
                   pButton
                   pRipple
                   type="button"
+                  [disabled]="isEdit"
                 ></button>
                 <button
                   (click)="onRowEditSave()"
@@ -338,7 +345,7 @@
 
         <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
           <button
-            [disabled]="form.invalid"
+            [disabled]="form.invalid || isEdit"
             class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
             icon="pi pi-plus"
             label="Guardar"
@@ -346,14 +353,36 @@
             pRipple
             type="submit"
           ></button>
-          <!--<button
+          <button
+            *ngIf="isEdit"
+            [disabled]="!isEdit"
+            (click)="isEdit = !isEdit"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            icon="pi pi-pencil"
+            label="Editar"
+            pButton
+            pRipple
+          ></button>
+          <button
+            *ngIf="isEdit"
+            [disabled]="!isEdit"
+            (click)="showPdf()"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            icon="pi pi-file-pdf"
+            label="Ver PDF"
+            pButton
+            pRipple
+          ></button>
+
+          <button
+            *ngIf="isSusses"
             class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
             icon="pi pi-table"
             label="Regresar"
             pButton
             pRipple
             routerLink="/home/mezcla"
-          ></button>-->
+          ></button>
         </div>
       </div>
     </form>

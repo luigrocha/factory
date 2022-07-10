@@ -4,11 +4,9 @@ import {OrderService} from '../../../../core/http/orders/order.service';
 import {Order} from '../../../../types/order.types';
 import {OrderStatus} from '../../../../types/enums/order-status';
 import {MixtureShort} from '../../../../types/mixture.types';
-import {ShortPerson} from '../../../../types/person.types';
 import {MixtureService} from '../../../../core/http/mixture/mixture.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {FORM_ERROR_MESSAGES} from '../../../../core/constants/form-error';
-import {CreateUser, UpdateUser} from '../../../../types/user.types';
 import {Router} from '@angular/router';
 
 @Component({
@@ -36,6 +34,14 @@ export class MixtureListComponent implements OnInit {
     ]);
   }
 
+  get mixture() {
+    return this.form.get('mixture');
+  }
+
+  get lot() {
+    return this.form.get('lot');
+  }
+
   ngOnInit() {
     this.getOrdersByStatus();
     this.form = this.fb.group({
@@ -48,21 +54,20 @@ export class MixtureListComponent implements OnInit {
     });
   }
 
-  get mixture(){
-    return this.form.get('mixture');
-  }
-
-  get lot(){
-    return this.form.get('lot');
-  }
-
   getOrdersByStatus() {
     this.orderService.getOrdersByStatus(OrderStatus.PENDING).subscribe(orders => {
       this.orders = orders;
+      this.orders.forEach(order => this.getNumberByLot(order));
     });
   }
 
-  filterMixtures($event: any){
+  getNumberByLot(order: Order){
+    this.mixtureService.getNumberByLot(order.lot).subscribe(num => {
+      order.numberMixture = num;
+    });
+  }
+
+  filterMixtures($event: any) {
     const query = $event.query;
     if (query) {
       this.mixtureService.search(query)
@@ -72,19 +77,15 @@ export class MixtureListComponent implements OnInit {
     }
   }
 
-  onSelect(e: any){
+  onSelect(e: any) {
     this.lot.setValue(e);
   }
 
-  save(){
+  save() {
     if (this.form.invalid) {
       return;
     }
     const mixture: MixtureShort = this.form.getRawValue().lot;
-    this.router.navigate(['/home/mezcla/crear/' + mixture.order.lot]);
+    this.router.navigate(['/home/mezcla/crear/' + mixture.order.lot + '/' + mixture.number]);
   }
-
-
-
-
 }

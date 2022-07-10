@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
 import {environment} from 'src/environments/environment';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {AuthService} from '../../auth/service/auth.service';
-import {MixtureCreate, MixtureShort} from '../../../types/mixture.types';
+import {MixtureCreate, MixtureRes, MixtureShort} from '../../../types/mixture.types';
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +19,26 @@ export class MixtureService {
   }
 
   create(body: MixtureCreate): Observable<any> {
-    return this.http.post<any>(this.URL, body   );
+    return this.http.post<any>(this.URL, body);
   }
 
   search(query: string): Observable<MixtureShort[]> {
     const url = this.URL + '/search?query=' + query;
     return this.http.get<MixtureShort[]>(url);
+  }
+
+  getMixtureByNumber(num: number): Observable<MixtureRes> {
+    const url = this.URL + '/search/' + num;
+    return this.http.get<MixtureRes>(url);
+  }
+
+  getNumberByLot(lot: string): Observable<number>{
+    const url = this.URL + '/findNumberByLot/' + lot;
+    return this.http.get<number>(url);
+  }
+
+  edit(id: number, body: MixtureCreate): Observable<any> {
+    return this.http.put<any>(this.URL + '/' + id , body);
   }
 
 }
