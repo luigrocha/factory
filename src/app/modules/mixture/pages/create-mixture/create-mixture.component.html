@@ -87,7 +87,7 @@
               label="Obtener mezclas"
               pButton
               pRipple
-              [disabled]="isEdit"
+              [disabled]="isEditing"
             ></button>
           </p>
         </div>
@@ -110,7 +110,7 @@
                 min="0"
                 pInputText
                 type="number"
-                [disabled]="isEdit"
+                [disabled]="isEditing"
               />
               <span class="p-inputgroup-addon">Kg</span>
             </div>
@@ -134,7 +134,7 @@
                 min="0"
                 pInputText
                 type="number"
-                [disabled]="isEdit"
+                [disabled]="isEditing"
               />
               <span class="p-inputgroup-addon">Kg c/u</span>
             </div>
@@ -150,7 +150,7 @@
             label="Añadir Item"
             pButton
             pRipple
-            [disabled]="isEdit"
+            [disabled]="isEditing"
           ></button>
         </div>
 
@@ -274,7 +274,7 @@
                   pRipple
                   type="button"
                   (click)="onEditing(index)"
-                  [disabled]="isEdit"
+                  [disabled]="isEditing"
                 ></button>
                 <button
                   (click)="deleteRow(index)"
@@ -284,7 +284,7 @@
                   pButton
                   pRipple
                   type="button"
-                  [disabled]="isEdit"
+                  [disabled]="isEditing"
                 ></button>
                 <button
                   (click)="onRowEditSave()"
@@ -345,7 +345,7 @@
 
         <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
           <button
-            [disabled]="form.invalid || isEdit"
+            [disabled]="form.invalid || isEditing"
             class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
             icon="pi pi-plus"
             label="Guardar"
@@ -354,9 +354,9 @@
             type="submit"
           ></button>
           <button
-            *ngIf="isEdit"
-            [disabled]="!isEdit"
-            (click)="isEdit = !isEdit"
+            *ngIf="isEditing"
+            [disabled]="!isEditing"
+            (click)="isEditing = !isEditing"
             class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
             icon="pi pi-pencil"
             label="Editar"
@@ -364,8 +364,8 @@
             pRipple
           ></button>
           <button
-            *ngIf="isEdit"
-            [disabled]="!isEdit"
+            *ngIf="isEditing"
+            [disabled]="!isEditing"
             (click)="showPdf()"
             class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
             icon="pi pi-file-pdf"
@@ -394,8 +394,8 @@
   <h5>Última mezcla: 1</h5>
   <div class="p-fluid formgrid">
     <div class="field">
-      <label for="client">Cliente</label>
-      <input id="client" maxlength="32" pInputText type="text"/>
+      <label for="material">Producto</label>
+      <input id="material" maxlength="32" pInputText type="text"/>
     </div>
     <div class="field">
       <label for="die">Troquel</label>

@@ -42,7 +42,7 @@ export class CreateMixtureComponent implements OnInit {
   mixtureTo: string;
   sheets: number;
   numberParam: number;
-  isEdit: boolean;
+  isEditing: boolean;
   isSusses: boolean;
   mixtureEdit: MixtureRes;
 
@@ -147,7 +147,7 @@ export class CreateMixtureComponent implements OnInit {
           this.getProjectToCodeGen(order.productCode);
         });
       } else {
-        this.isEdit = true;
+        this.isEditing = true;
         this.getMixtureByNumber(params.num);
       }
     });
@@ -249,7 +249,7 @@ export class CreateMixtureComponent implements OnInit {
       return;
     }
     const body: MixtureCreate = {...this.form.getRawValue()};
-    if (this.mixtureEdit.id){
+    if (this.mixtureEdit){
       body.id = this.mixtureEdit.id;
       body.date = this.mixtureEdit.date;
     }else{
@@ -268,6 +268,7 @@ export class CreateMixtureComponent implements OnInit {
         (data => {
           this.toastService.success('Mezcla actualizada');
           this.isSusses = true;
+          this.prepare.reset();
         })
       );
     }else {
@@ -275,6 +276,7 @@ export class CreateMixtureComponent implements OnInit {
         (data => {
           this.toastService.success('Mezcla creada');
           this.isSusses = true;
+          this.prepare.reset();
         })
       );
     }
@@ -369,8 +371,10 @@ export class CreateMixtureComponent implements OnInit {
 
   onEditing(index: number){
     const value = this.getRowsType(index).value;
-    const data = {value};
-    this.onTypeSelected(data);
+    if (value){
+      const data = {value};
+      this.onTypeSelected(data);
+    }
   }
 
   onRowEditSave() {
