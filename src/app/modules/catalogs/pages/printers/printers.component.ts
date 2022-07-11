@@ -1,284 +1,179 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { PrinterService } from 'src/app/core/http/catalogs/printers/printer.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { TypePermission } from 'src/app/types/permission';
-import { Printer } from 'src/app/types/printer.types';
+import { CreatePrinter, Printer, UpdatePrinter } from 'src/app/types/printer.types';
+import { TableColumn } from 'src/app/types/table.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
+import { ThicknessModalComponent } from 'src/app/modules/catalogs/components/thickness-modal/thickness-modal.component';
+import { CreateThickness, UpdateThickness } from 'src/app/types/thickness.types';
+import { PrinterModalComponent } from 'src/app/modules/catalogs/components/printer-modal/printer-modal.component';
 
 @Component({
   selector: 'app-printers',
   templateUrl: './printers.component.html',
   styleUrls: ['./printers.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class PrintersComponent implements OnInit {
 
-  printerDialog: boolean;
-
-  selectedPrinter: Printer[];
-
-  submitted: boolean;
-
-  cols: any[];
-
-  printers: Printer[];
-
-  printer: Printer;
-
-  loading = true;
-
+  columns: TableColumn<Printer>[];
+  pageSize: number = 10;
+  printers: Printer[] = [];
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+  addDialogRef: DynamicDialogRef;
+  selectedPrinter: Printer;
+  menuItems: MenuItem[] = [];
   permissionsPage: TypePermission[];
-
-  items: MenuItem[] = [];
-
-  printerSelect: Printer;
+  selectedPrinters: Printer[];
 
   constructor(
-    private messageService: MessageService,
+    private toastService: ToastService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private printerService: PrinterService,
     private permissionService: PermissionService,
+    private dialogService: DialogService
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Catálogos' },
-      { label: 'Impresoras', routerLink: ['home/catalogs/impresoras'] },
+      {label: 'Diseño'},
+      {label: 'Catálogos'},
+      {label: 'Impresoras', routerLink: ['home/catalogs/impresoras']},
     ]);
   }
 
   ngOnInit() {
     this.getPermissionsPage();
-    this.getAll();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 500);
-    this.cols = [
-      { field: 'name', header: 'Nombre' },
-      { field: 'numColors', header: 'N° Colores' },
-      { field: 'description', header: 'Descripción' },
+    this.getAllPrinters();
+    this.columns = [
+      {field: 'name', header: 'Nombre'},
+      {field: 'numColors', header: 'N° Colores'},
+      {field: 'description', header: 'Descripción'},
     ];
   }
 
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Editar',
         icon: 'pi pi-pencil',
-        command: (e) => this.editPrinter(this.printerSelect)
+        command: () => this.editPrinter()
       });
     }
     if (this.isAllow(PermissionEnum.DELETE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Eliminar',
         icon: 'pi pi-trash',
-        command: (e) => this.deletePrinter(this.printerSelect)
+        command: () => this.deletePrinter()
       });
     }
   }
 
-  openNew() {
-    this.printer = {};
-    this.submitted = false;
-    this.printerDialog = true;
+  editPrinter() {
+    this.addDialogRef = this.dialogService.open(PrinterModalComponent, {
+      data: this.selectedPrinter,
+      header: `Actualizar impresora ${this.selectedPrinter.name}`,
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((printer: UpdatePrinter) => {
+        if (printer) {
+          this.printerService.update(this.selectedPrinter.id, printer)
+            .subscribe(() => {
+              this.toastService.success('Impresora actualizada correctamente');
+              this.getAllPrinters();
+            });
+        }
+      });
   }
 
-  editPrinter(printer: Printer) {
-    this.printer = { ...printer };
-    this.printerDialog = true;
-  }
-
-  deletePrinter(printer: Printer) {
+  deletePrinter() {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar la impresora ' + printer.name + '?',
+        '¿Estas seguro de eliminar la impresora ' + this.selectedPrinter.name + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.printerService.delete(printer.id).subscribe(
-          (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Impresora Eliminada',
-              life: 3000,
-            });
-            this.printers = [];
-            this.getAll();
-          },
-          (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
-          }
-        );
+        this.printerService.delete(this.selectedPrinter.id)
+          .subscribe(deleted => {
+            if (deleted) {
+              this.toastService.success('Impresora eliminada correctamente');
+              this.getAllPrinters();
+            } else {
+              this.toastService.error('Error al eliminar la impresora');
+            }
+          });
       },
     });
   }
 
   deleteSelectedPrinters() {
     this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar las impresoras seleccionados?',
+      message: '¿Estás seguro de eliminar las impresoras seleccionados?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.selectedPrinter.forEach(printer => {
-          this.printerService.delete(printer.id).subscribe(
-            (res) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Impresora Eliminada',
-                life: 3000,
-              });
-              this.printers = [];
-              this.getAll();
-            },
-            (err) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error,
-                life: 3000,
-              });
-            }
-          );
+        this.selectedPrinters.forEach(printer => {
+          this.printerService.delete(printer.id)
+            .subscribe(deleted => {
+              if (deleted) {
+                this.toastService.success('Impresora eliminada correctamente');
+                this.getAllPrinters();
+              } else {
+                this.toastService.error('Error al eliminar la impresora');
+              }
+            });
+          this.selectedPrinters = [];
         });
-        this.selectedPrinter = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Impresoras Elimnadas',
-          life: 3000,
-        });
-      },
+      }
     });
   }
 
-  savePrinter() {
-    this.submitted = true;
-
-    if (this.printer.id) {
-      this.printerService.update(this.printer.id, this.printer).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Impresora Actualizada',
-            life: 3000,
-          });
-          this.printers = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else if (this.isValidToSave()) {
-      this.printerService.create(this.printer).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Impresora Creada',
-            life: 3000,
-          });
-          this.printers = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'Llene todos los campos',
-        life: 3000,
+  getAllPrinters() {
+    this.printerService.getAll()
+      .subscribe(printers => {
+        this.printers = printers;
       });
-      this.printerDialog = true;
-      return;
-    }
-
-    this.printers = [...this.printers];
-    this.printerDialog = false;
-    this.printer = {};
-  }
-
-  hideDialog() {
-    this.printerDialog = false;
-    this.submitted = false;
-  }
-
-  getAll() {
-    this.printerService.getAll().subscribe((printers) => {
-      this.printers = printers;
-      this.loading = false;
-    });
-  }
-
-  isValidToSave(): boolean {
-    return this.printer.name && this.printer.numColors && this.printer.description ? true : false;
   }
 
   getPermissionsPage() {
-    this.permissionService.findPermissionPage().subscribe(
-      (data) => {
-        this.permissionsPage = data;
-      }
-    );
+    this.permissionService.findPermissionPage()
+      .subscribe(permissions => {
+          this.permissionsPage = permissions;
+          this.getMenuItems();
+        }
+      );
   }
 
   isAllow(id: number): boolean {
-    if (this.permissionsPage) {
-      return this.permissionsPage.find(permission => permission.id === id).flag;
-    }
-    return false;
+    return checkIfOptionIsAllowed(this.permissionsPage, id);
   }
 
+  createPrinter() {
+    this.addDialogRef = this.dialogService.open(PrinterModalComponent, {
+      header: 'Crear nueva impresora',
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((printer: CreatePrinter) => {
+        if (printer) {
+          this.printerService.create(printer)
+            .subscribe(() => {
+              this.toastService.success('Impresora creada correctamente');
+              this.getAllPrinters();
+            });
+        }
+      });
+  }
 }

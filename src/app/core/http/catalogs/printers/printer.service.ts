@@ -1,39 +1,34 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/auth/service/auth.service';
-import { Printer } from 'src/app/types/printer.types';
+import { CreatePrinter, Printer, UpdatePrinter } from 'src/app/types/printer.types';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrinterService {
-  httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json',
-        userName: this.authService.getLoggedUser().preferred_username
-      })
-  };
 
-  URL_PRINTER = environment.appApiUrl + '/printers';
+  private readonly URL = environment.appApiUrl + '/printers';
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient) {
+  }
 
   getAll(): Observable<Printer[]> {
-    return this.http.get<Printer[]>(this.URL_PRINTER + '', this.httpOptions);
+    return this.http.get<Printer[]>(this.URL);
   }
 
-  create(user: Printer): Observable<any> {
-    return this.http.post<any>(this.URL_PRINTER + '', user, this.httpOptions);
+  create(printer: CreatePrinter): Observable<Printer> {
+    return this.http.post<Printer>(this.URL, printer);
   }
 
-  update(id: number, user: Printer): Observable<any> {
-    return this.http.patch<any>(this.URL_PRINTER + '/' + id, user, this.httpOptions);
+  update(id: number, printer: UpdatePrinter): Observable<Printer> {
+    const url = `${this.URL}/${id}`;
+    return this.http.patch<Printer>(url, printer);
   }
 
   delete(id: number) {
-    return this.http.delete<any>(this.URL_PRINTER + '/' + id, this.httpOptions);
+    const url = `${this.URL}/${id}`;
+    return this.http.delete<any>(url);
   }
 }

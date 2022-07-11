@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Role, RoleEnum, RoleType } from 'src/app/types/role.types';
@@ -9,23 +9,22 @@ import { environment } from 'src/environments/environment';
 })
 export class RoleService {
 
-  httpOptions = {headers: new HttpHeaders({'Content-type': 'application/json'})};
+  private readonly URL = environment.userApi + '/roles';
 
-  URL_ROL = environment.userApi + '/roles';
 
   constructor(private http: HttpClient) {
   }
 
   getAllRole(): Observable<Role[]> {
-    return this.http.get<Role[]>(this.URL_ROL, this.httpOptions);
+    return this.http.get<Role[]>(this.URL);
   }
 
   addRolesUser(id: string, data: string[]): Observable<any> {
-    return this.http.patch<any>(this.URL_ROL + '/addRolesUser/' + id, data, this.httpOptions);
+    return this.http.patch<any>(this.URL + '/addRolesUser/' + id, data);
   }
 
   removeRolesUser(id: string, data: string[]): Observable<any> {
-    return this.http.patch<any>(this.URL_ROL + '/removeRolesUser/' + id, data, this.httpOptions);
+    return this.http.patch<any>(this.URL + '/removeRolesUser/' + id, data);
   }
 
   getRoleType(name: string): RoleType {

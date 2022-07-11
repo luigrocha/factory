@@ -33,6 +33,12 @@ export interface Location {
   description?: string;
 }
 
+export interface CreateLocation extends Omit<Location, 'id'> {
+}
+
+export interface UpdateLocation extends Omit<Location, 'id'> {
+}
+
 export interface Document {
   id?: number;
   name?: string;

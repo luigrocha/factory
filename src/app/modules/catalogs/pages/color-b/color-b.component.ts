@@ -1,285 +1,185 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { ColorAService } from 'src/app/core/http/catalogs/color-a/color-a.service';
 import { ColorBService } from 'src/app/core/http/catalogs/color-b/color-b.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { ColorA } from 'src/app/types/colorA.types';
-import { ColorB } from 'src/app/types/colorB.types';
+import { ColorB, CreateColorB, UpdateColorB } from 'src/app/types/colorB.types';
 import { TypePermission } from 'src/app/types/permission';
+import { TableColumn } from 'src/app/types/table.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
+import { ColorAModalComponent } from 'src/app/modules/catalogs/components/color-a-modal/color-a-modal.component';
+import { ColorA } from 'src/app/types/colorA.types';
+import { ColorBModalComponent } from 'src/app/modules/catalogs/components/color-b-modal/color-b-modal.component';
 
 @Component({
   selector: 'app-color-b',
   templateUrl: './color-b.component.html',
   styleUrls: ['./color-b.component.scss'],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class ColorBComponent implements OnInit {
 
-  colorDialog: boolean;
-
-  selectedColor: ColorB[];
-
-  submitted: boolean;
-
-  cols: any[];
-
-  colors: ColorB[];
-
-  color: ColorB;
-
-  loading = true;
-
-  colorsA: ColorA[];
-
-  colorASelected: any;
-
-  isEditing: boolean;
-
+  columns: TableColumn<ColorB>[];
+  pageSize: number = 10;
+  colors: ColorB[] = [];
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+  addDialogRef: DynamicDialogRef;
+  selectedColor: ColorB;
+  menuItems: MenuItem[] = [];
   permissionsPage: TypePermission[];
-
-  items: MenuItem[] = [];
-
-  colorSelect: ColorB;
+  selectedColors: ColorB[];
 
   constructor(
-    private messageService: MessageService,
+    private toastService: ToastService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private colorBService: ColorBService,
     private colorAService: ColorAService,
     private permissionService: PermissionService,
+    private dialogService: DialogService,
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Catálogos' },
-      { label: 'Colores B', routerLink: ['home/catalogs/colores-b'] },
+      {label: 'Diseño'},
+      {label: 'Catálogos'},
+      {label: 'Colores B', routerLink: ['home/catalogs/colores-b']},
     ]);
   }
 
   ngOnInit() {
     this.getPermissionsPage();
-    this.getAll();
-    this.getColorsA();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 500);
-    this.cols = [
-      { field: 'color', header: 'Color' },
-      { field: 'colorA', header: 'Color Primario' },
-      { field: 'index', header: 'Indice' },
-      { field: 'dosage', header: 'Dosis' },
-      { field: 'description', header: 'Descripción' },
+    this.getAllColors();
+    this.columns = [
+      {field: 'color', header: 'Color'},
+      {field: 'colorA.name', header: 'Color Primario'},
+      {field: 'index', header: 'Índice'},
+      {field: 'dosage', header: 'Dosis'},
+      {field: 'description', header: 'Descripción'},
+      {field: 'observation', header: 'Observaciones'},
     ];
   }
 
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Editar',
         icon: 'pi pi-pencil',
-        command: (e) => this.editColor(this.colorSelect)
+        command: (e) => this.editColor()
       });
     }
     if (this.isAllow(PermissionEnum.DELETE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Eliminar',
         icon: 'pi pi-trash',
-        command: (e) => this.deleteColor(this.colorSelect)
+        command: (e) => this.deleteColor()
       });
     }
   }
 
-  openNew() {
-    this.color = {};
-    this.submitted = false;
-    this.colorDialog = true;
+  editColor(): void {
+    this.addDialogRef = this.dialogService.open(ColorBModalComponent, {
+      data: this.selectedColor,
+      header: `Actualizar color B ${this.selectedColor.description}`,
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((color: UpdateColorB) => {
+        if (color) {
+          this.colorBService.update(this.selectedColor.id, color)
+            .subscribe(() => {
+              this.toastService.success('Color B actualizado correctamente');
+              this.getAllColors();
+            });
+        }
+      });
   }
 
-  editColor(color: ColorB) {
-    this.color = { ...color };
-    this.colorDialog = true;
-    this.isEditing = true;
-  }
-
-  deleteColor(color: ColorB) {
+  deleteColor(): void {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar el color ' + color.description + '?',
+        '¿Estas seguro de eliminar el color ' + this.selectedColor.description + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.colorBService.delete(color.id).subscribe(
-          (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Color B Eliminado',
-              life: 3000,
-            });
-            this.colors = [];
-            this.getAll();
-          },
-          (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
-          }
-        );
-
+        this.colorBService.delete(this.selectedColor.id)
+          .subscribe(deleted => {
+              if (deleted) {
+                this.toastService.success('Color eliminado correctamente');
+                this.getAllColors();
+              } else {
+                this.toastService.error('Error al eliminar el color');
+              }
+            }
+          );
       },
     });
   }
 
   deleteSelectedColors() {
     this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar los colores seleccionados?',
+      message: '¿Estás seguro de eliminar los colores seleccionados?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.selectedColor.forEach(color => {
-          this.colorBService.delete(color.id).subscribe(
-            (res) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Color Eliminado',
-                life: 3000,
-              });
-              this.colors = [];
-              this.getAll();
-            },
-            (err) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error,
-                life: 3000,
-              });
-            }
-          );
-        })
-
-        this.selectedColor = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Colores Elimnados',
-          life: 3000,
+        this.selectedColors.forEach(color => {
+          this.colorBService.delete(color.id)
+            .subscribe(deleted => {
+                if (deleted) {
+                  this.toastService.success('Color eliminado correctamente');
+                  this.getAllColors();
+                } else {
+                  this.toastService.error('Error al eliminar el color');
+                }
+              }
+            );
         });
       },
     });
   }
 
-  saveColor() {
-    this.submitted = true;
-
-    if (this.isEditing) {
-      this.colorBService.update(this.color.id, this.color).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Color B Actualizado',
-            life: 3000,
-          });
-          this.colors = [];
-          this.getAll();
-          this.isEditing = false;
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else if (this.isValidToSave()) {
-      this.colorBService.create(this.color).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Color B Creado',
-            life: 3000,
-          });
-          this.colors = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'Llene todos los campos',
-        life: 3000,
+  getAllColors() {
+    this.colorBService.getAll()
+      .subscribe(colors => {
+        this.colors = colors;
       });
-      this.colorDialog = true;
-      return;
-    }
-
-    this.colors = [...this.colors];
-    this.colorDialog = false;
-    this.color = {};
-  }
-
-  hideDialog() {
-    this.colorDialog = false;
-    this.submitted = false;
-  }
-
-  getAll() {
-    this.colorBService.getAll().subscribe((colors) => {
-      this.colors = colors;
-      this.loading = false;
-    });
-  }
-
-  getColorsA() {
-    this.colorAService.getAll().subscribe((colorsA) => {
-      this.colorsA = colorsA;
-    });
-  }
-
-  onColorASelected(e: any) {
-    const value = e.value;
-    const filter = this.colors.filter(color => color.colorA.id === value.id);
-    const numIndex = filter.length + 1;
-    this.color.id = value.id + numIndex;
-    this.color.index = numIndex;
-  }
-
-  isValidToSave(): boolean {
-    return this.color.id && this.color.colorA && this.color.index && this.color.dosage && this.color.description ? true : false;
   }
 
   getPermissionsPage() {
-    this.permissionService.findPermissionPage().subscribe(
-      (data) => {
-        this.permissionsPage = data;
-      }
-    );
+    this.permissionService.findPermissionPage()
+      .subscribe(permissions => {
+          this.permissionsPage = permissions;
+          this.getMenuItems();
+        }
+      );
   }
 
   isAllow(id: number): boolean {
-    if (this.permissionsPage) {
-      return this.permissionsPage.find(permission => permission.id === id).flag;
-    }
-    return false;
+    return checkIfOptionIsAllowed(this.permissionsPage, id);
   }
 
+  createColor(): void {
+    this.addDialogRef = this.dialogService.open(ColorBModalComponent, {
+      header: 'Crear nuevo color B',
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((color: CreateColorB) => {
+        if (color) {
+          this.colorBService.create(color)
+            .subscribe(() => {
+              this.toastService.success('Color B creado correctamente');
+              this.getAllColors();
+            });
+        }
+      });
+  }
 }

@@ -21,6 +21,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { CreateOrderComponent } from './pages/create-order/create-order.component';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CalendarModule } from 'primeng/calendar';
+import { ViewOrderComponent } from './pages/view-order/view-order.component';
+import { CardModule } from 'primeng/card';
+import { TabViewModule } from 'primeng/tabview';
+import { StyleClassModule } from 'primeng/styleclass';
+import { DividerModule } from 'primeng/divider';
 
 @NgModule({
   imports: [
@@ -44,11 +49,16 @@ import { CalendarModule } from 'primeng/calendar';
     ReactiveFormsModule,
     InputTextareaModule,
     CalendarModule,
+    CardModule,
+    TabViewModule,
+    StyleClassModule,
+    DividerModule,
   ],
   declarations: [
     OrderComponent,
     OrderStatusComponent,
     CreateOrderComponent,
+    ViewOrderComponent,
   ]
 })
 export class OrderModule { }
