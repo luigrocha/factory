@@ -11,6 +11,7 @@ import org.crsoft.cartonplast.design.service.IColorBService;
 import org.crsoft.cartonplast.design.service.mapper.ColorBMapper;
 import org.crsoft.cartonplast.vo.req.ColorBReq;
 import org.crsoft.cartonplast.vo.res.ColorBRes;
+import org.crsoft.cartonplast.vo.res.GeneratedColorBIdRes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,5 +97,18 @@ public class ColorBService implements IColorBService {
             log.error("ColorB not found with code: {}", code);
             throw new BusinessException(BusinessExceptionReason.COLOR_B_NOT_FOUND, code);
         }
+    }
+
+    @Override
+    public GeneratedColorBIdRes generateColorBId(String colorAId) {
+        int lastCode = this.colorBRepository.findLastOrderId(colorAId);
+        int nextIndex = lastCode + 1;
+        String nextId = colorAId + nextIndex;
+
+        return GeneratedColorBIdRes.builder()
+                .generatedId(nextId)
+                .nextIndex(nextIndex)
+                .actualIndex(lastCode)
+                .build();
     }
 }

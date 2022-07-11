@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.service;
 import org.crsoft.cartonplast.design.model.ColorB;
 import org.crsoft.cartonplast.vo.req.ColorBReq;
 import org.crsoft.cartonplast.vo.res.ColorBRes;
+import org.crsoft.cartonplast.vo.res.GeneratedColorBIdRes;
 
 import java.util.Collection;
 
@@ -22,4 +23,6 @@ public interface IColorBService {
     boolean deleteColorBByCode(String code);
 
     ColorB getColorBById(String id);
+
+    GeneratedColorBIdRes generateColorBId(String colorAId);
 }

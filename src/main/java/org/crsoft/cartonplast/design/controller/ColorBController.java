@@ -3,7 +3,9 @@ package org.crsoft.cartonplast.design.controller;
 import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.design.service.impl.ColorBService;
 import org.crsoft.cartonplast.vo.req.ColorBReq;
+import org.crsoft.cartonplast.vo.req.GenerateColorBIdReq;
 import org.crsoft.cartonplast.vo.res.ColorBRes;
+import org.crsoft.cartonplast.vo.res.GeneratedColorBIdRes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +60,14 @@ public class ColorBController {
             @PathVariable("code") String code) {
         return new ResponseEntity<>(
                 this.colorBService.deleteColorBByCode(code),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/generate-id")
+    public ResponseEntity<GeneratedColorBIdRes> generateId(
+            @Valid @RequestBody GenerateColorBIdReq generateColorBIdReq) {
+        return new ResponseEntity<>(
+                this.colorBService.generateColorBId(generateColorBIdReq.getColorAId()),
                 HttpStatus.OK);
     }
 }

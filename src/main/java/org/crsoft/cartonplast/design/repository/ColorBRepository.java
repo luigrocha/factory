@@ -24,4 +24,11 @@ public interface ColorBRepository extends JpaRepository<ColorB, String> {
             "OR c.validTo > CURRENT_TIMESTAMP) " +
             "AND c.id = ?1")
     boolean existsByCodeAndIsNotDeleted(String code);
+
+    @Query("SELECT COALESCE(MAX(c.index), 0) " +
+            "FROM ColorB c " +
+            "WHERE (c.validTo IS NULL " +
+            "OR c.validTo > CURRENT_TIMESTAMP) " +
+            "AND c.colorA.id = ?1")
+    int findLastOrderId(String colorAId);
 }
