@@ -45,7 +45,8 @@ public class ColorB {
 
     @Column(
             name = "CATCOL_DESCRIPTION",
-            nullable = false
+            nullable = false,
+            length = 64
     )
     private String description;
 

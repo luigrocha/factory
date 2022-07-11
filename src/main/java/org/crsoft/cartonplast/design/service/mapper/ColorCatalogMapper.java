@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.design.service.mapper;
 
 import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.ColorCatalog;
+import org.crsoft.cartonplast.vo.req.ColorCatalogReq;
 import org.crsoft.cartonplast.vo.res.ColorCatalogRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,6 +21,8 @@ public interface ColorCatalogMapper {
     ColorCatalog colorCatalogResToColorCatalog(ColorCatalogRes colorCatalogRes);
 
     ColorCatalogRes colorCatalogToColorCatalogRes(ColorCatalog colorCatalog);
+
+    ColorCatalog colorCatalogReqToColorCatalog(ColorCatalogReq colorCatalogReq);
 
     Collection<ColorCatalogRes> colorCatalogListToColorCatalogResList(Collection<ColorCatalog> colorCatalogList);
 }

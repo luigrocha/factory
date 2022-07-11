@@ -2,6 +2,7 @@ package org.crsoft.cartonplast.design.service.mapper;
 
 import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.HomoPolymer;
+import org.crsoft.cartonplast.vo.req.HomoPolymerReq;
 import org.crsoft.cartonplast.vo.res.HomoPolymerRes;
 import org.mapstruct.Mapper;
 
@@ -17,6 +18,9 @@ public interface HomoPolymerMapper {
 
     @WithoutAuditField
     HomoPolymer homoPolymerResToHomoPolymer(HomoPolymerRes homoPolymerRes);
+
+    @WithoutAuditField
+    HomoPolymer homoPolymerReqToHomoPolymer(HomoPolymerReq homoPolymerReq);
 
     Collection<HomoPolymerRes> homoPolymersToHomoPolymersRes(Collection<HomoPolymer> homoPolymers);
 }

@@ -1,9 +1,6 @@
 package org.crsoft.cartonplast.design.service;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.design.model.Printer;
+import org.crsoft.cartonplast.vo.req.PrinterReq;
 import org.crsoft.cartonplast.vo.res.PrinterRes;
 
 import java.util.Collection;
@@ -13,14 +10,13 @@ import java.util.Collection;
  */
 public interface IPrinterService {
 
-    Collection<PrinterRes> findAllValidPrinters() throws NotFoundException;
+    Collection<PrinterRes> findAllValidPrinters();
 
-    void createPrinter(Printer printer) throws InsertException;
+    PrinterRes createPrinter(PrinterReq printer);
 
-    PrinterRes findPrinterByCode(Integer code) throws NotFoundException;
+    PrinterRes findPrinterByCode(Integer code);
 
-    void updatePrinterByCode(Integer code, Printer printer) throws NotFoundException, UpdateException;
+    PrinterRes updatePrinterByCode(Integer code, PrinterReq printer);
 
-    void deletePrinterByCode(Integer code, String userName) throws NotFoundException, UpdateException;
-
+    boolean deletePrinterByCode(Integer code);
 }
