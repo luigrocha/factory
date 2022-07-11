@@ -17,7 +17,7 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  * @author jyepez on 26/5/2022
  */
 @RestController
-@RequestMapping(V1_API_VERSION + "/status")
+@RequestMapping(V1_API_VERSION + "/states")
 public class CatalogStatusController {
 
     private final ICatalogStatusService catalogStatusService;
@@ -27,7 +27,8 @@ public class CatalogStatusController {
     }
 
     @GetMapping("/{type}")
-    private ResponseEntity<Collection<CatalogStatusRes>> findAllStatusByType(@PathVariable("type") String type) throws NotFoundException {
+    public ResponseEntity<Collection<CatalogStatusRes>> findAllStatusByType(
+            @PathVariable("type") String type) throws NotFoundException {
         return ResponseEntity.ok().body(this.catalogStatusService.findAllStatusByType(type));
     }
 }

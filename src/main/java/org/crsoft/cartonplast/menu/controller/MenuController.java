@@ -19,7 +19,7 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  * @author jyepez on 5/5/2022
  */
 @RestController
-@RequestMapping(V1_API_VERSION + "/menu")
+@RequestMapping(V1_API_VERSION + "/menus")
 public class MenuController {
 
     private final IMenuService menuService;

@@ -1,100 +1,84 @@
 package org.crsoft.cartonplast.design.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
+import org.crsoft.cartonplast.common.exception.BusinessException;
+import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
 import org.crsoft.cartonplast.design.model.ColorCatalog;
 import org.crsoft.cartonplast.design.repository.ColorCatalogRepository;
 import org.crsoft.cartonplast.design.service.IColorCatalogService;
 import org.crsoft.cartonplast.design.service.mapper.ColorCatalogMapper;
+import org.crsoft.cartonplast.vo.req.ColorCatalogReq;
 import org.crsoft.cartonplast.vo.res.ColorCatalogRes;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
-
-import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
 
 /**
  * @author jyepez on 30/5/2022
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ColorCatalogService implements IColorCatalogService {
 
-    private static final String TABLE_NAME = "CATCATCOL";
     private final ColorCatalogRepository colorCatalogRepository;
     private final ColorCatalogMapper colorCatalogMapper;
 
-    public ColorCatalogService(ColorCatalogRepository colorCatalogRepository, ColorCatalogMapper colorCatalogMapper) {
-        this.colorCatalogRepository = colorCatalogRepository;
-        this.colorCatalogMapper = colorCatalogMapper;
+    @Override
+    public Collection<ColorCatalogRes> findAllValidColors() {
+        return this.colorCatalogMapper.colorCatalogListToColorCatalogResList(
+                this.colorCatalogRepository.findAllByValidToIsNull()
+        );
     }
 
     @Override
-    public Collection<ColorCatalogRes> findAllValidColors() throws NotFoundException {
-        try {
-            return this.colorCatalogMapper.colorCatalogListToColorCatalogResList(
-                    this.colorCatalogRepository.findAllByValidToIsNull()
-            );
-        } catch (Exception e) {
-            throw new NotFoundException(MESSAGE_NOT_FOUND);
-        }
+    @Transactional
+    public ColorCatalogRes createColorCatalog(ColorCatalogReq colorCatalogReq) {
+        return this.colorCatalogMapper.colorCatalogToColorCatalogRes(
+                this.colorCatalogRepository.save(this.colorCatalogMapper.colorCatalogReqToColorCatalog(colorCatalogReq))
+        );
     }
 
     @Override
-    public void createColorCatalog(ColorCatalog colorCatalog) throws InsertException {
-        try {
-            this.colorCatalogRepository.save(colorCatalog);
-        } catch (Exception e) {
-            log.error("Error to createColorCatalog: {}", e.getMessage());
-            throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
-        }
-    }
-
-    @Override
-    public ColorCatalogRes findColorCatalogByCode(Integer code) throws NotFoundException {
+    public ColorCatalogRes findColorCatalogByCode(Integer code) {
         return this.colorCatalogMapper.colorCatalogToColorCatalogRes(getColorCatalogByCode(code));
     }
 
     @Override
-    public void updateColorCatalogByCode(Integer code, ColorCatalog colorCatalog) throws NotFoundException, UpdateException {
+    @Transactional
+    public ColorCatalogRes updateColorCatalogByCode(
+            Integer code, ColorCatalogReq colorCatalogReq) {
         ColorCatalog colorCatalogByCode = getColorCatalogByCode(code);
-        try {
-            colorCatalogByCode.setName(colorCatalog.getName());
-            colorCatalogByCode.setColorCode(colorCatalog.getColorCode());
-            colorCatalogByCode.setUpdatedBy(colorCatalog.getUpdatedBy());
-            colorCatalogByCode.setUpdatedAt(LocalDateTime.now());
-            this.colorCatalogRepository.save(colorCatalogByCode);
-        } catch (Exception e) {
-            log.error("Error to updateColorCatalogByCode: {}", e.getMessage());
-            throw new UpdateException(TABLE_NAME, MESSAGE_UPDATE);
-        }
+        colorCatalogByCode.setName(colorCatalogReq.getName());
+        colorCatalogByCode.setColorCode(colorCatalogReq.getColorCode());
+
+        return this.colorCatalogMapper.colorCatalogToColorCatalogRes(
+                this.colorCatalogRepository.save(colorCatalogByCode)
+        );
     }
 
     @Override
-    public void deleteColorCatalogByCode(Integer code, String userName) throws NotFoundException, UpdateException {
-        ColorCatalog colorCatalog = getColorCatalogByCode(code);
-        try {
-            colorCatalog.setUpdatedBy(userName);
-            colorCatalog.setUpdatedAt(LocalDateTime.now());
-            colorCatalog.setValidTo(LocalDateTime.now());
-            this.colorCatalogRepository.save(colorCatalog);
-        } catch (Exception e) {
-            log.error("Error to deleteColorCatalogByCode: {}", e.getMessage());
-            throw new UpdateException(TABLE_NAME, MESSAGE_DELETE);
-        }
+    @Transactional
+    public boolean deleteColorCatalogByCode(Integer code) {
+        return colorCatalogRepository.findById(code)
+                .map(machine -> {
+                    machine.setValidTo(LocalDateTime.now());
+                    return true;
+                })
+                .orElse(false);
     }
 
-    private ColorCatalog getColorCatalogByCode(Integer code) throws NotFoundException {
+    private ColorCatalog getColorCatalogByCode(Integer code) {
         Optional<ColorCatalog> colorCatalog = this.colorCatalogRepository.findByIdAndValidToIsNull(code);
-        if(colorCatalog.isPresent()){
+        if (colorCatalog.isPresent()) {
             return colorCatalog.get();
-        }else {
+        } else {
             log.info("Error to getColorCatalogByCode {}", code);
-            throw new NotFoundException(MESSAGE_NOT_FOUND);
+            throw new BusinessException(BusinessExceptionReason.COLOR_CATALOG_NOT_FOUND, code);
         }
     }
 }

@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Table(
         name = "CATHOM",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "CAIHOM_HP_CODE", columnNames = "CATHOM_HP_CODE")
+        indexes = {
+                @Index(name = "CAIHOM_HP_CODE", columnList = "CATHOM_HP_CODE"),
         }
 )
 public class HomoPolymer {

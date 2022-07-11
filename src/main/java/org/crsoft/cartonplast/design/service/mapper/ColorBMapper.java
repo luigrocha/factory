@@ -2,6 +2,7 @@ package org.crsoft.cartonplast.design.service.mapper;
 
 import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
 import org.crsoft.cartonplast.design.model.ColorB;
+import org.crsoft.cartonplast.vo.req.ColorBReq;
 import org.crsoft.cartonplast.vo.res.ColorBRes;
 import org.crsoft.cartonplast.vo.res.ColorBShortRes;
 import org.mapstruct.Mapper;
@@ -22,6 +23,9 @@ public interface ColorBMapper {
     ColorB colorBResToColorB(ColorBRes colorBRes);
 
     ColorBShortRes colorBToColorBShortRes(ColorB colorB);
+
+    @WithoutAuditField
+    ColorB colorBReqToColorB(ColorBReq colorBReq);
 
     Collection<ColorBRes> colorsBToColorsBRes(Collection<ColorB> colorsB);
 }
