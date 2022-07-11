@@ -32,6 +32,8 @@ import { ColorBModalComponent } from './components/color-b-modal/color-b-modal.c
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PrinterModalComponent } from './components/printer-modal/printer-modal.component';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ColorCModalComponent } from './components/color-c-modal/color-c-modal.component';
+import { LocationModalComponent } from './components/location-modal/location-modal.component';
 
 @NgModule({
   imports: [
@@ -70,6 +72,8 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     ColorAModalComponent,
     ColorBModalComponent,
     PrinterModalComponent,
+    ColorCModalComponent,
+    LocationModalComponent,
   ],
   providers: [
     DialogService

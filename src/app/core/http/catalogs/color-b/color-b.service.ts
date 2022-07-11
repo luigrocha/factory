@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ColorB, CreateColorB, UpdateColorB } from 'src/app/types/colorB.types';
+import { ColorB, CreateColorB, GenerateColorBId, GeneratedColorBId, UpdateColorB } from 'src/app/types/colorB.types';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -30,5 +30,9 @@ export class ColorBService {
   delete(id: string): Observable<boolean> {
     const url = `${this.URL}/${id}`;
     return this.http.delete<boolean>(url);
+  }
+
+  generateColorId(body: GenerateColorBId): Observable<GeneratedColorBId> {
+    return this.http.post<GeneratedColorBId>(this.URL + '/generate-id', body);
   }
 }

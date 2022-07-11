@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PermissionEnum } from 'src/app/core/constants/permisions';
-import { ColorAService } from 'src/app/core/http/catalogs/color-a/color-a.service';
 import { ColorBService } from 'src/app/core/http/catalogs/color-b/color-b.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
@@ -12,8 +11,6 @@ import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ToastService } from 'src/app/core/services/toast.service';
 import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
-import { ColorAModalComponent } from 'src/app/modules/catalogs/components/color-a-modal/color-a-modal.component';
-import { ColorA } from 'src/app/types/colorA.types';
 import { ColorBModalComponent } from 'src/app/modules/catalogs/components/color-b-modal/color-b-modal.component';
 
 @Component({
@@ -40,7 +37,6 @@ export class ColorBComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private colorBService: ColorBService,
-    private colorAService: ColorAService,
     private permissionService: PermissionService,
     private dialogService: DialogService,
   ) {

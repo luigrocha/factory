@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ColorCatalog, CreateColorCatalog } from 'src/app/types/color-catalog.types';
+import { ColorCatalog, CreateColorCatalog, UpdateColorCatalog } from 'src/app/types/color-catalog.types';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class ColorCService {
     return this.http.post<ColorCatalog>(this.URL, color);
   }
 
-  update(id: number, color: ColorCatalog): Observable<any> {
+  update(id: number, color: UpdateColorCatalog): Observable<any> {
     const url = `${this.URL}/${id}`;
     return this.http.patch<any>(url, color);
   }

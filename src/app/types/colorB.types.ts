@@ -17,3 +17,13 @@ export interface CreateColorB extends Omit<ColorB, 'colorA'> {
 export interface UpdateColorB extends Omit<ColorB, 'colorA'> {
   colorAId: string;
 }
+
+export interface GenerateColorBId {
+  colorAId: string;
+}
+
+export interface GeneratedColorBId {
+  generatedId: string;
+  actualIndex: number;
+  nextIndex: number;
+}
