@@ -1,9 +1,7 @@
 package org.crsoft.cartonplast.design.service;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.design.model.ColorB;
+import org.crsoft.cartonplast.vo.req.ColorBReq;
 import org.crsoft.cartonplast.vo.res.ColorBRes;
 
 import java.util.Collection;
@@ -13,14 +11,15 @@ import java.util.Collection;
  */
 public interface IColorBService {
 
-    Collection<ColorBRes> findAllValidColors() throws NotFoundException;
+    Collection<ColorBRes> findAllValidColors();
 
-    void createColorB(ColorB colorB) throws InsertException, NotFoundException;
+    ColorBRes createColorB(ColorBReq colorB);
 
-    ColorBRes findColorBByCode(String code) throws NotFoundException;
+    ColorBRes findColorBByCode(String code);
 
-    void updateColorBByCode(String code, ColorB colorB) throws NotFoundException, UpdateException;
+    ColorBRes updateColorBByCode(String code, ColorBReq colorB);
 
-    void deleteColorBByCode(String code, String userName) throws NotFoundException, UpdateException;
+    boolean deleteColorBByCode(String code);
 
+    ColorB getColorBById(String id);
 }

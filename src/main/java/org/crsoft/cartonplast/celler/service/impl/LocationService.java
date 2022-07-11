@@ -1,16 +1,17 @@
 package org.crsoft.cartonplast.celler.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.celler.model.Location;
 import org.crsoft.cartonplast.celler.repository.LocationRepository;
 import org.crsoft.cartonplast.celler.service.ILocationService;
 import org.crsoft.cartonplast.celler.service.mapper.LocationMapper;
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
+import org.crsoft.cartonplast.common.exception.*;
+import org.crsoft.cartonplast.vo.req.LocationReq;
 import org.crsoft.cartonplast.vo.res.LocationRes;
 import org.keycloak.common.util.CollectionUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -23,80 +24,62 @@ import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class LocationService implements ILocationService {
 
-    private static final String TABLE_NAME = "CDTLOC";
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
 
-    public LocationService(LocationRepository locationRepository, LocationMapper locationMapper) {
-        this.locationRepository = locationRepository;
-        this.locationMapper = locationMapper;
-    }
-
     @Override
-    public Collection<LocationRes> findAllLocation() throws NotFoundException {
+    public Collection<LocationRes> findAllLocation() {
         Collection<Location> locations = this.locationRepository.findAllByValidToIsNullOrderByLocationAsc();
-        if (CollectionUtil.isNotEmpty(locations)) {
-            return this.locationMapper.locationCollectionToLocationResCollection(locations);
-        } else {
-            log.error("Error to findAllLocation");
-            throw new NotFoundException(MESSAGE_NOT_FOUND);
-        }
+        return this.locationMapper.locationCollectionToLocationResCollection(locations);
     }
 
     @Override
-    public void createLocation(Location location) throws InsertException {
-        try {
-            this.locationRepository.save(location);
-        } catch (Exception e) {
-            log.error("Error to createLocation: {}", e.getMessage());
-            throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
-        }
+    @Transactional
+    public LocationRes createLocation(LocationReq location) {
+        return this.locationMapper.locationToLocationRes(
+                this.locationRepository.save(this.locationMapper.locationReqToLocation(location))
+        );
     }
 
     @Override
-    public LocationRes findLocationByCode(Integer code) throws NotFoundException {
+    public LocationRes findLocationByCode(Integer code) {
         return this.locationMapper.locationToLocationRes(getLocationByCode(code));
     }
 
     @Override
-    public void updateLocationByCode(Integer code, Location location) throws NotFoundException, UpdateException {
+    @Transactional
+    public LocationRes updateLocationByCode(Integer code, LocationReq locationReq) {
         Location locationByCode = getLocationByCode(code);
-        try {
-            locationByCode.setLocation(location.getLocation());
-            locationByCode.setDescription(location.getDescription());
-            locationByCode.setUpdatedBy(location.getUpdatedBy());
-            locationByCode.setUpdatedAt(LocalDateTime.now());
-            this.locationRepository.save(locationByCode);
-        } catch (Exception e) {
-            log.error("Error to updateLocationByCode: {}", e.getMessage());
-            throw new UpdateException(TABLE_NAME, MESSAGE_UPDATE);
-        }
+        locationByCode.setLocation(locationReq.getLocation());
+        locationByCode.setDescription(locationReq.getDescription());
+
+        return this.locationMapper.locationToLocationRes(
+                this.locationRepository.save(locationByCode)
+        );
     }
 
     @Override
-    public void deleteLocationByCode(Integer code, String userName) throws NotFoundException, UpdateException {
-        Location location = getLocationByCode(code);
-        try {
-            location.setUpdatedBy(userName);
-            location.setUpdatedAt(LocalDateTime.now());
-            location.setValidTo(LocalDateTime.now());
-            this.locationRepository.save(location);
-        } catch (Exception e) {
-            log.error("Error to deleteLocationByCode: {}", e.getMessage());
-            throw new UpdateException(TABLE_NAME, MESSAGE_DELETE);
-        }
+    @Transactional
+    public boolean deleteLocationByCode(Integer code) {
+        return locationRepository.findById(code)
+                .map(machine -> {
+                    machine.setValidTo(LocalDateTime.now());
+                    return true;
+                })
+                .orElse(false);
     }
 
     @Override
-    public Location getLocationByCode(Integer code) throws NotFoundException {
+    public Location getLocationByCode(Integer code) {
         Optional<Location> location = this.locationRepository.findByIdAndValidToIsNull(code);
         if (location.isPresent()) {
             return location.get();
         } else {
             log.error("Error to getLocationByCode {}", code);
-            throw new NotFoundException(MESSAGE_NOT_FOUND);
+            throw new BusinessException(BusinessExceptionReason.LOCATION_NOT_FOUND, code);
         }
     }
 }

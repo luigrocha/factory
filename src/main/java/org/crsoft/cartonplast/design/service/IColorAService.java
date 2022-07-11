@@ -1,9 +1,7 @@
 package org.crsoft.cartonplast.design.service;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.design.model.ColorA;
+import org.crsoft.cartonplast.vo.req.ColorAReq;
 import org.crsoft.cartonplast.vo.res.ColorARes;
 
 import java.util.Collection;
@@ -13,15 +11,15 @@ import java.util.Collection;
  */
 public interface IColorAService {
 
-    Collection<ColorARes> findAllValidColors() throws NotFoundException;
+    Collection<ColorARes> findAllValidColors();
 
-    void createColorA(ColorA color) throws InsertException;
+    ColorARes createColorA(ColorAReq color);
 
-    ColorARes findColorAByCode(String code) throws NotFoundException;
+    ColorARes findColorAByCode(String code);
 
-    void updateColorAByCode(String code, ColorA color) throws NotFoundException, UpdateException;
+    ColorARes updateColorAByCode(String code, ColorAReq color);
 
-    void deleteColorAByCode(String code, String userName) throws NotFoundException, UpdateException;
+    boolean deleteColorAByCode(String code);
 
-    ColorA getColorAById(String id) throws NotFoundException;
+    ColorA getColorAById(String id);
 }

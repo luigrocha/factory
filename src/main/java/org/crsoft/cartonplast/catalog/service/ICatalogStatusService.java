@@ -1,6 +1,5 @@
 package org.crsoft.cartonplast.catalog.service;
 
-import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.catalog.model.CatalogStatus;
 import org.crsoft.cartonplast.vo.res.CatalogStatusRes;
 
@@ -13,9 +12,10 @@ import java.util.Optional;
  */
 public interface ICatalogStatusService {
 
-    Collection<CatalogStatusRes> findAllStatusByType(String type) throws NotFoundException;
+    Collection<CatalogStatusRes> findAllStatusByType(String type);
 
     Optional<CatalogStatus> findByTypeAndIsDefault(String type);
+
     Optional<CatalogStatus> findById(String id);
 
     List<CatalogStatus> findByIds(List<String> ids);

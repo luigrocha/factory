@@ -12,6 +12,15 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum BusinessExceptionReason implements BusinessExceptionPolicy {
 
+    COLOR_A_NOT_FOUND("color_a_not_found", "No se encontró el color A con código %s", HttpStatus.NOT_FOUND),
+    COLOR_B_NOT_FOUND("color_b_not_found", "No se encontró el color B con código %s", HttpStatus.NOT_FOUND),
+    COLOR_A_ALREADY_EXISTS("color_a_already_exists", "El color A con código %s ya existe", HttpStatus.CONFLICT),
+    COLOR_B_ALREADY_EXISTS("color_b_already_exists", "El color B con código %s ya existe", HttpStatus.CONFLICT),
+    HOMOPOLYMER_ALREADY_EXISTS("homopolymer_already_exists", "El homopolimero con código %s ya existe", HttpStatus.CONFLICT),
+    HOMOPOLYMER_NOT_FOUND("homopolymer_not_found", "No se encontró el homopolimero con código %s", HttpStatus.NOT_FOUND),
+    PRINTER_NOT_FOUND("printer_not_found", "No se encontró la impresora con código %s", HttpStatus.NOT_FOUND),
+    COLOR_CATALOG_NOT_FOUND("color_catalog_not_found", "No se encontró el catálogo de colores con código %s", HttpStatus.NOT_FOUND),
+    LOCATION_NOT_FOUND("location_not_found", "No se encontró la ubicación con código %s", HttpStatus.NOT_FOUND),
     THICKNESS_NOT_FOUND("thickness_not_found", "No se encontró el grosor para el id %s", HttpStatus.NOT_FOUND),
     CLIENT_NOT_FOUND("client_not_found", "No se encontró el cliente con el id %s", HttpStatus.NOT_FOUND),
     CATALOG_PRIORITY_NOT_FOUND("catalog_priority_not_found", "No se encontró la prioridad con el id %s", HttpStatus.NOT_FOUND),

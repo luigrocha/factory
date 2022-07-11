@@ -21,7 +21,7 @@ ALTER TABLE CATHOM
 /*==============================================================*/
 /* Index: CAIHOM_HP_CODE                                        */
 /*==============================================================*/
-CREATE UNIQUE INDEX CAIHOM_HP_CODE ON CATHOM (CATHOM_HP_CODE);
+CREATE INDEX CAIHOM_HP_CODE ON CATHOM (CATHOM_HP_CODE);
 
 
 /*==============================================================*/

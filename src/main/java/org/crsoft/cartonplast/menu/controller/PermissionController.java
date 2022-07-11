@@ -18,7 +18,7 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  * @author jyepez on 19/5/2022
  */
 @RestController
-@RequestMapping(V1_API_VERSION + "/permission")
+@RequestMapping(V1_API_VERSION + "/permissions")
 public class PermissionController {
 
     private final IPermissionService permissionService;
