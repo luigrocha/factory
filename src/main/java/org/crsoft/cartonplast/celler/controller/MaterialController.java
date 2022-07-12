@@ -30,8 +30,9 @@ public class MaterialController {
         return ResponseEntity.ok().body(this.catalogCellarService.findAllCatalogCellarByType(id));
     }
 
-/*    @GetMapping("/findIfExistStock/{id}")
-    private ResponseEntity<Collection<MaterialRes>> findIfExistStock(@PathVariable("id") Integer id){
-        return ResponseEntity.ok().body(this.catalogCellarService.findIfExistStock(id));
-    }*/
+    @GetMapping
+    private ResponseEntity<Collection<MaterialRes>> findAll() {
+        return ResponseEntity.ok(this.catalogCellarService.findAllIfExist());
+    }
+
 }

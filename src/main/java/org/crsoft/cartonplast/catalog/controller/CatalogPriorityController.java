@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.catalog.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.catalog.service.ICatalogPriorityService;
 import org.crsoft.cartonplast.vo.res.CatalogPriorityRes;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,10 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  */
 @RestController
 @RequestMapping(V1_API_VERSION + "/priorities")
+@RequiredArgsConstructor
 public class CatalogPriorityController {
 
     private final ICatalogPriorityService catalogPriorityService;
-
-    public CatalogPriorityController(ICatalogPriorityService catalogPriorityService) {
-        this.catalogPriorityService = catalogPriorityService;
-    }
 
     @GetMapping("/{type}")
     public ResponseEntity<Collection<CatalogPriorityRes>> getAllPrioritiesByType(

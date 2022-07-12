@@ -24,6 +24,6 @@ public class DieProductRes implements Serializable {
     private Double area;
     private Double length;
     private Double width;
-    private Double gsmdis;
+    private Integer gsmdis;
     private CatalogStatusRes status;
 }

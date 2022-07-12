@@ -66,4 +66,8 @@ public interface CellerDetailRepository extends JpaRepository<CellerDetail, Inte
             "GROUP BY c.material.id, c.lote, c.location.id ")
     Collection<AllStockVo> findMaterialLoteStock(Integer materialCode,String lote);
 
+    @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
+            "WHERE c.material.id = :materialCode ")
+    Collection<AllStockVo> findTotalStockByMaterial(Integer materialCode);
+
 }

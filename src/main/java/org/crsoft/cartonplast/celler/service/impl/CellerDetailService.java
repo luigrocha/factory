@@ -8,8 +8,8 @@ import org.crsoft.cartonplast.celler.service.mapper.CellerDetailMapper;
 import org.crsoft.cartonplast.celler.service.mapper.LocationMapper;
 import org.crsoft.cartonplast.celler.service.mapper.MaterialMapper;
 import org.crsoft.cartonplast.celler.util.DocumentEnum;
-import org.crsoft.cartonplast.celler.vo.LoteStockVo;
 import org.crsoft.cartonplast.celler.vo.AllStockVo;
+import org.crsoft.cartonplast.celler.vo.LoteStockVo;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
@@ -223,6 +223,17 @@ public class CellerDetailService implements ICellerDetailService {
             return loteStockVos;
         }else {
             log.error("Error to findByMaterialStock {}", code);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Collection<AllStockVo> findTotalStockByMaterial(Integer code) throws NotFoundException {
+        Collection<AllStockVo> totalStock = this.cellerDetailRepository.findTotalStockByMaterial(code);
+        if(CollectionUtil.isNotEmpty(totalStock)){
+            return totalStock;
+        }else {
+            log.error("Error to findTotalStockByMaterial {}", code);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }

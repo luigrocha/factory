@@ -1,6 +1,7 @@
 package org.crsoft.cartonplast.orders.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.orders.service.IOrderService;
 import org.crsoft.cartonplast.vo.req.CreateOrderReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
@@ -49,5 +51,16 @@ public class OrderController {
     @GetMapping("/generate-code")
     public ResponseEntity<GeneratedOrderCodeRes> generateNextCode(){
         return ResponseEntity.ok(orderService.generateNextCode());
+    }
+
+    @GetMapping("/findOrderByLot/{lot}")
+    public ResponseEntity<OrderRes> findOrderByLot(@PathVariable("lot") String lot) throws NotFoundException {
+        return ResponseEntity.ok(orderService.findOrderByLot(lot));
+    }
+
+    @GetMapping("/findOrdersByStatus/{status}")
+    public ResponseEntity<Collection<OrderRes>> findOrdersByStatus(@PathVariable("status") String status)
+            throws NotFoundException {
+        return ResponseEntity.ok(orderService.findOrdersByStatus(status));
     }
 }

@@ -39,10 +39,16 @@ public class ProjectType {
 
     @Column(
             name = "CATCTIPPRO_CODE",
-            nullable = false,
-            length = 4
+            length = 8
     )
     private String code;
+
+    @Column(
+            name = "CATCTIPPRO_UNIQUE_CODE",
+            nullable = false,
+            length = 2
+    )
+    private String uniqueCode;
 
     @Column(
             name = "CATCTIPPRO_VALID_FROM",

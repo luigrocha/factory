@@ -60,8 +60,7 @@ public class MaterialService implements IMaterialService {
     }
 
     @Override
-    public Collection<MaterialRes> findIfExistStock(Integer id) throws NotFoundException {
-        TypeMaterial typeMaterial = this.typeCellarService.findCellarById(id);
-        return null;
+    public Collection<MaterialRes> findAllIfExist() {
+        return this.materialMapper.materialCollectionToMaterialResCollection(this.materialRepository.findAllValid());
     }
 }

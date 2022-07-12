@@ -12,6 +12,7 @@ import org.crsoft.cartonplast.common.constant.CatalogStatusConstant;
 import org.crsoft.cartonplast.common.constant.OrderConstant;
 import org.crsoft.cartonplast.common.exception.BusinessException;
 import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.filter.SpecificationBuilder;
 import org.crsoft.cartonplast.design.model.Project;
 import org.crsoft.cartonplast.design.repository.ProjectRepository;
@@ -24,14 +25,18 @@ import org.crsoft.cartonplast.vo.req.CreateOrderReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
 import org.crsoft.cartonplast.vo.res.GeneratedOrderCodeRes;
 import org.crsoft.cartonplast.vo.res.OrderRes;
+import org.keycloak.common.util.CollectionUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
 
 /**
  * @author jyepez on 14/5/2022
@@ -127,5 +132,27 @@ public class OrderService implements IOrderService {
                 .nextOrderCode(nextOrderCode)
                 .lastOrderCode(lastOrderCode)
                 .build();
+    }
+
+    @Override
+    public Collection<OrderRes> findOrdersByStatus(String status) throws NotFoundException {
+        Collection<Order> orders = this.orderRepository.findOrdersByStatus(status);
+        if(CollectionUtil.isNotEmpty(orders)){
+            return this.orderMapper.ordersToOrdersRes(orders);
+        }else{
+            log.error("Error to findOrdersByStatus {}", status);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public OrderRes findOrderByLot(String lot) throws NotFoundException {
+        Optional<Order> order = this.orderRepository.findOrderByLot(lot);
+        if(order.isPresent()){
+            return this.orderMapper.orderToOrderRes(order.get());
+        }else{
+            log.error("Error to findOrdersByLot {}", lot);
+            throw new NotFoundException(MESSAGE_NOT_FOUND);
+        }
     }
 }

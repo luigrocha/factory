@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.celler.repository;
 import org.crsoft.cartonplast.celler.model.Material;
 import org.crsoft.cartonplast.celler.model.TypeMaterial;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -18,6 +19,9 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
 
     Optional<Material> findByIdAndValidToIsNull(Integer code);
 
-    Optional<Material> findByNameAndValidToIsNull(Integer code);
+    @Query("SELECT m FROM Material m " +
+            "WHERE (m.validTo IS NULL OR " +
+            "m.validTo > CURRENT_TIMESTAMP )")
+    Collection<Material> findAllValid();
 
 }

@@ -33,7 +33,7 @@ public class ReceiptCIBService implements IReceiptService {
         try {
             JasperReport jasperReport = receiptGeneratorUtil.getReportFromResources(ReceiptConstant.CIB_JRXML_NAME);
 
-            final Map<String, Object> parameters = receiptGeneratorUtil.getReportCommonData(generateReceiptReq);
+            final Map<String, Object> parameters = receiptGeneratorUtil.getStoreReportCommonData(generateReceiptReq);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
 

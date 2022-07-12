@@ -38,6 +38,8 @@ public interface ICellerDetailService {
 
     Collection<AllStockVo> findMaterialLoteStock(Integer code, String lote) throws NotFoundException;
 
+    Collection<AllStockVo> findTotalStockByMaterial(Integer code) throws NotFoundException;
+
     Collection<CellerLoteRes> findLoteByMaterialCode(Integer code) throws NotFoundException;
 
     Collection<LoteStockVo> findByMaterialStock(Integer code) throws NotFoundException;
