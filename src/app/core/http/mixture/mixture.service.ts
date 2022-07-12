@@ -41,4 +41,11 @@ export class MixtureService {
     return this.http.put<any>(this.URL + '/' + id , body);
   }
 
+  generateReceipt(id: number){
+    return this.http.get(this.URL + '/get-receipt/' + id, {
+      responseType: 'blob',
+      observe: 'response'
+    });
+  }
+
 }
