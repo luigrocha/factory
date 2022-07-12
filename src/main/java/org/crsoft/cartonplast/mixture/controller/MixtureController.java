@@ -62,6 +62,7 @@ public class MixtureController {
         this.mixtureService.edit(id, mixture, mixtureReq.getRows());
         return ResponseEntity.ok().build();
     }
+
     @GetMapping(value = "/get-receipt/{mixtureId}", produces = "application/pdf")
     public ResponseEntity<byte[]> getReceipt(
             @PathVariable("mixtureId") Integer mixtureId){

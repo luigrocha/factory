@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -31,7 +32,7 @@ public class MixtureRes implements Serializable {
     private Double total;
     private Double totalReal;
     private DieRes die;
-    private Timestamp date;
+    private LocalDateTime date;
     private OrderRes order;
     private Collection<MixtureDetailRes> rows;
 

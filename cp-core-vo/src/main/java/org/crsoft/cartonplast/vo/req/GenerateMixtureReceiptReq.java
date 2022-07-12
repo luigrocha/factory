@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class GenerateMixtureReceiptReq implements Serializable {
     private String documentBy;
     private LocalDateTime date;
     private Integer prepare;
-    private Integer totalKg;
+    private Double totalKg;
     private Integer leafs;
     private Integer preMixtureKg;
     private String mixture;

@@ -27,7 +27,7 @@
 	<parameter name="documentBy" class="java.lang.String"/>
 	<parameter name="date" class="java.lang.String"/>
 	<parameter name="prepare" class="java.lang.Integer"/>
-	<parameter name="totalKg" class="java.lang.Integer"/>
+	<parameter name="totalKg" class="java.lang.Double"/>
 	<parameter name="leafs" class="java.lang.Integer"/>
 	<parameter name="preMixtureKg" class="java.lang.Integer"/>
 	<parameter name="mixture" class="java.lang.String"/>

@@ -21,6 +21,7 @@ import org.crsoft.cartonplast.mixture.service.mapper.MixtureMapper;
 import org.crsoft.cartonplast.vo.req.GenerateMixtureReceiptItemReq;
 import org.crsoft.cartonplast.vo.req.GenerateMixtureReceiptReq;
 import org.crsoft.cartonplast.vo.req.MixtureDetailReq;
+import org.crsoft.cartonplast.vo.res.MixtureDetailRes;
 import org.crsoft.cartonplast.vo.res.MixtureRes;
 import org.crsoft.cartonplast.vo.res.MixtureShortRes;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,7 @@ public class MixtureService implements IMixtureService {
     private final MixtureMapper mixtureMapper;
     private final MixtureDetailMapper mixtureDetailMapper;
     private final MixtureDetailService mixtureDetailService;
+    private final ReceiptGeneratorUtil receiptGeneratorUtil;
 
     @Override
     public long findNumber() {
@@ -113,43 +115,44 @@ public class MixtureService implements IMixtureService {
 
     @Override
     public GenerateMixtureReceiptReq generateReceiptData(Integer mixtureId) {
-        Mixture mixture = this.mixtureRepository
-                .findById(mixtureId)
-                .orElseThrow(() ->
-                        new BusinessException(BusinessExceptionReason.MIXTURE_NOT_FOUND, mixtureId));
+        MixtureRes mixture = findByNumber(mixtureId);
 
         List<GenerateMixtureReceiptItemReq> items = new ArrayList<>();
-        items.add(new GenerateMixtureReceiptItemReq(
-                "HPO",
-                "Braskem PH0130 (X.P)",
-                "L0011",
-                27.5,
-                55.0,
-                4455.00
-        ));
+
+        for(MixtureDetailRes row : mixture.getRows()){
+            items.add(new GenerateMixtureReceiptItemReq(
+                    row.getMaterial().getTypeMaterial().getName(),
+                    row.getMaterial().getName(),
+                    "",
+                    row.getPercent(),
+                    row.getStop(),
+                    row.getTotal()
+            ));
+        }
+
         return GenerateMixtureReceiptReq.builder()
-                .mixtureCode("PME2012-QL1W4-SI-110321-PROM. CHINA")
-                .number("2012")
-                .lot("L0014122")
-                .clientProd("AGRO")
-//                .isToExport(mixture.getOrder().getProject().getProjectType().getUniqueCode().equals(DesignConstant.EXPORT_CODE) ? "SI" : "NO")
-                .isToExport("SI")
-                .dieProduct("F144")
-                .die("T001B(1x)-N/A-Corte Manual MASTER BATCH MASTER BATCH")
-                .cyrel(null)
-                .length(640)
-                .width(1045)
-                .documentBy("F. Salvador")
-                .date(LocalDateTime.now())
-                .prepare(81)
-                .totalKg(16200)
-                .leafs(78000)
+                .mixtureCode("") //
+                .number(mixture.getNumber().toString())
+                .lot(mixture.getOrder().getLot())
+                .clientProd(mixture.getOrder().getProductCode())
+                // .isToExport(mixture.getOrder().getP ? "SI" : "NO")
+                .isToExport("SI") //
+                .dieProduct(mixture.getDie().getDieProduct().getCode())
+                .die(mixture.getDie().getName())
+                .cyrel(null) //
+                .length(mixture.getDie().getLeafLength().intValue())
+                .width(mixture.getDie().getLeafWidth().intValue())
+                .documentBy(mixture.getDocumentBy())
+                .date(mixture.getDate())
+                .prepare(mixture.getPrepare())
+                .totalKg(mixture.getTotal())
+                .leafs(mixture.getOrder().getQuantity())
                 .preMixtureKg(mixture.getPreMixture())
-                .mixture("QL1W4")
-                .weight(300)
+                .mixture(mixture.getMixture())
+                .weight(mixture.getDie().getDieProduct().getGsmdis()) //
                 .totalPercentage(BigDecimal.valueOf(100.00).setScale(2, RoundingMode.HALF_UP))
-                .totalStopQuantity(BigDecimal.valueOf(200.14).setScale(2, RoundingMode.HALF_UP))
-                .total(BigDecimal.valueOf(16200.35).setScale(2, RoundingMode.HALF_UP))
+                .totalStopQuantity(BigDecimal.valueOf(200.14).setScale(2, RoundingMode.HALF_UP)) //
+                .total(BigDecimal.valueOf(mixture.getTotal()).setScale(2, RoundingMode.HALF_UP))
                 .items(items)
                 .build();
     }

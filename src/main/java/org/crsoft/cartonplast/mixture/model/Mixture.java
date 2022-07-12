@@ -3,6 +3,7 @@ package org.crsoft.cartonplast.mixture.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.crsoft.cartonplast.design.model.Die;
 import org.crsoft.cartonplast.orders.model.Order;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -33,9 +34,6 @@ public class Mixture {
             nullable = false
     )
     private Integer id;
-
-    @Column(name = "CETMIX_DIE", nullable = false)
-    private String die;
 
     @Column(name = "CETMIX_PREPARE", nullable = false)
     private Integer prepare;
@@ -107,6 +105,13 @@ public class Mixture {
             referencedColumnName = "ID_COTORD_CODE"
     )
     private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "XID_CATTRO_CODE",
+            referencedColumnName = "ID_CATTRO_CODE"
+    )
+    private Die die;
 
     @PrePersist
     public void prePersist() {
