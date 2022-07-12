@@ -1,4 +1,4 @@
-import { Status } from "./catalogs.types";
+import { Status } from './catalogs.types';
 
 export interface DieProduct {
   id: number;

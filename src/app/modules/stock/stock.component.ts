@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/core/auth/service/auth.service';
-import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
-import { CellerDetailService } from 'src/app/core/http/celler/celler-detail.service';
-import { MaterialService } from 'src/app/core/http/materials/materials.service';
-import { PreferencesService } from 'src/app/core/http/preferences/preferences.service';
-import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { LayoutService } from 'src/app/core/services/layout.service';
-import { ToastService } from 'src/app/core/services/toast.service';
-import { AllStock, LoteCeller, MaterialStock, Stock } from 'src/app/types/celler.types';
-import { Config } from 'src/app/types/config.types';
-import { Material, TypeMaterial } from 'src/app/types/material.types';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AuthService} from 'src/app/core/auth/service/auth.service';
+import {FORM_ERROR_MESSAGES} from 'src/app/core/constants/form-error';
+import {CellerDetailService} from 'src/app/core/http/celler/celler-detail.service';
+import {MaterialService} from 'src/app/core/http/materials/materials.service';
+import {PreferencesService} from 'src/app/core/http/preferences/preferences.service';
+import {BreadcrumbService} from 'src/app/core/services/breadcrumb.service';
+import {ToastService} from 'src/app/core/services/toast.service';
+import {AllStock, LoteCeller, Stock} from 'src/app/types/celler.types';
+import {Config} from 'src/app/types/config.types';
+import {Material, TypeMaterial} from 'src/app/types/material.types';
 
 @Component({
   selector: 'app-stock',
@@ -81,7 +80,7 @@ export class StockComponent implements OnInit {
       this.allStock = allStock;
       this.isAll = true;
       this.isReq = true;
-      this.buildDataChart();
+      this.buildDataChartMaterial();
     });
   }
 
@@ -114,11 +113,11 @@ export class StockComponent implements OnInit {
     this.resetAll();
     this.isReq = false;
     if (material) {
-      this.getLoteByMaterialCode(material);
+      this.getLotByMaterialCode(material);
     }
   }
 
-  getLoteByMaterialCode(id: number) {
+  getLotByMaterialCode(id: number) {
     this.lotes = [];
     this.cellerDetailService.getLoteByMaterialCode(id).subscribe(
       (lotes => {
@@ -130,7 +129,7 @@ export class StockComponent implements OnInit {
     );
   }
 
-  onLoteSelected(e: any) {
+  onLotSelected(e: any) {
     this.isReq = false;
     this.resetAll();
   }
@@ -178,7 +177,7 @@ export class StockComponent implements OnInit {
           allStock.forEach(type => {
             this.stockTotal += type.stock;
           });
-          this.buildDataChart();
+          this.buildDataChartLocation();
         })
       );
     } else if (this.material.value && this.type.value) {
@@ -191,9 +190,9 @@ export class StockComponent implements OnInit {
           allStock.forEach(type => {
             this.stockTotal += type.stock;
           });
-          this.buildDataChart();
+          this.buildDataChartLot();
         })
-      )
+      );
     } else if (this.type.value) {
       this.cellerDetailService.getByTypeMaterialStock(data.type).subscribe(
         (allStock => {
@@ -204,24 +203,75 @@ export class StockComponent implements OnInit {
           allStock.forEach(type => {
             this.stockTotal += type.stock;
           });
-          this.buildDataChart();
+          this.buildDataChartMaterial();
         })
       );
     } else {
       this.getAllStock();
     }
-
-
   }
 
-  buildDataChart() {
+  buildDataChartLocation(){
+    const labels = [];
+    const hash = {};
+    const names = this.allStock.filter(row => hash[row.location] ? false : hash[row.location] = true);
+    const locationStock = [];
+    names.forEach(name => {
+      labels.push(name.location);
+      let sumLocations = 0;
+      this.allStock.forEach(lot => {
+        if (lot.location === name.location) {
+          sumLocations += lot.stock;
+        }
+      });
+      locationStock.push(sumLocations);
+    });
+    this.basicData = {
+      labels,
+      datasets: [
+        {
+          label: 'Kg en ubicaciones',
+          data: locationStock,
+          backgroundColor: this.config.color,
+          hoverBackgroundColor: this.config.color
+        }
+      ]
+    };
+  }
+
+  buildDataChartLot(){
+    const labels = [];
+    const hash = {};
+    const names = this.allStock.filter(row => hash[row.lote] ? false : hash[row.lote] = true);
+    const lotStock = [];
+    names.forEach(name => {
+      labels.push(name.lote);
+      let sumLocations = 0;
+      this.allStock.forEach(lot => {
+        if (lot.lote === name.lote) {
+          sumLocations += lot.stock;
+        }
+      });
+      lotStock.push(sumLocations);
+    });
+    this.basicData = {
+      labels,
+      datasets: [
+        {
+          label: 'Kg en lotes',
+          data: lotStock,
+          backgroundColor: this.config.color,
+          hoverBackgroundColor: this.config.color
+        }
+      ]
+    };
+  }
+
+  buildDataChartMaterial() {
     const labels = [];
     const hash = {};
     const names = this.allStock.filter(row => hash[row.name] ? false : hash[row.name] = true);
-
-
-    const lotesStock = [];
-
+    const materialStock = [];
     names.forEach(name => {
       labels.push(name.name);
       let sumLotes = 0;
@@ -230,15 +280,14 @@ export class StockComponent implements OnInit {
           sumLotes += lote.stock;
         }
       });
-      lotesStock.push(sumLotes);
+      materialStock.push(sumLotes);
     });
-
     this.basicData = {
       labels,
       datasets: [
         {
           label: 'Kg en Lotes',
-          data: lotesStock,
+          data: materialStock,
           backgroundColor: this.config.color,
           hoverBackgroundColor: this.config.color
         }
@@ -246,7 +295,7 @@ export class StockComponent implements OnInit {
     };
   }
 
-  random(min: number, max: number) {
+/*  random(min: number, max: number) {
     return Math.floor((Math.random() * (max - min + 1)) + min);
   }
 
@@ -258,7 +307,7 @@ export class StockComponent implements OnInit {
       aleatoryColor += hexadecimal[posarray];
     }
     return aleatoryColor;
-  }
+  }*/
 
   getPreferencesTheme() {
     this.preferencesService.getPreferencesByUsername(this.authService.getLoggedUser().preferred_username).subscribe(
@@ -270,6 +319,7 @@ export class StockComponent implements OnInit {
           { name: 'sea-green', color: '#30A059' },
           { name: 'amber', color: '#D49341' },
         ];
+        // tslint:disable-next-line:triple-equals
         this.config.color = themes.find(theme => theme.name == config.color).color;
 
         if (config.layoutMode === 'dark') {

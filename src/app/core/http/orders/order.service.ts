@@ -38,4 +38,13 @@ export class OrderService {
   generateNextOrderCode(): Observable<GeneratedOrderCode> {
     return this.http.get<GeneratedOrderCode>(`${this.URL}/generate-code`);
   }
+
+  getOrdersByStatus(status: string): Observable<Order[]> {
+    return this.http.get<Order[]>(this.URL + '/findOrdersByStatus/' + status);
+  }
+
+  getOrderByLot(lot: string): Observable<Order> {
+    return this.http.get<Order>(this.URL + '/findOrderByLot/' + lot);
+  }
+
 }
