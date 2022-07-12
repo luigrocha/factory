@@ -24,7 +24,7 @@ public class CatalogPriorityController {
     private final ICatalogPriorityService catalogPriorityService;
 
     @GetMapping("/{type}")
-    private ResponseEntity<Collection<CatalogPriorityRes>> getAllPrioritiesByType(
+    public ResponseEntity<Collection<CatalogPriorityRes>> getAllPrioritiesByType(
             @PathVariable("type") String type) {
         return ResponseEntity.ok().body(this.catalogPriorityService.findAllPriorityByType(type));
     }

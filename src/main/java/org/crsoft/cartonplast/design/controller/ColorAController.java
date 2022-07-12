@@ -1,14 +1,14 @@
 package org.crsoft.cartonplast.design.controller;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.design.model.ColorA;
+import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.design.service.impl.ColorAService;
+import org.crsoft.cartonplast.vo.req.ColorAReq;
 import org.crsoft.cartonplast.vo.res.ColorARes;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
@@ -18,46 +18,46 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  */
 @RestController
 @RequestMapping(V1_API_VERSION + "/colors-a")
+@RequiredArgsConstructor
 public class ColorAController {
 
     private final ColorAService colorAService;
 
-    public ColorAController(ColorAService colorAService) {
-        this.colorAService = colorAService;
-    }
-
     @GetMapping
-    public ResponseEntity<Collection<ColorARes>> getAllColorsA() throws NotFoundException {
+    public ResponseEntity<Collection<ColorARes>> getAllColorsA() {
         return ResponseEntity.ok(this.colorAService.findAllValidColors());
     }
 
     @PostMapping
-    public ResponseEntity<?> createColorA(@RequestBody ColorA colorA, @RequestHeader("userName") String userName) throws InsertException {
-        colorA.setCreatedBy(userName);
-        this.colorAService.createColorA(colorA);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ColorARes> createColorA(
+            @Valid @RequestBody ColorAReq colorAReq) {
+        return new ResponseEntity<>(this.colorAService.createColorA(colorAReq),
+                HttpStatus.CREATED);
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<ColorARes> findColorAByCode(@PathVariable("code") String code) throws NotFoundException {
+    public ResponseEntity<ColorARes> findColorAByCode(
+            @PathVariable("code") String code) {
         return ResponseEntity.ok(this.colorAService.findColorAByCode(code));
     }
 
     @PatchMapping("/{code}")
-    public ResponseEntity<?> updateColorAByCode(
+    public ResponseEntity<ColorARes> updateColorAByCode(
             @PathVariable("code") String code,
-            @RequestBody ColorA colorA,
-            @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-        colorA.setUpdatedBy(userName);
-        this.colorAService.updateColorAByCode(code, colorA);
-        return ResponseEntity.ok().build();
+            @Valid @RequestBody ColorAReq colorA) {
+        return new ResponseEntity<>(
+                this.colorAService.updateColorAByCode(code, colorA),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/{code}")
-    public ResponseEntity<?> deleteColorAByCode(@PathVariable("code") String code, @RequestHeader("userName") String userName)
-            throws NotFoundException, UpdateException {
-        this.colorAService.deleteColorAByCode(code, userName);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> deleteColorAByCode(
+            @PathVariable("code") String code) {
+        return new ResponseEntity<>(
+                this.colorAService.deleteColorAByCode(code),
+                HttpStatus.OK
+        );
     }
 
 }

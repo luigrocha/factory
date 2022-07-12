@@ -1,14 +1,13 @@
 package org.crsoft.cartonplast.design.controller;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.design.model.Printer;
-import org.crsoft.cartonplast.vo.res.PrinterRes;
+import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.design.service.impl.PrinterService;
+import org.crsoft.cartonplast.vo.req.PrinterReq;
+import org.crsoft.cartonplast.vo.res.PrinterRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
@@ -18,42 +17,39 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  */
 @RestController
 @RequestMapping(V1_API_VERSION + "/printers")
+@RequiredArgsConstructor
 public class PrinterController {
 
     private final PrinterService printerService;
 
-    public PrinterController(PrinterService printerService) {
-        this.printerService = printerService;
-    }
-
     @GetMapping
-    public ResponseEntity<Collection<PrinterRes>> getAllPrinters() throws NotFoundException {
+    public ResponseEntity<Collection<PrinterRes>> getAllPrinters() {
         return ResponseEntity.ok(this.printerService.findAllValidPrinters());
     }
 
     @PostMapping
-    public ResponseEntity<?> createPrinter(@RequestBody Printer printer, @RequestHeader("userName") String userName) throws InsertException {
-        printer.setCreatedBy(userName);
-        this.printerService.createPrinter(printer);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PrinterRes> createPrinter(
+            @Valid @RequestBody PrinterReq printerReq) {
+        return ResponseEntity.ok(this.printerService.createPrinter(printerReq));
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<PrinterRes> findPrinterByCode(@PathVariable("code") Integer code) throws NotFoundException {
+    public ResponseEntity<PrinterRes> findPrinterByCode(
+            @PathVariable("code") Integer code) {
         return ResponseEntity.ok().body(this.printerService.findPrinterByCode(code));
     }
 
     @PatchMapping("/{code}")
-    public ResponseEntity<?> updatePrinterByCode(@PathVariable("code") Integer code, @RequestBody Printer printer, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-        printer.setUpdatedBy(userName);
-        this.printerService.updatePrinterByCode(code, printer);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PrinterRes> updatePrinterByCode(
+            @PathVariable("code") Integer code,
+            @Valid @RequestBody PrinterReq printerReq) {
+        return ResponseEntity.ok().body(this.printerService.updatePrinterByCode(code, printerReq));
     }
 
     @DeleteMapping("/{code}")
-    public ResponseEntity<?> deletePrinterByCode(@PathVariable("code") Integer code, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-        this.printerService.deletePrinterByCode(code, userName);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> deletePrinterByCode(
+            @PathVariable("code") Integer code) {
+        return ResponseEntity.ok().body(this.printerService.deletePrinterByCode(code));
     }
 
 }

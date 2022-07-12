@@ -1,14 +1,16 @@
 package org.crsoft.cartonplast.design.controller;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.design.model.ColorB;
+import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.design.service.impl.ColorBService;
+import org.crsoft.cartonplast.vo.req.ColorBReq;
+import org.crsoft.cartonplast.vo.req.GenerateColorBIdReq;
 import org.crsoft.cartonplast.vo.res.ColorBRes;
+import org.crsoft.cartonplast.vo.res.GeneratedColorBIdRes;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
@@ -18,42 +20,54 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
  */
 @RestController
 @RequestMapping(V1_API_VERSION + "/colors-b")
+@RequiredArgsConstructor
 public class ColorBController {
 
     private final ColorBService colorBService;
 
-    public ColorBController(ColorBService colorBService) {
-        this.colorBService = colorBService;
-    }
-
     @GetMapping
-    public ResponseEntity<Collection<ColorBRes>> getAllColorsB() throws NotFoundException {
+    public ResponseEntity<Collection<ColorBRes>> getAllColorsB() {
         return ResponseEntity.ok(this.colorBService.findAllValidColors());
     }
 
     @PostMapping
-    public ResponseEntity<?> createColorB(@RequestBody ColorB colorB, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
-        colorB.setCreatedBy(userName);
-        this.colorBService.createColorB(colorB);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ColorBRes> createColorB(
+            @Valid @RequestBody ColorBReq colorB) {
+        return new ResponseEntity<>(
+                this.colorBService.createColorB(colorB),
+                HttpStatus.CREATED);
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<ColorBRes> findColorBByCode(@PathVariable("code") String code) throws NotFoundException {
-        return ResponseEntity.ok().body(this.colorBService.findColorBByCode(code));
+    public ResponseEntity<ColorBRes> findColorBByCode(
+            @PathVariable("code") String code) {
+        return new ResponseEntity<>(
+                this.colorBService.findColorBByCode(code),
+                HttpStatus.OK);
     }
 
     @PatchMapping("/{code}")
-    public ResponseEntity<?> updateColorBByCode(@PathVariable("code") String code, @RequestBody ColorB color, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-        color.setUpdatedBy(userName);
-        this.colorBService.updateColorBByCode(code, color);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ColorBRes> updateColorBByCode(
+            @Valid @PathVariable("code") String code,
+            @RequestBody ColorBReq color) {
+        return new ResponseEntity<>(
+                this.colorBService.updateColorBByCode(code, color),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("{code}")
-    public ResponseEntity<?> deleteColorBByCode(@PathVariable("code") String code, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-        this.colorBService.deleteColorBByCode(code, userName);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> deleteColorBByCode(
+            @PathVariable("code") String code) {
+        return new ResponseEntity<>(
+                this.colorBService.deleteColorBByCode(code),
+                HttpStatus.OK);
     }
 
+    @PostMapping("/generate-id")
+    public ResponseEntity<GeneratedColorBIdRes> generateId(
+            @Valid @RequestBody GenerateColorBIdReq generateColorBIdReq) {
+        return new ResponseEntity<>(
+                this.colorBService.generateColorBId(generateColorBIdReq.getColorAId()),
+                HttpStatus.OK);
+    }
 }

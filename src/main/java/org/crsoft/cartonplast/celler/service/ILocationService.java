@@ -1,9 +1,7 @@
 package org.crsoft.cartonplast.celler.service;
 
 import org.crsoft.cartonplast.celler.model.Location;
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
+import org.crsoft.cartonplast.vo.req.LocationReq;
 import org.crsoft.cartonplast.vo.res.LocationRes;
 
 import java.util.Collection;
@@ -13,15 +11,15 @@ import java.util.Collection;
  */
 public interface ILocationService {
 
-    Collection<LocationRes> findAllLocation() throws NotFoundException;
+    Collection<LocationRes> findAllLocation();
 
-    void createLocation(Location location) throws InsertException;
+    LocationRes createLocation(LocationReq location);
 
-    LocationRes findLocationByCode(Integer code) throws NotFoundException;
+    LocationRes findLocationByCode(Integer code);
 
-    void updateLocationByCode(Integer code, Location location) throws NotFoundException, UpdateException;
+    LocationRes updateLocationByCode(Integer code, LocationReq location);
 
-    void deleteLocationByCode(Integer code, String userName) throws NotFoundException, UpdateException;
+    boolean deleteLocationByCode(Integer code);
 
-    Location getLocationByCode(Integer code) throws NotFoundException;
+    Location getLocationByCode(Integer code);
 }

@@ -1,10 +1,7 @@
 package org.crsoft.cartonplast.design.controller;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
-import org.crsoft.cartonplast.design.model.Thickness;
 import org.crsoft.cartonplast.design.service.impl.ThicknessService;
+import org.crsoft.cartonplast.vo.req.ThicknessReq;
 import org.crsoft.cartonplast.vo.res.ThicknessRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,33 +24,33 @@ public class ThicknessController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<ThicknessRes>> getAllThicknesses() throws NotFoundException {
+    public ResponseEntity<Collection<ThicknessRes>> getAllThicknesses() {
         return ResponseEntity.ok(this.thicknessService.findAllValidThickness());
     }
 
     @PostMapping
-    public ResponseEntity<?> createThickness(@RequestBody Thickness thickness, @RequestHeader("userName") String userName) throws InsertException {
-        thickness.setCreatedBy(userName);
-        this.thicknessService.createThickness(thickness);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ThicknessRes> createThickness(
+            @RequestBody ThicknessReq thicknessReq) {
+        return ResponseEntity.ok(this.thicknessService.createThickness(thicknessReq));
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<ThicknessRes> findThicknessByCode(@PathVariable("code") Integer code) throws NotFoundException {
+    public ResponseEntity<ThicknessRes> findThicknessByCode(
+            @PathVariable("code") Integer code) {
         return ResponseEntity.ok().body(this.thicknessService.findThicknessByCode(code));
     }
 
-    @PatchMapping("/{code}")
-    public ResponseEntity<?> updateThicknessByCode(@PathVariable("code") Integer code, @RequestBody Thickness thickness, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-        thickness.setUpdatedBy(userName);
-        this.thicknessService.updateThicknessByCode(code, thickness);
-        return ResponseEntity.ok().build();
+    @PutMapping("/{code}")
+    public ResponseEntity<ThicknessRes> updateThicknessByCode(
+            @PathVariable("code") Integer code,
+            @RequestBody ThicknessReq thicknessReq) {
+        return ResponseEntity.ok().body(this.thicknessService.updateThicknessByCode(code, thicknessReq));
     }
 
     @DeleteMapping("/{code}")
-    public ResponseEntity<?> deleteThicknessByCode(@PathVariable("code") Integer code, @RequestHeader("userName") String userName) throws NotFoundException, UpdateException {
-        this.thicknessService.deleteThicknessByCode(code, userName);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> deleteThicknessByCode(
+            @PathVariable("code") Integer code) {
+        return ResponseEntity.ok().body(this.thicknessService.deleteThicknessByCode(code));
     }
 
 }

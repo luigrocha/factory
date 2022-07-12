@@ -1,9 +1,7 @@
 package org.crsoft.cartonplast.design.service;
 
-import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
-import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.design.model.HomoPolymer;
+import org.crsoft.cartonplast.vo.req.HomoPolymerReq;
 import org.crsoft.cartonplast.vo.res.HomoPolymerRes;
 
 import java.util.Collection;
@@ -13,14 +11,13 @@ import java.util.Collection;
  */
 public interface IHomoPolymerService {
 
-    Collection<HomoPolymerRes> findAllValidHomopolymers() throws NotFoundException;
+    Collection<HomoPolymerRes> findAllValidHomopolymers();
 
-    void createHomopolymer(HomoPolymer homoPolymer) throws InsertException;
+    HomoPolymerRes createHomopolymer(HomoPolymerReq homoPolymer);
 
-    HomoPolymerRes findHomoPolymerByCode(Integer code) throws NotFoundException;
+    HomoPolymerRes findHomoPolymerByCode(Integer code);
 
-    void updateHomoPolymerByCode(Integer code, HomoPolymer homoPolymer) throws NotFoundException, UpdateException;
+    HomoPolymerRes updateHomoPolymerByCode(Integer code, HomoPolymerReq homoPolymer);
 
-    void deleteHomoPolymerByCode(Integer code, String userName) throws NotFoundException, UpdateException;
-
+    boolean deleteHomoPolymerByCode(Integer code);
 }
