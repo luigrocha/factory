@@ -1,0 +1,60 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="name">Nombre</label>
+      <input pInputText
+             id="name"
+             [ngClass]="{'ng-invalid ng-dirty': name.touched && name.invalid}"
+             formControlName="name"
+             aria-describedby="name-help"
+             maxlength="64"
+             type="text" />
+      <small *ngIf="name.touched && name.hasError('required')"
+             id="name-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field">
+      <label for="numColors">N° Colores</label>
+      <input pInputText
+             id="numColors"
+             [ngClass]="{'ng-invalid ng-dirty': numColors.touched && numColors.invalid}"
+             formControlName="numColors"
+             aria-describedby="numColors-help"
+             type="number" />
+      <small *ngIf="numColors.touched && numColors.hasError('required')"
+             id="numColors-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field">
+      <label for="description">Descripción</label>
+      <textarea pInputTextarea
+                id="description"
+                [ngClass]="{'ng-invalid ng-dirty': description.touched && description.invalid}"
+                formControlName="description"
+                aria-describedby="description-help"
+                maxlength="64"
+                cols="2"></textarea>
+      <small *ngIf="description.touched && description.hasError('required')"
+             id="description-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+  </div>
+  <div class="col-12 pb-0 pt-4 pr-0 pl-0 text-right">
+    <button pButton
+            pRipple
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            (click)="close()"
+            class="p-button-text mr-4">
+    </button>
+    <button pButton
+            pRipple
+            [disabled]="form.invalid"
+            type="submit"
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-raised">
+    </button>
+  </div>
+</form>

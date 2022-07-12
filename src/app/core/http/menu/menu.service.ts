@@ -11,30 +11,27 @@ import { AuthService } from '../../auth/service/auth.service';
 })
 export class MenuService {
 
-  httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
-
-  URL_MENU = environment.appApiUrl + '/menu';
+  private readonly URL = environment.appApiUrl + '/menus';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   getAllItems(): Observable<Menu[]> {
-    return this.http.post<Menu[]>(this.URL_MENU + '/findAllItems', this.authService.getRoles(), this.httpOptions);
+    return this.http.post<Menu[]>(this.URL + '/findAllItems', this.authService.getRoles());
   }
 
   getAllItemsTree(): Observable<TreeNode[]> {
-    return this.http.get<TreeNode[]>(this.URL_MENU + '/findAllItemsTree', this.httpOptions);
+    return this.http.get<TreeNode[]>(this.URL + '/findAllItemsTree');
   }
 
   createItem(item: Menu): Observable<any> {
-    return this.http.post<any>(this.URL_MENU + '/createItem', item, this.httpOptions);
+    return this.http.post<any>(this.URL + '/createItem', item);
   }
 
   updateItem(id: string, item: Menu): Observable<any> {
-    return this.http.put<any>(this.URL_MENU + '/updateItem/' + id, item, this.httpOptions);
+    return this.http.put<any>(this.URL + '/updateItem/' + id, item);
   }
 
   deleteItem(id: string) {
-    return this.http.delete<any>(this.URL_MENU + '/deleteItem/' + id, this.httpOptions);
+    return this.http.delete<any>(this.URL + '/deleteItem/' + id);
   }
-
 }

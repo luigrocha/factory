@@ -1,11 +1,11 @@
 pipeline {
-  environment {               
+  environment {
   imageName = '/frontend/cartonplastng'   //path project gitlab
   gitlabCredential = 'gitlab-info-user'
   argoCDFolderApp = 'carton-plast/frontend/carton-plast-ng'   //path argocd
   dockerImage = ''
   }
- 
+
   agent {
     kubernetes {
       yaml '''
@@ -50,7 +50,7 @@ pipeline {
   stages {
     stage('Install dependencies') {
       when {
-        expression { BRANCH_NAME ==~ /(master|develop)/ }
+        expression { BRANCH_NAME ==~ /(main|test|develop)/ }
       }
       steps {
         container('node') {
@@ -62,9 +62,21 @@ pipeline {
         }
       }
     }
-    stage('Build project test') {
+    stage('Build project develop') {
       when {
         branch 'develop'
+      }
+      steps {
+        container('node') {
+          sh '''
+            npm run build -- --outputPath=./dist/out --c dev
+          '''
+        }
+      }
+    }
+    stage('Build project test') {
+      when {
+        branch 'test'
       }
       steps {
         container('node') {
@@ -74,9 +86,9 @@ pipeline {
         }
       }
     }
-    stage('Build project master') {
+    stage('Build project prod') {
       when {
-        branch 'master'
+        branch 'main'
       }
       steps {
         container('node') {
@@ -88,7 +100,7 @@ pipeline {
     }
     stage('Build docker image') {
       when {
-        expression { BRANCH_NAME ==~ /(master|develop)/ }
+        expression { BRANCH_NAME ==~ /(main|test|develop)/ }
       }
       steps {
         container('dind') {
@@ -101,7 +113,7 @@ pipeline {
     }
     stage('Publish container') {
       when {
-        expression { BRANCH_NAME ==~ /(master|develop)/ }
+        expression { BRANCH_NAME ==~ /(main|test|develop)/ }
       }
       steps {
         container('dind') {
@@ -113,10 +125,37 @@ pipeline {
           }
         }
       }
-    }       
+    }
     stage('Deploy project develop') {
       when {
         expression { BRANCH_NAME ==~ /(develop)/ }
+      }
+      steps {
+        container('kustomize') {
+          echo 'Deploying to develop environment..'
+          checkout([$class: 'GitSCM',
+            branches: [[name: '*/main' ]],
+            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'argocd-develop-apps'], [$class: 'ScmName', name: 'argocd-develop-apps']],
+            userRemoteConfigs: [[
+              url: 'https://gitlab.crsoft.org/devops/kubernetes/argocd-develop-apps.git',
+              credentialsId: gitlabCredential
+            ]]
+          ])
+          dir('./argocd-develop-apps/' + argoCDFolderApp + '/settings' ) {
+            sh('kustomize edit set image ' + env.REGISTRY + imageName + ':' + env.GIT_COMMIT)
+            sh('git config --global user.email jenkinsci@ci.com')
+            sh('git config --global user.name Jenkins Pipeline')
+            sh "git commit -am 'Publish new version ${argoCDFolderApp}'"
+            withCredentials([usernamePassword(credentialsId: gitlabCredential, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+              sh "git push https://${GIT_USERNAME}:${GIT_PASSWORD}@${env.ARGO_APPS_DEVELOP} HEAD:main || echo 'no changes'"
+            }
+          }
+        }
+      }
+    }
+    stage('Deploy project to test') {
+      when {
+        expression { BRANCH_NAME ==~ /(test)/ }
       }
       steps {
         container('kustomize') {
@@ -141,7 +180,7 @@ pipeline {
         }
       }
     }
- 
+
     // stage('Deploy project master') {
     //   when {
     //     expression { BRANCH_NAME ==~ /(master)/ }

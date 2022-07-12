@@ -1,0 +1,109 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="id">ID</label>
+      <input pInputText
+             id="id"
+             [ngClass]="{'ng-invalid ng-dirty': id.touched && id.invalid}"
+             formControlName="id"
+             aria-describedby="id-help"
+             maxlength="4"
+             appInputUppercase
+             type="text"/>
+      <small *ngIf="id.touched && id.hasError('required')"
+             id="id-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field">
+      <label for="colorA">Color Primario</label>
+      <p-dropdown id="colorA"
+                  [options]="colorsA$ | async"
+                  formControlName="colorA"
+                  optionLabel="name"
+                  optionValue="id"
+                  autofocus
+                  [filter]="true"
+                  [showClear]="true"
+                  filterBy="id,name"
+                  placeholder="Selecciona el color primario">
+        <ng-template let-colA pTemplate="selectedItem">
+          {{ colA.id }} - {{ colA.name }}
+        </ng-template>
+        <ng-template let-colA pTemplate="item">
+          {{ colA.id }} - {{ colA.name }}
+        </ng-template>
+      </p-dropdown>
+      <small *ngIf="colorA.touched && colorA.hasError('required')"
+             id="colorA-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+<!--    <div class="field">-->
+<!--      <label for="index">Índice</label>-->
+<!--      <input pInputText-->
+<!--             id="index"-->
+<!--             [ngClass]="{'ng-invalid ng-dirty': index.touched && index.invalid}"-->
+<!--             formControlName="index"-->
+<!--             aria-describedby="index-help"-->
+<!--             type="number"/>-->
+<!--      <small *ngIf="index.touched && index.hasError('required')"-->
+<!--             id="index-help"-->
+<!--             class="p-error block">{{formErrors.required}}</small>-->
+<!--    </div>-->
+    <div class="field">
+      <label for="dosage">Dosis</label>
+      <input pInputText
+             id="dosage"
+             [ngClass]="{'ng-invalid ng-dirty': dosage.touched && dosage.invalid}"
+             formControlName="dosage"
+             aria-describedby="dosage-help"
+             type="number"/>
+      <small *ngIf="dosage.touched && dosage.hasError('required')"
+             id="dosage-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field">
+      <label for="description">Descripción</label>
+      <input pInputText
+             id="description"
+             [ngClass]="{'ng-invalid ng-dirty': description.touched && description.invalid}"
+             formControlName="description"
+             maxlength="64"
+             aria-describedby="description-help"
+             type="text"/>
+      <small *ngIf="description.touched && description.hasError('required')"
+             id="description-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field">
+      <label for="colorCode">Código color</label>
+      <input pInputText
+             id="colorCode"
+             class="input-color"
+             [ngClass]="{'ng-invalid ng-dirty': colorCode.touched && colorCode.invalid}"
+             formControlName="colorCode"
+             aria-describedby="colorCode-help"
+             type="color"/>
+      <small *ngIf="colorCode.touched && colorCode.hasError('required')"
+             id="colorCode-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+  </div>
+  <div class="col-12 pb-0 pt-4 pr-0 pl-0 text-right">
+    <button pButton
+            pRipple
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            (click)="close()"
+            class="p-button-text mr-4">
+    </button>
+    <button pButton
+            pRipple
+            [disabled]="form.invalid"
+            type="submit"
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-raised">
+    </button>
+  </div>
+</form>

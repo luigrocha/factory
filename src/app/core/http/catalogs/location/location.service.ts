@@ -1,40 +1,34 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/auth/service/auth.service';
-import { Location } from 'src/app/types/celler.types';
+import { CreateLocation, Location, UpdateLocation } from 'src/app/types/celler.types';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
-  httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json',
-        userName: this.authService.getLoggedUser().preferred_username
-      })
-  };
 
-  URL_LOCATION = environment.appApiUrl + '/location';
+  private readonly URL = environment.appApiUrl + '/locations';
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient) {
+  }
 
   getAll(): Observable<Location[]> {
-    return this.http.get<Location[]>(this.URL_LOCATION + '', this.httpOptions);
+    return this.http.get<Location[]>(this.URL);
   }
 
-  create(homopolimero: Location): Observable<any> {
-    return this.http.post<any>(this.URL_LOCATION + '', homopolimero, this.httpOptions);
+  create(location: CreateLocation): Observable<Location> {
+    return this.http.post<any>(this.URL, location);
   }
 
-  update(id: number, homopolimero: Location): Observable<any> {
-    return this.http.patch<any>(this.URL_LOCATION + '/' + id, homopolimero, this.httpOptions);
+  update(id: number, location: UpdateLocation): Observable<Location> {
+    const url = `${this.URL}/${id}`;
+    return this.http.patch<Location>(url, location);
   }
 
-  delete(id: number) {
-    return this.http.delete<any>(this.URL_LOCATION + '/' + id, this.httpOptions);
+  delete(id: number): Observable<boolean> {
+    const url = `${this.URL}/${id}`;
+    return this.http.delete<any>(url);
   }
-
 }

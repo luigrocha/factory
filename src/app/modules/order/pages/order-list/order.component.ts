@@ -34,7 +34,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
   selectedOrder: Order;
-  menuItems: MenuItem[];
+  menuItems: MenuItem[] = [];
   orderStatus: Status[] = [];
   priorities: Priority[] = [];
   selectedOrders: Order[] = [];
@@ -51,7 +51,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
     searchCriteria: []
   };
 
-  permissionsPage: TypePermission[];
+  permissions: TypePermission[];
   orderPriorityType = ORDER_PRIORITY_TYPE;
   searchFomControl = new FormControl();
   columns: TableColumn<Order>[];
@@ -74,15 +74,12 @@ export class OrderComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.getPermissionsPage();
+    this.getPermissionsToPage();
     this.getOrders();
     this.getPriorities();
     this.getStatus();
     this.setDefaultFilters();
     this.searchByInput();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 500);
     this.columns = [
       { field: 'code', header: 'Código' },
       { field: 'lot', header: 'Lote' },
@@ -150,6 +147,22 @@ export class OrderComponent implements OnInit, AfterViewInit {
     this.searchRequest.searchCriteria = getSearchCriteria(filterFields);
   }
 
+  getPermissionsToPage() {
+    this.permissionService.findPermissionPage()
+      .subscribe(permissions => {
+          this.permissions = permissions;
+          this.getMenuItems();
+        }
+      );
+  }
+
+  isAllow(id: number): boolean {
+    if (this.permissions) {
+      return this.permissions.find(permission => permission.id === id).flag;
+    }
+    return false;
+  }
+
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
       this.menuItems.push({
@@ -199,23 +212,8 @@ export class OrderComponent implements OnInit, AfterViewInit {
     table.clear();
   }
 
-  getPermissionsPage() {
-    this.permissionService.findPermissionPage().subscribe(
-      (data) => {
-        this.permissionsPage = data;
-      }
-    );
-  }
-
-  isAllow(id: number): boolean {
-    if (this.permissionsPage) {
-      return this.permissionsPage.find(permission => permission.id === id).flag;
-    }
-    return false;
-  }
-
   private editOrder() {
-    this.route.navigate(['/home/pedidos/editar/' + this.selectedOrder.lot]);
+    this.route.navigate(['/home/pedidos/' + this.selectedOrder.id]);
   }
 
   private deleteOrder() {

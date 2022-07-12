@@ -1,287 +1,177 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { ThicknessService } from 'src/app/core/http/catalogs/thickness/thickness.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 import { TypePermission } from 'src/app/types/permission';
-import { Thickness } from 'src/app/types/thickness.types';
+import { CreateThickness, Thickness, UpdateThickness } from 'src/app/types/thickness.types';
+import { TableColumn } from 'src/app/types/table.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ThicknessModalComponent } from 'src/app/modules/catalogs/components/thickness-modal/thickness-modal.component';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
 
 @Component({
   selector: 'app-thickness',
   templateUrl: './thickness.component.html',
   styleUrls: ['./thickness.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class ThicknessComponent implements OnInit {
 
-  thicknesDialog: boolean;
-
-  selectedThicknes: Thickness[];
-
-  submitted: boolean;
-
-  cols: any[];
-
-  thickness: Thickness[];
-
-  thicknes: Thickness;
-
-  loading = true;
-
+  columns: TableColumn<Thickness>[];
+  pageSize: number = 10;
+  thickness: Thickness[] = [];
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+  addDialogRef: DynamicDialogRef;
+  selectedThickness: Thickness;
+  menuItems: MenuItem[] = [];
   permissionsPage: TypePermission[];
-
-  items: MenuItem[] = [];
-
-  thicknesSelect: Thickness;
+  selectedThicknesses: Thickness[];
 
   constructor(
-    private messageService: MessageService,
+    private toastService: ToastService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private thicknessService: ThicknessService,
     private permissionService: PermissionService,
+    private dialogService: DialogService,
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Catálogos' },
-      { label: 'Grosor', routerLink: ['home/catalogs/grosor'] },
+      {label: 'Diseño'},
+      {label: 'Catálogos'},
+      {label: 'Grosor', routerLink: ['home/catalogs/grosor']},
     ]);
   }
 
   ngOnInit() {
     this.getPermissionsPage();
-    this.getAll();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 1000);
-    this.cols = [
-      { field: 'weight', header: 'Peso' },
-      { field: 'thickness', header: 'Grosor' },
+    this.getAllThickness();
+    this.columns = [
+      {field: 'weight', header: 'Peso'},
+      {field: 'thick', header: 'Grosor'},
     ];
   }
 
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Editar',
         icon: 'pi pi-pencil',
-        command: (e) => this.editThickness(this.thicknesSelect)
+        command: (e) => this.editThickness()
       });
     }
     if (this.isAllow(PermissionEnum.DELETE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Eliminar',
         icon: 'pi pi-trash',
-        command: (e) => this.deleteThickness(this.thicknesSelect)
+        command: (e) => this.deleteThickness()
       });
     }
   }
 
-  openNew() {
-    this.thicknes = {};
-    this.submitted = false;
-    this.thicknesDialog = true;
+  editThickness() {
+    this.addDialogRef = this.dialogService.open(ThicknessModalComponent, {
+      data: this.selectedThickness,
+      header: `Actualizar grosor ${this.selectedThickness.weight}`,
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((tick: UpdateThickness) => {
+        if (tick) {
+          this.thicknessService.update(this.selectedThickness.id, tick)
+            .subscribe(() => {
+              this.toastService.success('Grosor actualizado correctamente');
+              this.getAllThickness();
+            });
+        }
+      });
   }
 
-  editThickness(thicknes: Thickness) {
-    this.thicknes = { ...thicknes };
-    this.thicknesDialog = true;
-  }
-
-  deleteThickness(thicknes: Thickness) {
+  deleteThickness() {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar el item ' + thicknes.weight + '?',
+        '¿Estas seguro de eliminar el grosor ' + this.selectedThickness.weight + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.thicknessService.delete(thicknes.id).subscribe(
-          (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Grosor Eliminado',
-              life: 3000,
-            });
-            this.thickness = [];
-            this.getAll();
-          },
-          (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
-          }
-        );
+        this.thicknessService.delete(this.selectedThickness.id)
+          .subscribe(deleted => {
+              if (deleted) {
+                this.toastService.success('Grosor eliminado correctamente');
+                this.getAllThickness();
+              } else {
+                this.toastService.error('Error al eliminar grosor');
+              }
+            }
+          );
       },
     });
   }
 
   deleteSelectedThicknesss() {
     this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar los colores seleccionados?',
+      message: '¿Estás seguro de eliminar los registros seleccionados?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.selectedThicknes.forEach(thicknes => {
-          this.thicknessService.delete(thicknes.id).subscribe(
-            (res) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Grosor Eliminado',
-                life: 3000,
-              });
-              this.thickness = [];
-              this.getAll();
-            },
-            (err) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error,
-                life: 3000,
-              });
+        this.selectedThicknesses.forEach(thickness => {
+          this.thicknessService.delete(thickness.id)
+            .subscribe(deleted => {
+              if (deleted) {
+                this.toastService.success('Grosor eliminado correctamente');
+                this.getAllThickness();
+              } else {
+                this.toastService.error('Error al eliminar grosor');
+              }
             }
           );
-        });
-
-        this.selectedThicknes = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Grosores Elimnados',
-          life: 3000,
         });
       },
     });
   }
 
-  saveThickness() {
-    this.submitted = true;
-
-    if (this.thicknes.id) {
-      this.thicknessService.update(this.thicknes.id, this.thicknes).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Grosor Actualizado',
-            life: 3000,
-          });
-          this.thickness = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else if (this.isValidToSave()) {
-      console.log(this.thicknes);
-
-      this.thicknessService.create(this.thicknes).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Grosor Creado',
-            life: 3000,
-          });
-          this.thickness = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'Llene todos los campos',
-        life: 3000,
+  getAllThickness() {
+    this.thicknessService.getAll()
+      .subscribe((thickness) => {
+        this.thickness = thickness;
       });
-      this.thicknesDialog = true;
-      return;
-    }
-
-
-    this.thickness = [...this.thickness];
-    this.thicknesDialog = false;
-    this.thicknes = {};
-  }
-
-  hideDialog() {
-    this.thicknesDialog = false;
-    this.submitted = false;
-  }
-
-  getAll() {
-    this.thicknessService.getAll().subscribe((thickness) => {
-      this.thickness = thickness;
-      this.loading = false;
-    });
-  }
-
-  isValidToSave(): boolean {
-    return this.thicknes.weight && this.thicknes.thick ? true : false;
   }
 
   getPermissionsPage() {
-    this.permissionService.findPermissionPage().subscribe(
-      (data) => {
-        this.permissionsPage = data;
+    this.permissionService.findPermissionPage()
+      .subscribe(permissions => {
+        this.permissionsPage = permissions;
+        this.getMenuItems();
       }
     );
   }
 
   isAllow(id: number): boolean {
-    if (this.permissionsPage) {
-      return this.permissionsPage.find(permission => permission.id === id).flag;
-    }
-    return false;
+    return checkIfOptionIsAllowed(this.permissionsPage, id);
   }
 
+  createThickness() {
+    this.addDialogRef = this.dialogService.open(ThicknessModalComponent, {
+      header: 'Crear nuevo grosor',
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((thick: CreateThickness) => {
+        if (thick) {
+          this.thicknessService.create(thick)
+            .subscribe(() => {
+              this.toastService.success('Grosor creado correctamente');
+              this.getAllThickness();
+            });
+        }
+      });
+  }
 }

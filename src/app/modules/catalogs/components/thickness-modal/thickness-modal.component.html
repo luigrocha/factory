@@ -1,0 +1,46 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="weight">Peso</label>
+      <input pInputText
+             id="weight"
+             [ngClass]="{'ng-invalid ng-dirty': weight.touched && weight.invalid}"
+             formControlName="weight"
+             aria-describedby="weight-help"
+             type="number" />
+      <small *ngIf="weight.touched && weight.hasError('required')"
+             id="weight-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field">
+      <label for="thick">Grosor</label>
+      <input pInputText
+             id="thick"
+             [ngClass]="{'ng-invalid ng-dirty': thick.touched && thick.invalid}"
+             formControlName="thick"
+             aria-describedby="thick-help"
+             type="number" />
+      <small *ngIf="thick.touched && thick.hasError('required')"
+             id="thick-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+  </div>
+  <div class="col-12 pb-0 pt-4 pr-0 pl-0 text-right">
+    <button pButton
+            pRipple
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            (click)="close()"
+            class="p-button-text mr-4">
+    </button>
+    <button pButton
+            pRipple
+            [disabled]="form.invalid"
+            type="submit"
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-raised">
+    </button>
+  </div>
+</form>

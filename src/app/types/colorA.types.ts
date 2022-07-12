@@ -1,5 +1,5 @@
 export interface ColorA {
-    id?: string;
-    name?: string;
-    colorCode?: string;
+  id: string;
+  name: string;
+  colorCode: string;
 }

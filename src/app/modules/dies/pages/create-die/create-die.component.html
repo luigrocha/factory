@@ -2,11 +2,11 @@
   <div class="grid">
     <div class="col-12">
       <div class="card">
-        <h5>Crear nuevo troquel</h5>
+        <h5>Crear nuevo troquel: {{name.value}}</h5>
 
         <p-toast></p-toast>
 
-        <div class="p-fluid p-formgrid grid">
+        <div class="p-fluid grid formgrid">
           <div class="field col-12 md:col-6">
             <label for="dieProduct">Producto troquelado</label>
             <p-dropdown [options]="dieProducts$ | async"
@@ -33,19 +33,6 @@
             </p-dropdown>
             <small *ngIf="dieProduct.touched && dieProduct.hasError('required')"
                    id="dieProduct-help"
-                   class="p-error block">{{formErrors.required}}</small>
-          </div>
-          <div class="field col-12 md:col-6">
-            <label for="name">Nombre</label>
-            <input pInputText
-                   id="name"
-                   [ngClass]="{'ng-invalid ng-dirty': name.touched && name.invalid}"
-                   formControlName="name"
-                   aria-describedby="name-help"
-                   maxlength="64"
-                   type="text"  />
-            <small *ngIf="name.touched && name.hasError('required')"
-                   id="code-help"
                    class="p-error block">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-6">
@@ -86,48 +73,12 @@
                    id="dsbMultiple-help"
                    class="p-error block">{{formErrors.required}}</small>
           </div>
-          <div class="field col-12 md:col-6">
+          <div class="field col-12">
             <label for="observations">Observaciones</label>
             <input pInputTextarea
                    id="observations"
                    maxlength="128"
                    formControlName="observations"/>
-          </div>
-          <div class="field col-12 md:col-4 lg:col-4">
-            <label for="length">Largo</label>
-            <input pInputText
-                   id="length"
-                   [ngClass]="{'ng-invalid ng-dirty': length.touched && length.invalid}"
-                   formControlName="length"
-                   aria-describedby="length-help"
-                   type="number"  />
-            <small *ngIf="length.touched && length.hasError('required')"
-                   id="length-help"
-                   class="p-error block">{{formErrors.required}}</small>
-          </div>
-          <div class="field col-12 md:col-4 lg:col-4">
-            <label for="width">Ancho</label>
-            <input pInputText
-                   id="width"
-                   [ngClass]="{'ng-invalid ng-dirty': width.touched && width.invalid}"
-                   formControlName="width"
-                   aria-describedby="width-help"
-                   type="number"  />
-            <small *ngIf="width.touched && width.hasError('required')"
-                   id="width-help"
-                   class="p-error block">{{formErrors.required}}</small>
-          </div>
-          <div class="field col-12 md:col-4 lg:col-4">
-              <label for="quantity">Cant 1</label>
-            <input pInputText
-                   id="quantity"
-                   [ngClass]="{'ng-invalid ng-dirty': quantity.touched && quantity.invalid}"
-                   formControlName="quantity"
-                   aria-describedby="quantity-help"
-                   type="number"  />
-            <small *ngIf="quantity.touched && quantity.hasError('required')"
-                   id="quantity-help"
-                   class="p-error block">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-4 lg:col-4">
             <label for="quantityLength">Cant largo</label>
@@ -151,6 +102,18 @@
                    type="number"  />
             <small *ngIf="separationLength.touched && separationLength.hasError('required')"
                    id="separationLength-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-4 lg:col-4">
+            <label for="borderLength">Bordes largo</label>
+            <input pInputText
+                   id="borderLength"
+                   [ngClass]="{'ng-invalid ng-dirty': borderLength.touched && borderLength.invalid}"
+                   formControlName="borderLength"
+                   aria-describedby="borderLength-help"
+                   type="number"  />
+            <small *ngIf="borderLength.touched && borderLength.hasError('required')"
+                   id="borderLength-help"
                    class="p-error block">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-4 lg:col-4">
@@ -178,18 +141,6 @@
                    class="p-error block">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-4 lg:col-4">
-            <label for="borderLength">Bordes largo</label>
-            <input pInputText
-                   id="borderLength"
-                   [ngClass]="{'ng-invalid ng-dirty': borderLength.touched && borderLength.invalid}"
-                   formControlName="borderLength"
-                   aria-describedby="borderLength-help"
-                   type="number"  />
-            <small *ngIf="borderLength.touched && borderLength.hasError('required')"
-                   id="borderLength-help"
-                   class="p-error block">{{formErrors.required}}</small>
-          </div>
-          <div class="field col-12 md:col-4 lg:col-4">
             <label for="borderWidth">Bordes archo</label>
             <input pInputText
                    id="borderWidth"
@@ -202,7 +153,43 @@
                    class="p-error block">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-4 lg:col-4">
-            <label for="leafLength">Largo lámina</label>
+            <label class="text-bold" for="length">Largo</label>
+            <input pInputText
+                   id="length"
+                   [ngClass]="{'ng-invalid ng-dirty': length.touched && length.invalid}"
+                   formControlName="length"
+                   aria-describedby="length-help"
+                   type="number"  />
+            <small *ngIf="length.touched && length.hasError('required')"
+                   id="length-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-4 lg:col-4">
+            <label class="text-bold" for="width">Ancho</label>
+            <input pInputText
+                   id="width"
+                   [ngClass]="{'ng-invalid ng-dirty': width.touched && width.invalid}"
+                   formControlName="width"
+                   aria-describedby="width-help"
+                   type="number"  />
+            <small *ngIf="width.touched && width.hasError('required')"
+                   id="width-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-4 lg:col-4">
+            <label class="text-bold" for="quantity">Cant 1</label>
+            <input pInputText
+                   id="quantity"
+                   [ngClass]="{'ng-invalid ng-dirty': quantity.touched && quantity.invalid}"
+                   formControlName="quantity"
+                   aria-describedby="quantity-help"
+                   type="number"  />
+            <small *ngIf="quantity.touched && quantity.hasError('required')"
+                   id="quantity-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-4 lg:col-4">
+            <label class="text-bold" for="leafLength">Largo lámina</label>
             <input pInputText
                    id="leafLength"
                    [ngClass]="{'ng-invalid ng-dirty': leafLength.touched && leafLength.invalid}"
@@ -214,7 +201,7 @@
                    class="p-error block">{{formErrors.required}}</small>
           </div>
           <div class="field col-12 md:col-4 lg:col-4">
-            <label for="leafWidth">Ancho lámina</label>
+            <label class="text-bold" for="leafWidth">Ancho lámina</label>
             <input pInputText
                    id="leafWidth"
                    [ngClass]="{'ng-invalid ng-dirty': leafWidth.touched && leafWidth.invalid}"

@@ -1,0 +1,48 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="location">Código</label>
+      <input pInputText
+             id="location"
+             [ngClass]="{'ng-invalid ng-dirty': location.touched && location.invalid}"
+             formControlName="location"
+             aria-describedby="location-help"
+             appInputUppercase
+             type="text" />
+      <small *ngIf="location.touched && location.hasError('required')"
+             id="location-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field">
+      <label for="description">Ubicación</label>
+      <input pInputText
+             id="description"
+             [ngClass]="{'ng-invalid ng-dirty': description.touched && description.invalid}"
+             formControlName="description"
+             aria-describedby="description-help"
+             appInputUppercase
+             type="text" />
+      <small *ngIf="description.touched && description.hasError('required')"
+             id="description-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+  </div>
+  <div class="col-12 pb-0 pt-4 pr-0 pl-0 text-right">
+    <button pButton
+            pRipple
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            (click)="close()"
+            class="p-button-text mr-4">
+    </button>
+    <button pButton
+            pRipple
+            [disabled]="form.invalid"
+            type="submit"
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-raised">
+    </button>
+  </div>
+</form>

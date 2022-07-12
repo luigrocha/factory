@@ -27,6 +27,10 @@ export class OrderService {
     return this.http.post<OrderPageable>(this.URL + parameters, searchRequest.searchCriteria);
   }
 
+  getOrder(id: number): Observable<Order> {
+    return this.http.get<Order>(`${this.URL}/${id}`);
+  }
+
   createNewOrder(order: CreateOrder): Observable<Order> {
     return this.http.post<Order>(this.URL, order);
   }
