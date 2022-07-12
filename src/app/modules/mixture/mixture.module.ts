@@ -18,28 +18,32 @@ import {TableModule} from 'primeng/table';
 import {DropdownModule} from 'primeng/dropdown';
 import localeEs from '@angular/common/locales/es';
 import {InputTextareaModule} from 'primeng/inputtextarea';
+import {DialogModule} from 'primeng/dialog';
+import {NgxExtendedPdfViewerModule} from 'ngx-extended-pdf-viewer';
 
 registerLocaleData(localeEs, 'es');
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MixtureRoutingModule,
-    ToastModule,
-    ButtonModule,
-    DividerModule,
-    AutoCompleteModule,
-    FormsModule,
-    InputTextModule,
-    TooltipModule,
-    SidebarModule,
-    RippleModule,
-    ReactiveFormsModule,
-    TagModule,
-    TableModule,
-    DropdownModule,
-    InputTextareaModule,
-  ],
+    imports: [
+        CommonModule,
+        MixtureRoutingModule,
+        ToastModule,
+        ButtonModule,
+        DividerModule,
+        AutoCompleteModule,
+        FormsModule,
+        InputTextModule,
+        TooltipModule,
+        SidebarModule,
+        RippleModule,
+        ReactiveFormsModule,
+        TagModule,
+        TableModule,
+        DropdownModule,
+        InputTextareaModule,
+        DialogModule,
+        NgxExtendedPdfViewerModule,
+    ],
   declarations: [
     MixtureListComponent,
     CreateMixtureComponent,

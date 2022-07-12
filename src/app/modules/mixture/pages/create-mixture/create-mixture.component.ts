@@ -17,6 +17,7 @@ import {AuthService} from '../../../../core/auth/service/auth.service';
 import {DieService} from '../../../../core/http/dies/die.service';
 import {Die} from '../../../../types/dies.types';
 import {WEIGHT_EXTRUSION, WEIGHT_NOMINAL} from '../../../../core/constants/mixture';
+import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-create-mixture',
@@ -44,7 +45,11 @@ export class CreateMixtureComponent implements OnInit {
   numberParam: number;
   isEditing: boolean;
   isSusses: boolean;
+  isSave: boolean;
   mixtureEdit: MixtureRes;
+  pdfDialog: boolean;
+  fileName: string;
+  srcPdf: any;
 
   columns: TableColumn<MixtureDetail>[];
 
@@ -61,6 +66,7 @@ export class CreateMixtureComponent implements OnInit {
     private toastService: ToastService,
     private authService: AuthService,
   ) {
+    pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     this.breadcrumbService.setItems([
       {label: 'Módulo de Mezcla'},
       {label: 'Diseño de Mezcla', routerLink: ['/home/mezcla']},
@@ -241,6 +247,9 @@ export class CreateMixtureComponent implements OnInit {
   }
 
   save() {
+    if ( !this.isSave){
+      return;
+    }
     if (this.form.invalid) {
       return;
     }
@@ -365,8 +374,17 @@ export class CreateMixtureComponent implements OnInit {
     }
   }
 
-  showPdf(){
-    console.log('Ver PDF');
+  generateReceipt(e: any){
+      this.mixtureService.generateReceipt(this.numberMixture).subscribe(
+        (data => {
+          const type = data.body.type;
+          this.fileName = data.headers.get('content-disposition').split('filename=')[1];
+          this.srcPdf = URL.createObjectURL(
+            new Blob([data.body], { type })
+          );
+          this.pdfDialog = true;
+        })
+      );
   }
 
   onEditing(index: number){
