@@ -88,6 +88,16 @@ public class MixtureService implements IMixtureService {
     }
 
     @Override
+    public Collection<MixtureRes> findAll() {
+        Collection<MixtureRes> mixtureRes = this.mixtureMapper.mixtureCollectionToMixtureRes(
+                this.mixtureRepository.findAllValidMixture());
+        for(MixtureRes mixture : mixtureRes){
+            mixture.setRows(this.mixtureDetailService.findAllByMixtureCode(mixture.getId()));
+        }
+        return mixtureRes;
+    }
+
+    @Override
     public Integer findNumberByLot(String lot) {
         try {
             Mixture mixture = this.mixtureRepository.findValidMixtureByLot(lot);
@@ -149,7 +159,7 @@ public class MixtureService implements IMixtureService {
                 .leafs(mixture.getOrder().getQuantity())
                 .preMixtureKg(mixture.getPreMixture())
                 .mixture(mixture.getMixture())
-                .weight(mixture.getDie().getDieProduct().getGsmdis()) //
+                .weight(mixture.getDie().getDieProduct().getGsmdis())
                 .totalPercentage(BigDecimal.valueOf(100.00).setScale(2, RoundingMode.HALF_UP))
                 .totalStopQuantity(BigDecimal.valueOf(200.14).setScale(2, RoundingMode.HALF_UP)) //
                 .total(BigDecimal.valueOf(mixture.getTotal()).setScale(2, RoundingMode.HALF_UP))
