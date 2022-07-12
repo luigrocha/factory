@@ -32,6 +32,10 @@ export class MixtureService {
     return this.http.get<MixtureRes>(url);
   }
 
+  getAll(): Observable<MixtureRes[]> {
+    return this.http.get<MixtureRes[]>(this.URL);
+  }
+
   getNumberByLot(lot: string): Observable<number>{
     const url = this.URL + '/findNumberByLot/' + lot;
     return this.http.get<number>(url);

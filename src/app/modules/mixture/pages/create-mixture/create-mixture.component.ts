@@ -11,13 +11,13 @@ import {FORM_ERROR_MESSAGES} from '../../../../core/constants/form-error';
 import {MaterialService} from '../../../../core/http/materials/materials.service';
 import {Material, TypeMaterial} from '../../../../types/material.types';
 import {TableColumn} from '../../../../types/table.types';
-import {MixtureCreate, MixtureDetail, MixtureDetailRes, MixtureRes} from '../../../../types/mixture.types';
+import {MixtureCreate, MixtureDetail, MixtureDetailRes, MixtureRes, MixtureShort} from '../../../../types/mixture.types';
 import {ToastService} from '../../../../core/services/toast.service';
 import {AuthService} from '../../../../core/auth/service/auth.service';
 import {DieService} from '../../../../core/http/dies/die.service';
 import {Die} from '../../../../types/dies.types';
 import {WEIGHT_EXTRUSION, WEIGHT_NOMINAL} from '../../../../core/constants/mixture';
-import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
+import {pdfDefaultOptions} from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-create-mixture',
@@ -50,6 +50,8 @@ export class CreateMixtureComponent implements OnInit {
   pdfDialog: boolean;
   fileName: string;
   srcPdf: any;
+  mixtures: MixtureShort[];
+  mixtureFilter: MixtureShort;
 
   columns: TableColumn<MixtureDetail>[];
 
@@ -130,7 +132,7 @@ export class CreateMixtureComponent implements OnInit {
     this.getOrderByLot();
   }
 
-  getAllMaterial(){
+  getAllMaterial() {
     this.materialService.getAllMaterial().subscribe(materials => {
       this.allMaterials = materials;
     });
@@ -142,9 +144,15 @@ export class CreateMixtureComponent implements OnInit {
     });
   }
 
+  getAll() {
+    this.mixtureService.getAll().subscribe(mixtures => {
+      this.mixtures = mixtures;
+    });
+  }
+
   getOrderByLot() {
     this.activatedRoute.params.subscribe(params => {
-      this.numberParam = parseInt(params.num, 0 );
+      this.numberParam = parseInt(params.num, 0);
       if (this.numberParam === 0) {
         this.getNumberToCreate();
         this.orderService.getOrderByLot(params.lote).subscribe(order => {
@@ -196,7 +204,7 @@ export class CreateMixtureComponent implements OnInit {
     );
   }
 
-  addRowData(mixture: MixtureDetailRes): FormGroup{
+  addRowData(mixture: MixtureDetailRes): FormGroup {
     return this.fb.group({
       index: this.rowsFormArray.length,
       type: [mixture.material.typeMaterial.id, [
@@ -227,10 +235,10 @@ export class CreateMixtureComponent implements OnInit {
     return this.dies.find(die => die.id === id);
   }
 
-  getSheet(id: number){
-    if ( this.mixtureEdit){
+  getSheet(id: number) {
+    if (this.mixtureEdit) {
       this.sheets = this.mixtureEdit.order.quantity / this.searchDie(id).quantity;
-    }else{
+    } else {
       this.sheets = this.order.quantity / this.searchDie(id).quantity;
     }
     return this.sheets;
@@ -242,7 +250,6 @@ export class CreateMixtureComponent implements OnInit {
   }
 
   getNumberCut(id: number) {
-    console.log(this.order.quantity);
     return this.order.quantity / this.getSheetPerCut(id);
   }
 
@@ -258,7 +265,7 @@ export class CreateMixtureComponent implements OnInit {
   }
 
   save() {
-    if ( !this.isSave){
+    if (!this.isSave) {
       return;
     }
     if (this.form.invalid) {
@@ -269,10 +276,10 @@ export class CreateMixtureComponent implements OnInit {
       return;
     }
     const body: MixtureCreate = {...this.form.getRawValue()};
-    if (this.mixtureEdit){
+    if (this.mixtureEdit) {
       body.id = this.mixtureEdit.id;
       body.date = this.mixtureEdit.date;
-    }else{
+    } else {
       body.date = new Date();
     }
     body.order = this.order.id;
@@ -283,7 +290,7 @@ export class CreateMixtureComponent implements OnInit {
     body.total = this.totalToCreate;
     body.totalReal = this.totalReal;
 
-    if (body.id){
+    if (body.id) {
       this.mixtureService.edit(body.id, body).subscribe(
         (data => {
           this.toastService.success('Mezcla actualizada');
@@ -291,7 +298,7 @@ export class CreateMixtureComponent implements OnInit {
           this.prepare.reset();
         })
       );
-    }else {
+    } else {
       this.mixtureService.create(body).subscribe(
         (data => {
           this.toastService.success('Mezcla creada');
@@ -385,28 +392,58 @@ export class CreateMixtureComponent implements OnInit {
     }
   }
 
-  generateReceipt(e: any){
-      this.mixtureService.generateReceipt(this.numberMixture).subscribe(
-        (data => {
-          const type = data.body.type;
-          this.fileName = data.headers.get('content-disposition').split('filename=')[1];
-          this.srcPdf = URL.createObjectURL(
-            new Blob([data.body], { type })
-          );
-          this.pdfDialog = true;
-        })
-      );
+  generateReceipt(e: any) {
+    this.mixtureService.generateReceipt(this.numberMixture).subscribe(
+      (data => {
+        const type = data.body.type;
+        this.fileName = data.headers.get('content-disposition').split('filename=')[1];
+        this.srcPdf = URL.createObjectURL(
+          new Blob([data.body], {type})
+        );
+        this.pdfDialog = true;
+      })
+    );
   }
 
-  generateNewMixture(){
+  generateNewMixture() {
     this.getNumberToCreate();
     this.isEditing = !this.isEditing;
     this.mixtureEdit = null;
   }
 
-  onEditing(index: number){
+  showFilter() {
+    this.showFilters = true;
+    // this.getAll();
+  }
+
+  filterMixtures($event: any) {
+    const query = $event.query;
+    if (query) {
+      this.mixtureService.search(query)
+        .subscribe((res: MixtureShort[]) => {
+          this.mixtures = res;
+        });
+    }
+  }
+
+  onSelect(e: any) {
+    this.mixtureFilter = e;
+  }
+
+  getRowsMixture() {
+    this.showFilters = false;
+    this.mixtureService.getMixtureByNumber(this.mixtureFilter.number).subscribe(
+      mixture => {
+        this.rowsFormArray.clear();
+        mixture.rows.forEach(row => {
+          this.rowsFormArray.push(this.addRowData(row));
+        });
+      });
+  }
+
+  onEditing(index: number) {
     const value = this.getRowsType(index).value;
-    if (value){
+    if (value) {
       const data = {value};
       this.onTypeSelected(data);
     }

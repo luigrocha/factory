@@ -81,7 +81,7 @@
           </p>
           <p class="col-6 md:col-2">
             <button
-              (click)="showFilters = true"
+              (click)="showFilter()"
               [disabled]="isEditing"
               class="flex-grow-1"
               icon="pi pi-book"
@@ -419,8 +419,8 @@
 <p-sidebar [(visible)]="showFilters" [baseZIndex]="10000" position="right">
   <h3 style="font-weight: normal">Mezclas Anteriores</h3>
   <h5>Última mezcla: 1</h5>
-  <div class="p-fluid formgrid">
-    <div class="field">
+  <div class="p-fluid formgrid" style="height: 35vh">
+    <!--<div class="field">
       <label for="material">Producto</label>
       <input id="material" maxlength="32" pInputText type="text"/>
     </div>
@@ -431,30 +431,57 @@
     <div class="field">
       <label for="cirel">Cirel</label>
       <input id="cirel" maxlength="32" pInputText type="text"/>
-    </div>
+    </div>-->
     <div class="field">
-      <label for="mix">Mezcla de</label>
-      <input id="mix" maxlength="32" pInputText type="text"/>
+      <label for="number">Mezcla | Número</label>
+      <p-autoComplete (completeMethod)="filterMixtures($event)"
+                      (onSelect)="onSelect($event)"
+                      [minLength]="3"
+                      [showEmptyMessage]="true"
+                      [suggestions]="mixtures"
+                      delay="500"
+                      emptyMessage="No se encontraron resultados"
+                      field="mixture"
+                      id="number">
+        <ng-template let-mixture pTemplate="item">
+          <div>
+            {{mixture.order.lot }} |
+            <span class="item-subheading">{{mixture.mixture}}</span> |
+            <span class="item-subheading">{{mixture.number}}</span>
+          </div>
+        </ng-template>
+      </p-autoComplete>
     </div>
-    <div class="field">
-      <label for="number">Numero</label>
-      <input id="number" maxlength="32" pInputText type="text"/>
+    <div *ngIf="mixtureFilter" class="flex justify-content-between filter-items">
+      <label>Lote:</label>
+      <p>{{mixtureFilter.order.lot}}</p>
+      <label>Orden:</label>
+      <p>{{mixtureFilter.order.code}}</p>
+      <label>Producto:</label>
+      <p>{{mixtureFilter.order.productCode}}</p>
+      <label>Mezcla:</label>
+      <p>{{mixtureFilter.mixture}}</p>
+      <label>Número:</label>
+      <p>{{mixtureFilter.number}}</p>
     </div>
   </div>
   <div class="flex justify-content-evenly mt-5">
     <button
+      (click)="getRowsMixture()"
+      [disabled]="!mixtureFilter"
       class="p-button-raised"
       icon="pi pi-copy"
       label="Traer"
       pButton
       pRipple
     ></button>
-    <button
+    <!--<button
+      (click)="mixtureFilter = null"
       class="p-button-raised"
       icon="pi pi-filter-slash"
       label="Limpiar"
       pButton
       pRipple
-    ></button>
+    ></button>-->
   </div>
 </p-sidebar>

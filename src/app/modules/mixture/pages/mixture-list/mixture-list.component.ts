@@ -61,7 +61,7 @@ export class MixtureListComponent implements OnInit {
     });
   }
 
-  getNumberByLot(order: Order){
+  getNumberByLot(order: Order) {
     this.mixtureService.getNumberByLot(order.lot).subscribe(num => {
       order.numberMixture = num;
     });
