@@ -149,7 +149,7 @@ export class CreateMixtureComponent implements OnInit {
         this.getNumberToCreate();
         this.orderService.getOrderByLot(params.lote).subscribe(order => {
           this.order = order;
-          this.sheets = order.quantity;
+          // this.sheets = order.quantity;
           this.getProjectToCodeGen(order.productCode);
         });
       } else {
@@ -168,6 +168,7 @@ export class CreateMixtureComponent implements OnInit {
   getProjectToCodeGen(codeGen: string) {
     this.projectService.getProjectToCodeGen(codeGen).subscribe(project => {
       this.project = project;
+
       this.getByDieProduct(project.dieProduct.id);
       this.mixtureTo = `${project.homoPolymer.hpCode}${project.talc ? project.talc.lpCode : ''}${project.colorB.id}`;
       this.calculateRows();
@@ -180,7 +181,7 @@ export class CreateMixtureComponent implements OnInit {
         this.mixtureEdit = mixture;
         this.numberMixture = mixture.number;
         this.order = mixture.order;
-        this.sheets = mixture.order.quantity;
+        // this.sheets = mixture.order.quantity;
         this.totalReal = mixture.totalReal;
         this.totalToCreate = mixture.total;
         this.die.setValue(mixture.die.id);
@@ -226,13 +227,23 @@ export class CreateMixtureComponent implements OnInit {
     return this.dies.find(die => die.id === id);
   }
 
+  getSheet(id: number){
+    if ( this.mixtureEdit){
+      this.sheets = this.mixtureEdit.order.quantity / this.searchDie(id).quantity;
+    }else{
+      this.sheets = this.order.quantity / this.searchDie(id).quantity;
+    }
+    return this.sheets;
+  }
+
   getSheetPerCut(id: number) {
     const leafWidth = this.searchDie(id).leafWidth / 1000;
     return Math.trunc(this.weightExtrusion / leafWidth);
   }
 
   getNumberCut(id: number) {
-    return this.sheets / this.getSheetPerCut(id);
+    console.log(this.order.quantity);
+    return this.order.quantity / this.getSheetPerCut(id);
   }
 
   getTotalReal(id: number) {
@@ -385,6 +396,12 @@ export class CreateMixtureComponent implements OnInit {
           this.pdfDialog = true;
         })
       );
+  }
+
+  generateNewMixture(){
+    this.getNumberToCreate();
+    this.isEditing = !this.isEditing;
+    this.mixtureEdit = null;
   }
 
   onEditing(index: number){
