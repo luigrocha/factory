@@ -42,6 +42,19 @@ public class Manufacturer {
     private String name;
 
     @Column(
+            name = "CATFAB_DESCRIPTION",
+            nullable = false,
+            length = 128
+    )
+    private String description;
+
+    @Column(
+            name = "CATFAB_OBSERVATION",
+            length = 128
+    )
+    private String observation;
+
+    @Column(
             name = "CATFAB_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )

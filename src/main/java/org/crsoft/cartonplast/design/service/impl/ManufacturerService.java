@@ -38,7 +38,7 @@ public class ManufacturerService implements IManufacturerService {
         if(manufacturerOpt.isPresent()) {
             return manufacturerOpt.get();
         } else {
-            log.error("Error to getLocationByCode: {}", code);
+            log.error("Error to getManufacturerByCode: {}", code);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
     }
@@ -74,6 +74,8 @@ public class ManufacturerService implements IManufacturerService {
         Manufacturer manufacturerBD = getManufacturerByCode(code);
         try {
             manufacturerBD.setName(manufacturerReq.getName());
+            manufacturerBD.setDescription(manufacturerReq.getDescription());
+            manufacturerBD.setObservation(manufacturerReq.getObservation());
             this.manufacturerRepository.save(manufacturerBD);
         } catch (Exception e) {
             log.error("Error to updateManufacturer: {}", e.getMessage());

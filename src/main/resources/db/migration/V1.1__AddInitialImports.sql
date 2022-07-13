@@ -1,8 +1,8 @@
 /*==============================================================*/
 /* Import: CATFAB Catalogos fabricantes                         */
 /*==============================================================*/
-INSERT INTO CATFAB (CATFAB_NAME) VALUES ('R&M');
-INSERT INTO CATFAB (CATFAB_NAME) VALUES ('MBACH');
+INSERT INTO CATFAB (CATFAB_NAME, CATFAB_DESCRIPTION, CATFAB_OBSERVATION) VALUES ('R&M', 'Ramiro Urgilez', 'Tienda de herramientas y troqueles');
+INSERT INTO CATFAB (CATFAB_NAME, CATFAB_DESCRIPTION, CATFAB_OBSERVATION) VALUES ('MBACH', 'MARBACH', NULL);
 
 /*==============================================================*/
 /* Import: CATMAQ Catalogos máquinas                            */

@@ -18,4 +18,6 @@ public class ManufacturerRes implements Serializable {
 
     private Integer id;
     private String name;
+    private String description;
+    private String observation;
 }
