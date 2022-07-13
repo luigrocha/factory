@@ -41,6 +41,11 @@ public class MixtureController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping()
+    public ResponseEntity<Collection<MixtureRes>> findAll(){
+        return ResponseEntity.ok(mixtureService.findAll());
+    }
+
     @GetMapping("/search")
     public ResponseEntity<Collection<MixtureShortRes>> findAllMixture(@RequestParam(value = "query") String query){
         return ResponseEntity.ok(mixtureService.findByQuery(query));

@@ -32,4 +32,6 @@ public interface MixtureMapper {
 
     MixtureRes mixtureToMixtureRes(Mixture mixture);
 
+    Collection<MixtureRes> mixtureCollectionToMixtureRes(Collection<Mixture> mixture);
+
 }
