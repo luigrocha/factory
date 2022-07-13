@@ -287,6 +287,7 @@ export class CreateMixtureComponent implements OnInit {
     body.documentBy = this.authService.getLoggedUser().name;
     body.documentTo = 'Responsables Mezcla';
     body.mixture = this.mixtureTo;
+    body.totalStop = this.totalToStop;
     body.total = this.totalToCreate;
     body.totalReal = this.totalReal;
 
