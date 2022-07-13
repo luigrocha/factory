@@ -34,6 +34,7 @@ export interface MixtureCreate{
   mixture: string;
   prepare: number;
   preMixture: number;
+  totalStop: number;
   total: number;
   totalReal: number;
   die: number;

@@ -53,7 +53,7 @@
           <form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
             <div class="p-fluid grid formgrid mt-5">
               <div class="field col-12">
-                <label for="mixture">Numero Mezcla | Lote</label>
+                <label for="mixture">Lote | Orden | Producto | Mezcla | Número</label>
                 <p-autoComplete (completeMethod)="filterMixtures($event)"
                                 (onSelect)="onSelect($event)"
                                 [minLength]="3"
