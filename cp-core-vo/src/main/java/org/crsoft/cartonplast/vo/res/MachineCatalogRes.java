@@ -7,19 +7,15 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * @author lpillaga on 09/06/2022
+ * @author jyepez on 13/07/2022
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MachineRes implements Serializable {
+public class MachineCatalogRes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Integer id;
     private String name;
-    private Boolean hasDesb;
-    private String description;
-    private String observation;
-    private MachineCatalogRes machineCatalog;
 }

@@ -9,7 +9,9 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {
+        MachineCatalogMapper.class
+})
 public interface MachineMapper {
 
     MachineRes toMachineRes(Machine machine);
