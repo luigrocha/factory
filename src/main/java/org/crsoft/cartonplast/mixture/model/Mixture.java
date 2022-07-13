@@ -59,6 +59,9 @@ public class Mixture {
     @Column(name = "CETMIX_DATE", nullable = false)
     private Timestamp date;
 
+    @Column(name = "CETMIX_TOTAL_STOP")
+    private Double totalStop;
+
     @Column(name = "CETMIX_TOTAL", nullable = false)
     private Double total;
 

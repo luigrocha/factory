@@ -5,13 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.crsoft.cartonplast.celler.util.ReceiptGeneratorUtil;
-import org.crsoft.cartonplast.common.constant.DesignConstant;
 import org.crsoft.cartonplast.common.constant.ReceiptConstant;
 import org.crsoft.cartonplast.common.exception.BusinessException;
 import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
 import org.crsoft.cartonplast.common.exception.InsertException;
-import org.crsoft.cartonplast.common.util.DateUtil;
 import org.crsoft.cartonplast.common.exception.NotExistException;
+import org.crsoft.cartonplast.common.util.DateUtil;
 import org.crsoft.cartonplast.mixture.model.Mixture;
 import org.crsoft.cartonplast.mixture.model.MixtureDetail;
 import org.crsoft.cartonplast.mixture.repository.MixtureRepository;
@@ -28,12 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_INSERT;
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
@@ -141,11 +135,11 @@ public class MixtureService implements IMixtureService {
         }
 
         return GenerateMixtureReceiptReq.builder()
-                .mixtureCode("") //
                 .number(mixture.getNumber().toString())
                 .lot(mixture.getOrder().getLot())
                 .clientProd(mixture.getOrder().getProductCode())
                 // .isToExport(mixture.getOrder().getP ? "SI" : "NO")
+                //TODO GET CIREL INFO
                 .isToExport("SI") //
                 .dieProduct(mixture.getDie().getDieProduct().getCode())
                 .die(mixture.getDie().getName())
@@ -156,12 +150,12 @@ public class MixtureService implements IMixtureService {
                 .date(mixture.getDate())
                 .prepare(mixture.getPrepare())
                 .totalKg(mixture.getTotal())
-                .leafs(mixture.getOrder().getQuantity())
+                .leafs((int) (mixture.getOrder().getQuantity() / mixture.getDie().getQuantity()))
                 .preMixtureKg(mixture.getPreMixture())
                 .mixture(mixture.getMixture())
                 .weight(mixture.getDie().getDieProduct().getGsmdis())
                 .totalPercentage(BigDecimal.valueOf(100.00).setScale(2, RoundingMode.HALF_UP))
-                .totalStopQuantity(BigDecimal.valueOf(200.14).setScale(2, RoundingMode.HALF_UP)) //
+                .totalStopQuantity(BigDecimal.valueOf(mixture.getTotalStop()).setScale(2, RoundingMode.HALF_UP))
                 .total(BigDecimal.valueOf(mixture.getTotal()).setScale(2, RoundingMode.HALF_UP))
                 .items(items)
                 .build();
@@ -172,7 +166,6 @@ public class MixtureService implements IMixtureService {
         try {
             JasperReport jasperReport = receiptGeneratorUtil.getReportFromResources(ReceiptConstant.MIXTURE_JRXML_NAME);
             final Map<String, Object> parameters = receiptGeneratorUtil.getReportCommonData();
-            parameters.put("mixtureCode", receiptReq.getMixtureCode());
             parameters.put("number", receiptReq.getNumber());
             parameters.put("lot", receiptReq.getLot());
             parameters.put("clientProd", receiptReq.getClientProd());

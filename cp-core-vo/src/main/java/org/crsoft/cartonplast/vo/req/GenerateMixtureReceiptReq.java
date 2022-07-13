@@ -21,7 +21,6 @@ import java.util.List;
 public class GenerateMixtureReceiptReq implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String mixtureCode;
     private String number;
     private String lot;
     private String clientProd;

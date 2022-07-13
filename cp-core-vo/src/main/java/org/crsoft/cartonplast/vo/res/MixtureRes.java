@@ -29,6 +29,7 @@ public class MixtureRes implements Serializable {
     private String documentBy;
     private String documentTo;
     private String mixture;
+    private Double totalStop;
     private Double total;
     private Double totalReal;
     private DieRes die;

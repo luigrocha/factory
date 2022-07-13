@@ -30,6 +30,7 @@ public class MixtureReq implements Serializable {
     private String documentTo;
     private String mixture;
     private Timestamp date;
+    private Double totalStop;
     private Double total;
     private Double totalReal;
     private Collection<MixtureDetailReq> rows;
