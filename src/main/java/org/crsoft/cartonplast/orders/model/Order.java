@@ -85,7 +85,7 @@ public class Order {
             name = "COTORD_ESTIMATED_DELIVERED_AT",
             nullable = false
     )
-    private LocalDate estimatedDeliveryAt;
+    private LocalDateTime estimatedDeliveryAt;
 
     @Column(
             name = "COTORD_CLIENT_ORDER_CODE",
@@ -128,7 +128,6 @@ public class Order {
             columnDefinition = "TIMESTAMP",
             nullable = false
     )
-    @LastModifiedDate
     private LocalDateTime lastModifiedAt;
 
     @Column(

@@ -1,6 +1,10 @@
 package org.crsoft.cartonplast.design.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.crsoft.cartonplast.common.exception.BusinessException;
+import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
+import org.crsoft.cartonplast.design.model.Project;
 import org.crsoft.cartonplast.design.repository.ProjectRepository;
 import org.crsoft.cartonplast.design.service.IProjectService;
 import org.crsoft.cartonplast.design.service.mapper.ProjectMapper;
@@ -15,6 +19,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProjectService implements IProjectService {
 
     private final ProjectRepository projectRepository;
@@ -28,5 +33,14 @@ public class ProjectService implements IProjectService {
     @Override
     public List<ProjectShortRes> findProjectsByClientId(Integer clientId) {
         return projectMapper.toProjectShortResList(projectRepository.findProjectsByClientId(clientId));
+    }
+
+    @Override
+    public Project findProjectById(Integer projectId) {
+        return this.projectRepository.findById(projectId)
+                .orElseThrow(() -> {
+                    log.error("Project not found with id: {}", projectId);
+                    return new BusinessException(BusinessExceptionReason.PROJECT_NOT_FOUND, projectId);
+                });
     }
 }

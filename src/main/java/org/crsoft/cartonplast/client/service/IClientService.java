@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.client.service;
 
+import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.vo.req.CreateClientReq;
 import org.crsoft.cartonplast.vo.res.ClientRes;
 
@@ -15,4 +16,6 @@ public interface IClientService {
     ClientRes saveClient(CreateClientReq client);
 
     boolean deleteClient(Integer clientId);
+
+    Client findClientById(Integer clientId);
 }

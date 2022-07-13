@@ -4,6 +4,7 @@ import org.crsoft.cartonplast.client.service.mapper.ClientMapper;
 import org.crsoft.cartonplast.catalog.service.mapper.CatalogPriorityMapper;
 import org.crsoft.cartonplast.catalog.service.mapper.CatalogStatusMapper;
 import org.crsoft.cartonplast.common.annotation.WithoutAuditField;
+import org.crsoft.cartonplast.design.service.mapper.ProjectMapper;
 import org.crsoft.cartonplast.orders.model.Order;
 import org.crsoft.cartonplast.vo.req.CreateOrderReq;
 import org.crsoft.cartonplast.vo.res.OrderRes;
@@ -18,7 +19,8 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {
         ClientMapper.class,
         CatalogStatusMapper.class,
-        CatalogPriorityMapper.class
+        CatalogPriorityMapper.class,
+        ProjectMapper.class
 })
 public interface OrderMapper {
 
@@ -28,7 +30,7 @@ public interface OrderMapper {
     Order orderResToOrder(OrderRes orderRes);
 
     @WithoutAuditField
-    Order orderReqToOrder(CreateOrderReq orderReq);
+    Order orderReqToOrder(CreateOrderReq createOrderReq);
 
     List<OrderRes> ordersToOrdersRes(Collection<Order> orders);
 }
