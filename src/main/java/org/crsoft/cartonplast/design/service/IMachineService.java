@@ -1,8 +1,10 @@
 package org.crsoft.cartonplast.design.service;
 
 import org.crsoft.cartonplast.vo.req.MachineReq;
+import org.crsoft.cartonplast.vo.res.MachineCatalogRes;
 import org.crsoft.cartonplast.vo.res.MachineRes;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,4 +18,6 @@ public interface IMachineService {
     MachineRes update(Integer id, MachineReq machineReq);
 
     boolean delete(Integer id);
+
+    Collection<MachineCatalogRes> findAllValidMachinesCatalog();
 }

@@ -20,4 +20,8 @@ public class MachineReq implements Serializable {
 
     @NotNull
     private Boolean hasDesb;
+
+    private String observation;
+    private String description;
+    private Integer machineCatalog;
 }

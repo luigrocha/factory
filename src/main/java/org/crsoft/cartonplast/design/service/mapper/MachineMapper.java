@@ -21,12 +21,14 @@ public interface MachineMapper {
     @Mapping(target = "dieMachines", ignore = true)
     Machine toMachine(MachineRes machineRes);
 
+    @Mapping(target = "machineCatalog", ignore = true)
     MachineReq toMachineReq(Machine machine);
 
     @WithoutAuditField
     @Mapping(target = "dies", ignore = true)
     @Mapping(target = "dieMachines", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "machineCatalog.id",  source = "machineCatalog")
     Machine toMachine(MachineReq machineReq);
 
     List<MachineRes> toMachineResList(List<Machine> machines);
