@@ -8,6 +8,8 @@ import org.crsoft.cartonplast.client.repository.ClientCategoryRepository;
 import org.crsoft.cartonplast.client.repository.ClientRepository;
 import org.crsoft.cartonplast.client.service.IClientService;
 import org.crsoft.cartonplast.client.service.mapper.ClientMapper;
+import org.crsoft.cartonplast.common.exception.BusinessException;
+import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
 import org.crsoft.cartonplast.vo.req.CreateClientReq;
 import org.crsoft.cartonplast.common.client.MinioClient;
 import org.crsoft.cartonplast.common.constant.GlobalConstant;
@@ -93,5 +95,14 @@ public class ClientService implements IClientService {
                     client.setValidTo(LocalDateTime.now());
                     return true;
                 }).orElse(false);
+    }
+
+    @Override
+    public Client findClientById(Integer clientId) {
+        return this.clientRepository.findById(clientId)
+                .orElseThrow(() -> {
+                    log.error("Client not found with id: {}", clientId);
+                    return new BusinessException(BusinessExceptionReason.CLIENT_NOT_FOUND, clientId);
+                });
     }
 }

@@ -3,8 +3,7 @@ package org.crsoft.cartonplast.orders.controller;
 import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.orders.service.IOrderService;
-import org.crsoft.cartonplast.vo.req.CreateOrderReq;
-import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
+import org.crsoft.cartonplast.vo.req.*;
 import org.crsoft.cartonplast.vo.res.GeneratedOrderCodeRes;
 import org.crsoft.cartonplast.vo.res.OrderRes;
 import org.springframework.data.domain.Page;
@@ -62,5 +61,32 @@ public class OrderController {
     public ResponseEntity<Collection<OrderRes>> findOrdersByStatus(@PathVariable("status") String status)
             throws NotFoundException {
         return ResponseEntity.ok(orderService.findOrdersByStatus(status));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderRes> findOrderById(
+            @PathVariable("id") Integer id){
+        return ResponseEntity.ok(orderService.findOrderById(id));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<OrderRes> cancelOrder(
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody CancelOrderReq cancelOrderReq) {
+        return ResponseEntity.ok(orderService.cancelOrder(id, cancelOrderReq));
+    }
+
+    @PostMapping("/{id}/start")
+    public ResponseEntity<OrderRes> startOrder(
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody StartOrderReq startOrderReq) {
+        return ResponseEntity.ok(orderService.startOrder(id, startOrderReq));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderRes> updateOrder(
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody UpdateOrderReq updateOrderReq) {
+        return ResponseEntity.ok(orderService.updateOrder(id, updateOrderReq));
     }
 }

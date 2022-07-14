@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.catalog.model.CatalogPriority;
 import org.crsoft.cartonplast.catalog.model.CatalogStatus;
-import org.crsoft.cartonplast.catalog.repository.CatalogPriorityRepository;
-import org.crsoft.cartonplast.catalog.service.impl.CatalogStatusService;
+import org.crsoft.cartonplast.catalog.service.ICatalogStatusService;
+import org.crsoft.cartonplast.catalog.service.impl.CatalogPriorityService;
 import org.crsoft.cartonplast.client.model.Client;
-import org.crsoft.cartonplast.client.repository.ClientRepository;
+import org.crsoft.cartonplast.client.service.IClientService;
 import org.crsoft.cartonplast.common.constant.CatalogStatusConstant;
 import org.crsoft.cartonplast.common.constant.OrderConstant;
 import org.crsoft.cartonplast.common.exception.BusinessException;
@@ -15,14 +15,13 @@ import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.filter.SpecificationBuilder;
 import org.crsoft.cartonplast.design.model.Project;
-import org.crsoft.cartonplast.design.repository.ProjectRepository;
+import org.crsoft.cartonplast.design.service.IProjectService;
 import org.crsoft.cartonplast.orders.model.Order;
 import org.crsoft.cartonplast.orders.repository.OrderRepository;
 import org.crsoft.cartonplast.orders.repository.specification.OrderSpecification;
 import org.crsoft.cartonplast.orders.service.IOrderService;
 import org.crsoft.cartonplast.orders.service.mapper.OrderMapper;
-import org.crsoft.cartonplast.vo.req.CreateOrderReq;
-import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
+import org.crsoft.cartonplast.vo.req.*;
 import org.crsoft.cartonplast.vo.res.GeneratedOrderCodeRes;
 import org.crsoft.cartonplast.vo.res.OrderRes;
 import org.keycloak.common.util.CollectionUtil;
@@ -32,11 +31,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NOT_FOUND;
+import static org.crsoft.cartonplast.common.constant.OrderConstant.MAX_ORDER_CODE_LENGTH;
+import static org.crsoft.cartonplast.common.constant.OrderConstant.ORDER_LOT_CODE_PREFIX;
 
 /**
  * @author jyepez on 14/5/2022
@@ -46,10 +50,10 @@ import static org.crsoft.cartonplast.common.constant.MessagesConstant.MESSAGE_NO
 @Slf4j
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
-    private final ClientRepository clientRepository;
-    private final ProjectRepository projectRepository;
-    private final CatalogPriorityRepository catalogPriorityRepository;
-    private final CatalogStatusService catalogStatusService;
+    private final ICatalogStatusService catalogStatusService;
+    private final IClientService clientService;
+    private final IProjectService projectService;
+    private final CatalogPriorityService catalogPriorityService;
     private final OrderMapper orderMapper;
     private final SpecificationBuilder<Order> specificationBuilder;
 
@@ -76,11 +80,11 @@ public class OrderService implements IOrderService {
 
     @Override
     @Transactional
-    public OrderRes saveOrder(CreateOrderReq orderReq) {
-        boolean existsByCode = this.orderRepository.existsByCode(orderReq.getCode());
+    public OrderRes saveOrder(CreateOrderReq createOrderReq) {
+        boolean existsByCode = this.orderRepository.existsByCode(createOrderReq.getCode());
         if (existsByCode) {
-            log.error("Repeated order code: {}", orderReq.getCode());
-            throw new BusinessException(BusinessExceptionReason.REPEATED_ORDER_CODE, orderReq.getCode());
+            log.error("Repeated order code: {}", createOrderReq.getCode());
+            throw new BusinessException(BusinessExceptionReason.REPEATED_ORDER_CODE, createOrderReq.getCode());
         }
 
         Optional<CatalogStatus> defaultStatusOptional = this.catalogStatusService.findByTypeAndIsDefault(CatalogStatusConstant.ORDER_STATUS_CODE);
@@ -89,25 +93,11 @@ public class OrderService implements IOrderService {
             throw new BusinessException(BusinessExceptionReason.DEFAULT_ORDER_STATUS_NOT_FOUND);
         }
 
-        Client client = this.clientRepository.findById(orderReq.getClientId())
-                .orElseThrow(() -> {
-                    log.error("Client not found with id: {}", orderReq.getClientId());
-                    return new BusinessException(BusinessExceptionReason.CLIENT_NOT_FOUND, orderReq.getClientId());
-                });
+        Client client = this.clientService.findClientById(createOrderReq.getClientId());
+        CatalogPriority priority = this.catalogPriorityService.findPriorityById(createOrderReq.getPriorityId());
+        Project project = this.projectService.findProjectById(createOrderReq.getProjectId());
 
-        CatalogPriority priority = this.catalogPriorityRepository.findById(orderReq.getPriorityId())
-                .orElseThrow(() -> {
-                    log.error("Priority not found with id: {}", orderReq.getPriorityId());
-                    return new BusinessException(BusinessExceptionReason.CATALOG_PRIORITY_NOT_FOUND, orderReq.getPriorityId());
-                });
-
-        Project project = this.projectRepository.findById(orderReq.getProjectId())
-                .orElseThrow(() -> {
-                    log.error("Project not found with id: {}", orderReq.getProjectId());
-                    return new BusinessException(BusinessExceptionReason.PROJECT_NOT_FOUND, orderReq.getProjectId());
-                });
-
-        Order order = this.orderMapper.orderReqToOrder(orderReq);
+        Order order = this.orderMapper.orderReqToOrder(createOrderReq);
         order.setClient(client);
         order.setPriority(priority);
         order.setProject(project);
@@ -137,9 +127,9 @@ public class OrderService implements IOrderService {
     @Override
     public Collection<OrderRes> findOrdersByStatus(String status) throws NotFoundException {
         Collection<Order> orders = this.orderRepository.findOrdersByStatus(status);
-        if(CollectionUtil.isNotEmpty(orders)){
+        if (CollectionUtil.isNotEmpty(orders)) {
             return this.orderMapper.ordersToOrdersRes(orders);
-        }else{
+        } else {
             log.error("Error to findOrdersByStatus {}", status);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
@@ -148,11 +138,112 @@ public class OrderService implements IOrderService {
     @Override
     public OrderRes findOrderByLot(String lot) throws NotFoundException {
         Optional<Order> order = this.orderRepository.findOrderByLot(lot);
-        if(order.isPresent()){
+        if (order.isPresent()) {
             return this.orderMapper.orderToOrderRes(order.get());
-        }else{
+        } else {
             log.error("Error to findOrdersByLot {}", lot);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
+    }
+
+    @Override
+    public OrderRes findOrderById(Integer id) {
+        return this.orderMapper.orderToOrderRes(this.findById(id));
+    }
+
+    @Override
+    @Transactional
+    public OrderRes cancelOrder(Integer id, CancelOrderReq cancelOrderReq) {
+        Order order = this.findById(id);
+
+        CatalogStatus catalogStatus = this.catalogStatusService.findById(cancelOrderReq.getStatusCode())
+                .orElseThrow(() -> {
+                    log.error("Catalog status not found with id: {}", cancelOrderReq.getStatusCode());
+                    return new BusinessException(BusinessExceptionReason.CATALOG_STATUS_NOT_FOUND, cancelOrderReq.getStatusCode());
+                });
+
+        order.setStatus(catalogStatus);
+        order.setCancellationReason(cancelOrderReq.getCancellationReason());
+        order.setCanceledAt(LocalDateTime.now());
+        order.setLastModifiedAt(LocalDateTime.now());
+
+        return this.orderMapper.orderToOrderRes(this.orderRepository.save(order));
+    }
+
+    @Override
+    @Transactional
+    public OrderRes updateOrder(Integer id, UpdateOrderReq updateOrderReq) {
+        Order order = this.findById(id);
+        Client client = this.clientService.findClientById(updateOrderReq.getClientId());
+        CatalogPriority priority = this.catalogPriorityService.findPriorityById(updateOrderReq.getPriorityId());
+        Project project = this.projectService.findProjectById(updateOrderReq.getProjectId());
+
+        order.setLot(updateOrderReq.getLot());
+        order.setProductCode(updateOrderReq.getProductCode());
+        order.setName(updateOrderReq.getName());
+        order.setQuantity(updateOrderReq.getQuantity());
+        order.setClientOrderCode(updateOrderReq.getClientOrderCode());
+        order.setObservation(updateOrderReq.getObservation());
+        order.setEstimatedDeliveryAt(updateOrderReq.getEstimatedDeliveryAt());
+        order.setClient(client);
+        order.setPriority(priority);
+        order.setProject(project);
+        order.setLastModifiedAt(LocalDateTime.now());
+
+        return this.orderMapper.orderToOrderRes(this.orderRepository.save(order));
+    }
+
+    @Override
+    public Order findById(Integer id) {
+        return this.orderRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Order not found with id: {}", id);
+                    return new BusinessException(BusinessExceptionReason.ORDER_NOT_FOUND, id);
+                });
+    }
+
+    @Override
+    @Transactional
+    public OrderRes startOrder(Integer id, StartOrderReq startOrderReq) {
+        Order order = this.findById(id);
+
+        CatalogStatus catalogStatus = this.catalogStatusService.findById(startOrderReq.getStatusCode())
+                .orElseThrow(() -> {
+                    log.error("Catalog status not found with id: {}", startOrderReq.getStatusCode());
+                    return new BusinessException(BusinessExceptionReason.CATALOG_STATUS_NOT_FOUND, startOrderReq.getStatusCode());
+                });
+
+        String lot = this.generateNextLotCode();
+
+        order.setStatus(catalogStatus);
+        order.setLot(lot);
+        order.setLastModifiedAt(LocalDateTime.now());
+
+        return this.orderMapper.orderToOrderRes(this.orderRepository.save(order));
+    }
+
+    @Override
+    public String generateNextLotCode() {
+        LocalDate now = LocalDate.now();
+        int totalTodayOrders = this.orderRepository.countTodayActiveOrders(
+                LocalDateTime.of(now, LocalTime.MIN),
+                LocalDateTime.of(now, LocalTime.MAX)
+        );
+
+        LocalDate generationDate = LocalDate.now();
+        if (totalTodayOrders >= MAX_ORDER_CODE_LENGTH) {
+            generationDate = LocalDate.now().plusDays(1);
+            totalTodayOrders = totalTodayOrders - MAX_ORDER_CODE_LENGTH;
+        }
+
+        int dayOfMonth = generationDate.getDayOfMonth();
+        int month = generationDate.getMonthValue();
+        int year = generationDate.getYear();
+
+        return ORDER_LOT_CODE_PREFIX +
+                String.format("%02d", dayOfMonth) +
+                String.format("%02d", month) +
+                String.valueOf(year).substring(String.valueOf(year).length() - 1) +
+                (totalTodayOrders + 1);
     }
 }

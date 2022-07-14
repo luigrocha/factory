@@ -15,12 +15,11 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrderReq implements Serializable {
+public class UpdateOrderReq implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @NotEmpty
-    private String code;
+    private String lot;
 
     @NotEmpty
     private String productCode;

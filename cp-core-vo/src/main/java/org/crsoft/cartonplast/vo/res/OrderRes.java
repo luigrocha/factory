@@ -28,7 +28,7 @@ public class OrderRes implements Serializable {
     private Integer quantity;
     private LocalDateTime orderedAt;
     private String lot;
-    private LocalDate estimatedDeliveryAt;
+    private LocalDateTime estimatedDeliveryAt;
     private String clientOrderCode;
     private String observation;
     private LocalDateTime completedAt;
@@ -38,6 +38,7 @@ public class OrderRes implements Serializable {
     private LocalDateTime lastModifiedAt;
     private ClientShortRes client;
     private CatalogStatusRes status;
+    private ProjectShortRes project;
     private Integer pendingQuantity;
     private Integer shippedQuantity;
     private CatalogPriorityRes priority;
