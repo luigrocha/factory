@@ -85,6 +85,34 @@
       </p-table>
     </div>
 
+    <p-dialog [(visible)]="manufacturerDialog" [style]="{ width: '450px' }" header="Detalles del Fabricante" [modal]="true"
+      styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-field">
+          <label for="manufacturer">Código</label>
+          <input type="text" pInputText id="manufacturer" [(ngModel)]="manufacturer.name" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !manufacturer.name">Campo código es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="description">Nombre</label>
+          <input type="text" pInputText id="description" [(ngModel)]="manufacturer.description"
+            style="text-transform: uppercase" required />
+          <small class="p-invalid" *ngIf="submitted && !manufacturer.description">Campo nombre es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="observation">Observación</label>
+          <input type="text" pInputText id="observation" [(ngModel)]="manufacturer.observation"
+            style="text-transform: uppercase" />
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" (click)="save()"></button>
+      </ng-template>
+    </p-dialog>
+
     <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
   </div>
 </div>

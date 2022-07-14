@@ -78,13 +78,13 @@
       </p-table>
     </div>
 
-    <p-dialog [(visible)]="locationDialog" [style]="{ width: '450px' }" header="Detalles de Homopolímero" [modal]="true"
+    <p-dialog [(visible)]="locationDialog" [style]="{ width: '450px' }" header="Detalles de la Ubicación" [modal]="true"
       styleClass="p-fluid">
       <ng-template pTemplate="content">
         <div class="p-field">
           <label for="location">Código</label>
           <input type="text" pInputText id="location" [(ngModel)]="location.location" required autofocus />
-          <small class="p-invalid" *ngIf="submitted && !location.location">Campo codigo es requerido.</small>
+          <small class="p-invalid" *ngIf="submitted && !location.location">Campo código es requerido.</small>
         </div>
         <div class="p-field">
           <label for="description">Ubicación</label>

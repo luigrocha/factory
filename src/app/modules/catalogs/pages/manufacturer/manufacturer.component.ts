@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ConfirmationService, MenuItem } from "primeng/api";
+import { ConfirmationService, MenuItem, MessageService } from "primeng/api";
 import { PermissionEnum } from "src/app/core/constants/permisions";
 import { ManufacturerService } from "src/app/core/http/catalogs/manufacturer/manufacturer.service";
 import { PermissionService } from "src/app/core/http/permissions/permission.service";
@@ -14,6 +14,7 @@ import { TypePermission } from "src/app/types/permission";
   providers: [ConfirmationService]
 })
 export class ManufacturerComponent implements OnInit {
+  
   manufacturer: Manufacturer;
   manufacturers: Manufacturer[];
   selectedManufacturers: Manufacturer[];
@@ -31,6 +32,7 @@ export class ManufacturerComponent implements OnInit {
     private manufacturerService: ManufacturerService,
     private permissionService: PermissionService,
     private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {
     this.breadcrumbService.setItems([
       { label: "Diseño" },
@@ -81,7 +83,76 @@ export class ManufacturerComponent implements OnInit {
 
   deleteManufacturer(manufacturer: Manufacturer) {}
 
-  openNew() {}
+  openNew() {
+    this.manufacturer = {};
+    this.submitted = false;
+    this.manufacturerDialog = true;
+  }
+
+  save() {
+    this.submitted = true;
+
+    if (this.manufacturer.id) {
+      this.manufacturerService.update(this.manufacturer.id, this.manufacturer).subscribe(
+        () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Fabricante Actualizado',
+            life: 3000,
+          });
+          this.manufacturers = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error,
+            life: 3000,
+          });
+        }
+      );
+    } else if (this.isValidToSave()) {
+      this.manufacturerService.create(this.manufacturer).subscribe(
+        () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Fabricante creado',
+            life: 3000,
+          });
+          this.manufacturers = [];
+          this.getAll();
+        },
+        (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error,
+            life: 3000,
+          });
+        }
+      );
+    } else {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Adevertencia',
+        detail: 'Llene todos los campos requeridos',
+        life: 3000,
+      });
+      this.manufacturerDialog = true;
+      return;
+    }
+
+    this.manufacturers = [...this.manufacturers];
+    this.manufacturerDialog = false;
+    this.manufacturer = {};
+  }
+
+  isValidToSave(): boolean {
+    return this.manufacturer.name && this.manufacturer.description ? true : false;
+  }
 
   deleteSelectedManufacturers() {}
 
@@ -91,5 +162,10 @@ export class ManufacturerComponent implements OnInit {
         .flag;
     }
     return false;
+  }
+
+  hideDialog() {
+    this.manufacturerDialog = false;
+    this.submitted = false;
   }
 }
