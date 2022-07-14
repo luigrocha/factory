@@ -31,7 +31,13 @@
               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
             </th>
             <th scope="col" pSortableColumn="name">
-              Fabricante <p-sortIcon field="name"></p-sortIcon>
+              Código <p-sortIcon field="name"></p-sortIcon>
+            </th>
+            <th scope="col" pSortableColumn="name">
+              Nombre <p-sortIcon field="name"></p-sortIcon>
+            </th>
+            <th scope="col">
+              Observación
             </th>
             <th scope="col" style="
                 text-align: center;
@@ -49,8 +55,16 @@
               <p-tableCheckbox [value]="manufacturer"></p-tableCheckbox>
             </td>
             <td>
-              <span class="p-column-title">Nombre</span>
+              <span class="p-column-title">Código</span>
               {{ manufacturer.name }}
+            </td>
+            <td>
+              <span class="p-column-title">Nombre</span>
+              {{ manufacturer.description }}
+            </td>
+            <td>
+              <span class="p-column-title">Observación</span>
+              {{ manufacturer.observation }}
             </td>
             <td style="justify-content: center;">
               <div class="flex justify-content-evenly">

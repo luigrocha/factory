@@ -47,6 +47,7 @@ export class ManufacturerComponent implements OnInit {
   getPermissionsPage() {
     this.permissionService.findPermissionPage().subscribe((data) => {
       this.permissionsPage = data;
+      this.getMenuItems();
     });
   }
 
