@@ -167,7 +167,7 @@
                  maxlength="64"
                  type="text"/>
         </div>
-        <div *ngIf="!isOrderPending()" class="field col-12 md:col-6 lg:col-4">
+        <div *ngIf="isOrderToStart()" class="field col-12 md:col-6 lg:col-4">
           <label for="lot">Lote</label>
           <input pInputText
                  id="lot"

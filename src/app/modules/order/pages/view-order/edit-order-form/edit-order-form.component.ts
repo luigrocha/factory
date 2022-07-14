@@ -176,6 +176,10 @@ export class EditOrderFormComponent implements OnInit, OnChanges {
     return this.order.status.id === OrderStatus.PENDING;
   }
 
+  isOrderToStart(): boolean {
+    return this.order.status.id === OrderStatus.TO_START;
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.order && !changes.order.firstChange) {
       this.order = changes.order.currentValue;

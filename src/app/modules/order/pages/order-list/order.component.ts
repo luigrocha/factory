@@ -94,7 +94,8 @@ export class OrderComponent implements OnInit, AfterViewInit {
       { field: 'clientOrderCode', header: 'Orden' },
       { field: 'observation', header: 'Observaciones' },
       { field: 'pendingQuantity', header: 'Cantidad pendiente' },
-      { field: 'shippedQuantity', header: 'Despachos' }
+      { field: 'shippedQuantity', header: 'Despachos' },
+      { field: 'lastModifiedAt', header: 'Última modificación' }
     ];
   }
 
