@@ -332,4 +332,8 @@ export class CreateDieComponent implements OnInit {
     const fourthPart = this.machines.value ? this.machines.value.map(machine => machine.name).join(', ') : '';
     return `${firstPart}${secondPart}-${thirdPart}-${fourthPart}`;
   }
+
+  back() {
+    this.router.navigate(['/home/troqueles']);
+  }
 }

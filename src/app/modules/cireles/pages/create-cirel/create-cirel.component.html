@@ -241,7 +241,11 @@
         </div>
 
         <div class="col-12 text-right">
-          <button class="p-button-text mr-4"
+          <button pButton
+                  pRipple
+                  type="button"
+                  label="Cancelar"
+                  (click)="back()"
                   icon="pi pi-times"
                   label="Cancelar"
                   pButton
