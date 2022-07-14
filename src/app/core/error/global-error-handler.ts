@@ -10,6 +10,7 @@ export class GlobalErrorHandler implements ErrorHandler {
   ) {}
 
   handleError(error: any) {
+    console.error(error);
     // Check if it's an error from an HTTP response
     if (!(error instanceof HttpErrorResponse)) {
       error = error.rejection; // get the error object
