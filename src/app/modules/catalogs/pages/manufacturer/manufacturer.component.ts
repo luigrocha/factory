@@ -11,7 +11,7 @@ import { TypePermission } from "src/app/types/permission";
   selector: "app-manufacturer",
   templateUrl: "./manufacturer.component.html",
   styleUrls: ["./manufacturer.component.scss"],
-  providers: [ConfirmationService]
+  providers: [ConfirmationService, MessageService]
 })
 export class ManufacturerComponent implements OnInit {
   
@@ -44,6 +44,11 @@ export class ManufacturerComponent implements OnInit {
   ngOnInit(): void {
     this.getPermissionsPage();
     this.getAll();
+    this.cols = [
+      { field: 'name', header: 'Codigo'},
+      { field: 'description', header: 'Descripcion'},
+      { field: 'observation', header: 'Observacion'},
+    ]
   }
 
   getPermissionsPage() {
