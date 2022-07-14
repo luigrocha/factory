@@ -1,0 +1,34 @@
+<div class="p-fluid">
+  <div class="field">
+    <label for="observation">{{label}}</label>
+    <textarea pInputTextarea
+              id="observation"
+              rows="3"
+              [required]="required"
+              [ngClass]="{'ng-invalid ng-dirty': formControl.touched && formControl.invalid}"
+              [formControl]="formControl"></textarea>
+    <small *ngIf="formControl.touched && formControl.hasError('required')"
+           id="location-help"
+           class="p-error block">{{formErrors.required}}</small>
+  </div>
+</div>
+
+<div class="col-12 pb-0 pt-4 pr-0 pl-0 text-right">
+  <button pButton
+          pRipple
+          type="button"
+          label="Cancelar"
+          icon="pi pi-times"
+          (click)="close()"
+          class="p-button-text mr-4">
+  </button>
+  <button pButton
+          pRipple
+          [disabled]="formControl.invalid"
+          (click)="save()"
+          [ngClass]="actionButtonCssColorClass"
+          [label]="actionButtonLabel"
+          icon="pi pi-check"
+          class="p-button-raised">
+  </button>
+</div>
