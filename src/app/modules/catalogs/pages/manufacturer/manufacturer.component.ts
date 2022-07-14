@@ -79,9 +79,40 @@ export class ManufacturerComponent implements OnInit {
       });
   }
 
-  editManufacturer(manufacturer: Manufacturer) {}
+  editManufacturer(manufacturer: Manufacturer) {
+    this.manufacturer = {...manufacturer};
+    this.manufacturerDialog = true;
+  }
 
-  deleteManufacturer(manufacturer: Manufacturer) {}
+  deleteManufacturer(manufacturer: Manufacturer) {
+    this.confirmationService.confirm({
+      message: `Estás seguro de eliminar el fabricante: ${manufacturer.name}`,
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.manufacturerService.delete(manufacturer.id).subscribe(
+          () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Fabricante eliminado',
+              life: 3000
+            });
+            this.manufacturers = [];
+            this.getAll();
+          },
+          (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.error,
+              life: 3000
+            });
+          }
+        );
+      }
+    });
+  }
 
   openNew() {
     this.manufacturer = {};
@@ -89,7 +120,7 @@ export class ManufacturerComponent implements OnInit {
     this.manufacturerDialog = true;
   }
 
-  save() {
+  saveManufacturer() {
     this.submitted = true;
 
     if (this.manufacturer.id) {
@@ -154,7 +185,44 @@ export class ManufacturerComponent implements OnInit {
     return this.manufacturer.name && this.manufacturer.description ? true : false;
   }
 
-  deleteSelectedManufacturers() {}
+  deleteSelectedManufacturers() {
+    this.confirmationService.confirm({
+      message: 'Estás seguro de eliminar los fabricantes seleccionados?',
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.selectedManufacturers.forEach(manufacturer => {
+          this.manufacturerService.delete(manufacturer.id).subscribe(
+            () => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Fabricante Eliminado',
+                life: 3000,
+              });
+              this.manufacturers = [];
+              this.getAll();
+            },
+            (err) => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.error,
+                life: 3000,
+              });
+            }
+          );
+        });
+        this.selectedManufacturers = null;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Correcto',
+          detail: 'Fabricantes Eliminados',
+          life: 3000,
+        });
+      },
+    });
+  }
 
   isAllow(id: number): boolean {
     if (this.permissionsPage) {

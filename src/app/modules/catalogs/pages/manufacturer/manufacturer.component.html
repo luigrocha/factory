@@ -69,7 +69,7 @@
             <td style="justify-content: center;">
               <div class="flex justify-content-evenly">
                 <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
-                  (click)="manufacturerSelect = manufacturer;menu.toggle($event)">
+                  (click)="selectedManufacturer = manufacturer;menu.toggle($event)">
                 </button>
               </div>
               <p-menu #menu [popup]="true" [model]="items" appendTo="body"></p-menu>
@@ -109,7 +109,7 @@
       <ng-template pTemplate="footer">
         <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
           (click)="hideDialog()"></button>
-        <button pButton pRipple label="Guardar" icon="pi pi-check" (click)="save()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" (click)="saveManufacturer()"></button>
       </ng-template>
     </p-dialog>
 
