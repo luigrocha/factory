@@ -52,4 +52,9 @@ public class MachineController {
     public ResponseEntity<Collection<MachineCatalogRes>> findAllMachinesCatalog(){
         return ResponseEntity.ok(machineService.findAllValidMachinesCatalog());
     }
+
+    @GetMapping("/search/type/{id}")
+    public ResponseEntity<Collection<MachineRes>> findAllMachinesByType(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(machineService.findAllMachinesByType(id));
+    }
 }

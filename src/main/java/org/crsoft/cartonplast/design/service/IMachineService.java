@@ -20,4 +20,6 @@ public interface IMachineService {
     boolean delete(Integer id);
 
     Collection<MachineCatalogRes> findAllValidMachinesCatalog();
+
+    Collection<MachineRes> findAllMachinesByType(Integer id);
 }

@@ -46,11 +46,14 @@ public class Machine {
     )
     private String name;
 
-    @Column(
-            name = "CATMAQ_HAS_DESB",
-            nullable = false
-    )
+    @Column(name = "CATMAQ_WIDTH_EXT")
+    private Double widthExt;
+
+    @Column(name = "CATMAQ_HAS_DESB")
     private Boolean hasDesb;
+
+    @Column(name = "CATMAQ_ABILITY_PELL")
+    private Integer abilityPell;
 
     @Column(name = "CATMAQ_DESCRIPTION")
     private String description;

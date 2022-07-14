@@ -9,6 +9,7 @@ INSERT INTO CATFAB (CATFAB_NAME) VALUES ('MBACH');
 /*==============================================================*/
 INSERT INTO CATMAQ_CAT ( CATMAQ_CAT_NAME) VALUES ( 'EXTRUSORA');
 INSERT INTO CATMAQ_CAT ( CATMAQ_CAT_NAME) VALUES ( 'TROQUELADORA');
+INSERT INTO CATMAQ_CAT ( CATMAQ_CAT_NAME) VALUES ( 'PELLETISADORA');
 
 /*==============================================================*/
 /* Import: CATMAQ Máquinas                            */

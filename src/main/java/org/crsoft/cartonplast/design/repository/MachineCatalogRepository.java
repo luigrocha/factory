@@ -16,7 +16,7 @@ public interface MachineCatalogRepository extends JpaRepository<MachineCatalog, 
     @Query("SELECT m FROM MachineCatalog m " +
             "WHERE (m.validTo IS NULL " +
             "OR m.validTo > CURRENT_TIMESTAMP) " +
-            "ORDER BY m.name ASC")
+            "ORDER BY m.id ASC")
     Collection<MachineCatalog> findAllValidMachines();
 
 }

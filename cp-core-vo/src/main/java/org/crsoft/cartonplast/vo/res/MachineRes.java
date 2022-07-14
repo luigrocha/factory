@@ -18,8 +18,10 @@ public class MachineRes implements Serializable {
 
     private Integer id;
     private String name;
-    private Boolean hasDesb;
     private String description;
     private String observation;
+    private Double widthExt;
+    private Boolean hasDesb;
+    private Integer abilityPell;
     private MachineCatalogRes machineCatalog;
 }

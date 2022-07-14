@@ -84,4 +84,9 @@ public class MachineService implements IMachineService {
                 this.machineCatalogRepository.findAllValidMachines()
         );
     }
+
+    @Override
+    public Collection<MachineRes> findAllMachinesByType(Integer id) {
+        return this.machineMapper.toMachineResList(this.machineRepository.findAllMachinesByType(id));
+    }
 }

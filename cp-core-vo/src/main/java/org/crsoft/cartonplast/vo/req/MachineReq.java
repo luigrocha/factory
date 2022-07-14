@@ -18,10 +18,16 @@ public class MachineReq implements Serializable {
     @NotEmpty
     private String name;
 
-    @NotNull
+    private Double widthExt;
+
     private Boolean hasDesb;
 
+    private Integer abilityPell;
+
     private String observation;
+
     private String description;
+
+    @NotEmpty
     private Integer machineCatalog;
 }
