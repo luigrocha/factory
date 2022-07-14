@@ -181,7 +181,7 @@ export class LocationComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Correcto',
-          detail: 'Ubicaciones Elimnadas',
+          detail: 'Ubicaciones Eliminadas',
           life: 3000,
         });
       },
