@@ -20,10 +20,7 @@ import org.crsoft.cartonplast.orders.repository.OrderRepository;
 import org.crsoft.cartonplast.orders.repository.specification.OrderSpecification;
 import org.crsoft.cartonplast.orders.service.IOrderService;
 import org.crsoft.cartonplast.orders.service.mapper.OrderMapper;
-import org.crsoft.cartonplast.vo.req.CancelOrderReq;
-import org.crsoft.cartonplast.vo.req.CreateOrderReq;
-import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
-import org.crsoft.cartonplast.vo.req.UpdateOrderReq;
+import org.crsoft.cartonplast.vo.req.*;
 import org.crsoft.cartonplast.vo.res.GeneratedOrderCodeRes;
 import org.crsoft.cartonplast.vo.res.OrderRes;
 import org.springframework.data.domain.Page;
@@ -32,9 +29,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+
+import static org.crsoft.cartonplast.common.constant.OrderConstant.MAX_ORDER_CODE_LENGTH;
+import static org.crsoft.cartonplast.common.constant.OrderConstant.ORDER_LOT_CODE_PREFIX;
 
 /**
  * @author jyepez on 14/5/2022
@@ -50,6 +54,7 @@ public class OrderService implements IOrderService {
     private final CatalogPriorityService catalogPriorityService;
     private final OrderMapper orderMapper;
     private final SpecificationBuilder<Order> specificationBuilder;
+    private final EntityManager entityManager;
 
     @Override
     public Page<OrderRes> findVisibleOrders(
@@ -137,6 +142,7 @@ public class OrderService implements IOrderService {
         order.setStatus(catalogStatus);
         order.setCancellationReason(cancelOrderReq.getCancellationReason());
         order.setCanceledAt(LocalDateTime.now());
+        order.setLastModifiedAt(LocalDateTime.now());
 
         return this.orderMapper.orderToOrderRes(this.orderRepository.save(order));
     }
@@ -171,5 +177,48 @@ public class OrderService implements IOrderService {
                     log.error("Order not found with id: {}", id);
                     return new BusinessException(BusinessExceptionReason.ORDER_NOT_FOUND, id);
                 });
+    }
+
+    @Override
+    @Transactional
+    public OrderRes startOrder(Integer id, StartOrderReq startOrderReq) {
+        Order order = this.findById(id);
+
+        CatalogStatus catalogStatus = this.catalogStatusService.findById(startOrderReq.getStatusCode())
+                .orElseThrow(() -> {
+                    log.error("Catalog status not found with id: {}", startOrderReq.getStatusCode());
+                    return new BusinessException(BusinessExceptionReason.CATALOG_STATUS_NOT_FOUND, startOrderReq.getStatusCode());
+                });
+
+        String lot = this.generateNextLotCode();
+
+        order.setStatus(catalogStatus);
+        order.setLot(lot);
+        order.setLastModifiedAt(LocalDateTime.now());
+
+        return this.orderMapper.orderToOrderRes(this.orderRepository.save(order));
+    }
+
+    @Override
+    public String generateNextLotCode() {
+        int totalTodayOrders = this.orderRepository.countTodayActiveOrders(
+                LocalDateTime.of(LocalDate.now(), LocalTime.MIN),
+                LocalDateTime.of(LocalDate.now(), LocalTime.MAX)
+        );
+
+
+        LocalDate generationDate = totalTodayOrders <= MAX_ORDER_CODE_LENGTH
+                ? LocalDate.now()
+                : LocalDate.now().plusDays(1);
+
+        int dayOfMonth = generationDate.getDayOfMonth();
+        int month = generationDate.getMonthValue();
+        int year = generationDate.getYear();
+
+        return ORDER_LOT_CODE_PREFIX +
+                String.format("%02d", dayOfMonth) +
+                String.format("%02d", month) +
+                String.valueOf(year).substring(String.valueOf(year).length() - 1) +
+                (totalTodayOrders + 1);
     }
 }

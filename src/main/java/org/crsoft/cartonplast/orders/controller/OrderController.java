@@ -2,10 +2,7 @@ package org.crsoft.cartonplast.orders.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.orders.service.IOrderService;
-import org.crsoft.cartonplast.vo.req.CancelOrderReq;
-import org.crsoft.cartonplast.vo.req.CreateOrderReq;
-import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
-import org.crsoft.cartonplast.vo.req.UpdateOrderReq;
+import org.crsoft.cartonplast.vo.req.*;
 import org.crsoft.cartonplast.vo.res.GeneratedOrderCodeRes;
 import org.crsoft.cartonplast.vo.res.OrderRes;
 import org.springframework.data.domain.Page;
@@ -64,6 +61,13 @@ public class OrderController {
             @PathVariable("id") Integer id,
             @Valid @RequestBody CancelOrderReq cancelOrderReq) {
         return ResponseEntity.ok(orderService.cancelOrder(id, cancelOrderReq));
+    }
+
+    @PostMapping("/{id}/start")
+    public ResponseEntity<OrderRes> startOrder(
+            @PathVariable("id") Integer id,
+            @Valid @RequestBody StartOrderReq startOrderReq) {
+        return ResponseEntity.ok(orderService.startOrder(id, startOrderReq));
     }
 
     @PutMapping("/{id}")

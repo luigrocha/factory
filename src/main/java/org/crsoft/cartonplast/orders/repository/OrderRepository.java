@@ -5,8 +5,11 @@ import org.crsoft.cartonplast.orders.repository.specification.OrderSpecification
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -27,4 +30,13 @@ public interface OrderRepository extends JpaRepository<Order, Integer>, JpaSpeci
     @Query("SELECT COALESCE(MAX(o.id), 0) " +
             "FROM Order o")
     int findLastOrderId();
+
+    @Query("SELECT COALESCE(COUNT(o.id), 0) " +
+            "FROM Order o " +
+            "WHERE (o.validTo IS NULL " +
+            "OR o.validTo > CURRENT_TIMESTAMP) " +
+            "AND o.orderedAt >= :from AND o.orderedAt <= :to AND o.lot IS NOT NULL")
+    int countTodayActiveOrders(
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to);
 }
