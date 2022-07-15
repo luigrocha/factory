@@ -2,7 +2,14 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CreateOrder, GeneratedOrderCode, Order, OrderPageable } from 'src/app/types/order.types';
+import {
+  CancelOrder,
+  CreateOrder,
+  GeneratedOrderCode,
+  Order,
+  OrderPageable, StartOrder,
+  UpdateOrder
+} from 'src/app/types/order.types';
 import { SearchRequest } from 'src/app/types/pageable.types';
 
 @Injectable({
@@ -33,6 +40,21 @@ export class OrderService {
 
   createNewOrder(order: CreateOrder): Observable<Order> {
     return this.http.post<Order>(this.URL, order);
+  }
+
+  updateOrder(id: number, order: UpdateOrder): Observable<Order> {
+    const url = `${this.URL}/${id}`;
+    return this.http.put<Order>(url, order);
+  }
+
+  cancelOrder(id: number, body: CancelOrder): Observable<Order> {
+    const url = `${this.URL}/${id}/cancel`;
+    return this.http.post<Order>(url, body);
+  }
+
+  startOrder(id: number, body: StartOrder): Observable<Order> {
+    const url = `${this.URL}/${id}/start`;
+    return this.http.post<Order>(url, body);
   }
 
   generateNextOrderCode(): Observable<GeneratedOrderCode> {

@@ -138,7 +138,7 @@ export class CreateOrderComponent implements OnInit {
         this.toastService.success('Pedido creado correctamente');
         setTimeout(() => {
           this.back();
-        }, 2000);
+        }, 1500);
       });
   }
 

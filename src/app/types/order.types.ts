@@ -1,6 +1,7 @@
 import { Priority, Status } from 'src/app/types/catalogs.types';
 import { Client } from './client.types';
 import { Pageable } from 'src/app/types/pageable.types';
+import { ProjectShort } from 'src/app/types/project.types';
 
 export interface OrderPageable extends Pageable<Order> {
 }
@@ -23,6 +24,7 @@ export interface Order {
   lastModifiedAt: Date;
   client: Client;
   status: Status;
+  project: ProjectShort;
   pendingQuantity: number;
   shippedQuantity: number;
   priority: Priority;
@@ -40,6 +42,28 @@ export interface CreateOrder {
   clientId: number;
   priorityId: number;
   projectId: number;
+}
+
+export interface UpdateOrder {
+  lot: string;
+  productCode: string;
+  name: string;
+  quantity: number;
+  clientOrderCode: string;
+  observation: string;
+  estimatedDeliveryAt: Date;
+  clientId: number;
+  priorityId: number;
+  projectId: number;
+}
+
+export interface CancelOrder {
+  cancellationReason: string;
+  statusCode: string;
+}
+
+export interface StartOrder {
+  statusCode: string;
 }
 
 export interface GeneratedOrderCode {

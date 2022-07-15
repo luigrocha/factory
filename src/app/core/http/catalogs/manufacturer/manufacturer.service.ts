@@ -16,4 +16,16 @@ export class ManufacturerService {
   getAllManufacturers(): Observable<Manufacturer[]> {
     return this.http.get<Manufacturer[]>(this.URL);
   }
+
+  create(manufacturer: Manufacturer): Observable<Manufacturer> {
+    return this.http.post<Manufacturer>(this.URL, manufacturer);
+  }
+
+  update(code: number, manufacturer: Manufacturer): Observable<Manufacturer> {
+    return this.http.put<Manufacturer>(`${this.URL}/${code}`, manufacturer);
+  }
+
+  delete(code: number): Observable<any> {
+    return this.http.delete(`${this.URL}/${code}`);
+  }
 }

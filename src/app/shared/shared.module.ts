@@ -13,6 +13,10 @@ import { UploadFileComponent } from './components/upload-file/upload-file.compon
 import { FileUploadModule } from 'primeng/fileupload';
 import { YesNoPipe } from './pipes/yes-no.pipe';
 import { NumericDirective } from './directives/numeric.directive';
+import { ConfirmationTextComponent } from './components/confirmation-text/confirmation-text.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { RippleModule } from 'primeng/ripple';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,8 @@ import { NumericDirective } from './directives/numeric.directive';
     SafePipe,
     UploadFileComponent,
     YesNoPipe,
-    NumericDirective
+    NumericDirective,
+    ConfirmationTextComponent
   ],
   exports: [
     LoadingComponent,
@@ -40,7 +45,10 @@ import { NumericDirective } from './directives/numeric.directive';
     AvatarModule,
     NgxExtendedPdfViewerModule,
     PdfViewerModule,
-    FileUploadModule
+    FileUploadModule,
+    ReactiveFormsModule,
+    InputTextareaModule,
+    RippleModule
   ]
 })
 export class SharedModule { }

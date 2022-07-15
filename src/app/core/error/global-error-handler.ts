@@ -10,7 +10,7 @@ export class GlobalErrorHandler implements ErrorHandler {
   ) {}
 
   handleError(error: any) {
-    console.error(error);
+    console.error('Error from global error handler', error);
     // Check if it's an error from an HTTP response
     if (!(error instanceof HttpErrorResponse)) {
       error = error.rejection; // get the error object
@@ -31,8 +31,6 @@ export class GlobalErrorHandler implements ErrorHandler {
           errorMessage,
           error.status
         ));
-
-      console.error('Error from global error handler', error);
     }
   }
 }

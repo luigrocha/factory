@@ -21,6 +21,7 @@ import { getSearchCriteria } from 'src/app/core/utils/filter-table';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TableColumn } from 'src/app/types/table.types';
+import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
 
 @Component({
   selector: 'app-order',
@@ -93,7 +94,8 @@ export class OrderComponent implements OnInit, AfterViewInit {
       { field: 'clientOrderCode', header: 'Orden' },
       { field: 'observation', header: 'Observaciones' },
       { field: 'pendingQuantity', header: 'Cantidad pendiente' },
-      { field: 'shippedQuantity', header: 'Despachos' }
+      { field: 'shippedQuantity', header: 'Despachos' },
+      { field: 'lastModifiedAt', header: 'Última modificación' }
     ];
   }
 
@@ -157,17 +159,14 @@ export class OrderComponent implements OnInit, AfterViewInit {
   }
 
   isAllow(id: number): boolean {
-    if (this.permissions) {
-      return this.permissions.find(permission => permission.id === id).flag;
-    }
-    return false;
+    return checkIfOptionIsAllowed(this.permissions, id);
   }
 
   getMenuItems() {
-    if (this.isAllow(PermissionEnum.UPDATE)) {
+    if (this.isAllow(PermissionEnum.READ)) {
       this.menuItems.push({
-        label: 'Editar',
-        icon: 'pi pi-pencil',
+        label: 'Ver pedido',
+        icon: 'pi pi-eye',
         command: () => this.editOrder()
       });
     }
@@ -178,12 +177,6 @@ export class OrderComponent implements OnInit, AfterViewInit {
         command: () => this.deleteOrder()
       });
     }
-    this.menuItems.push({
-      label: 'Ver Estado',
-      icon: 'pi pi-search-plus',
-      command: () => this.route.navigate(['/home/pedidos/status/' + this.selectedOrder.lot])
-    });
-
   }
 
   getOrders() {
@@ -213,7 +206,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
   }
 
   private editOrder() {
-    this.route.navigate(['/home/pedidos/' + this.selectedOrder.id]);
+    this.route.navigate(['/home/pedidos/' + this.selectedOrder.id + '/' + this.selectedOrder.code]);
   }
 
   private deleteOrder() {
