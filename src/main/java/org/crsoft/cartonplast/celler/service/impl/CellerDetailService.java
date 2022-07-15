@@ -110,11 +110,11 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public void createCellerDetail(Collection<CellerDetailReq> cellers, Celler codeCeller, String userName)
+    public void createCellerDetail(Collection<CellerDetailReq> cellers, Celler codeCeller)
             throws InsertException, NotFoundException {
         Collection<CellerDetail> cellersSave = new ArrayList<>(0);
         for (CellerDetailReq cellerDetail : cellers) {
-            cellersSave.add(buildCellerDetailToSave(cellerDetail, codeCeller, userName));
+            cellersSave.add(buildCellerDetailToSave(cellerDetail, codeCeller));
         }
         try {
             this.cellerDetailRepository.saveAll(cellersSave);
@@ -238,8 +238,8 @@ public class CellerDetailService implements ICellerDetailService {
         }
     }
 
-    private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq, Celler codeCeller,
-                                                 String userName) throws NotFoundException {
+    private CellerDetail buildCellerDetailToSave(CellerDetailReq cellerDetailReq, Celler codeCeller)
+            throws NotFoundException {
         Material material = this.materialService.getMaterialByCode(cellerDetailReq.getMaterial());
         Document document = this.documentService.getDocumentById(cellerDetailReq.getDocument());
         Location location = this.locationService.getLocationByCode(cellerDetailReq.getLocation());
@@ -260,7 +260,6 @@ public class CellerDetailService implements ICellerDetailService {
         cellerDetail.setMaterial(material);
         cellerDetail.setLocation(location);
         cellerDetail.setDocument(document);
-        cellerDetail.setCreatedBy(userName);
         return cellerDetail;
     }
 }

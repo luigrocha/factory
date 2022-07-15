@@ -23,7 +23,7 @@ public interface ICellerService {
 
     CodeDocumentRes findNewCodeDocumentByDocumentCode(Integer code) throws NotFoundException;
 
-    void createCeller(CellerReq celler, String userName) throws NotFoundException, InsertException;
+    void createCeller(CellerReq celler) throws NotFoundException, InsertException;
 
     GenerateReceiptReq getReceipt(String numberDocument, Integer documentId) throws NotFoundException;
 
@@ -31,5 +31,5 @@ public interface ICellerService {
 
     byte[] generateReceipt(@Valid GenerateReceiptReq generateReceiptReq, Integer documentId) throws NotFoundException;
 
-    void anulateCeller(Integer code, String userName) throws NotFoundException, UpdateException;
+    void anulateCeller(Integer code) throws NotFoundException, UpdateException;
 }

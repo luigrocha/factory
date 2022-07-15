@@ -2,8 +2,8 @@ package org.crsoft.cartonplast.celler.service;
 
 import org.crsoft.cartonplast.celler.model.Celler;
 import org.crsoft.cartonplast.celler.model.CellerDetail;
-import org.crsoft.cartonplast.celler.vo.LoteStockVo;
 import org.crsoft.cartonplast.celler.vo.AllStockVo;
+import org.crsoft.cartonplast.celler.vo.LoteStockVo;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
@@ -26,7 +26,7 @@ public interface ICellerDetailService {
 
     Collection<CellerDetailRes> findCellerDetailByCellerCode(Integer code) throws NotFoundException;
 
-    void createCellerDetail(Collection<CellerDetailReq> celler, Celler codeCeller, String userName) throws NotFoundException, InsertException;
+    void createCellerDetail(Collection<CellerDetailReq> celler, Celler codeCeller) throws NotFoundException, InsertException;
 
     CellerStockRes findCellerDetailStock(Integer materialCode, String lote);
 

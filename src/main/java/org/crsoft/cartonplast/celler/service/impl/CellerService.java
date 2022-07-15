@@ -6,13 +6,13 @@ import org.crsoft.cartonplast.celler.repository.CellerRepository;
 import org.crsoft.cartonplast.celler.service.ICellerService;
 import org.crsoft.cartonplast.celler.service.mapper.CellerMapper;
 import org.crsoft.cartonplast.celler.util.DocumentEnum;
-import org.crsoft.cartonplast.vo.req.GenerateReceiptItemReq;
-import org.crsoft.cartonplast.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.common.exception.InsertException;
 import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.common.exception.UpdateException;
 import org.crsoft.cartonplast.vo.req.CellerDetailReq;
 import org.crsoft.cartonplast.vo.req.CellerReq;
+import org.crsoft.cartonplast.vo.req.GenerateReceiptItemReq;
+import org.crsoft.cartonplast.vo.req.GenerateReceiptReq;
 import org.crsoft.cartonplast.vo.res.CellerDetailRes;
 import org.crsoft.cartonplast.vo.res.CellerRes;
 import org.crsoft.cartonplast.vo.res.CodeDocumentRes;
@@ -20,7 +20,6 @@ import org.keycloak.common.util.CollectionUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.crsoft.cartonplast.common.constant.MessagesConstant.*;
@@ -93,17 +92,17 @@ public class CellerService implements ICellerService {
     }
 
     @Override
-    public void createCeller(CellerReq celler, String userName) throws InsertException {
+    public void createCeller(CellerReq celler) throws InsertException {
         try {
-            Celler cellerSave = this.cellerRepository.save(buildCellerToSave(celler, userName));
-            this.cellerDetailService.createCellerDetail(celler.getCellerItems(), cellerSave, userName);
+            Celler cellerSave = this.cellerRepository.save(buildCellerToSave(celler));
+            this.cellerDetailService.createCellerDetail(celler.getCellerItems(), cellerSave);
         } catch (Exception e) {
             log.error("Error to createCeller: {}", e.getMessage());
             throw new InsertException(TABLE_NAME, MESSAGE_INSERT);
         }
     }
 
-    private Celler buildCellerToSave(CellerReq celler, String userName) throws NotFoundException {
+    private Celler buildCellerToSave(CellerReq celler) throws NotFoundException {
         Celler cellerNew = new Celler();
         cellerNew.setNumberDocument(celler.getNumberDocument());
         cellerNew.setDate(celler.getDate());
@@ -116,7 +115,6 @@ public class CellerService implements ICellerService {
         cellerNew.setObservations(celler.getObservations());
         cellerNew.setOrigin(celler.getOrigin());
         cellerNew.setDestiny(celler.getDestiny());
-        cellerNew.setCreatedBy(userName);
         return cellerNew;
     }
 
@@ -160,12 +158,10 @@ public class CellerService implements ICellerService {
     }
 
     @Override
-    public void anulateCeller(Integer code, String userName) throws NotFoundException, UpdateException {
+    public void anulateCeller(Integer code) throws NotFoundException, UpdateException {
         Celler celler = getCellarByCode(code);
         try {
             celler.setState(!celler.getState());
-            celler.setUpdatedBy(userName);
-            celler.setUpdatedAt(LocalDateTime.now());
             this.cellerRepository.save(celler);
         } catch (Exception e) {
             log.error("Error to anulateCeller: {}", e.getMessage());
