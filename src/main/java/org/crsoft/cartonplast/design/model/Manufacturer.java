@@ -3,7 +3,9 @@ package org.crsoft.cartonplast.design.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -40,6 +42,19 @@ public class Manufacturer {
     private String name;
 
     @Column(
+            name = "CATFAB_DESCRIPTION",
+            nullable = false,
+            length = 128
+    )
+    private String description;
+
+    @Column(
+            name = "CATFAB_OBSERVATION",
+            length = 128
+    )
+    private String observation;
+
+    @Column(
             name = "CATFAB_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
@@ -53,9 +68,11 @@ public class Manufacturer {
     private LocalDateTime validTo;
 
     @Column(name = "CATFAB_CREATED_BY", length = 16)
+    @CreatedBy
     private String createdBy;
 
     @Column(name = "CATFAB_UPDATED_BY", length = 16)
+    @LastModifiedBy
     private String updatedBy;
 
     @Column(
