@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ToastService } from 'src/app/core/services/toast.service';
-import { CreateMachine, Machine, UpdateMachine } from 'src/app/types/machine.types';
+import {CreateMachine, Machine, MachineCatalog, UpdateMachine} from 'src/app/types/machine.types';
 import { MachineService } from 'src/app/core/http/catalogs/machine/machine.service';
 import { TableColumn } from 'src/app/types/table.types';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { MachineModalComponent } from "../../components/machine-modal/machine-modal.component";
+import { MachineModalComponent } from '../../components/machine-modal/machine-modal.component';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 
 @Component({
@@ -19,8 +19,10 @@ import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
 })
 export class MachinesComponent implements OnInit {
 
+  indexTab = 1;
+  catalogs: MachineCatalog[];
   columns: TableColumn<Machine>[];
-  pageSize: number = 10;
+  pageSize = 10;
   machines: Machine[];
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
@@ -43,21 +45,55 @@ export class MachinesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllMachines();
+    this.getAllMachinesCatalog();
+    this.getAllMachinesByType(this.indexTab);
     this.getMenuItems();
     this.columns = [
       {field: 'name', header: 'Nombre'},
-      {field: 'hasDesb', header: 'Tiene desbrozador'},
+      {field: 'description', header: 'Descripción'},
+      {field: 'observation', header: 'Observación'},
     ];
   }
 
-  getAllMachines() {
-    this.machineService.getAllMachines()
-      .subscribe(machines => {
-        this.machines = machines;
-      });
+  getAllMachinesCatalog(){
+    this.machineService.getAllMachinesCatalog().subscribe(catalogs => {
+      this.catalogs = catalogs;
+    });
   }
 
+  onChangeTab(e: any) {
+    this.indexTab = e.index + 1;
+    this.getAllMachinesByType(this.indexTab);
+  }
+
+  getAllMachinesByType(id: number) {
+    this.machines = [];
+    this.machineService.getAllMachinesByType(id).subscribe(machines => {
+        this.machines = machines;
+        this.getFieldByType();
+    });
+  }
+
+  getFieldByType(){
+    if (this.columns.length > 3){
+      this.columns.pop();
+    }
+    switch (this.indexTab) {
+      case 1:
+        this.columns.push({field: 'widthExt', header: 'Ancho Extrucción'});
+        break;
+      case 2:
+        this.columns.push({field: 'hasDesb', header: 'Tiene desbrozador'});
+        break;
+      case 3:
+        this.columns.push({field: 'abilityPell', header: 'Capacidad'});
+        break;
+    }
+  }
+
+  getNameTypeMachine(): string{
+    return this.catalogs.find(catalog => catalog.id === this.indexTab).name;
+  }
 
   getMenuItems(): void {
     this.menuItems = [
@@ -77,9 +113,9 @@ export class MachinesComponent implements OnInit {
   editMachine(): void {
     this.addDialogRef = this.dialogService.open(MachineModalComponent, {
       data: this.selectedMachine,
-      header: `Actualizar ${this.selectedMachine.name}`,
+      header: `Actualizar ${this.getNameTypeMachine().toLowerCase()} ${this.selectedMachine.name}`,
       width: '450px',
-      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+      contentStyle: {'max-width': '100%', overflow: 'auto'},
     });
 
     this.addDialogRef.onClose
@@ -88,8 +124,8 @@ export class MachinesComponent implements OnInit {
           this.machineService.updateMachine(this.selectedMachine.id, machine)
             .subscribe(() => {
               this.toastService.success('Máquina actualizada correctamente');
-              this.getAllMachines();
-            })
+              this.getAllMachinesByType(this.indexTab);
+            });
         }
       });
   }
@@ -105,7 +141,7 @@ export class MachinesComponent implements OnInit {
           .subscribe(deleted => {
             if (deleted) {
               this.toastService.success('Máquina eliminada correctamente');
-              this.getAllMachines();
+              this.getAllMachinesByType(this.indexTab);
             } else {
               this.toastService.error('Error al eliminar la máquina');
             }
@@ -116,19 +152,22 @@ export class MachinesComponent implements OnInit {
 
   addMachine(): void {
     this.addDialogRef = this.dialogService.open(MachineModalComponent, {
-      header: 'Crear nueva máquina',
+      data: this.indexTab,
+      header: `Crear nueva máquina ${this.getNameTypeMachine().toLowerCase()}`,
       width: '450px',
-      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+      contentStyle: {'max-width': '100%', overflow: 'auto'},
     });
 
     this.addDialogRef.onClose
       .subscribe((machine: CreateMachine) => {
         if (machine) {
+          // @ts-ignore
+          machine.machineCatalog = this.indexTab;
           this.machineService.createMachine(machine)
             .subscribe(() => {
               this.toastService.success('Máquina creada correctamente');
-              this.getAllMachines();
-            })
+              this.getAllMachinesByType(this.indexTab);
+            });
         }
       });
   }

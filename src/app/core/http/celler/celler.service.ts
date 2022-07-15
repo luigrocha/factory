@@ -22,7 +22,7 @@ export class CellerService {
   URL_CELLER = environment.appApiUrl + '/celler';
   URL_DOCUMENT = environment.appApiUrl + '/document';
   URL_OPTION_DOCUMENT = environment.appApiUrl + '/optionDocument';
-  URL_LOCATION = environment.appApiUrl + '/location';
+  URL_LOCATION = environment.appApiUrl + '/locations';
 
   constructor(private http: HttpClient, private authService: AuthService) { }
 

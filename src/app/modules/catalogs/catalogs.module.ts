@@ -35,29 +35,31 @@ import { PrinterModalComponent } from './components/printer-modal/printer-modal.
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ColorCModalComponent } from './components/color-c-modal/color-c-modal.component';
 import { LocationModalComponent } from './components/location-modal/location-modal.component';
+import {TabViewModule} from 'primeng/tabview';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    CatalogsRoutingModule,
-    ToastModule,
-    TableModule,
-    ButtonModule,
-    RippleModule,
-    InputTextModule,
-    TooltipModule,
-    TagModule,
-    DialogModule,
-    FormsModule,
-    ConfirmDialogModule,
-    DropdownModule,
-    AvatarModule,
-    MenuModule,
-    CheckboxModule,
-    ReactiveFormsModule,
-    SharedModule,
-    InputTextareaModule,
-  ],
+    imports: [
+        CommonModule,
+        CatalogsRoutingModule,
+        ToastModule,
+        TableModule,
+        ButtonModule,
+        RippleModule,
+        InputTextModule,
+        TooltipModule,
+        TagModule,
+        DialogModule,
+        FormsModule,
+        ConfirmDialogModule,
+        DropdownModule,
+        AvatarModule,
+        MenuModule,
+        CheckboxModule,
+        ReactiveFormsModule,
+        SharedModule,
+        InputTextareaModule,
+        TabViewModule,
+    ],
   declarations: [
     ColorAComponent,
     ColorBComponent,

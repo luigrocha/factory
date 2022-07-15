@@ -3,87 +3,95 @@
     <p-toast></p-toast>
 
     <div class="card">
-      <p-table #dt
-               [value]="machines"
-               [columns]="columns"
-               [rows]="pageSize"
-               [paginator]="true"
-               [globalFilterFields]="['name']"
-               [rowHover]="true"
-               dataKey="id"
-               [showCurrentPageReport]="true"
-               [currentPageReportTemplate]="tableReportTemplate"
-               [rowsPerPageOptions]="rowsPerPageOptions"
-               styleClass="p-datatable-sm"
-               responsiveLayout="scroll">
-        <ng-template pTemplate="caption">
-          <div class="flex justify-content-between flex-column sm:flex-row">
-            <h5 class="h-100 mb-0 align-self-center">Gestión de Máquinas</h5>
-            <span class="flex-auto"></span>
-            <button
-                    pButton
-                    pRipple
-                    label="Nuevo"
-                    class="sm:mr-2 md:mr-2 lg:mr-2"
-                    icon="pi pi-plus"
-                    (click)="addMachine()"
-            ></button>
-            <span class="p-input-icon-left">
+      <p-tabView (onChange)="onChangeTab($event)" *ngIf="catalogs" orientation="left">
+        <p-tabPanel *ngFor="let type of catalogs; let i = index" [selected]="i == 0" class="line-height-3 m-0"
+                    header="{{type.name}}">
+          <p-table #dt
+                   [columns]="columns"
+                   [currentPageReportTemplate]="tableReportTemplate"
+                   [globalFilterFields]="['name']"
+                   [paginator]="true"
+                   [rowHover]="true"
+                   [rowsPerPageOptions]="rowsPerPageOptions"
+                   [rows]="pageSize"
+                   [showCurrentPageReport]="true"
+                   [value]="machines"
+                   dataKey="id"
+                   responsiveLayout="scroll"
+                   styleClass="p-datatable-sm">
+            <ng-template pTemplate="caption">
+              <div class="flex justify-content-between flex-column sm:flex-row">
+                <h5 class="h-100 mb-0 align-self-center">Gestión de Máquinas {{ getNameTypeMachine() | titlecase }}</h5>
+                <span class="flex-auto"></span>
+                <button
+                  (click)="addMachine()"
+                  class="sm:mr-2 md:mr-2 lg:mr-2"
+                  icon="pi pi-plus"
+                  label="Nuevo"
+                  pButton
+                  pRipple
+                ></button>
+                <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
-              <input pInputText
-                     type="text"
-                     (input)="dt.filterGlobal($event.target.value, 'contains')"
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')"
+                     class="w-full"
+                     pInputText
                      placeholder="Buscar..."
-                     class="w-full"/>
+                     type="text"/>
             </span>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr>
-            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-              {{col.header}} <p-sortIcon [field]="col.field"></p-sortIcon>
-            </th>
-            <th class="text-center">
-              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-machine>
-          <tr>
-            <td *ngFor="let col of columns">
-              <ng-container *ngIf="col.field === 'hasDesb'; else textContent">
-                <div class="field-checkbox">
-                  <p-checkbox disabled [(ngModel)]="machine[col.field]" [binary]="true" id="hasDesb" inputId="hasDesb"></p-checkbox>
-                  <label for="hasDesb">{{getDesbMessage(machine[col.field])}}</label>
-                </div>
-              </ng-container>
-              <ng-template #textContent>
-                {{machine[col.field]}}
-              </ng-template>
-            </td>
-            <td>
-              <div class="flex justify-content-center">
-                <button type="button"
-                        pButton
-                        icon="pi pi-ellipsis-v"
-                        class="p-button-secondary p-button-outlined"
-                        (click)="selectedMachine = machine; menu1.toggle($event)">
-                </button>
               </div>
-            </td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-          <div class="p-d-flex p-ai-center p-jc-between">
-            Total de Máquinas:
-            {{ machines ? machines.length : 0 }}
-          </div>
-        </ng-template>
-      </p-table>
+            </ng-template>
+            <ng-template pTemplate="header">
+              <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                  {{col.header}}
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th class="text-center">
+                  <i class="pi pi-cog" pTooltip="Opciones" style="font-size: 18px"></i>
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template let-machine pTemplate="body">
+              <tr>
+                <td *ngFor="let col of columns">
+                  <ng-container *ngIf="col.field === 'hasDesb'; else textContent">
+                    <div class="field-checkbox">
+                      <p-checkbox [(ngModel)]="machine[col.field]" [binary]="true" disabled id="hasDesb"
+                                  inputId="hasDesb"></p-checkbox>
+                      <label for="hasDesb">{{getDesbMessage(machine[col.field])}}</label>
+                    </div>
+                  </ng-container>
+                  <ng-template #textContent>
+                    {{machine[col.field]}}
+                  </ng-template>
+                </td>
+                <td>
+                  <div class="flex justify-content-center">
+                    <button (click)="selectedMachine = machine; menu1.toggle($event)"
+                            class="p-button-secondary p-button-outlined"
+                            icon="pi pi-ellipsis-v"
+                            pButton
+                            type="button">
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+              <div class="p-d-flex p-ai-center p-jc-between">
+                Total de Máquinas:
+                {{ machines ? machines.length : 0 }}
+              </div>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+      </p-tabView>
     </div>
+
     <p-confirmDialog [style]="{ width: '450px' }"
-                     rejectButtonStyleClass="p-button-text"
-                     acceptButtonStyleClass="p-button-raised"></p-confirmDialog>
+                     acceptButtonStyleClass="p-button-raised"
+                     rejectButtonStyleClass="p-button-text"></p-confirmDialog>
   </div>
 </div>
-<p-menu #menu1 [popup]="true" [model]="menuItems"></p-menu>
+<p-menu #menu1 [model]="menuItems" [popup]="true"></p-menu>

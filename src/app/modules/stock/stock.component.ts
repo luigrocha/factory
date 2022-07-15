@@ -47,14 +47,25 @@ export class StockComponent implements OnInit {
     private authService: AuthService,
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Bodega' },
-      { label: 'Stock', routerLink: ['stock'] },
+      {label: 'Bodega'},
+      {label: 'Stock', routerLink: ['stock']},
     ]);
+  }
+
+  get type() {
+    return this.form.get('type');
+  }
+
+  get material() {
+    return this.form.get('material');
+  }
+
+  get lote() {
+    return this.form.get('lote');
   }
 
   ngOnInit() {
     this.getPreferencesTheme();
-    this.getAllStock();
     this.getAllTypeMaterial();
     this.form = this.fb.group({
       type: [null, [
@@ -68,10 +79,10 @@ export class StockComponent implements OnInit {
       ]],
     });
     this.cols = [
-      { field: 'material', header: 'Material' },
-      { field: 'lote', header: 'Lote' },
-      { field: 'location', header: 'Ubicación' },
-      { field: 'stock', header: 'Stock' },
+      {field: 'material', header: 'Material'},
+      {field: 'lote', header: 'Lote'},
+      {field: 'location', header: 'Ubicación'},
+      {field: 'stock', header: 'Stock'},
     ];
   }
 
@@ -101,6 +112,7 @@ export class StockComponent implements OnInit {
 
   getAllMaterialByType(id: number) {
     this.materials = [];
+    this.lotes = [];
     this.materialService.getAllMaterialByType(id).subscribe(
       (materials => {
         this.materials = materials;
@@ -151,20 +163,8 @@ export class StockComponent implements OnInit {
     this.isAll = this.isType = this.isMaterial = this.isLote = false;
   }
 
-  get type() {
-    return this.form.get('type');
-  }
-
-  get material() {
-    return this.form.get('material');
-  }
-
-  get lote() {
-    return this.form.get('lote');
-  }
-
   save() {
-    const data = { ...this.form.getRawValue() };
+    const data = {...this.form.getRawValue()};
     this.stockTotal = 0;
     this.allStock = [];
     if (this.lote.value && this.material.value && this.type.value) {
@@ -211,7 +211,7 @@ export class StockComponent implements OnInit {
     }
   }
 
-  buildDataChartLocation(){
+  buildDataChartLocation() {
     const labels = [];
     const hash = {};
     const names = this.allStock.filter(row => hash[row.location] ? false : hash[row.location] = true);
@@ -239,7 +239,7 @@ export class StockComponent implements OnInit {
     };
   }
 
-  buildDataChartLot(){
+  buildDataChartLot() {
     const labels = [];
     const hash = {};
     const names = this.allStock.filter(row => hash[row.lote] ? false : hash[row.lote] = true);
@@ -271,6 +271,7 @@ export class StockComponent implements OnInit {
     const labels = [];
     const hash = {};
     const names = this.allStock.filter(row => hash[row.name] ? false : hash[row.name] = true);
+    console.log(this.config);
     const materialStock = [];
     names.forEach(name => {
       labels.push(name.name);
@@ -295,29 +296,15 @@ export class StockComponent implements OnInit {
     };
   }
 
-/*  random(min: number, max: number) {
-    return Math.floor((Math.random() * (max - min + 1)) + min);
-  }
-
-  generateAleatoryColor() {
-    const hexadecimal = new Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F');
-    let aleatoryColor = '#';
-    for (let i = 0; i < 6; i++) {
-      const posarray = this.random(0, hexadecimal.length);
-      aleatoryColor += hexadecimal[posarray];
-    }
-    return aleatoryColor;
-  }*/
-
   getPreferencesTheme() {
     this.preferencesService.getPreferencesByUsername(this.authService.getLoggedUser().preferred_username).subscribe(
       (config => {
         this.config = config;
-
+        this.getAllStock();
         const themes = [
-          { name: 'denim', color: '#2f8ee5' },
-          { name: 'sea-green', color: '#30A059' },
-          { name: 'amber', color: '#D49341' },
+          {name: 'denim', color: '#2f8ee5'},
+          {name: 'sea-green', color: '#30A059'},
+          {name: 'amber', color: '#D49341'},
         ];
         // tslint:disable-next-line:triple-equals
         this.config.color = themes.find(theme => theme.name == config.color).color;
