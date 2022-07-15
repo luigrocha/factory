@@ -15,7 +15,14 @@ import java.util.Optional;
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Integer> {
 
-    Collection<Material> findAllByTypeMaterialAndValidToIsNullOrderByNameAsc(TypeMaterial typeMaterial);
+    @Query("SELECT c FROM Material c " +
+            "INNER JOIN org.crsoft.cartonplast.celler.model.CellerDetail d ON c.id = d.material.id " +
+            "WHERE (c.validTo IS NULL OR " +
+            "c.validTo > CURRENT_TIMESTAMP ) " +
+            "AND c.typeMaterial.id = :typeMaterial " +
+            "GROUP BY d.material.id " +
+            "HAVING SUM(d.weight) > 0")
+    Collection<Material> findAllValidByTypeMaterial(Integer typeMaterial);
 
     Optional<Material> findByIdAndValidToIsNull(Integer code);
 

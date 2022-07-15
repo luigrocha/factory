@@ -26,7 +26,8 @@ public class MaterialController {
     }
 
     @GetMapping("/{id}")
-    private ResponseEntity<Collection<MaterialRes>> findAllCatalogCellarByType(@PathVariable("id") Integer id) throws NotFoundException {
+    private ResponseEntity<Collection<MaterialRes>> findAllCatalogCellarByType(@PathVariable("id") Integer id)
+            throws NotFoundException {
         return ResponseEntity.ok().body(this.catalogCellarService.findAllCatalogCellarByType(id));
     }
 

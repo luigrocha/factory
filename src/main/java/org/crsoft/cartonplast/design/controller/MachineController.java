@@ -3,11 +3,13 @@ package org.crsoft.cartonplast.design.controller;
 import lombok.RequiredArgsConstructor;
 import org.crsoft.cartonplast.design.service.impl.MachineService;
 import org.crsoft.cartonplast.vo.req.MachineReq;
+import org.crsoft.cartonplast.vo.res.MachineCatalogRes;
 import org.crsoft.cartonplast.vo.res.MachineRes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSION;
@@ -44,5 +46,15 @@ public class MachineController {
     public ResponseEntity<Boolean> deleteMachine(
             @PathVariable("id") Integer id) {
         return ResponseEntity.ok(machineService.delete(id));
+    }
+
+    @GetMapping("/catalogs")
+    public ResponseEntity<Collection<MachineCatalogRes>> findAllMachinesCatalog(){
+        return ResponseEntity.ok(machineService.findAllValidMachinesCatalog());
+    }
+
+    @GetMapping("/search/type/{id}")
+    public ResponseEntity<Collection<MachineRes>> findAllMachinesByType(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(machineService.findAllMachinesByType(id));
     }
 }

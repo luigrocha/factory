@@ -40,8 +40,8 @@ public class CellerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createCeller(@RequestBody CellerReq celler, @RequestHeader("userName") String userName) throws InsertException, NotFoundException {
-        this.cellerService.createCeller(celler, userName);
+    public ResponseEntity<?> createCeller(@RequestBody CellerReq celler) throws InsertException, NotFoundException {
+        this.cellerService.createCeller(celler);
         return ResponseEntity.ok().build();
     }
 
@@ -69,11 +69,10 @@ public class CellerController {
                 HttpStatus.OK);
     }
 
-    @PatchMapping("/anulate/{code}/{userName}")
-    public ResponseEntity<?> anulateCeller(@PathVariable("code") Integer code,
-                                           @PathVariable("userName") String userName)
+    @PatchMapping("/anulate/{code}")
+    public ResponseEntity<?> anulateCeller(@PathVariable("code") Integer code)
             throws NotFoundException, UpdateException {
-        this.cellerService.anulateCeller(code, userName);
+        this.cellerService.anulateCeller(code);
         return ResponseEntity.ok().build();
     }
 }

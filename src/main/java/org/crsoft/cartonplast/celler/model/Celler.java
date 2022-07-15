@@ -3,6 +3,11 @@ package org.crsoft.cartonplast.celler.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "CDTCELL")
 public class Celler {
 
@@ -57,6 +63,7 @@ public class Celler {
             name = "CDTCELL_VALID_FROM",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime validFrom;
 
     @Column(
@@ -66,21 +73,25 @@ public class Celler {
     private LocalDateTime validTo;
 
     @Column(name = "CDTCELL_CREATED_BY", length = 16)
+    @CreatedBy
     private String createdBy;
 
     @Column(name = "CDTCELL_UPDATED_BY", length = 16)
+    @LastModifiedBy
     private String updatedBy;
 
     @Column(
             name = "CDTCELL_CREATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(
             name = "CDTCELL_UPDATED_AT",
             columnDefinition = "TIMESTAMP"
     )
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @PrePersist
