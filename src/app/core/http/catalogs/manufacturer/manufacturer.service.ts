@@ -8,12 +8,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ManufacturerService {
-  httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json'
-      })
-  };
 
   private readonly URL = environment.appApiUrl + '/manufacturers';
 
