@@ -25,7 +25,10 @@ export class MaterialRequestFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.steps = [
-      {label: 'Step 1'},
+      {
+        label: 'Step 1',
+        routerLink: 'info'
+      },
       {label: 'Step 2'},
       {label: 'Step 3'}
     ];

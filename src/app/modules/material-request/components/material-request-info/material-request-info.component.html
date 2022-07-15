@@ -1,0 +1,90 @@
+<div class="grid">
+  <div class="grid col-12 md:col-8">
+    <div class="field md:col-6 col flex flex-column">
+      <label for="numberMixture">Número de mezcla</label>
+      <input pInputText
+             [ngClass]="{'ng-invalid ng-dirty': numberMixture.touched && numberMixture.invalid}"
+             formControlName="numberMixture"
+             aria-describedby="numberMixture-help"
+             id="numberMixture"
+             type="text"/>
+      <small *ngIf="numberMixture.touched && numberMixture.hasError('required')"
+             id="productCode-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field md:col-6 col flex flex-column">
+      <label for="numberStop">Número de paradas</label>
+      <input pInputText
+             id="numberStop"
+             [ngClass]="{'ng-invalid ng-dirty': numberStop.touched && numberStop.invalid}"
+             formControlName="numberStop"
+             aria-describedby="numberStop-help"
+             type="number"/>
+      <small *ngIf="numberStop.touched && numberStop.hasError('required')"
+             id="numberStop-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+
+    <p-tabView *ngIf="machines" orientation="left" class="col-12">
+      <p-tabPanel *ngFor="let type of machines; let i = index" [selected]="i == 0" class="line-height-3 m-0"
+                  header="{{type.name}}">
+
+        <p-table
+                 [columns]="columnsExt"
+                 [globalFilterFields]="['name']"
+                 [rowHover]="true"
+                 [value]="mixtures[i]"
+                 dataKey="id"
+                 responsiveLayout="scroll"
+                 styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columnsExt" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-machine pTemplate="body">
+            <tr>
+              <td *ngFor="let col of columnsExt">
+                <ng-template >
+                  {{machine[col.field]}}
+                </ng-template>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+  <div class="col-12 md:col-4 mb-5">
+    <p-table
+      [columns]="columnsConsolidated"
+      [globalFilterFields]="['name']"
+      [rowHover]="true"
+      [value]="consolides"
+      dataKey="id"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngFor="let col of columnsExt" [pSortableColumn]="col.field">
+            {{col.header}}
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template let-machine pTemplate="body">
+        <tr>
+          <td *ngFor="let col of columnsExt">
+            <ng-template >
+              {{machine[col.field]}}
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

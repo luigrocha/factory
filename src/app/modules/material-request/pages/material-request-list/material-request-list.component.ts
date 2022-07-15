@@ -56,7 +56,7 @@ export class MaterialRequestListComponent implements OnInit {
   }
 
   createMaterialRequest() {
-    this.router.navigate(['/home/solicitud/form/']);
+    this.router.navigate(['/home/solicitud/form/info']);
   }
 
   getPermissionsToPage() {

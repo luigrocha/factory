@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {LOCALE_ID, NgModule} from '@angular/core';
+import {CommonModule, registerLocaleData} from '@angular/common';
 
 import { MaterialRequestRoutingModule } from './material-request-routing.module';
 import { MaterialRequestListComponent } from './pages/material-request-list/material-request-list.component';
@@ -10,12 +10,19 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { InputTextModule } from 'primeng/inputtext';
 import { StepsModule } from 'primeng/steps';
+import { MaterialRequestInfoComponent } from './components/material-request-info/material-request-info.component';
+import {DividerModule} from 'primeng/divider';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import localeEs from '@angular/common/locales/es';
+import {TabViewModule} from 'primeng/tabview';
 
+registerLocaleData(localeEs, 'es');
 
 @NgModule({
   declarations: [
     MaterialRequestListComponent,
-    MaterialRequestFormComponent
+    MaterialRequestFormComponent,
+    MaterialRequestInfoComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +32,12 @@ import { StepsModule } from 'primeng/steps';
     ButtonModule,
     RippleModule,
     InputTextModule,
-    StepsModule
-  ]
+    StepsModule,
+    DividerModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TabViewModule,
+  ],
+  providers: [{provide: LOCALE_ID, useValue: 'es'}]
 })
 export class MaterialRequestModule { }

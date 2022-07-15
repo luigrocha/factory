@@ -6,20 +6,32 @@ import {
 import {
   MaterialRequestFormComponent
 } from 'src/app/modules/material-request/pages/material-request-form/material-request-form.component';
+import {MaterialRequestInfoComponent} from './components/material-request-info/material-request-info.component';
 
 const routes: Routes = [
   {
     path: '',
     component: MaterialRequestListComponent
   },
-  {
-    path: 'form/:id',
-    component: MaterialRequestFormComponent
-  },
+  // {
+  //   path: 'form/:id',
+  //   component: MaterialRequestFormComponent
+  // },
   {
     path: 'form',
-    component: MaterialRequestFormComponent
-  }
+    component: MaterialRequestFormComponent,
+    children: [
+      {
+        path: 'form',
+        redirectTo: 'info',
+        pathMatch: 'full'
+      },
+      {
+        path: 'info',
+        component: MaterialRequestInfoComponent
+      },
+    ]
+  },
 ];
 
 @NgModule({
