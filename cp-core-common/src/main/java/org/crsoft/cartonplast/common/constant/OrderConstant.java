@@ -9,4 +9,6 @@ public class OrderConstant {
     }
 
     public static final String ORDER_CODE_PREFIX = "P";
+    public static final String ORDER_LOT_CODE_PREFIX = "L";
+    public static final Integer MAX_ORDER_CODE_LENGTH = 9;
 }

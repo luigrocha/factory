@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.crsoft.cartonplast.client.model.Client;
 import org.crsoft.cartonplast.catalog.model.CatalogPriority;
 import org.crsoft.cartonplast.catalog.model.CatalogStatus;
+import org.crsoft.cartonplast.common.converter.LocalDateTimeAttributeConverter;
 import org.crsoft.cartonplast.design.model.Project;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -73,6 +74,7 @@ public class Order {
             nullable = false,
             columnDefinition = "TIMESTAMP"
     )
+    @Convert(converter = LocalDateTimeAttributeConverter.class)
     private LocalDateTime orderedAt;
 
     @Column(
@@ -82,10 +84,9 @@ public class Order {
     private String lot;
 
     @Column(
-            name = "COTORD_ESTIMATED_DELIVERED_AT",
-            nullable = false
+            name = "COTORD_ESTIMATED_DELIVERED_AT"
     )
-    private LocalDate estimatedDeliveryAt;
+    private LocalDateTime estimatedDeliveryAt;
 
     @Column(
             name = "COTORD_CLIENT_ORDER_CODE",
@@ -128,7 +129,6 @@ public class Order {
             columnDefinition = "TIMESTAMP",
             nullable = false
     )
-    @LastModifiedDate
     private LocalDateTime lastModifiedAt;
 
     @Column(
@@ -207,5 +207,11 @@ public class Order {
     @PrePersist
     public void prePersist() {
         this.orderedAt = LocalDateTime.now();
+        this.lastModifiedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastModifiedAt = LocalDateTime.now();
     }
 }

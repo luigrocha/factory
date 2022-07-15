@@ -1,4 +1,4 @@
-package org.crsoft.cartonplast.vo.res;
+package org.crsoft.cartonplast.vo.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,17 +6,13 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-/**
- * @author lpillaga on 08/05/2022
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ManufacturerRes implements Serializable {
+public class ManufacturerReq implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
     private String name;
     private String description;
     private String observation;

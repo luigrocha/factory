@@ -9,7 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -105,7 +105,7 @@ public class SpecificationBuilder<T> {
                             );
                         }
                     case DATE_AFTER:
-                        LocalDate dateAfter = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
+                        LocalDateTime dateAfter = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDateTime();
                         if (keys.length == 2) {
                             return criteriaBuilder.greaterThan(
                                     root.get(keys[0]).get(keys[1]),
@@ -128,7 +128,7 @@ public class SpecificationBuilder<T> {
                             );
                         }
                     case DATE_BEFORE:
-                        LocalDate dateBefore = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
+                        LocalDateTime dateBefore = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDateTime();
                         if (keys.length == 2) {
                             return criteriaBuilder.lessThan(
                                     root.get(keys[0]).get(keys[1]),
@@ -175,7 +175,7 @@ public class SpecificationBuilder<T> {
                             );
                         }
                     case DATE_IS_NOT:
-                        LocalDate dateIsNot = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
+                        LocalDateTime dateIsNot = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDateTime();
                         if (keys.length == 2) {
                             return criteriaBuilder.notEqual(
                                     root.get(keys[0]).get(keys[1]),
@@ -186,7 +186,7 @@ public class SpecificationBuilder<T> {
                                     dateIsNot);
                         }
                     case DATE_IS:
-                        LocalDate dateIs = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
+                        LocalDateTime dateIs = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDateTime();
                         if (keys.length == 2) {
                             return criteriaBuilder.equal(
                                     root.get(keys[0]).get(keys[1]),

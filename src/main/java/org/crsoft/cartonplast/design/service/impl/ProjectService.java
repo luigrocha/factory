@@ -2,8 +2,10 @@ package org.crsoft.cartonplast.design.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.crsoft.cartonplast.common.exception.NotFoundException;
+import org.crsoft.cartonplast.common.exception.BusinessException;
+import org.crsoft.cartonplast.common.exception.BusinessExceptionReason;
 import org.crsoft.cartonplast.design.model.Project;
+import org.crsoft.cartonplast.common.exception.NotFoundException;
 import org.crsoft.cartonplast.design.repository.ProjectRepository;
 import org.crsoft.cartonplast.design.service.IProjectService;
 import org.crsoft.cartonplast.design.service.mapper.ProjectMapper;
@@ -46,5 +48,14 @@ public class ProjectService implements IProjectService {
             log.error("Error to findProjectToCodeGen: {}", codeGen);
             throw new NotFoundException(MESSAGE_NOT_FOUND);
         }
+    }
+
+    @Override
+    public Project findProjectById(Integer projectId) {
+        return this.projectRepository.findById(projectId)
+                .orElseThrow(() -> {
+                    log.error("Project not found with id: {}", projectId);
+                    return new BusinessException(BusinessExceptionReason.PROJECT_NOT_FOUND, projectId);
+                });
     }
 }
