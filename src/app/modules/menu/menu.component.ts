@@ -132,6 +132,7 @@ export class MenuComponent implements OnInit {
   saveItem() {
     this.submitted = true;
     if (this.item.id) {
+      this.item.role = this.roleSelected.name;
       this.menuService.updateItem(this.item.id, this.item).subscribe(
         (res => {
           this.toastService.success('Item Actualizado');

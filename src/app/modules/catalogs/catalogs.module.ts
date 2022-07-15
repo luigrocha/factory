@@ -26,6 +26,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { MachineModalComponent } from './components/machine-modal/machine-modal.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ThicknessModalComponent } from './components/thickness-modal/thickness-modal.component';
+import { ManufacturerComponent } from './pages/manufacturer/manufacturer.component';
 import { HomopolimeroModalComponent } from './components/homopolimero-modal/homopolimero-modal.component';
 import { ColorAModalComponent } from './components/color-a-modal/color-a-modal.component';
 import { ColorBModalComponent } from './components/color-b-modal/color-b-modal.component';
@@ -68,12 +69,13 @@ import { LocationModalComponent } from './components/location-modal/location-mod
     MachinesComponent,
     MachineModalComponent,
     ThicknessModalComponent,
+    ManufacturerComponent,
     HomopolimeroModalComponent,
     ColorAModalComponent,
     ColorBModalComponent,
     PrinterModalComponent,
     ColorCModalComponent,
-    LocationModalComponent,
+    LocationModalComponent
   ],
   providers: [
     DialogService
