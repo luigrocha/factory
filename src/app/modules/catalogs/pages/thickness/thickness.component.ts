@@ -11,6 +11,7 @@ import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ThicknessModalComponent } from 'src/app/modules/catalogs/components/thickness-modal/thickness-modal.component';
 import { ToastService } from 'src/app/core/services/toast.service';
+import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
 
 @Component({
   selector: 'app-thickness',
@@ -49,9 +50,6 @@ export class ThicknessComponent implements OnInit {
   ngOnInit() {
     this.getPermissionsPage();
     this.getAllThickness();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 1000);
     this.columns = [
       {field: 'weight', header: 'Peso'},
       {field: 'thick', header: 'Grosor'},
@@ -146,18 +144,16 @@ export class ThicknessComponent implements OnInit {
   }
 
   getPermissionsPage() {
-    this.permissionService.findPermissionPage().subscribe(
-      (data) => {
-        this.permissionsPage = data;
+    this.permissionService.findPermissionPage()
+      .subscribe(permissions => {
+        this.permissionsPage = permissions;
+        this.getMenuItems();
       }
     );
   }
 
   isAllow(id: number): boolean {
-    if (this.permissionsPage) {
-      return this.permissionsPage.find(permission => permission.id === id).flag;
-    }
-    return false;
+    return checkIfOptionIsAllowed(this.permissionsPage, id);
   }
 
   createThickness() {

@@ -27,6 +27,14 @@ import { MachineModalComponent } from './components/machine-modal/machine-modal.
 import { DialogService } from 'primeng/dynamicdialog';
 import { ThicknessModalComponent } from './components/thickness-modal/thickness-modal.component';
 import { ManufacturerComponent } from './pages/manufacturer/manufacturer.component';
+import { HomopolimeroModalComponent } from './components/homopolimero-modal/homopolimero-modal.component';
+import { ColorAModalComponent } from './components/color-a-modal/color-a-modal.component';
+import { ColorBModalComponent } from './components/color-b-modal/color-b-modal.component';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { PrinterModalComponent } from './components/printer-modal/printer-modal.component';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ColorCModalComponent } from './components/color-c-modal/color-c-modal.component';
+import { LocationModalComponent } from './components/location-modal/location-modal.component';
 
 @NgModule({
   imports: [
@@ -47,6 +55,8 @@ import { ManufacturerComponent } from './pages/manufacturer/manufacturer.compone
     MenuModule,
     CheckboxModule,
     ReactiveFormsModule,
+    SharedModule,
+    InputTextareaModule,
   ],
   declarations: [
     ColorAComponent,
@@ -60,6 +70,12 @@ import { ManufacturerComponent } from './pages/manufacturer/manufacturer.compone
     MachineModalComponent,
     ThicknessModalComponent,
     ManufacturerComponent,
+    HomopolimeroModalComponent,
+    ColorAModalComponent,
+    ColorBModalComponent,
+    PrinterModalComponent,
+    ColorCModalComponent,
+    LocationModalComponent
   ],
   providers: [
     DialogService

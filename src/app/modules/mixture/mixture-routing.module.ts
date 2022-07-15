@@ -9,7 +9,7 @@ const routes: Routes = [
     component: MixtureListComponent,
   },
   {
-    path: 'crear/:lote',
+    path: 'crear/:lote/:num',
     component: CreateMixtureComponent,
   },
 

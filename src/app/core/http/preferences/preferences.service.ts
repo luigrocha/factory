@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Preferences } from 'src/app/types/preferences.types';
@@ -12,17 +12,16 @@ import { defaultConfig } from 'src/app/core/constants/configs';
 })
 export class PreferencesService {
 
-  httpOptions = { headers: new HttpHeaders({ 'Content-type': 'application/json' }) };
-
-  URL_PREFERENCES = environment.userApi + '/users/{username}/preferences';
+  private readonly URL = environment.userApi + '/users/{username}/preferences';
 
   defaultConfig = defaultConfig;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getPreferencesByUsername(username: string): Observable<Config> {
-    const url = this.URL_PREFERENCES.replace('{username}', username);
-    return this.http.get<Config>(url, this.httpOptions)
+    const url = this.URL.replace('{username}', username);
+    return this.http.get<Config>(url)
       .pipe(
         map((preferences: Preferences) => {
           if (preferences) {
@@ -45,7 +44,7 @@ export class PreferencesService {
   }
 
   updatePreferencesByUsername(userName: string, preferences: Preferences): Observable<any> {
-    const url = this.URL_PREFERENCES.replace('{username}', userName);
-    return this.http.patch<any>(url, preferences, this.httpOptions);
+    const url = this.URL.replace('{username}', userName);
+    return this.http.patch<any>(url, preferences);
   }
 }

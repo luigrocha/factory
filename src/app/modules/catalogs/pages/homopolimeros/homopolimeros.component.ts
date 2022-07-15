@@ -4,72 +4,46 @@ import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { HomopolimerosService } from 'src/app/core/http/catalogs/homopolimeros/homopolimeros.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Homopolimero } from 'src/app/types/homopolimero.types';
+import { CreateHomopolimero, Homopolimero, UpdateHomopolimero } from 'src/app/types/homopolimero.types';
 import { TypePermission } from 'src/app/types/permission';
+import { TableColumn } from 'src/app/types/table.types';
+import { Machine } from 'src/app/types/machine.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
+import { ThicknessModalComponent } from 'src/app/modules/catalogs/components/thickness-modal/thickness-modal.component';
+import { CreateThickness } from 'src/app/types/thickness.types';
+import {
+  HomopolimeroModalComponent
+} from 'src/app/modules/catalogs/components/homopolimero-modal/homopolimero-modal.component';
 
 @Component({
   selector: 'app-homopolimeros',
   templateUrl: './homopolimeros.component.html',
   styleUrls: ['./homopolimeros.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class HomopolimerosComponent implements OnInit {
 
-  homoDialog: boolean;
-
-  selectedHomo: Homopolimero[];
-
-  submitted: boolean;
-
-  cols: any[];
-
+  columns: TableColumn<Homopolimero>[];
+  pageSize: number = 10;
   homos: Homopolimero[];
-
-  homo: Homopolimero;
-
-  loading = true;
-
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+  addDialogRef: DynamicDialogRef;
+  selectedHomo: Homopolimero;
+  menuItems: MenuItem[] = [];
+  selectedHomos: Homopolimero[] = [];
   permissionsPage: TypePermission[];
 
-  items: MenuItem[] = [];
-
-  homoSelect: Homopolimero;
-
   constructor(
-    private messageService: MessageService,
+    private toastService: ToastService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private homoService: HomopolimerosService,
     private permissionService: PermissionService,
+    private dialogService: DialogService
   ) {
     this.breadcrumbService.setItems([
       { label: 'Diseño' },
@@ -80,203 +54,128 @@ export class HomopolimerosComponent implements OnInit {
 
   ngOnInit() {
     this.getPermissionsPage();
-    this.getAll();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 500);
-    this.cols = [
-      { field: 'percent', header: 'Porcentaje' },
-      { field: 'hp', header: 'HP' },
+    this.getAllHomos();
+    this.columns = [
+      { field: 'percentage', header: 'Porcentaje' },
+      { field: 'hpCode', header: 'HP' },
     ];
   }
 
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Editar',
         icon: 'pi pi-pencil',
-        command: (e) => this.editHomo(this.homoSelect)
+        command: () => this.editHomo()
       });
     }
     if (this.isAllow(PermissionEnum.DELETE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Eliminar',
         icon: 'pi pi-trash',
-        command: (e) => this.deleteHomo(this.homoSelect)
+        command: () => this.deleteHomo()
       });
     }
   }
 
-  openNew() {
-    this.homo = {};
-    this.submitted = false;
-    this.homoDialog = true;
+  editHomo(): void {
+    this.addDialogRef = this.dialogService.open(HomopolimeroModalComponent, {
+      data: this.selectedHomo,
+      header: `Actualizar homopolímero ${this.selectedHomo.hpCode}`,
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((homo: UpdateHomopolimero) => {
+        if (homo) {
+          this.homoService.update(this.selectedHomo.id, homo)
+            .subscribe(() => {
+              this.toastService.success("Homopolímero actualizado correctamente")
+              this.getAllHomos();
+            });
+        }
+      });
   }
 
-  editHomo(homo: Homopolimero) {
-    this.homo = { ...homo };
-    this.homoDialog = true;
-  }
-
-  deleteHomo(homo: Homopolimero) {
+  deleteHomo() {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar el homopolímero ' + homo.hpCode + '?',
+        '¿Estas seguro de eliminar el homopolímero ' + this.selectedHomo.hpCode + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.homoService.delete(homo.id).subscribe(
-          (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Homopolímero Eliminado',
-              life: 3000,
-            });
-            this.homos = [];
-            this.getAll();
-          },
-          (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
-          }
-        );
+        this.homoService.delete(this.selectedHomo.id)
+          .subscribe(deleted => {
+            if (deleted) {
+              this.toastService.success('Homopolímero eliminado correctamente');
+              this.getAllHomos()
+            } else {
+              this.toastService.error('Error al eliminar el homopolímero');
+            }
+          });
       },
     });
   }
 
   deleteSelectedHomo() {
     this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar los homopolímeros seleccionados?',
+      message: '¿Estás seguro de eliminar los homopolímeros seleccionados?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.selectedHomo.forEach(homo => {
-          this.homoService.delete(homo.id).subscribe(
-            (res) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Homopolímero Eliminado',
-                life: 3000,
-              });
-              this.homos = [];
-              this.getAll();
-            },
-            (err) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error,
-                life: 3000,
-              });
-            }
-          );
+        this.selectedHomos.forEach(homo => {
+          this.homoService.delete(homo.id)
+            .subscribe(deleted => {
+              if (deleted) {
+                this.toastService.success('Homopolímero eliminado correctamente');
+                this.getAllHomos();
+              } else {
+                this.toastService.error('Error al eliminar el homopolímero');
+              }
+            });
         });
-        this.selectedHomo = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Homopolímeros Elimnados',
-          life: 3000,
-        });
+        this.selectedHomos = [];
       },
     });
   }
 
   saveHomo() {
-    this.submitted = true;
-    if (this.homo.id) {
-      this.homoService.update(this.homo.id, this.homo).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Homopolímero Actualizado',
-            life: 3000,
-          });
-          this.homos = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
+    this.addDialogRef = this.dialogService.open(HomopolimeroModalComponent, {
+      header: 'Crear nuevo homopolímero',
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((homo: CreateHomopolimero) => {
+        if (homo) {
+          this.homoService.create(homo)
+            .subscribe(() => {
+              this.toastService.success("Homopolímero creado correctamente")
+              this.getAllHomos();
+            });
         }
-      );
-    } else if (this.isValidToSave()) {
-      this.homoService.create(this.homo).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Homopolímero Creado',
-            life: 3000,
-          });
-          this.homos = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'Llene todos los campos',
-        life: 3000,
       });
-      this.homoDialog = true;
-      return;
-    }
-
-    this.homos = [...this.homos];
-    this.homoDialog = false;
-    this.homo = {};
   }
 
-  hideDialog() {
-    this.homoDialog = false;
-    this.submitted = false;
-  }
-
-  getAll() {
-    this.homoService.getAll().subscribe((homos) => {
-      this.homos = homos;
-      this.loading = false;
+  getAllHomos() {
+    this.homoService.getAll()
+      .subscribe(homos => {
+        this.homos = homos;
     });
   }
 
-  isValidToSave(): boolean {
-    return this.homo.percentage && this.homo.hpCode ? true : false;
-  }
-
   getPermissionsPage() {
-    this.permissionService.findPermissionPage().subscribe(
-      (data) => {
-        this.permissionsPage = data;
+    this.permissionService.findPermissionPage()
+      .subscribe(permissions => {
+        this.permissionsPage = permissions;
+        this.getMenuItems();
       }
     );
   }
 
   isAllow(id: number): boolean {
-    if (this.permissionsPage) {
-      return this.permissionsPage.find(permission => permission.id === id).flag;
-    }
-    return false;
+    return checkIfOptionIsAllowed(this.permissionsPage, id);
   }
-
 }

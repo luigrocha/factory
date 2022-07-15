@@ -180,6 +180,9 @@
               Despachos
             </th>
             <th>
+              Última modificación
+            </th>
+            <th>
               <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
             </th>
           </tr>
@@ -233,6 +236,9 @@
             </td>
             <td style="min-width: 8rem">
               {{ order.shippedQuantity }}
+            </td>
+            <td style="min-width: 11rem">
+              {{ order.lastModifiedAt | date: "dd-MM-yyyy HH:mm" }}
             </td>
             <td>
               <div class="flex justify-content-center">

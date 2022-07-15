@@ -31,5 +31,4 @@ export class ThicknessService {
     const url = `${this.URL}/${id}`;
     return this.http.delete<boolean>(url);
   }
-
 }

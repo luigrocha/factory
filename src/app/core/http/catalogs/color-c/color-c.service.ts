@@ -1,43 +1,34 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { environment } from 'src/environments/environment';
-import { ColorCatalog } from 'src/app/types/color-catalog.types';
+import { ColorCatalog, CreateColorCatalog, UpdateColorCatalog } from 'src/app/types/color-catalog.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ColorCService {
-  httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json',
-        userName: this.authService.getLoggedUser().preferred_username
-      })
-  };
 
-  URL_COLOR_C = environment.appApiUrl + '/colorCatalog';
+  private readonly URL = environment.appApiUrl + '/color-catalog';
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService) {
+  constructor(private http: HttpClient) {
   }
 
   getAll(): Observable<ColorCatalog[]> {
-    return this.http.get<ColorCatalog[]>(this.URL_COLOR_C + '', this.httpOptions);
+    return this.http.get<ColorCatalog[]>(this.URL);
   }
 
-  create(color: ColorCatalog): Observable<any> {
-    return this.http.post<any>(this.URL_COLOR_C + '', color, this.httpOptions);
+  create(color: CreateColorCatalog): Observable<ColorCatalog> {
+    return this.http.post<ColorCatalog>(this.URL, color);
   }
 
-  update(id: number, color: ColorCatalog): Observable<any> {
-    return this.http.patch<any>(this.URL_COLOR_C + '/' + id, color, this.httpOptions);
+  update(id: number, color: UpdateColorCatalog): Observable<any> {
+    const url = `${this.URL}/${id}`;
+    return this.http.patch<any>(url, color);
   }
 
-  delete(id: number) {
-    return this.http.delete<any>(this.URL_COLOR_C + '/' + id, this.httpOptions);
+  delete(id: number): Observable<boolean> {
+    const url = `${this.URL}/${id}`;
+    return this.http.delete<any>(url);
   }
-
 }

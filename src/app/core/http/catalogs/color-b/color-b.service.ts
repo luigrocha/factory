@@ -1,40 +1,38 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/auth/service/auth.service';
-import { ColorB } from 'src/app/types/colorB.types';
+import { ColorB, CreateColorB, GenerateColorBId, GeneratedColorBId, UpdateColorB } from 'src/app/types/colorB.types';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ColorBService {
-  httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json',
-        userName: this.authService.getLoggedUser().preferred_username
-      })
-  };
 
-  URL_COLOR_B = environment.appApiUrl + '/colors-b';
+  private readonly URL = environment.appApiUrl + '/colors-b';
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient) {
+  }
 
   getAll(): Observable<ColorB[]> {
-    return this.http.get<ColorB[]>(this.URL_COLOR_B + '', this.httpOptions);
+    return this.http.get<ColorB[]>(this.URL);
   }
 
-  create(color: ColorB): Observable<any> {
-    return this.http.post<any>(this.URL_COLOR_B + '', color, this.httpOptions);
+  create(color: CreateColorB): Observable<ColorB> {
+    return this.http.post<ColorB>(this.URL, color);
   }
 
-  update(id: string, color: ColorB): Observable<any> {
-    return this.http.patch<any>(this.URL_COLOR_B + '/' + id, color, this.httpOptions);
+  update(id: string, color: UpdateColorB): Observable<any> {
+    const url = `${this.URL}/${id}`;
+    return this.http.patch<any>(url, color);
   }
 
-  delete(id: string) {
-    return this.http.delete<any>(this.URL_COLOR_B + '/' + id, this.httpOptions);
+  delete(id: string): Observable<boolean> {
+    const url = `${this.URL}/${id}`;
+    return this.http.delete<boolean>(url);
   }
 
+  generateColorId(body: GenerateColorBId): Observable<GeneratedColorBId> {
+    return this.http.post<GeneratedColorBId>(this.URL + '/generate-id', body);
+  }
 }

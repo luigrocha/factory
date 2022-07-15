@@ -21,6 +21,7 @@ import { getSearchCriteria } from 'src/app/core/utils/filter-table';
 import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TableColumn } from 'src/app/types/table.types';
+import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
 
 @Component({
   selector: 'app-order',
@@ -34,7 +35,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
   rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
   selectedOrder: Order;
-  menuItems: MenuItem[];
+  menuItems: MenuItem[] = [];
   orderStatus: Status[] = [];
   priorities: Priority[] = [];
   selectedOrders: Order[] = [];
@@ -51,7 +52,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
     searchCriteria: []
   };
 
-  permissionsPage: TypePermission[];
+  permissions: TypePermission[];
   orderPriorityType = ORDER_PRIORITY_TYPE;
   searchFomControl = new FormControl();
   columns: TableColumn<Order>[];
@@ -74,15 +75,12 @@ export class OrderComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.getPermissionsPage();
+    this.getPermissionsToPage();
     this.getOrders();
     this.getPriorities();
     this.getStatus();
     this.setDefaultFilters();
     this.searchByInput();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 500);
     this.columns = [
       { field: 'code', header: 'Código' },
       { field: 'lot', header: 'Lote' },
@@ -96,7 +94,8 @@ export class OrderComponent implements OnInit, AfterViewInit {
       { field: 'clientOrderCode', header: 'Orden' },
       { field: 'observation', header: 'Observaciones' },
       { field: 'pendingQuantity', header: 'Cantidad pendiente' },
-      { field: 'shippedQuantity', header: 'Despachos' }
+      { field: 'shippedQuantity', header: 'Despachos' },
+      { field: 'lastModifiedAt', header: 'Última modificación' }
     ];
   }
 
@@ -150,11 +149,24 @@ export class OrderComponent implements OnInit, AfterViewInit {
     this.searchRequest.searchCriteria = getSearchCriteria(filterFields);
   }
 
+  getPermissionsToPage() {
+    this.permissionService.findPermissionPage()
+      .subscribe(permissions => {
+          this.permissions = permissions;
+          this.getMenuItems();
+        }
+      );
+  }
+
+  isAllow(id: number): boolean {
+    return checkIfOptionIsAllowed(this.permissions, id);
+  }
+
   getMenuItems() {
-    if (this.isAllow(PermissionEnum.UPDATE)) {
+    if (this.isAllow(PermissionEnum.READ)) {
       this.menuItems.push({
-        label: 'Editar',
-        icon: 'pi pi-pencil',
+        label: 'Ver pedido',
+        icon: 'pi pi-eye',
         command: () => this.editOrder()
       });
     }
@@ -165,12 +177,6 @@ export class OrderComponent implements OnInit, AfterViewInit {
         command: () => this.deleteOrder()
       });
     }
-    this.menuItems.push({
-      label: 'Ver Estado',
-      icon: 'pi pi-search-plus',
-      command: () => this.route.navigate(['/home/pedidos/status/' + this.selectedOrder.lot])
-    });
-
   }
 
   getOrders() {
@@ -199,23 +205,8 @@ export class OrderComponent implements OnInit, AfterViewInit {
     table.clear();
   }
 
-  getPermissionsPage() {
-    this.permissionService.findPermissionPage().subscribe(
-      (data) => {
-        this.permissionsPage = data;
-      }
-    );
-  }
-
-  isAllow(id: number): boolean {
-    if (this.permissionsPage) {
-      return this.permissionsPage.find(permission => permission.id === id).flag;
-    }
-    return false;
-  }
-
   private editOrder() {
-    this.route.navigate(['/home/pedidos/editar/' + this.selectedOrder.lot]);
+    this.route.navigate(['/home/pedidos/' + this.selectedOrder.id + '/' + this.selectedOrder.code]);
   }
 
   private deleteOrder() {

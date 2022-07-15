@@ -213,4 +213,8 @@ export class CreateCirelComponent implements OnInit {
         this.colors = colors;
       });
   }
+
+  back() {
+    this.router.navigate(['/home/cireles']);
+  }
 }

@@ -1,7 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { ColorA } from 'src/app/types/colorA.types';
 import { environment } from 'src/environments/environment';
 
@@ -9,32 +8,27 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class ColorAService {
-  httpOptions = {
-    headers: new HttpHeaders(
-      {
-        'Content-type': 'application/json',
-        userName: this.authService.getLoggedUser().preferred_username
-      })
-  };
 
-  URL_COLOR_A = environment.appApiUrl + '/colors-a';
+  private readonly URL = environment.appApiUrl + '/colors-a';
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(private http: HttpClient) {
+  }
 
   getAll(): Observable<ColorA[]> {
-    return this.http.get<ColorA[]>(this.URL_COLOR_A + '', this.httpOptions);
+    return this.http.get<ColorA[]>(this.URL);
   }
 
-  create(color: ColorA): Observable<any> {
-    return this.http.post<any>(this.URL_COLOR_A + '', color, this.httpOptions);
+  create(color: ColorA): Observable<ColorA> {
+    return this.http.post<ColorA>(this.URL, color);
   }
 
-  update(id: string, color: ColorA): Observable<any> {
-    return this.http.patch<any>(this.URL_COLOR_A + '/' + id, color, this.httpOptions);
+  update(id: string, color: ColorA): Observable<ColorA> {
+    const url = `${this.URL}/${id}`;
+    return this.http.patch<ColorA>(url, color);
   }
 
-  delete(id: string) {
-    return this.http.delete<any>(this.URL_COLOR_A + '/' + id, this.httpOptions);
+  delete(id: string): Observable<boolean> {
+    const url = `${this.URL}/${id}`;
+    return this.http.delete<boolean>(url);
   }
-
 }

@@ -1,282 +1,176 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { PermissionEnum } from 'src/app/core/constants/permisions';
 import { LocationService } from 'src/app/core/http/catalogs/location/location.service';
 import { PermissionService } from 'src/app/core/http/permissions/permission.service';
 import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { Location } from 'src/app/types/celler.types';
+import { CreateLocation, Location } from 'src/app/types/celler.types';
 import { TypePermission } from 'src/app/types/permission';
+import { TableColumn } from 'src/app/types/table.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
+import { ToastService } from 'src/app/core/services/toast.service';
+import { LocationModalComponent } from 'src/app/modules/catalogs/components/location-modal/location-modal.component';
 
 @Component({
   selector: 'app-location',
   templateUrl: './location.component.html',
   styleUrls: ['./location.component.scss'],
-  styles: [
-    `
-        :host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }
-
-        @media screen and (max-width: 960px) {
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:last-child {
-                text-align: center;
-            }
-
-            :host
-            ::ng-deep
-            .p-datatable.p-datatable-customers
-            .p-datatable-tbody
-            > tr
-            > td:nth-child(6) {
-                display: flex;
-            }
-        }
-    `,
-  ],
-  providers: [MessageService, ConfirmationService],
+  providers: [ConfirmationService],
 })
 export class LocationComponent implements OnInit {
 
-  locationDialog: boolean;
-
-  selectedlocation: Location[];
-
-  submitted: boolean;
-
-  cols: any[];
-
-  locations: Location[];
-
-  location: Location;
-
-  loading = true;
-
+  columns: TableColumn<Location>[];
+  pageSize: number = 10;
+  locations: Location[] = [];
+  tableReportTemplate = TABLE_REPORT_TEMPLATE;
+  rowsPerPageOptions: number[] = [5, 10, 20, 50, 100];
+  addDialogRef: DynamicDialogRef;
+  selectedLocation: Location;
+  menuItems: MenuItem[] = [];
   permissionsPage: TypePermission[];
-
-  items: MenuItem[] = [];
-
-  locationSelect: Location;
+  selectedLocations: Location[];
 
   constructor(
-    private messageService: MessageService,
+    private toastService: ToastService,
     private confirmationService: ConfirmationService,
     private breadcrumbService: BreadcrumbService,
     private locationService: LocationService,
     private permissionService: PermissionService,
+    private dialogService: DialogService
   ) {
     this.breadcrumbService.setItems([
-      { label: 'Diseño' },
-      { label: 'Catálogos' },
-      { label: 'Ubicaciones', routerLink: ['home/catalogs/ubicacion'] },
+      {label: 'Diseño'},
+      {label: 'Catálogos'},
+      {label: 'Ubicaciones', routerLink: ['home/catalogs/ubicacion']},
     ]);
   }
 
   ngOnInit() {
     this.getPermissionsPage();
-    this.getAll();
-    setTimeout(() => {
-      this.getMenuItems();
-    }, 500);
-    this.cols = [
-      { field: 'location', header: 'Ubicación' },
-      { field: 'description', header: 'Descripción' },
+    this.getAllLocations();
+    this.columns = [
+      {field: 'location', header: 'Ubicación'},
+      {field: 'description', header: 'Descripción'},
     ];
   }
 
   getMenuItems() {
     if (this.isAllow(PermissionEnum.UPDATE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Editar',
         icon: 'pi pi-pencil',
-        command: (e) => this.editHomo(this.locationSelect)
+        command: () => this.editLocation()
       });
     }
     if (this.isAllow(PermissionEnum.DELETE)) {
-      this.items.push({
+      this.menuItems.push({
         label: 'Eliminar',
         icon: 'pi pi-trash',
-        command: (e) => this.deleteHomo(this.locationSelect)
+        command: () => this.deleteLocation()
       });
     }
   }
 
-  openNew() {
-    this.location = {};
-    this.submitted = false;
-    this.locationDialog = true;
+  editLocation() {
+    this.addDialogRef = this.dialogService.open(LocationModalComponent, {
+      data: this.selectedLocation,
+      header: `Actualizar ubicación ${this.selectedLocation.location}`,
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((location: Location) => {
+        if (location) {
+          this.locationService.update(this.selectedLocation.id, location)
+            .subscribe(() => {
+              this.toastService.success('Ubicación actualizada correctamente');
+              this.getAllLocations();
+            });
+        }
+      });
   }
 
-  editHomo(location: Location) {
-    this.location = { ...location };
-    this.locationDialog = true;
-  }
-
-  deleteHomo(location: Location) {
+  deleteLocation() {
     this.confirmationService.confirm({
       message:
-        'Estas seguro de eliminar la ubicación ' + location.location + '?',
+        '¿Estas seguro de eliminar la ubicación ' + this.selectedLocation.location + '?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.locationService.delete(location.id).subscribe(
-          (res) => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Homopolímero Eliminado',
-              life: 3000,
-            });
-            this.locations = [];
-            this.getAll();
-          },
-          (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error,
-              life: 3000,
-            });
-          }
-        );
-      },
-    });
-  }
-
-  deleteSelectedHomo() {
-    this.confirmationService.confirm({
-      message: 'Estás seguro de eliminar las ubicaciones seleccionados?',
-      header: 'Confirmación',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.selectedlocation.forEach(location => {
-          this.locationService.delete(location.id).subscribe(
-            (res) => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Ubicación Eliminada',
-                life: 3000,
-              });
-              this.locations = [];
-              this.getAll();
-            },
-            (err) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error,
-                life: 3000,
-              });
+        this.locationService.delete(this.selectedLocation.id)
+          .subscribe(deleted => {
+            if (deleted) {
+              this.toastService.success('Ubicación eliminada correctamente');
+              this.getAllLocations();
+            } else {
+              this.toastService.error('Error al eliminar la ubicación');
             }
-          );
-        });
-        this.selectedlocation = null;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Correcto',
-          detail: 'Ubicaciones Eliminadas',
-          life: 3000,
-        });
+          });
       },
     });
   }
 
-  saveHomo() {
-    this.submitted = true;
-    if (this.location.id) {
-      this.locationService.update(this.location.id, this.location).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Ubicación Actualizada',
-            life: 3000,
-          });
-          this.locations = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else if (this.isValidToSave()) {
-      this.locationService.create(this.location).subscribe(
-        (res) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Ubicación Creada',
-            life: 3000,
-          });
-          this.locations = [];
-          this.getAll();
-        },
-        (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error,
-            life: 3000,
-          });
-        }
-      );
-    } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Atención',
-        detail: 'Llene todos los campos',
-        life: 3000,
-      });
-      this.locationDialog = true;
-      return;
-    }
-
-    this.locations = [...this.locations];
-    this.locationDialog = false;
-    this.location = {};
-  }
-
-  hideDialog() {
-    this.locationDialog = false;
-    this.submitted = false;
-  }
-
-  getAll() {
-    this.locationService.getAll().subscribe((locations) => {
-      this.locations = locations;
-      this.loading = false;
+  deleteSelectedLocations() {
+    this.confirmationService.confirm({
+      message: '¿Estás seguro de eliminar las ubicaciones seleccionadas?',
+      header: 'Confirmación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.selectedLocations.forEach(location => {
+          this.locationService.delete(location.id)
+            .subscribe(deleted => {
+              if (deleted) {
+                this.toastService.success('Ubicación eliminada correctamente');
+                this.getAllLocations();
+              } else {
+                this.toastService.error('Error al eliminar la ubicación');
+              }
+            });
+        });
+        this.selectedLocations = [];
+      },
     });
   }
 
-  isValidToSave(): boolean {
-    return this.location.location && this.location.description ? true : false;
+  getAllLocations() {
+    this.locationService.getAll()
+      .subscribe((locations) => {
+        this.locations = locations;
+      });
   }
 
   getPermissionsPage() {
-    this.permissionService.findPermissionPage().subscribe(
-      (data) => {
-        this.permissionsPage = data;
-      }
-    );
+    this.permissionService.findPermissionPage()
+      .subscribe(permissions => {
+          this.permissionsPage = permissions;
+          this.getMenuItems();
+        }
+      );
   }
 
   isAllow(id: number): boolean {
-    if (this.permissionsPage) {
-      return this.permissionsPage.find(permission => permission.id === id).flag;
-    }
-    return false;
+    return checkIfOptionIsAllowed(this.permissionsPage, id);
   }
 
+  createLocation() {
+    this.addDialogRef = this.dialogService.open(LocationModalComponent, {
+      header: 'Crear nueva ubicación',
+      width: '450px',
+      contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+    });
+
+    this.addDialogRef.onClose
+      .subscribe((location: CreateLocation) => {
+        if (location) {
+          this.locationService.create(location)
+            .subscribe(() => {
+              this.toastService.success('Ubicación creada correctamente');
+              this.getAllLocations();
+            });
+        }
+      });
+  }
 }

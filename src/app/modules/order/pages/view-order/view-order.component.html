@@ -1,0 +1,112 @@
+<div class="grid" *ngIf="order">
+  <div class="col-12 lg:col-9 flex-order-1 lg:flex-order-0 xl:flex-order-0">
+    <div class="card">
+      <p-message *ngIf="order.cancellationReason" severity="error" [text]="'Cancelado por: ' + order.cancellationReason"
+                 styleClass="mr-2 mb-2 mt-2"></p-message>
+      <div class="flex flex-row flex-wrap pt-2">
+        <div>
+          <h5>Pedido #{{order.code}}</h5>
+        </div>
+        <div class="ml-3">
+          <p-tag [style]="{'color': order.status.color, 'backgroundColor': order.status.backgroundColor}"
+                 [value]="order.status.name"></p-tag>
+        </div>
+        <div class="ml-3" *ngIf="order.lot">
+          <p-tag styleClass="mr-2" severity="info" [value]="'Lote: ' + order.lot"></p-tag>
+        </div>
+        <span class="flex-auto"></span>
+        <div class="ml-3">
+          <p-tag styleClass="mr-2" severity="danger" [value]="'Pendientes: ' + 0"></p-tag>
+          <p-tag styleClass="mr-2" severity="success" [value]="'Despachados: ' + 0"></p-tag>
+        </div>
+      </div>
+      <p-divider></p-divider>
+      <div class="grid">
+        <div class="col-6 lg:col-2 flex-column">
+          <span class="flex align-items-center">
+            <i [ngStyle]="{'color': order.priority.color ? order.priority.color:''}"
+               class="pi {{order.priority.icon}}"></i>
+            <span class="label">Prioridad</span>
+          </span>
+          <span class="label-item">{{order.priority.name}}</span>
+        </div>
+        <div class="col-6 lg:col-2 flex-column">
+          <span class="flex align-items-center">
+            <i class="pi pi-calendar"></i>
+            <span class="label">F. Creación</span>
+          </span>
+          <span class="label-item">{{order.orderedAt | date: 'dd-MM-yyyy'}}</span>
+        </div>
+        <div class="col-6 lg:col-2 flex-column">
+          <span class="flex align-items-center">
+            <i class="pi pi-calendar"></i>
+            <span class="label">F. Modifiación</span>
+          </span>
+          <span class="label-item">{{order.lastModifiedAt | date: 'dd-MM-yyyy HH:mm'}}</span>
+        </div>
+        <div class="col-6 lg:col-2 flex-column">
+          <span class="flex align-items-center">
+            <i class="pi pi-calendar"></i>
+            <span class="label">F. Inicio prod</span>
+          </span>
+          <span class="label-item">{{order.productionStartedAt | date: 'dd-MM-yyyy'}}</span>
+        </div>
+        <div class="col-6 lg:col-2 flex-column">
+          <span class="flex align-items-center">
+            <i class="pi pi-calendar"></i>
+            <span class="label">F. Terminado</span>
+          </span>
+          <span class="label-item">{{order.completedAt | date: 'dd-MM-yyyy'}}</span>
+        </div>
+        <div class="col-6 lg:col-2 flex-column">
+          <span class="flex align-items-center">
+            <i class="pi pi-calendar"></i>
+            <span class="label">F. Cancelación</span>
+          </span>
+          <span class="label-item">{{order.canceledAt | date: 'dd-MM-yyyy'}}</span>
+        </div>
+      </div>
+    </div>
+    <p-tabView>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <span>Datos orden</span>
+        </ng-template>
+        <app-edit-order-form [order]="order"
+                             (saveForm)="updateOrder($event)">
+        </app-edit-order-form>
+      </p-tabPanel>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <span>Estado</span>
+        </ng-template>
+        <app-order-status></app-order-status>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+  <div class="col-12 lg:col-3 flex-order-0 lg:flex-order-1 xl:flex-order-1">
+    <h5>Acciones</h5>
+    <p-divider></p-divider>
+    <button pButton
+            pRipple
+            *ngIf="showCancelButton()"
+            label="Cancelar orden"
+            icon="pi pi-times"
+            class="mb-5important p-button-danger mb-2 md:mr-2 md:mb-0 w-full"
+            (click)="cancelOrder()"
+            [disabled]="false"
+    ></button>
+    <button pButton
+            pRipple
+            label="Por hacer"
+            *ngIf="showToDoButton()"
+            icon="pi pi-times"
+            class="mb-2 md:mr-2 md:mb-0 w-full"
+            (click)="toDoOrder()"
+            [disabled]="false"
+    ></button>
+  </div>
+  <p-confirmDialog [style]="{ width: '450px' }"
+                   rejectButtonStyleClass="p-button-text"
+                   acceptButtonStyleClass="p-button-raised"></p-confirmDialog>
+</div>
