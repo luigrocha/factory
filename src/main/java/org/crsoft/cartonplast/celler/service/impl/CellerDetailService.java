@@ -184,25 +184,13 @@ public class CellerDetailService implements ICellerDetailService {
     }
 
     @Override
-    public Collection<AllStockVo> findMaterialStock(Integer code) throws NotFoundException {
-        Collection<AllStockVo> typeMaterialStock = this.cellerDetailRepository.findMaterialStock(code);
-        if(CollectionUtil.isNotEmpty(typeMaterialStock)){
-            return  typeMaterialStock;
-        } else {
-            log.error("Error to findMaterialStock {}", code);
-            throw new NotFoundException(MESSAGE_NOT_FOUND);
-        }
+    public Collection<AllStockVo> findMaterialStock(Integer code) {
+        return this.cellerDetailRepository.findMaterialStock(code);
     }
 
     @Override
-    public Collection<AllStockVo> findMaterialLoteStock(Integer code, String lote) throws NotFoundException {
-        Collection<AllStockVo> typeMaterialStock = this.cellerDetailRepository.findMaterialLoteStock(code,lote);
-        if(CollectionUtil.isNotEmpty(typeMaterialStock)){
-            return  typeMaterialStock;
-        } else {
-            log.error("Error to findMaterialLoteStock {} - {}", code, lote);
-            throw new NotFoundException(MESSAGE_NOT_FOUND);
-        }
+    public Collection<AllStockVo> findMaterialLoteStock(Integer code, String lote) {
+        return this.cellerDetailRepository.findMaterialLoteStock(code,lote);
     }
 
     @Override

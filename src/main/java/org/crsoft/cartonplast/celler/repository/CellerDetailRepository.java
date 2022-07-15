@@ -39,31 +39,37 @@ public interface CellerDetailRepository extends JpaRepository<CellerDetail, Inte
     @Query("SELECT new org.crsoft.cartonplast.celler.vo.LoteStockVo(c.id, SUM(c.weight) ,c.lote) FROM CellerDetail c " +
             "WHERE c.material.id =:material AND c.validTo IS NULL " +
             "GROUP BY c.lote " +
+            "HAVING SUM(c.weight) > 0 " +
             "ORDER BY SUM(c.weight) DESC ")
     Collection<LoteStockVo> findAllLoteStockByMaterial(Integer material);
 
     @Query("SELECT c FROM CellerDetail c " +
             "WHERE c.material.id = :materialCode AND c.validTo IS NULL " +
-            "GROUP BY c.lote")
+            "GROUP BY c.lote " +
+            "HAVING SUM (c.weight) > 0")
     Collection<CellerDetail> findAllLoteStock(Integer materialCode);
 
     @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
-            "GROUP BY c.material.id, c.lote, c.location.id ")
+            "GROUP BY c.material.id, c.lote, c.location.id " +
+            "HAVING SUM(c.weight) > 0")
     Collection<AllStockVo> findAllStock();
 
     @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
             "WHERE c.material.typeMaterial.id = :typeCode " +
-            "GROUP BY c.material.id, c.lote, c.location.id ")
+            "GROUP BY c.material.id, c.lote, c.location.id " +
+            "HAVING SUM(c.weight) > 0 ")
     Collection<AllStockVo> findByTypeMaterialStock(Integer typeCode);
 
     @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
             "WHERE c.material.id = :materialCode " +
-            "GROUP BY c.material.id, c.lote, c.location.id ")
+            "GROUP BY c.material.id, c.lote, c.location.id " +
+            "HAVING SUM(c.weight) > 0")
     Collection<AllStockVo> findMaterialStock(Integer materialCode);
 
     @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
             "WHERE c.material.id = :materialCode AND c.lote = :lote " +
-            "GROUP BY c.material.id, c.lote, c.location.id ")
+            "GROUP BY c.material.id, c.lote, c.location.id " +
+            "HAVING SUM(c.weight) > 0")
     Collection<AllStockVo> findMaterialLoteStock(Integer materialCode,String lote);
 
     @Query("SELECT new org.crsoft.cartonplast.celler.vo.AllStockVo(c.id, c.material.typeMaterial.name, c.material.name, c.lote, c.location.description, SUM(c.weight) ) FROM CellerDetail c " +
