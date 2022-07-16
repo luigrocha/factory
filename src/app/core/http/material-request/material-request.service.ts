@@ -1,19 +1,29 @@
-import {Injectable} from '@angular/core';
-import {environment} from '../../../../environments/environment';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {Turns} from '../../../types/material-request.types';
+import { Injectable } from '@angular/core';
+import { SearchRequest } from 'src/app/types/pageable.types';
+import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { MaterialRequestPageable } from 'src/app/types/material-request.types';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MaterialRequestService {
 
-  URL_TURN = environment.appApiUrl + '/turns';
+  private readonly URL = environment.appApiUrl + '/material-requests';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
-  getAllValidTurns(): Observable<Turns[]>{
-    return this.http.get<Turns[]>(this.URL_TURN);
+  getMaterialRequests(searchRequest: SearchRequest): Observable<MaterialRequestPageable> {
+    let parameters = `/search?page=${searchRequest.page}&size=${searchRequest.size}`;
+
+    if (searchRequest.query) {
+      parameters += `&query=${searchRequest.query}`;
+    }
+
+    parameters += `&states=${searchRequest.filters.join(',')}`;
+
+    return this.http.post<MaterialRequestPageable>(this.URL + parameters, searchRequest.searchCriteria);
   }
 }

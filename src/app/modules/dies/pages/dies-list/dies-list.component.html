@@ -170,7 +170,7 @@
               {{ die.name }}
             </td>
             <td style="min-width: 8rem">
-              {{ die.createdDate | date: "dd-MM-yyyy" }}
+              {{ die.createdDate | cpDate }}
             </td>
             <td style="min-width: 11rem">
               {{ die.manufacturer }}
@@ -278,7 +278,7 @@
         <li *ngFor="let document of selectedDie.documents">
           <p-chip [label]="'V' + document.version"
                   icon="pi pi-file-pdf" styleClass="mr-2"></p-chip>
-          <span>{{document.versionDate | date: 'dd-MM-yyyy HH:mm:ss'}}</span>
+          <span>{{document.versionDate | cpDatetime}}</span>
           <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
                   (click)="selectedDocument = document; documentMenu.toggle($event)"></button>
         </li>

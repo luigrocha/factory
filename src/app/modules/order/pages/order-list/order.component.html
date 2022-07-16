@@ -25,7 +25,8 @@
                     label="Limpiar"
                     icon="pi pi-filter-slash"
                     class="p-button-outlined mb-2 md:mr-2 md:mb-0"
-                    (click)="clear(dt)"></button>
+                    (click)="clear(dt)"
+            ></button>
             <button pButton
                     pRipple
                     label="Nuevo"
@@ -211,7 +212,7 @@
               {{ order.quantity }}
             </td>
             <td style="min-width: 11rem">
-              {{ order.estimatedDeliveryAt | date: "dd-MM-yyyy" }}
+              {{ order.estimatedDeliveryAt | cpDate }}
             </td>
             <td style="min-width: 8rem;">
               <i [ngStyle]="{'color': order.priority.color ? order.priority.color:''}"
@@ -238,7 +239,7 @@
               {{ order.shippedQuantity }}
             </td>
             <td style="min-width: 11rem">
-              {{ order.lastModifiedAt | date: "dd-MM-yyyy HH:mm" }}
+              {{ order.lastModifiedAt | cpDatetime }}
             </td>
             <td>
               <div class="flex justify-content-center">

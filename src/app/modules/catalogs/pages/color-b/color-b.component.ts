@@ -136,6 +136,7 @@ export class ColorBComponent implements OnInit {
               }
             );
         });
+        this.selectedColors = [];
       },
     });
   }

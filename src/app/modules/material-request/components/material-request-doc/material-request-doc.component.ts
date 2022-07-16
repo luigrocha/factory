@@ -1,11 +1,15 @@
-import {Component, OnInit} from '@angular/core';
-import {MaterialRequestService as MaterialRequestServiceTemp} from '../../../../core/services/material-request.service';
-import {Consolidated, MaterialRequest, Turns} from '../../../../types/material-request.types';
-import {MaterialRequestService} from '../../../../core/http/material-request/material-request.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {FORM_ERROR_MESSAGES} from '../../../../core/constants/form-error';
-import {TableColumn} from '../../../../types/table.types';
-import {TABLE_REPORT_TEMPLATE} from '../../../../core/constants/table';
+import { Component, OnInit } from '@angular/core';
+import {
+  MaterialRequestService as MaterialRequestServiceTemp
+} from '../../../../core/services/material-request.service';
+import { Consolidated, MaterialRequest } from 'src/app/types/material-request.types';
+import { MaterialRequestService } from 'src/app/core/http/material-request/material-request.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FORM_ERROR_MESSAGES } from 'src/app/core/constants/form-error';
+import { TableColumn } from 'src/app/types/table.types';
+import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
+import { Turn } from 'src/app/types/turn.types';
+import { TurnService } from 'src/app/core/http/turn/turn.service';
 
 @Component({
   selector: 'app-material-request-doc',
@@ -22,12 +26,13 @@ export class MaterialRequestDocComponent implements OnInit {
   consolides: Consolidated[];
   columns: TableColumn<MaterialRequest>[];
   materialRequest: MaterialRequest[];
-  turns: Turns[];
+  turns: Turn[];
 
   constructor(
     private fb: FormBuilder,
     private materialReqService: MaterialRequestServiceTemp,
-    private materialRequestService: MaterialRequestService
+    private materialRequestService: MaterialRequestService,
+    private turnService: TurnService,
   ) {
     this.materialReqService.consolidated$
       .subscribe((consolides) => {
@@ -59,9 +64,10 @@ export class MaterialRequestDocComponent implements OnInit {
   }
 
   getAllValidTurns() {
-    this.materialRequestService.getAllValidTurns().subscribe(turns => {
-      this.turns = turns;
-    });
+    this.turnService.getTurns()
+      .subscribe(turns => {
+        this.turns = turns;
+      });
   }
 
   addRow() {

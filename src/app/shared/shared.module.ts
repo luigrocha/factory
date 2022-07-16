@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { LoadingComponent } from './components/loading/loading.component';
 import { StatusHighlightDirective } from './directives/status-highlight/status-highlight.directive';
 import { InputUppercaseDirective } from 'src/app/shared/directives/input-uppercase/input-uppercase.directive';
@@ -17,6 +17,8 @@ import { ConfirmationTextComponent } from './components/confirmation-text/confir
 import { ReactiveFormsModule } from '@angular/forms';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RippleModule } from 'primeng/ripple';
+import { CpDatePipe } from './pipes/cp-date.pipe';
+import { CpDatetimePipe } from './pipes/cp-datetime.pipe';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { RippleModule } from 'primeng/ripple';
     UploadFileComponent,
     YesNoPipe,
     NumericDirective,
-    ConfirmationTextComponent
+    ConfirmationTextComponent,
+    CpDatePipe,
+    CpDatetimePipe
   ],
   exports: [
     LoadingComponent,
@@ -38,7 +42,9 @@ import { RippleModule } from 'primeng/ripple';
     UserAvatarComponent,
     SafePipe,
     YesNoPipe,
-    NumericDirective
+    NumericDirective,
+    CpDatePipe,
+    CpDatetimePipe
   ],
   imports: [
     CommonModule,
@@ -49,6 +55,9 @@ import { RippleModule } from 'primeng/ripple';
     ReactiveFormsModule,
     InputTextareaModule,
     RippleModule
+  ],
+  providers: [
+    DatePipe
   ]
 })
 export class SharedModule { }

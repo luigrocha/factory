@@ -35,35 +35,35 @@
             <i class="pi pi-calendar"></i>
             <span class="label">F. Creación</span>
           </span>
-          <span class="label-item">{{order.orderedAt | date: 'dd-MM-yyyy'}}</span>
+          <span class="label-item">{{order.orderedAt | cpDate}}</span>
         </div>
         <div class="col-6 lg:col-2 flex-column">
           <span class="flex align-items-center">
             <i class="pi pi-calendar"></i>
             <span class="label">F. Modifiación</span>
           </span>
-          <span class="label-item">{{order.lastModifiedAt | date: 'dd-MM-yyyy HH:mm'}}</span>
+          <span class="label-item">{{order.lastModifiedAt | cpDatetime}}</span>
         </div>
         <div class="col-6 lg:col-2 flex-column">
           <span class="flex align-items-center">
             <i class="pi pi-calendar"></i>
             <span class="label">F. Inicio prod</span>
           </span>
-          <span class="label-item">{{order.productionStartedAt | date: 'dd-MM-yyyy'}}</span>
+          <span class="label-item">{{order.productionStartedAt | cpDate}}</span>
         </div>
         <div class="col-6 lg:col-2 flex-column">
           <span class="flex align-items-center">
             <i class="pi pi-calendar"></i>
             <span class="label">F. Terminado</span>
           </span>
-          <span class="label-item">{{order.completedAt | date: 'dd-MM-yyyy'}}</span>
+          <span class="label-item">{{order.completedAt | cpDate}}</span>
         </div>
         <div class="col-6 lg:col-2 flex-column">
           <span class="flex align-items-center">
             <i class="pi pi-calendar"></i>
             <span class="label">F. Cancelación</span>
           </span>
-          <span class="label-item">{{order.canceledAt | date: 'dd-MM-yyyy'}}</span>
+          <span class="label-item">{{order.canceledAt | cpDate}}</span>
         </div>
       </div>
     </div>
