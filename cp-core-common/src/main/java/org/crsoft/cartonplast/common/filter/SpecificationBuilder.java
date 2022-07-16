@@ -9,7 +9,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -175,26 +177,28 @@ public class SpecificationBuilder<T> {
                             );
                         }
                     case DATE_IS_NOT:
-                        LocalDateTime dateIsNot = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDateTime();
+                        LocalDate dateIsNot = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
+                        LocalDateTime dateTimeIsNot = LocalDateTime.of(dateIsNot, LocalTime.MIN);
                         if (keys.length == 2) {
                             return criteriaBuilder.notEqual(
                                     root.get(keys[0]).get(keys[1]),
-                                    dateIsNot);
+                                    dateTimeIsNot);
                         } else {
                             return criteriaBuilder.notEqual(
                                     root.get(criteria.getKey()),
-                                    dateIsNot);
+                                    dateTimeIsNot);
                         }
                     case DATE_IS:
-                        LocalDateTime dateIs = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDateTime();
+                        LocalDate dateIs = ZonedDateTime.parse(criteria.getValue().toString()).toLocalDate();
+                        LocalDateTime dateTime = LocalDateTime.of(dateIs, LocalTime.MIN);
                         if (keys.length == 2) {
                             return criteriaBuilder.equal(
                                     root.get(keys[0]).get(keys[1]),
-                                    dateIs);
+                                    dateTime);
                         } else {
                             return criteriaBuilder.equal(
                                     root.get(criteria.getKey()),
-                                    dateIs);
+                                    dateTime);
                         }
                     case IN:
                         if (keys.length == 2) {

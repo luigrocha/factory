@@ -26,8 +26,19 @@ public class TypeMaterial {
     )
     private Integer id;
 
-    @Column(name = "CDTTIP_NAME", nullable = false)
+    @Column(
+            name = "CDTTIP_NAME",
+            nullable = false,
+            length = 8
+    )
     private String name;
+
+    @Column(
+            name = "CDTTIP_DESCRIPTION",
+            nullable = false,
+            length = 8
+    )
+    private String description;
 
     @Column(
             name = "CDTTIP_VALID_FROM",
