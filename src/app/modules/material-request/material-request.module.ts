@@ -15,6 +15,7 @@ import {DividerModule} from 'primeng/divider';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import localeEs from '@angular/common/locales/es';
 import {TabViewModule} from 'primeng/tabview';
+import {AutoCompleteModule} from 'primeng/autocomplete';
 
 registerLocaleData(localeEs, 'es');
 
@@ -37,6 +38,7 @@ registerLocaleData(localeEs, 'es');
     FormsModule,
     ReactiveFormsModule,
     TabViewModule,
+    AutoCompleteModule,
   ],
   providers: [{provide: LOCALE_ID, useValue: 'es'}]
 })
