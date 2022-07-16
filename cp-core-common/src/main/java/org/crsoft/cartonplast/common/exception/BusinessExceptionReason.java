@@ -30,6 +30,7 @@ public enum BusinessExceptionReason implements BusinessExceptionPolicy {
     CATALOG_STATUS_NOT_FOUND("catalog_status_not_found", "No se encontró el estado del catálogo con el id %s", HttpStatus.NOT_FOUND),
     REPEATED_ORDER_CODE("repeated_order_code", "El código de orden '%s' ya existe", HttpStatus.BAD_REQUEST),
     MIXTURE_NOT_FOUND("mixture_not_found", "No se encontró la orden de mezcla para el id %s", HttpStatus.NOT_FOUND),
+    TURN_NOT_FOUND("turn_not_found", "No se encontró el turno con el id %s", HttpStatus.NOT_FOUND),
     MIXTURE_RECEIPT_FAILED("mixture_receipt_failed", "No se pudo generar el comprobante de mezcla", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
