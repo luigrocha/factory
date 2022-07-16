@@ -22,6 +22,13 @@
             <span class="flex-auto"></span>
             <button pButton
                     pRipple
+                    label="Limpiar"
+                    icon="pi pi-filter-slash"
+                    class="p-button-outlined mb-2 md:mr-2 md:mb-0"
+                    (click)="clear(dt)"
+            ></button>
+            <button pButton
+                    pRipple
                     label="Nuevo"
                     icon="pi pi-plus"
                     class="mb-2 md:mr-2 md:mb-0"
@@ -40,13 +47,151 @@
               <i class="pi pi-search"></i>
               <input pInputText
                      type="text"
-                     (input)="dt.filterGlobal($event.target.value, 'contains')"
+                     [formControl]="searchFomControl"
                      placeholder="Buscar..."
-                     class="w-full" />
+                     class="w-full"/>
             </span>
           </div>
         </ng-template>
-        </p-table>
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="min-width: 8rem">
+              Número
+              <p-columnFilter type="text"
+                              field="number"
+                              [showOperator]="false"
+                              display="menu"
+                              placeholder="Buscar por número">
+              </p-columnFilter>
+            </th>
+            <th style="min-width: 11rem">
+              Fecha
+              <p-columnFilter type="date"
+                              field="date"
+                              [showOperator]="false"
+                              display="menu"
+                              placeholder="dd-mm-aaaa">
+              </p-columnFilter>
+            </th>
+            <th style="min-width: 8rem">
+              Responsable
+              <p-columnFilter type="text"
+                              field="documentBy"
+                              [showOperator]="false"
+                              display="menu"
+                              placeholder="Buscar por responsable">
+              </p-columnFilter>
+            </th>
+            <th style="min-width: 8rem">
+              Estado
+              <p-columnFilter field="status"
+                              matchMode="in"
+                              display="menu"
+                              [showMatchModes]="false"
+                              [showOperator]="false"
+                              [showAddButton]="false">
+                <ng-template pTemplate="filter"
+                             let-value
+                             let-filter="filterCallback">
+                  <p-multiSelect [ngModel]="value"
+                                 [options]="requestStatus"
+                                 placeholder="Seleccione uno o más estados"
+                                 display="chip"
+                                 optionValue="id"
+                                 (onChange)="filter($event.value)"
+                                 optionLabel="name">
+                    <ng-template let-option pTemplate="item">
+                      <div class="p-multiselect-representative-option">
+                        <span class="p-ml-1">{{option.name}}</span>
+                      </div>
+                    </ng-template>
+                  </p-multiSelect>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th style="min-width: 8rem">
+              Turno
+              <p-columnFilter type="status"
+                              [showMatchModes]="false"
+                              [showOperator]="false"
+                              [showAddButton]="false"
+                              field="turn.name"
+                              display="menu">
+                <ng-template pTemplate="filter"
+                             let-value
+                             let-filter="filterCallback">
+                  <p-dropdown [ngModel]="value"
+                              [options]="turns"
+                              (onChange)="filter($event.value.name)"
+                              placeholder="{{ value ?  value : 'Seleccione un turno' }}"
+                              [style]="{'min-width': '12rem'}">
+                    <ng-template let-option pTemplate="item">
+                      <div class="flex align-items-center">
+                        <i [ngStyle]="{'color': option.color ? option.color:''}"  class="pi {{option.icon}} pr-2"></i>
+                        {{option.name}}
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th class="text-center">
+              <i class="pi pi-file-pdf" style="font-size: 18px" pTooltip="Documento"></i>
+            </th>
+            <th class="text-center">
+              <i class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></i>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-request>
+          <tr>
+            <td style="min-width: 8rem">
+              {{ request.number }}
+            </td>
+            <td style="min-width: 8rem">
+              {{ request.date | date: 'dd-MM-yyyy' }}
+            </td>
+            <td style="min-width: 8rem">
+              {{ request.documentBy }}
+            </td>
+            <td style="min-width: 8rem">
+              <span class="request-badge"
+                    appStatusHighlight
+                    [status]="request.status">
+                {{request.status.name}}
+              </span>
+            </td>
+            <td style="min-width: 8rem">
+              {{ request.turn.name }}
+            </td>
+            <td class="text-center">
+              <button pButton
+                      pRipple
+                      pTooltip="Ver comprobante"
+                      icon="pi pi-eye"
+                      class="p-button-text p-button-rounded p-button-plain">
+              </button>
+            </td>
+            <td>
+              <div class="flex justify-content-center">
+                <button type="button"
+                        pButton
+                        icon="pi pi-ellipsis-v"
+                        class="p-button-secondary p-button-outlined"
+                        (click)="selectedMaterialRequest = request; menu.toggle($event)">
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            Total de Solicitudes:
+            {{ table ? table.totalRecords : 0 }}
+          </div>
+        </ng-template>
+      </p-table>
     </div>
   </div>
 </div>
+<p-menu #menu [popup]="true" [model]="menuItems" appendTo="body"></p-menu>

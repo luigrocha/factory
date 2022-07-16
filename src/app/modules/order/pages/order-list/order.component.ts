@@ -22,6 +22,7 @@ import { FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TableColumn } from 'src/app/types/table.types';
 import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
+import { ORDER_STATUS_TYPE } from 'src/app/core/constants/status-types';
 
 @Component({
   selector: 'app-order',
@@ -195,7 +196,7 @@ export class OrderComponent implements OnInit, AfterViewInit {
   }
 
   getStatus() {
-    this.statusService.getAllByType('P')
+    this.statusService.getAllByType(ORDER_STATUS_TYPE)
       .subscribe((status) => {
         this.orderStatus = status;
       });

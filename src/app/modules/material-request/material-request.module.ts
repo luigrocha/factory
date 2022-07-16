@@ -10,6 +10,11 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { InputTextModule } from 'primeng/inputtext';
 import { StepsModule } from 'primeng/steps';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { MenuModule } from 'primeng/menu';
 
 
 @NgModule({
@@ -25,7 +30,13 @@ import { StepsModule } from 'primeng/steps';
     ButtonModule,
     RippleModule,
     InputTextModule,
-    StepsModule
+    StepsModule,
+    MultiSelectModule,
+    FormsModule,
+    DropdownModule,
+    SharedModule,
+    MenuModule,
+    ReactiveFormsModule
   ]
 })
 export class MaterialRequestModule { }
