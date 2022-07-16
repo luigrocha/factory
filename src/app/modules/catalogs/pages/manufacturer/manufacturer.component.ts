@@ -17,7 +17,7 @@ export class ManufacturerComponent implements OnInit {
   
   manufacturer: Manufacturer;
   manufacturers: Manufacturer[];
-  selectedManufacturers: Manufacturer[];
+  selectedManufacturers: Manufacturer[] = [];
   selectedManufacturer: Manufacturer;
 
   manufacturerDialog: boolean;
