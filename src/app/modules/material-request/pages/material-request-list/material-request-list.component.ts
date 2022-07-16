@@ -1,18 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MaterialRequest } from 'src/app/types/material-request.types';
-import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
-import { MenuItem } from 'primeng/api';
-import { Status } from 'src/app/types/catalogs.types';
-import { SearchRequest } from 'src/app/types/pageable.types';
-import { TypePermission } from 'src/app/types/permission';
-import { FormControl } from '@angular/forms';
-import { TableColumn } from 'src/app/types/table.types';
-import { Table } from 'primeng/table';
-import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
-import { PermissionService } from 'src/app/core/http/permissions/permission.service';
-import { PermissionEnum } from 'src/app/core/constants/permisions';
-import { Router } from '@angular/router';
-import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MaterialRequest} from 'src/app/types/material-request.types';
+import {TABLE_REPORT_TEMPLATE} from 'src/app/core/constants/table';
+import {MenuItem} from 'primeng/api';
+import {Status} from 'src/app/types/catalogs.types';
+import {SearchRequest} from 'src/app/types/pageable.types';
+import {TypePermission} from 'src/app/types/permission';
+import {FormControl} from '@angular/forms';
+import {TableColumn} from 'src/app/types/table.types';
+import {Table} from 'primeng/table';
+import {checkIfOptionIsAllowed} from 'src/app/core/utils/permission';
+import {PermissionService} from 'src/app/core/http/permissions/permission.service';
+import {PermissionEnum} from 'src/app/core/constants/permisions';
+import {Router} from '@angular/router';
+import {BreadcrumbService} from 'src/app/core/services/breadcrumb.service';
 
 @Component({
   selector: 'app-material-request-list',
@@ -40,6 +40,7 @@ export class MaterialRequestListComponent implements OnInit {
   columns: TableColumn<MaterialRequest>[];
 
   @ViewChild('dt', {static: true}) table: Table;
+
   constructor(
     private permissionService: PermissionService,
     private router: Router,

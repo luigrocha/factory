@@ -1,12 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import {
-  MaterialRequestListComponent
-} from 'src/app/modules/material-request/pages/material-request-list/material-request-list.component';
-import {
-  MaterialRequestFormComponent
-} from 'src/app/modules/material-request/pages/material-request-form/material-request-form.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {MaterialRequestListComponent} from 'src/app/modules/material-request/pages/material-request-list/material-request-list.component';
+import {MaterialRequestFormComponent} from 'src/app/modules/material-request/pages/material-request-form/material-request-form.component';
 import {MaterialRequestInfoComponent} from './components/material-request-info/material-request-info.component';
+import {MaterialRequestDocComponent} from './components/material-request-doc/material-request-doc.component';
 
 const routes: Routes = [
   {
@@ -30,6 +27,10 @@ const routes: Routes = [
         path: 'info',
         component: MaterialRequestInfoComponent
       },
+      {
+        path: 'doc',
+        component: MaterialRequestDocComponent
+      },
     ]
   },
 ];
@@ -38,4 +39,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class MaterialRequestRoutingModule { }
+export class MaterialRequestRoutingModule {
+}

@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
-import {FORM_ERROR_MESSAGES} from '../../../../core/constants/form-error';
 import {MachineService} from '../../../../core/http/catalogs/machine/machine.service';
 import {Machine} from '../../../../types/machine.types';
 import {TableColumn} from '../../../../types/table.types';
 import {MixtureShort} from '../../../../types/mixture.types';
 import {MixtureService} from '../../../../core/http/mixture/mixture.service';
 import {Consolidated, MaterialRequestDetail} from '../../../../types/material-request.types';
+import {Router} from '@angular/router';
+import {MaterialRequestService} from '../../../../core/services/material-request.service';
 
 @Component({
   selector: 'app-material-request-info',
@@ -15,8 +15,6 @@ import {Consolidated, MaterialRequestDetail} from '../../../../types/material-re
 })
 export class MaterialRequestInfoComponent implements OnInit {
 
-  form: FormGroup;
-  formErrors = FORM_ERROR_MESSAGES;
   numberMixture: number[] = [];
   numberStop: number[] = [];
   machines: Machine[];
@@ -30,9 +28,10 @@ export class MaterialRequestInfoComponent implements OnInit {
   indexTab = 0;
 
   constructor(
-    private fb: FormBuilder,
+    private router: Router,
     private machineService: MachineService,
     private mixtureService: MixtureService,
+    private materialRequestService: MaterialRequestService,
   ) {
   }
 
@@ -127,10 +126,12 @@ export class MaterialRequestInfoComponent implements OnInit {
       });
     });
     this.disabled[this.indexTab] = false;
+    this.disabledNext = true;
   }
 
   addToRequest() {
-    this.disabledNext = true;
+    this.materialRequestService.setConsolidated(this.consolides);
+    this.router.navigate(['/home/solicitud/form/doc']);
   }
 
 }

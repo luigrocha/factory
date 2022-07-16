@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { BreadcrumbService } from 'src/app/core/services/breadcrumb.service';
-import { MenuItem } from 'primeng/api';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {BreadcrumbService} from 'src/app/core/services/breadcrumb.service';
+import {MenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-material-request-form',
@@ -29,7 +29,10 @@ export class MaterialRequestFormComponent implements OnInit {
         label: 'Step 1',
         routerLink: 'info'
       },
-      {label: 'Step 2'},
+      {
+        label: 'Step 2',
+        routerLink: 'doc'
+      },
       {label: 'Step 3'}
     ];
   }
