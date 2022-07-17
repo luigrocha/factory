@@ -10,6 +10,7 @@ import org.crsoft.cartonplast.materialrequest.repository.MaterialRequestReposito
 import org.crsoft.cartonplast.materialrequest.repository.specification.MaterialRequestSpecification;
 import org.crsoft.cartonplast.materialrequest.service.IMaterialRequestService;
 import org.crsoft.cartonplast.materialrequest.service.mapper.MaterialRequestMapper;
+import org.crsoft.cartonplast.vo.req.MaterialRequestReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
 import org.crsoft.cartonplast.vo.res.MaterialRequestRes;
 import org.springframework.data.domain.Page;
@@ -50,5 +51,26 @@ public class MaterialRequestService implements IMaterialRequestService {
                 pageable);
 
         return materials.map(materialRequestMapper::toMaterialRequestRes);
+    }
+
+    @Override
+    public long findCountMaterialRequest() {
+        MaterialRequest materialRequest = this.materialRequestRepository.findLast();
+        String number = materialRequest.getNumber().split("-")[1];
+        return Integer.parseInt(number) + 1;
+    }
+
+    @Override
+    public void create(MaterialRequestReq materialRequestReq) {
+        boolean existsByNumber = this.materialRequestRepository.existsByNumber(materialRequestReq.getNumber());
+        if(existsByNumber){
+            MaterialRequest materialRequestFind = this.materialRequestRepository.findByNumber(materialRequestReq.getNumber());
+            MaterialRequest materialRequest = this.materialRequestMapper.toMaterialRequest(materialRequestReq);
+            materialRequest.setId(materialRequestFind.getId());
+            materialRequest.setDate(materialRequestFind.getDate());
+            this.materialRequestRepository.save(materialRequest);
+        }else{
+            this.materialRequestRepository.save(this.materialRequestMapper.toMaterialRequest(materialRequestReq));
+        }
     }
 }

@@ -1,5 +1,6 @@
 package org.crsoft.cartonplast.materialrequest.service;
 
+import org.crsoft.cartonplast.vo.req.MaterialRequestReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
 import org.crsoft.cartonplast.vo.res.MaterialRequestRes;
 import org.springframework.data.domain.Page;
@@ -13,5 +14,9 @@ import java.util.List;
 public interface IMaterialRequestService {
 
     Page<MaterialRequestRes> findAllValidMaterialRequests(List<SearchCriteriaReq> searchCriteria, Pageable pageable, List<String> states, String query);
+
+    long findCountMaterialRequest();
+
+    void create(MaterialRequestReq materialRequestReq);
 
 }
