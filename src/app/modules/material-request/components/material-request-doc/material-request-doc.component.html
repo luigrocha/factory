@@ -1,9 +1,9 @@
 <form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
   <div class="col-12">
     <div class="grid">
-      <div class="md:col-6 col-12 flex align-items-center">
-        Solicitud N° 1
-      </div>
+      <h5 class="md:col-6 col-12 flex align-items-center">
+        Solicitud: {{idRequest}}
+      </h5>
       <div class="field md:col-6 col-12 flex flex-column">
         <label for="turn">Turno</label>
         <p-dropdown
@@ -79,8 +79,8 @@
 
     <div class="col-12 flex flex-column md:flex-row justify-content-center">
       <button
-        [disabled]=""
         [disabled]="form.invalid"
+        (click)="onCreate(false)"
         class="mb-3 md:mb-0 mr-0 md:mr-3"
         icon="pi pi-database"
         label="Guardar Borrador"
@@ -90,6 +90,7 @@
       </button>
       <button
         [disabled]="form.invalid"
+        (click)="onCreate(true)"
         icon="pi pi-save"
         label="Guardar Terminado"
         pButton

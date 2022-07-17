@@ -1,8 +1,7 @@
-import { Time } from '@angular/common';
-import { Pageable } from 'src/app/types/pageable.types';
-import { Status } from 'src/app/types/catalogs.types';
-import { Turn } from 'src/app/types/turn.types';
-import { Material } from 'src/app/types/material.types';
+import {Pageable} from 'src/app/types/pageable.types';
+import {Status} from 'src/app/types/catalogs.types';
+import {Turn} from 'src/app/types/turn.types';
+import {Material} from 'src/app/types/material.types';
 
 export interface MaterialRequestPageable extends Pageable<MaterialRequestRes> {
 }
@@ -41,3 +40,11 @@ export interface Consolidated {
   quantity: number;
 }
 
+export interface MaterialRequestCreate{
+  number: string;
+  date: Date;
+  documentByUsername: string;
+  documentBy: string;
+  status: string;
+  turn: number;
+}
