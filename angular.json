@@ -45,7 +45,9 @@
               "@fullcalendar/daygrid",
               "@fullcalendar/timegrid",
               "@fullcalendar/interaction",
-              "chart.js"
+              "chart.js",
+              "pdfjs-dist/build/pdf",
+              "pdfjs-dist/web/pdf_viewer"
             ]
           },
           "configurations": {

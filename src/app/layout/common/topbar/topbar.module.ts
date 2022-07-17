@@ -5,6 +5,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { BadgeModule } from 'primeng/badge';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TagModule } from 'primeng/tag';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     InputTextModule,
     BadgeModule,
     RouterModule,
-    SharedModule
+    SharedModule,
+    TagModule
   ],
   exports: [
     TopbarComponent

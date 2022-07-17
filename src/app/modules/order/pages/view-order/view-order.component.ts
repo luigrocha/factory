@@ -94,9 +94,7 @@ export class ViewOrderComponent implements OnInit {
           .subscribe(order => {
             this.order = order;
             this.toastService.success('Pedido iniciado correctamente, ahora puede iniciar con el diseño de la mezcla');
-            setTimeout(() => {
-              this.router.navigate(['/home/mezcla/crear/' + this.order.lot + '/0']);
-            }, 2000);
+            this.router.navigate(['/home/mezcla/crear/' + this.order.lot + '/0']);
           });
       },
     });

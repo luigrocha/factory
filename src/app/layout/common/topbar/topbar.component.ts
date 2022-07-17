@@ -4,10 +4,10 @@ import { AppComponent } from 'src/app/app.component';
 import { AuthService } from 'src/app/core/auth/service/auth.service';
 import { LayoutComponent } from 'src/app/layout/layout.component';
 import { Status } from 'src/app/types/catalogs.types';
-import { Observable } from 'rxjs';
 import { PersonService } from 'src/app/core/http/persons/person.service';
 import { UserImage } from 'src/app/types/user.types';
 import { UserImageService } from 'src/app/core/services/user-image.service';
+import packageJson from '../../../../../package.json';
 
 @Component({
   selector: 'app-topbar',
@@ -15,6 +15,8 @@ import { UserImageService } from 'src/app/core/services/user-image.service';
   styleUrls: ['./topbar.component.scss']
 })
 export class TopbarComponent implements OnInit {
+
+  version: string = packageJson.version;
 
   userData: KeycloakTokenParsed;
   image: UserImage;
@@ -24,7 +26,7 @@ export class TopbarComponent implements OnInit {
     name: 'Pendiente',
     backgroundColor: '#FFD8B2',
     color: '#805B36'
-  }
+  };
 
   constructor(
     public appMain: LayoutComponent,
