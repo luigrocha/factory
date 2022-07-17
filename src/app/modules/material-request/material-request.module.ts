@@ -25,6 +25,7 @@ import {
 import { DividerModule } from 'primeng/divider';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TabViewModule } from 'primeng/tabview';
+import {TagModule} from 'primeng/tag';
 
 registerLocaleData(localeEs, 'es');
 
@@ -55,7 +56,8 @@ registerLocaleData(localeEs, 'es');
     DropdownModule,
     SharedModule,
     MenuModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TagModule
   ],
   providers: [{provide: LOCALE_ID, useValue: 'es'}]
 })

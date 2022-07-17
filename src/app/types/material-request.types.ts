@@ -27,6 +27,7 @@ export interface MaterialRequest {
 }
 
 export interface MaterialRequestDetail {
+  material?: Material;
   product: string;
   quantity: number;
   stopMp: number;
