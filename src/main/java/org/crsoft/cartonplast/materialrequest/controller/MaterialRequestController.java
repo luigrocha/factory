@@ -1,12 +1,16 @@
 package org.crsoft.cartonplast.materialrequest.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.crsoft.cartonplast.common.util.HttpUtil;
 import org.crsoft.cartonplast.materialrequest.service.IMaterialRequestService;
+import org.crsoft.cartonplast.vo.req.GenerateMaterialRequestReceiptReq;
+import org.crsoft.cartonplast.vo.req.GenerateMixtureReceiptReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
 import org.crsoft.cartonplast.vo.res.MaterialRequestRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,5 +40,16 @@ public class MaterialRequestController {
 
         return ResponseEntity.ok(materialRequestService.findAllValidMaterialRequests(
                 searchCriteria, paging, states, query));
+    }
+
+    @GetMapping(value = "/get-receipt/{id}", produces = "application/pdf")
+    public ResponseEntity<byte[]> getReceipt(
+            @PathVariable("id") Integer id){
+        GenerateMaterialRequestReceiptReq receiptReq = this.materialRequestService.generateReceiptData(id);
+        byte[] pdf = materialRequestService.generateReceipt(receiptReq);
+        return new ResponseEntity<>(
+                pdf,
+                HttpUtil.getDefaultPDFHeaders(receiptReq.getNumber()),
+                HttpStatus.OK);
     }
 }
