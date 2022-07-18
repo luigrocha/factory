@@ -1,6 +1,8 @@
 package org.crsoft.cartonplast.materialrequest.service;
 
 import org.crsoft.cartonplast.vo.req.MaterialRequestReq;
+import org.crsoft.cartonplast.materialrequest.model.MaterialRequest;
+import org.crsoft.cartonplast.vo.req.GenerateMaterialRequestReceiptReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
 import org.crsoft.cartonplast.vo.res.MaterialRequestRes;
 import org.springframework.data.domain.Page;
@@ -19,4 +21,9 @@ public interface IMaterialRequestService {
 
     void create(MaterialRequestReq materialRequestReq);
 
+    MaterialRequest findById(Integer id);
+
+    GenerateMaterialRequestReceiptReq generateReceiptData(Integer id);
+
+    byte[] generateReceipt(GenerateMaterialRequestReceiptReq req);
 }
