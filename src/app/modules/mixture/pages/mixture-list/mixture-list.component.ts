@@ -55,7 +55,7 @@ export class MixtureListComponent implements OnInit {
   }
 
   getOrdersByStatus() {
-    this.orderService.getOrdersByStatus(OrderStatus.PENDING).subscribe(orders => {
+    this.orderService.getOrdersByStatus(OrderStatus.TO_START).subscribe(orders => {
       this.orders = orders;
       this.orders.forEach(order => this.getNumberByLot(order));
     });

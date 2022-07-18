@@ -31,7 +31,7 @@ export class CreateMixtureComponent implements OnInit {
   types: TypeMaterial[];
   materials: Material[] = [];
   allMaterials: Material[] = [];
-  dies: Die[];
+  dies: Die[] = [];
   showFilters: boolean;
   numberMixture: number;
   order: Order;
@@ -232,7 +232,7 @@ export class CreateMixtureComponent implements OnInit {
   }
 
   searchDie(id: number): Die {
-    return this.dies.find(die => die.id === id);
+      return this.dies.find(die => die.id === id);
   }
 
   getSheet(id: number) {
