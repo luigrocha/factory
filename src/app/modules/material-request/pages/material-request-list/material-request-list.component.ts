@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MaterialRequestRes } from 'src/app/types/material-request.types';
 import { TABLE_REPORT_TEMPLATE } from 'src/app/core/constants/table';
 import { FilterMetadata, MenuItem } from 'primeng/api';
@@ -26,13 +26,16 @@ import { ExportExcelService } from 'src/app/core/services/export-excel.service';
 import { FILE_NAMES } from 'src/app/core/constants/excel';
 import { formatDate } from '@angular/common';
 import { dateFormat, localString } from 'src/app/core/constants/date';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ColorAModalComponent } from 'src/app/modules/catalogs/components/color-a-modal/color-a-modal.component';
+import { NgxPdfViewerComponent } from 'src/app/shared/components/ngx-pdf-viewer/ngx-pdf-viewer.component';
 
 @Component({
   selector: 'app-material-request-list',
   templateUrl: './material-request-list.component.html',
   styleUrls: ['./material-request-list.component.scss']
 })
-export class MaterialRequestListComponent implements OnInit, AfterViewInit {
+export class MaterialRequestListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   requests: MaterialRequestRes[];
   tableReportTemplate = TABLE_REPORT_TEMPLATE;
@@ -52,6 +55,7 @@ export class MaterialRequestListComponent implements OnInit, AfterViewInit {
   permissions: TypePermission[];
   searchFomControl = new FormControl();
   columns: TableColumn<MaterialRequestRes>[];
+  pdfDialogRef: DynamicDialogRef;
 
   @ViewChild('dt', {static: true}) table: Table;
 
@@ -63,7 +67,8 @@ export class MaterialRequestListComponent implements OnInit, AfterViewInit {
     private turnService: TurnService,
     private statusService: StatusService,
     private materialRequestService: MaterialRequestService,
-    private exportExcelService: ExportExcelService
+    private exportExcelService: ExportExcelService,
+    private dialogService: DialogService
   ) {
     this.breadcrumbService.setItems([
       {label: 'Extrusión'},
@@ -213,5 +218,32 @@ export class MaterialRequestListComponent implements OnInit, AfterViewInit {
     });
 
     this.exportExcelService.exportAsExcelFile(data, FILE_NAMES.MATERIAL_REQUEST);
+  }
+
+  generateReceipt(request: MaterialRequestRes) {
+    this.materialRequestService.generateReceipt(request.id)
+      .subscribe(data => {
+        const type = data.body.type;
+        const fileName = data.headers.get('content-disposition').split('filename=')[1];
+        let srcPdf = URL.createObjectURL(
+          new Blob([data.body], {type})
+        );
+
+        this.pdfDialogRef = this.dialogService.open(NgxPdfViewerComponent, {
+          data: {
+            fileName,
+            srcPdf
+          },
+          header: `Comprobante de solicitud de materia prima ${request.number}`,
+          width: '90%',
+          contentStyle: {'max-width': '100%', 'overflow': 'auto'},
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.pdfDialogRef) {
+      this.pdfDialogRef.close();
+    }
   }
 }

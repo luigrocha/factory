@@ -26,4 +26,11 @@ export class MaterialRequestService {
 
     return this.http.post<MaterialRequestPageable>(this.URL + parameters, searchRequest.searchCriteria);
   }
+
+  generateReceipt(id: number){
+    return this.http.get(this.URL + '/get-receipt/' + id, {
+      responseType: 'blob',
+      observe: 'response'
+    });
+  }
 }

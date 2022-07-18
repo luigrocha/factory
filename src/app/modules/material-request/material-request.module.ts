@@ -25,6 +25,7 @@ import {
 import { DividerModule } from 'primeng/divider';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TabViewModule } from 'primeng/tabview';
+import { DialogService } from 'primeng/dynamicdialog';
 
 registerLocaleData(localeEs, 'es');
 
@@ -57,7 +58,10 @@ registerLocaleData(localeEs, 'es');
     MenuModule,
     ReactiveFormsModule
   ],
-  providers: [{provide: LOCALE_ID, useValue: 'es'}]
+  providers: [
+    DialogService,
+    {provide: LOCALE_ID, useValue: 'es'}
+  ]
 })
 export class MaterialRequestModule {
 }
