@@ -15,7 +15,7 @@
               <div class="mixture-item">
                 <div class="flex justify-content-start align-items-center">
                   <button
-                    [ngClass]="order.priority.color ? order.priority.color : ''"
+                    [ngStyle]="{'color': order.priority.color ? order.priority.color:''}"
                     class="p-button-rounded p-button-text"
                     icon="pi {{ order.priority.icon }}"
                     pButton
@@ -43,6 +43,7 @@
               <p-divider></p-divider>
             </li>
           </ul>
+          <p style="text-align : center" *ngIf="orders?.length == 0">No existen premezclas disponibles de momento</p>
         </div>
       </div>
       <div class="col-12 md:col-6">
