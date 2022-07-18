@@ -40,7 +40,7 @@ export class MaterialRequestInfoComponent implements OnInit {
     this.columnsExt = [
       {field: 'product', header: 'Producto'},
       {field: 'quantity', header: 'Cantidad'},
-      {field: 'stopMp', header: 'StopMP'},
+      {field: 'stopMp', header: 'Stock MP'},
       {field: 'necessary', header: 'Necesario'},
       {field: 'request', header: 'Requerido'}
     ];
