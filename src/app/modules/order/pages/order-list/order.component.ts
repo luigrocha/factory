@@ -23,6 +23,10 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { TableColumn } from 'src/app/types/table.types';
 import { checkIfOptionIsAllowed } from 'src/app/core/utils/permission';
 import { ORDER_STATUS_TYPE } from 'src/app/core/constants/status-types';
+import { formatDate } from '@angular/common';
+import { dateFormat, dateTimeFormat, localString } from 'src/app/core/constants/date';
+import { FILE_NAMES } from 'src/app/core/constants/excel';
+import { ExportExcelService } from 'src/app/core/services/export-excel.service';
 
 @Component({
   selector: 'app-order',
@@ -39,7 +43,6 @@ export class OrderComponent implements OnInit, AfterViewInit {
   menuItems: MenuItem[] = [];
   orderStatus: Status[] = [];
   priorities: Priority[] = [];
-  selectedOrders: Order[] = [];
   searchRequest: SearchRequest = {
     page: 0,
     size: 20,
@@ -67,7 +70,8 @@ export class OrderComponent implements OnInit, AfterViewInit {
     private priorityService: PriorityService,
     private statusService: StatusService,
     private permissionService: PermissionService,
-    private route: Router
+    private route: Router,
+    private exportExcelService: ExportExcelService,
   ) {
     this.breadcrumbService.setItems([
       {label: 'Pedidos'},
@@ -171,13 +175,6 @@ export class OrderComponent implements OnInit, AfterViewInit {
         command: () => this.editOrder()
       });
     }
-    if (this.isAllow(PermissionEnum.DELETE)) {
-      this.menuItems.push({
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        command: () => this.deleteOrder()
-      });
-    }
   }
 
   getOrders() {
@@ -227,5 +224,32 @@ export class OrderComponent implements OnInit, AfterViewInit {
         this.searchRequest.query = query;
         this.getOrders();
       });
+  }
+
+  exportToXSLX() {
+    const data = [];
+    this.orders.forEach(order => {
+      const estimatedDeliveryAt = order.estimatedDeliveryAt
+        ? formatDate(order.estimatedDeliveryAt, dateFormat, localString)
+        : '';
+      data.push({
+        'Código': order.code,
+        'Lote': order.lot,
+        'Cliente': order.client.name,
+        'Código producto': order.productCode,
+        'Nombre': order.name,
+        'Cantidad': order.quantity,
+        'Fecha Entrega': estimatedDeliveryAt,
+        'Prioridad': order.priority.name,
+        'Estado': order.status.name,
+        'Orden': order.clientOrderCode,
+        'Observaciones': order.observation,
+        'Cantidad pendiente': order.pendingQuantity,
+        'Despachos': order.shippedQuantity,
+        'Última modificación': formatDate(order.lastModifiedAt, dateTimeFormat, localString)
+      });
+    });
+
+    this.exportExcelService.exportAsExcelFile(data, FILE_NAMES.ORDER);
   }
 }

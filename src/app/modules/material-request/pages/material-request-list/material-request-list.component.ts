@@ -27,7 +27,6 @@ import { FILE_NAMES } from 'src/app/core/constants/excel';
 import { formatDate } from '@angular/common';
 import { dateFormat, localString } from 'src/app/core/constants/date';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ColorAModalComponent } from 'src/app/modules/catalogs/components/color-a-modal/color-a-modal.component';
 import { NgxPdfViewerComponent } from 'src/app/shared/components/ngx-pdf-viewer/ngx-pdf-viewer.component';
 
 @Component({
