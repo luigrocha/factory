@@ -120,28 +120,28 @@ export class MaterialRequestDocComponent implements OnInit {
     return this.fb.group({
       index: this.rowsFormArray.length,
       type: [consolidated.material.typeMaterial.id, [
-        Validators.required,
+        // Validators.required,
       ]],
       material: [consolidated.material.id, [
-        Validators.required,
+        // Validators.required,
       ]],
       quantity: [consolidated.quantity, [
-        Validators.required,
+        // Validators.required,
       ]],
       balance: [0, [
-        Validators.required,
+        // Validators.required,
       ]],
       coat: [0, [
-        Validators.required,
+        // Validators.required,
       ]],
       pallets: [0, [
-        Validators.required,
+        // Validators.required,
       ]],
       weight: [0, [
-        Validators.required,
+        // Validators.required,
       ]],
       observation: [null, [
-        Validators.required,
+        // Validators.required,
       ]],
     });
   }
