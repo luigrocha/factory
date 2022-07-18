@@ -463,5 +463,6 @@ export class CreateMixtureComponent implements OnInit {
 
   deleteRow(index: number) {
     this.rowsFormArray.removeAt(index);
+    this.calculateRows();
   }
 }
