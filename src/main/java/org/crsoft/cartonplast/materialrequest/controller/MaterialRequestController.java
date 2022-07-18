@@ -1,7 +1,9 @@
 package org.crsoft.cartonplast.materialrequest.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.materialrequest.service.IMaterialRequestService;
+import org.crsoft.cartonplast.vo.req.MaterialRequestReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
 import org.crsoft.cartonplast.vo.res.MaterialRequestRes;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import static org.crsoft.cartonplast.common.constant.GlobalConstant.V1_API_VERSI
 @RestController
 @RequestMapping(V1_API_VERSION + "/material-requests")
 @RequiredArgsConstructor
+@Slf4j
 public class MaterialRequestController {
 
     private final IMaterialRequestService materialRequestService;
@@ -37,4 +40,16 @@ public class MaterialRequestController {
         return ResponseEntity.ok(materialRequestService.findAllValidMaterialRequests(
                 searchCriteria, paging, states, query));
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> findCountMaterialRequest(){
+        return ResponseEntity.ok(materialRequestService.findCountMaterialRequest());
+    }
+
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody MaterialRequestReq materialRequestReq){
+        materialRequestService.create(materialRequestReq);
+        return ResponseEntity.ok().build();
+    }
+
 }
