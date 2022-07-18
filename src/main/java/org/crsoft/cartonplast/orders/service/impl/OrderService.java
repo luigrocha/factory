@@ -24,7 +24,6 @@ import org.crsoft.cartonplast.orders.service.mapper.OrderMapper;
 import org.crsoft.cartonplast.vo.req.*;
 import org.crsoft.cartonplast.vo.res.GeneratedOrderCodeRes;
 import org.crsoft.cartonplast.vo.res.OrderRes;
-import org.keycloak.common.util.CollectionUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -127,12 +126,7 @@ public class OrderService implements IOrderService {
     @Override
     public Collection<OrderRes> findOrdersByStatus(String status) throws NotFoundException {
         Collection<Order> orders = this.orderRepository.findOrdersByStatus(status);
-        if (CollectionUtil.isNotEmpty(orders)) {
-            return this.orderMapper.ordersToOrdersRes(orders);
-        } else {
-            log.error("Error to findOrdersByStatus {}", status);
-            throw new NotFoundException(MESSAGE_NOT_FOUND);
-        }
+        return this.orderMapper.ordersToOrdersRes(orders);
     }
 
     @Override
