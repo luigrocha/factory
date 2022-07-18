@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.crsoft.cartonplast.common.util.HttpUtil;
 import org.crsoft.cartonplast.materialrequest.service.IMaterialRequestService;
 import org.crsoft.cartonplast.vo.req.GenerateMaterialRequestReceiptReq;
-import org.crsoft.cartonplast.vo.req.GenerateMixtureReceiptReq;
 import org.crsoft.cartonplast.vo.req.MaterialRequestReq;
 import org.crsoft.cartonplast.vo.req.SearchCriteriaReq;
 import org.crsoft.cartonplast.vo.res.MaterialRequestRes;
