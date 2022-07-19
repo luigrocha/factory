@@ -197,7 +197,6 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    @Transactional
     public OrderRes startOrder(Integer id, StartOrderReq startOrderReq) {
         Order order = this.findById(id);
 
@@ -208,6 +207,7 @@ public class OrderService implements IOrderService {
                 });
 
         String lot = this.generateNextLotCode();
+        log.info("Generated lot code: {}", lot);
 
         order.setStatus(catalogStatus);
         order.setLot(lot);
