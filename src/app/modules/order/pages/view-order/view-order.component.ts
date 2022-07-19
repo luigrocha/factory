@@ -90,7 +90,7 @@ export class ViewOrderComponent implements OnInit {
         const body: StartOrder = {
           statusCode: OrderStatus.TO_START
         };
-        this.orderService.startOrder(this.orderId, body)
+        this.orderService.startOrder(this.order.id, body)
           .subscribe(order => {
             this.order = order;
             this.toastService.success('Pedido iniciado correctamente, ahora puede iniciar con el diseño de la mezcla');
