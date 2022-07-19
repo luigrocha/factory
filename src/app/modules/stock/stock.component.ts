@@ -68,15 +68,9 @@ export class StockComponent implements OnInit {
     this.getPreferencesTheme();
     this.getAllTypeMaterial();
     this.form = this.fb.group({
-      type: [null, [
-        Validators.required,
-      ]],
-      material: [null, [
-        Validators.required,
-      ]],
-      lote: [null, [
-        Validators.required,
-      ]],
+      type: [null, []],
+      material: [null, []],
+      lote: [null, []],
     });
     this.cols = [
       {field: 'material', header: 'Material'},

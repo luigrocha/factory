@@ -1,28 +1,32 @@
 <div class="grid">
   <div class="grid col-12 md:col-8">
     <h5 class="col-12">Calcular productos por Extrusora</h5>
-    <div class="field md:col-6 col flex flex-column">
+    <div class="field md:col-6 col">
       <label for="numberMixture">Número de mezcla</label>
-      <p-autoComplete (completeMethod)="filterMixtures($event)"
-                      (onSelect)="onSelect($event)"
-                      [(ngModel)]="numberMixture[indexTab]"
-                      [inputStyle]="{'width':'100%'}"
-                      [minLength]="3"
-                      [showEmptyMessage]="true"
-                      [style]="{'width':'100%'}"
-                      [suggestions]="mixturesSearch"
-                      delay="500"
-                      emptyMessage="No se encontraron resultados"
-                      field="number"
-                      id="numberMixture">
-        <ng-template let-mixture pTemplate="item">
-          <div>
-            {{mixture.order.lot }} |
-            <span class="item-subheading">{{mixture.mixture}}</span> |
-            <span class="item-subheading">{{mixture.number}}</span>
-          </div>
-        </ng-template>
-      </p-autoComplete>
+      <div class="auto-complete-container">
+        <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+        <p-autoComplete (completeMethod)="filterMixtures($event)"
+                        (onSelect)="onSelect($event)"
+                        [(ngModel)]="numberMixture[indexTab]"
+                        [inputStyle]="{'width':'100%'}"
+                        [minLength]="3"
+                        [showEmptyMessage]="true"
+                        [suggestions]="mixturesSearch"
+                        [style]="{'width':'100%'}"
+                        class="w-full"
+                        delay="500"
+                        emptyMessage="No se encontraron resultados"
+                        field="number"
+                        id="numberMixture">
+          <ng-template let-mixture pTemplate="item">
+            <div>
+              {{mixture.order.lot }} |
+              <span class="item-subheading">{{mixture.mixture}}</span> |
+              <span class="item-subheading">{{mixture.number}}</span>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
     </div>
     <div class="field md:col-6 col flex flex-column">
       <label for="numberStop">Número de paradas</label>

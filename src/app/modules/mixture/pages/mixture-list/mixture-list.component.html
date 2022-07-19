@@ -43,7 +43,7 @@
               <p-divider></p-divider>
             </li>
           </ul>
-          <p style="text-align : center" *ngIf="orders?.length == 0">No existen premezclas disponibles de momento</p>
+          <p *ngIf="orders?.length == 0" style="text-align : center">No existen premezclas disponibles de momento</p>
         </div>
       </div>
       <div class="col-12 md:col-6">
@@ -55,30 +55,34 @@
             <div class="p-fluid grid formgrid mt-5">
               <div class="field col-12">
                 <label for="mixture">Lote | Orden | Producto | Mezcla | Número</label>
-                <p-autoComplete (completeMethod)="filterMixtures($event)"
-                                (onSelect)="onSelect($event)"
-                                [minLength]="3"
-                                [ngClass]="{'ng-invalid ng-dirty': mixture.touched && mixture.invalid}"
-                                [showEmptyMessage]="true"
-                                [suggestions]="mixtures"
-                                delay="500"
-                                emptyMessage="No se encontraron resultados"
-                                field="order.lot"
-                                formControlName="mixture"
-                                id="mixture">
-                  <ng-template let-mixture pTemplate="item">
-                    <div>
-                      {{mixture.order.lot }} |
-                      <span class="item-subheading">{{mixture.order.code}}</span> |
-                      <span class="item-subheading">{{mixture.order.productCode}}</span> |
-                      <span class="item-subheading">{{mixture.mixture}}</span> |
-                      <span class="item-subheading">{{mixture.number}}</span>
-                    </div>
-                  </ng-template>
-                  <small *ngIf="mixture.touched && mixture.hasError('required')"
-                         class="p-error block"
-                         id="person-help">{{formErrors.required}}</small>
-                </p-autoComplete>
+                <div class="auto-complete-container">
+                  <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+                  <p-autoComplete (completeMethod)="filterMixtures($event)"
+                                  (onSelect)="onSelect($event)"
+                                  [minLength]="3"
+                                  [ngClass]="{'ng-invalid ng-dirty': mixture.touched && mixture.invalid}"
+                                  [showEmptyMessage]="true"
+                                  [suggestions]="mixtures"
+                                  style="width: 100%"
+                                  delay="500"
+                                  emptyMessage="No se encontraron resultados"
+                                  field="order.lot"
+                                  formControlName="mixture"
+                                  id="mixture">
+                    <ng-template let-mixture pTemplate="item">
+                      <div>
+                        {{mixture.order.lot }} |
+                        <span class="item-subheading">{{mixture.order.code}}</span> |
+                        <span class="item-subheading">{{mixture.order.productCode}}</span> |
+                        <span class="item-subheading">{{mixture.mixture}}</span> |
+                        <span class="item-subheading">{{mixture.number}}</span>
+                      </div>
+                    </ng-template>
+                    <small *ngIf="mixture.touched && mixture.hasError('required')"
+                           class="p-error block"
+                           id="person-help">{{formErrors.required}}</small>
+                  </p-autoComplete>
+                </div>
               </div>
               <button
                 [disabled]="form.invalid || !lot.value"

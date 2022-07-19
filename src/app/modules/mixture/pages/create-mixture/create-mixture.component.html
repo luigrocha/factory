@@ -41,10 +41,10 @@
         </div>
         <div *ngIf="die.value && dies.length > 0" class="grid">
           <p class="col-6 md:col-2">
-            Largo: {{searchDie(die.value).leafLength}} cm
+            Largo: {{searchDie(die.value).leafLength}} mm
           </p>
           <p class="col-6 md:col-2">
-            Ancho: {{searchDie(die.value).leafWidth}} cm
+            Ancho: {{searchDie(die.value).leafWidth}} mm
           </p>
           <p class="col-6 md:col-2">
             Mezcla de: {{mixtureTo}}
@@ -420,25 +420,17 @@
   <h3 style="font-weight: normal">Mezclas Anteriores</h3>
   <h5>Última mezcla: 1</h5>
   <div class="p-fluid formgrid" style="height: 35vh">
-    <!--<div class="field">
-      <label for="material">Producto</label>
-      <input id="material" maxlength="32" pInputText type="text"/>
-    </div>
-    <div class="field">
-      <label for="die">Troquel</label>
-      <input id="die" maxlength="32" pInputText type="text"/>
-    </div>
-    <div class="field">
-      <label for="cirel">Cirel</label>
-      <input id="cirel" maxlength="32" pInputText type="text"/>
-    </div>-->
+
     <div class="field">
       <label for="number">Mezcla | Número</label>
+      <div class="auto-complete-container">
+        <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
       <p-autoComplete (completeMethod)="filterMixtures($event)"
                       (onSelect)="onSelect($event)"
                       [minLength]="3"
                       [showEmptyMessage]="true"
                       [suggestions]="mixtures"
+                      style="width: 100%"
                       delay="500"
                       emptyMessage="No se encontraron resultados"
                       field="mixture"
@@ -451,6 +443,7 @@
           </div>
         </ng-template>
       </p-autoComplete>
+      </div>
     </div>
     <div *ngIf="mixtureFilter" class="flex justify-content-between filter-items">
       <label>Lote:</label>
