@@ -35,17 +35,10 @@
                     (click)="createNewOrder()"></button>
             <button pButton
                     pRipple
-                    label="Eliminar"
-                    icon="pi pi-trash"
-                    class="p-button-danger mb-2 md:mr-2 md:mb-0"
-                    (click)="deleteSelectedOrders()"
-                    [disabled]="!selectedOrders || !selectedOrders.length"></button>
-            <button pButton
-                    pRipple
                     label="Export"
                     icon="pi pi-upload"
                     class="p-button-help mb-2 md:mr-2 md:mb-0"
-                    (click)="dt.exportCSV()"></button>
+                    (click)="exportToXSLX()"></button>
 
             <span class="p-input-icon-left">
               <i class="pi pi-search"></i>
@@ -59,9 +52,6 @@
         </ng-template>
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 3rem">
-              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-            </th>
             <th style="min-width: 8rem">
               Código
               <p-columnFilter type="text"
@@ -190,9 +180,6 @@
         </ng-template>
         <ng-template pTemplate="body" let-order>
           <tr>
-            <td>
-              <p-tableCheckbox [value]="order"></p-tableCheckbox>
-            </td>
             <td style="min-width: 8rem">
               {{ order.code }}
             </td>

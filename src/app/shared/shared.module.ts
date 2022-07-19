@@ -19,6 +19,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { RippleModule } from 'primeng/ripple';
 import { CpDatePipe } from './pipes/cp-date.pipe';
 import { CpDatetimePipe } from './pipes/cp-datetime.pipe';
+import { NgxPdfViewerComponent } from './components/ngx-pdf-viewer/ngx-pdf-viewer.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { CpDatetimePipe } from './pipes/cp-datetime.pipe';
     NumericDirective,
     ConfirmationTextComponent,
     CpDatePipe,
-    CpDatetimePipe
+    CpDatetimePipe,
+    NgxPdfViewerComponent
   ],
   exports: [
     LoadingComponent,

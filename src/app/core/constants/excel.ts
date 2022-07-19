@@ -3,4 +3,5 @@ export const EXCEL_EXTENSION = '.xlsx';
 
 export const FILE_NAMES = {
   MATERIAL_REQUEST: 'solicitudes-materia-prima',
+  ORDER: 'pedidos',
 }

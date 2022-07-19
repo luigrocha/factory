@@ -1,5 +1,5 @@
-import {LOCALE_ID, NgModule} from '@angular/core';
-import {CommonModule, registerLocaleData} from '@angular/common';
+import { LOCALE_ID, NgModule } from '@angular/core';
+import { CommonModule, registerLocaleData } from '@angular/common';
 
 import { MaterialRequestRoutingModule } from './material-request-routing.module';
 import { MaterialRequestListComponent } from './pages/material-request-list/material-request-list.component';
@@ -25,6 +25,8 @@ import {
 import { DividerModule } from 'primeng/divider';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TabViewModule } from 'primeng/tabview';
+import { TagModule } from 'primeng/tag';
+import { DialogService } from 'primeng/dynamicdialog';
 
 registerLocaleData(localeEs, 'es');
 
@@ -55,9 +57,13 @@ registerLocaleData(localeEs, 'es');
     DropdownModule,
     SharedModule,
     MenuModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TagModule
   ],
-  providers: [{provide: LOCALE_ID, useValue: 'es'}]
+  providers: [
+    DialogService,
+    {provide: LOCALE_ID, useValue: 'es'}
+  ]
 })
 export class MaterialRequestModule {
 }

@@ -27,6 +27,7 @@ export class CreateDieComponent implements OnInit {
   machines$: Observable<Machine[]>;
   dieProducts$: Observable<DieProduct[]>;
   formErrors = FORM_ERROR_MESSAGES;
+  typeMachine: number;
 
   constructor(
     private breadcrumbService: BreadcrumbService,
@@ -43,11 +44,12 @@ export class CreateDieComponent implements OnInit {
       {label: 'Troqueles', routerLink: ['/home/troqueles']},
       {label: 'Crear troquel', routerLink: ['/home/troqueles/crear']}
     ]);
+    this.typeMachine = 2;
   }
 
   ngOnInit(): void {
     this.manufacturers$ = this.manufacturerService.getAllManufacturers();
-    this.machines$ = this.machineService.getAllMachines();
+    this.machines$ = this.machineService.getAllMachinesByType(this.typeMachine);
     this.dieProducts$ = this.dieProductService.getAllAvailableDieProducts();
     this.form = this.fb.group({
       name: [{value: null, disabled: true}, [

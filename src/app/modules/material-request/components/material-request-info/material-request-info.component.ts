@@ -98,6 +98,7 @@ export class MaterialRequestInfoComponent implements OnInit {
         mixture.rows.forEach(row => {
           const necessary = this.numberStop[this.indexTab] * row.total;
           this.mixtures[this.indexTab].push({
+            material: row.material,
             product: row.material.name,
             quantity: row.total,
             // TODO get stopMp
@@ -119,6 +120,7 @@ export class MaterialRequestInfoComponent implements OnInit {
           isExist.quantity += item.request;
         } else {
           this.consolides.push({
+            material: item.material,
             product: item.product,
             quantity: item.request
           });
