@@ -2,12 +2,11 @@
   <a id="footerlogolink">
     <img
       id="footer-logo"
-      [src]="
-        'assets/img/cr-logo-' +
-        (config.layoutMode === 'light' ? 'light' : 'dark') +'.png'
-      "
+      [src]="'assets/img/cr-logo-' +
+        (config.layoutMode === 'light' ? 'light' : 'dark') +'.png'"
       width="150px"
       alt="posedion-layout"
     />
   </a>
+  <p class="display-1">{{message}}</p>
 </div>
