@@ -1,0 +1,4 @@
+theme: jekyll-theme-minimal
+title: Enterprise ERP System
+description: A highly scalable, microservices-based Enterprise Resource Planning (ERP) system
+logo: https://img.shields.io/badge/Enterprise-ERP-blue?style=for-the-badge
