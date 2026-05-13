@@ -1,0 +1,36 @@
+import { ErrorHandler, Injectable, NgZone } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from 'src/app/core/services/toast.service';
+
+@Injectable()
+export class GlobalErrorHandler implements ErrorHandler {
+  constructor(
+    private toastService: ToastService,
+    private zone: NgZone
+  ) {}
+
+  handleError(error: any) {
+    console.error('Error from global error handler', error);
+    // Check if it's an error from an HTTP response
+    if (!(error instanceof HttpErrorResponse)) {
+      error = error.rejection; // get the error object
+    }
+
+    if (error) {
+
+      let errorMessage = error.message;
+
+      if (error?.status === 0) {
+        errorMessage = 'No se pudo conectar con el servidor';
+      } else {
+        errorMessage = error.error ? error.error.message : error.message;
+      }
+
+      this.zone.run(() =>
+        this.toastService.errorHttp(
+          errorMessage,
+          error.status
+        ));
+    }
+  }
+}

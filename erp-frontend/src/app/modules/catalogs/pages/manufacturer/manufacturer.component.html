@@ -1,0 +1,118 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <div class="card">
+        <p-table #dt [value]="manufacturers" [columns]="cols" [rows]="7" [paginator]="true"
+        [globalFilterFields]="['name', 'description']" [(selection)]="selectedManufacturers" [rowHover]="true"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[10,25,50]" dataKey="id"
+        styleClass="p-datatable-customers p-datatable-sm">
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-between flex-column sm:flex-row">
+            <h5 class="h-100 align-self-center mb-2 md:mb-0">Gestión de Fabricantes</h5>
+            <span class="flex-auto"></span>
+            <button pButton pRipple label="Nuevo" icon="pi pi-plus" class="mb-2 md:mr-2 md:mb-0" (click)="openNew()"
+              *ngIf="isAllow(1)"></button>
+            <button pButton pRipple label="Eliminar" icon="pi pi-trash" class="p-button-danger mb-2 md:mr-2 md:mb-0"
+              (click)="deleteSelectedManufacturers()" [disabled]="!selectedManufacturers || !selectedManufacturers.length"
+              *ngIf="isAllow(4)"></button>
+            <button pButton pRipple label="Exportar" icon="pi pi-upload" class="p-button-help mb-2 md:mr-2 md:mb-0"
+              (click)="dt.exportCSV({ selectionOnly: (selectedManufacturers.length>0) })" *ngIf="isAllow(5)"></button>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                placeholder="Buscar..." class="w-full" />
+            </span>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col" style="width: 3rem">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th scope="col" pSortableColumn="name">
+              Código <p-sortIcon field="name"></p-sortIcon>
+            </th>
+            <th scope="col" pSortableColumn="name">
+              Nombre <p-sortIcon field="name"></p-sortIcon>
+            </th>
+            <th scope="col">
+              Observación
+            </th>
+            <th scope="col" style="
+                text-align: center;
+                display: flex;
+                justify-content: space-around;
+                min-height: 36.5px;
+              ">
+              <em class="pi pi-cog" style="font-size: 18px" pTooltip="Opciones"></em>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-manufacturer>
+          <tr>
+            <td>
+              <p-tableCheckbox [value]="manufacturer"></p-tableCheckbox>
+            </td>
+            <td>
+              <span class="p-column-title">Código</span>
+              {{ manufacturer.name }}
+            </td>
+            <td>
+              <span class="p-column-title">Nombre</span>
+              {{ manufacturer.description }}
+            </td>
+            <td>
+              <span class="p-column-title">Observación</span>
+              {{ manufacturer.observation }}
+            </td>
+            <td style="justify-content: center;">
+              <div class="flex justify-content-evenly">
+                <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-secondary p-button-outlined"
+                  (click)="selectedManufacturer = manufacturer;menu.toggle($event)">
+                </button>
+              </div>
+              <p-menu #menu [popup]="true" [model]="items" appendTo="body"></p-menu>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            Total de Fabricantes:
+            {{ manufacturers ? manufacturers.length : 0 }}
+          </div>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <p-dialog [(visible)]="manufacturerDialog" [style]="{ width: '450px' }" header="Detalles del Fabricante" [modal]="true"
+      styleClass="p-fluid">
+      <ng-template pTemplate="content">
+        <div class="p-field">
+          <label for="manufacturer">Código</label>
+          <input type="text" pInputText id="manufacturer" [(ngModel)]="manufacturer.name" required autofocus />
+          <small class="p-invalid" *ngIf="submitted && !manufacturer.name">Campo código es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="description">Nombre</label>
+          <input type="text" pInputText id="description" [(ngModel)]="manufacturer.description"
+            style="text-transform: uppercase" required />
+          <small class="p-invalid" *ngIf="submitted && !manufacturer.description">Campo nombre es requerido.</small>
+        </div>
+        <div class="p-field">
+          <label for="observation">Observación</label>
+          <input type="text" pInputText id="observation" [(ngModel)]="manufacturer.observation"
+            style="text-transform: uppercase" />
+        </div>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+          (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" (click)="saveManufacturer()"></button>
+      </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+  </div>
+</div>

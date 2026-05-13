@@ -1,0 +1,579 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="p-grid">
+    <div class="p-col-12">
+      <p-toast></p-toast>
+
+      <div class="card">
+        <h5 class="m-0 mb-5" *ngIf="numDocument">
+          Comprobante Movimiento interno {{ numDocument.numDocument }}
+        </h5>
+        <div
+          class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center mb-5"
+        >
+          <div class="field col-6 flex flex-column">
+            <label for="date">Fecha Creación</label>
+            <p-calendar
+              [showIcon]="true"
+              inputId="date"
+              formControlName="date"
+              dateFormat="dd-mm-yy"
+              [style]="{ width: '100%' }"
+              disabled="true"
+            >
+            </p-calendar>
+          </div>
+
+          <div class="field col-6 flex flex-column">
+            <label for="dateDocument">Fecha Documento</label>
+            <p-calendar
+              [showIcon]="true"
+              inputId="dateDocument"
+              formControlName="dateDocument"
+              dateFormat="dd-mm-yy"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  dateDocument.touched && dateDocument.invalid
+              }"
+              [style]="{ width: '100%' }"
+              [disabled]="enableButtons"
+            >
+            </p-calendar>
+            <small
+              *ngIf="dateDocument.touched && dateDocument.hasError('required')"
+              id="dateDocument-help"
+              class="p-error block"
+              >{{ formErrors.required }}</small
+            >
+          </div>
+
+          <div class="field col-6 flex flex-column">
+            <label for="observation">Observación</label>
+            <input
+              pInputText
+              id="observation"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  observation.touched && observation.invalid
+              }"
+              formControlName="observation"
+              aria-describedby="observation-help"
+              maxlength="128"
+              type="text"
+              [disabled]="enableButtons"
+            />
+            <small
+              *ngIf="observation.touched && observation.hasError('required')"
+              id="observation-help"
+              class="p-error block"
+              >{{ formErrors.required }}</small
+            >
+          </div>
+
+          <button
+            pButton
+            pRipple
+            label="Añadir Item"
+            icon="pi pi-plus"
+            class="flex-grow-1"
+            (click)="openNew()"
+            [disabled]="enableButtons"
+          ></button>
+        </div>
+
+        <p-table
+          #dt
+          [columns]="columns"
+          class="pb-5"
+          [value]="cellerItemsFormArray.controls"
+          dataKey="value.id"
+          editMode="row"
+          [scrollable]="true"
+          scrollHeight="400px"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th
+                *ngIf="isConfig"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                Kg por saco
+              </th>
+              <th
+                *ngIf="isConfig"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                Sacos por pallet
+              </th>
+              <th
+                *ngFor="let col of columns"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                {{ col.header }}
+              </th>
+              <th pFrozenColumn alignFrozen="right" style="max-width: 10rem">
+                <i
+                  class="pi pi-cog"
+                  style="font-size: 18px"
+                  pTooltip="Opciones"
+                ></i>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-form
+            let-editing="editing"
+            formArrayName="cellerItems"
+            let-index="rowIndex"
+          >
+            <tr [pEditableRow]="form" [formGroupName]="index">
+              <td
+                *ngIf="isConfig"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="itemsCoat"
+                      formControlName="numberCoat"
+                      [editable]="true"
+                      [style]="{ width: '100%' }"
+                    >
+                    </p-dropdown>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailNumberCoat(
+                        getCellerDetailNumberCoat(index).value
+                      )
+                    }}
+                    Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td
+                *ngIf="isConfig"
+                [ngClass]="isEditing ? 'col-document-edit' : 'col-document'"
+              >
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="itemsPallets"
+                      formControlName="numberPallet"
+                      [editable]="true"
+                      [style]="{ width: '100%' }"
+                    >
+                    </p-dropdown>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailNumberPallet(
+                        getCellerDetailNumberPallet(index).value
+                      )
+                    }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="types"
+                      formControlName="type"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          getCellerDetailType(index).touched &&
+                          getCellerDetailType(index).invalid
+                      }"
+                      optionLabel="name"
+                      optionValue="id"
+                      [filter]="true"
+                      filterBy="name"
+                      [showClear]="true"
+                      emptyMessage="No se encontraron resultados"
+                      placeholder="Seleccione un tipo"
+                      (onChange)="onTypeSelected($event)"
+                      [style]="{ width: '100%' }"
+                    ></p-dropdown>
+                    <small
+                      *ngIf="
+                        getCellerDetailType(index).touched &&
+                        getCellerDetailType(index).hasError('required')
+                      "
+                      id="type-help"
+                      class="p-error block"
+                      >{{ formErrors.required }}</small
+                    >
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailType(getCellerDetailType(index).value)
+                    }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="materials"
+                      formControlName="material"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          getCellerDetailMaterial(index).touched &&
+                          getCellerDetailMaterial(index).invalid
+                      }"
+                      optionLabel="name"
+                      optionValue="id"
+                      [filter]="true"
+                      filterBy="name"
+                      [showClear]="true"
+                      emptyMessage="No se encontraron resultados"
+                      placeholder="Seleccione Material"
+                      (onChange)="onProductSelected($event)"
+                      [style]="{ width: '100%' }"
+                    ></p-dropdown>
+                    <small
+                      *ngIf="
+                        getCellerDetailMaterial(index).touched &&
+                        getCellerDetailMaterial(index).hasError('required')
+                      "
+                      id="type-help"
+                      class="p-error block"
+                      >{{ formErrors.required }}</small
+                    >
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailMaterial(
+                        getCellerDetailMaterial(index).value
+                      )
+                    }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="lotes"
+                      formControlName="lote"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          getCellerDetailLote(index).touched &&
+                          getCellerDetailLote(index).invalid
+                      }"
+                      optionLabel="lote"
+                      optionValue="id"
+                      [filter]="true"
+                      filterBy="lote"
+                      [showClear]="true"
+                      emptyMessage="No se encontraron resultados"
+                      placeholder="Seleccione Lote"
+                      (onChange)="onLoteSelected($event)"
+                      [style]="{ width: '100%' }"
+                    ></p-dropdown>
+                    <small
+                      *ngIf="
+                        getCellerDetailLote(index).touched &&
+                        getCellerDetailLote(index).hasError('required')
+                      "
+                      id="type-help"
+                      class="p-error block"
+                      >{{ formErrors.required }}</small
+                    >
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailLote(getCellerDetailLote(index).value)
+                    }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="locations"
+                      formControlName="location"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          getCellerDetailLocation(index).touched &&
+                          getCellerDetailLocation(index).invalid
+                      }"
+                      optionLabel="description"
+                      optionValue="id"
+                      [filter]="true"
+                      filterBy="description"
+                      [showClear]="true"
+                      emptyMessage="No se encontraron resultados"
+                      placeholder="Seleccione Ubicación"
+                      (onChange)="onLocationSelected($event, index)"
+                      [style]="{ width: '100%' }"
+                    ></p-dropdown>
+                    <small
+                      *ngIf="
+                        getCellerDetailLocation(index).touched &&
+                        getCellerDetailLocation(index).hasError('required')
+                      "
+                      id="type-help"
+                      class="p-error block"
+                      >{{ formErrors.required }}</small
+                    >
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailLocation(
+                        getCellerDetailLocation(index).value
+                      )
+                    }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [options]="destinys"
+                      formControlName="destiny"
+                      [ngClass]="{
+                        'ng-invalid ng-dirty':
+                          getCellerDetailDestiny(index).touched &&
+                          getCellerDetailDestiny(index).invalid
+                      }"
+                      optionLabel="description"
+                      optionValue="id"
+                      [filter]="true"
+                      filterBy="description"
+                      [showClear]="true"
+                      emptyMessage="No se encontraron resultados"
+                      placeholder="Seleccione Ubicación"
+                      [style]="{ width: '100%' }"
+                    ></p-dropdown>
+                    <small
+                      *ngIf="
+                        getCellerDetailDestiny(index).touched &&
+                        getCellerDetailDestiny(index).hasError('required')
+                      "
+                      id="type-help"
+                      class="p-error block"
+                      >{{ formErrors.required }}</small
+                    >
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{
+                      searchCellerDetailDestiny(
+                        getCellerDetailDestiny(index).value
+                      )
+                    }}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-tag
+                  severity="{{ getSeverityTag(index) }}"
+                  value="{{ getCellerDetailAvailability(index).value }} Kg"
+                ></p-tag>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="amount"
+                      formControlName="amount"
+                      aria-describedby="amount-help"
+                      type="number"
+                      style="max-width: 4rem"
+                      min="0"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailAmount(index).value }} Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="balance"
+                      formControlName="balance"
+                      aria-describedby="balance-help"
+                      type="number"
+                      (input)="calculateWeight(index)"
+                      style="max-width: 4rem"
+                      min="0"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailBalance(index).value }} Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="coat"
+                      formControlName="coat"
+                      aria-describedby="coat-help"
+                      type="number"
+                      (input)="calculateWeight(index)"
+                      style="max-width: 4rem"
+                      min="0"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailCoat(index).value }} Kg
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      pInputText
+                      id="pallets"
+                      formControlName="pallets"
+                      aria-describedby="pallets-help"
+                      type="number"
+                      (input)="calculateWeight(index)"
+                      style="max-width: 4rem"
+                      min="0"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getCellerDetailPallets(index).value }} Pall
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [ngClass]="isEditing ? 'col-document-edit' : 'col-document'">
+                <p-tag
+                  severity="warning"
+                  value="{{ getCellerDetailWeight(index).value }} Kg"
+                ></p-tag>
+              </td>
+              <td style="width: 10rem" pFrozenColumn alignFrozen="right">
+                <button
+                  *ngIf="!editing"
+                  pButton
+                  pRipple
+                  type="button"
+                  pInitEditableRow
+                  icon="pi pi-pencil"
+                  class="p-button-rounded p-button-text"
+                  [disabled]="enableButtons"
+                ></button>
+                <button
+                  *ngIf="!editing"
+                  pButton
+                  pRipple
+                  type="button"
+                  pDeleteEditableRow
+                  icon="pi pi-trash"
+                  (click)="deleteRow(index)"
+                  class="p-button-rounded p-button-text p-button-danger"
+                  [disabled]="enableButtons"
+                ></button>
+                <button
+                  *ngIf="editing"
+                  pButton
+                  pRipple
+                  type="button"
+                  (click)="isConfig = !isConfig"
+                  class="p-button-rounded p-button-text mr-2"
+                  [icon]="isConfig ? 'pi pi-sliders-h' : 'pi pi-sliders-v'"
+                ></button>
+                <button
+                  *ngIf="editing"
+                  pButton
+                  pRipple
+                  type="button"
+                  pSaveEditableRow
+                  icon="pi pi-check"
+                  (click)="onRowEditSave()"
+                  class="p-button-rounded p-button-text p-button-success mr-2"
+                ></button>
+                <button
+                  *ngIf="editing"
+                  pButton
+                  pRipple
+                  type="button"
+                  pCancelEditableRow
+                  icon="pi pi-times"
+                  (click)="onRowEditCancel()"
+                  class="p-button-rounded p-button-text p-button-danger"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div class="field flex flex-column mt-3">
+          <label for="observations">Observaciones</label>
+          <textarea
+            pInputTextarea
+            id="observations"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                observations.touched && observations.invalid
+            }"
+            formControlName="observations"
+            aria-describedby="observations-help"
+            type="text"
+            [disabled]="enableButtons"
+          ></textarea>
+          <small
+            *ngIf="observations.touched && observations.hasError('required')"
+            id="observations-help"
+            class="p-error block"
+            >{{ formErrors.required }}</small
+          >
+        </div>
+
+        <div
+          class="flex flex-column md:flex-row md:justify-content-center md:align-items-center"
+        >
+          <button
+            pButton
+            pRipple
+            label="Guardar"
+            icon="pi pi-plus"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            type="submit"
+            *ngIf="!enableButtons"
+            [disabled]="form.invalid"
+          ></button>
+          <button
+            pButton
+            pRipple
+            label="Regresar"
+            icon="pi pi-table"
+            *ngIf="enableButtons"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            routerLink="/home/bodega"
+          ></button>
+        </div>
+
+        <p-dialog
+          [(visible)]="pdfDialog"
+          [style]="{ width: '80%' }"
+          [modal]="true"
+          styleClass="p-fluid"
+          *ngIf="srcPdf"
+        >
+          <ngx-extended-pdf-viewer
+            [src]="srcPdf"
+            [height]="'80vh'"
+            [useBrowserLocale]="true"
+            [filenameForDownload]="fileName"
+          >
+          </ngx-extended-pdf-viewer>
+        </p-dialog>
+      </div>
+    </div>
+  </div>
+</form>

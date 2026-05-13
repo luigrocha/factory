@@ -1,0 +1,322 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="col-12">
+    <div class="grid">
+      <h5 class="md:col-6 col-12 flex align-items-center">
+        Solicitud: {{idRequest}}
+      </h5>
+      <div class="field md:col-6 col-12 flex flex-column">
+        <label for="turn">Turno</label>
+        <p-dropdown
+          [ngClass]="{'ng-invalid ng-dirty':turn.touched && turn.invalid}"
+          [options]="turns"
+          [style]="{ width: '100%' }"
+          emptyMessage="No se encontraron resultados"
+          formControlName="turn"
+          id="turn"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Seleccione un turno"
+        ></p-dropdown>
+        <small
+          *ngIf="turn.touched && turn.hasError('required')"
+          class="p-error block"
+        >{{ formErrors.required }}</small>
+      </div>
+    </div>
+
+    <p-table #dt
+             [columns]="columns"
+             [value]="rowsFormArray.controls"
+             dataKey="value.index"
+             editMode="row"
+             styleClass="p-datatable-sm">
+      <ng-template pTemplate="caption">
+        <div class="flex justify-content-between flex-column sm:flex-row">
+          <h5 class="h-100 align-self-center mb-2 md:mb-0">Solicitud de Materia Prima</h5>
+          <span class="flex-auto"></span>
+          <button (click)="addRow()"
+                  class="sm:mr-2 md:mr-2 lg:mr-2"
+                  icon="pi pi-plus"
+                  label="Añadir"
+                  pButton
+                  pRipple
+          ></button>
+          <button (click)="dt.exportCSV()"
+                  class="p-button-help mb-2 md:mr-2 md:mb-0"
+                  icon="pi pi-upload"
+                  label="Export"
+                  pButton
+                  pRipple
+          ></button>
+          <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input (input)="dt.filterGlobal($event.target.value, 'contains')" class="w-full"
+                     pInputText
+                     placeholder="Buscar..."
+                     type="text"/>
+            </span>
+        </div>
+      </ng-template>
+      <ng-template let-columns pTemplate="header">
+        <tr>
+          <th *ngFor="let col of columns">
+            {{ col.header }}
+          </th>
+          <th>
+            <i
+              class="pi pi-cog"
+              pTooltip="Opciones"
+              style="font-size: 18px"
+            ></i>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        formArrayName="rows"
+        let-editing="editing"
+        let-form
+        let-index="rowIndex"
+        pTemplate="body">
+        <tr [formGroupName]="index" [pEditableRow]="form">
+          <td>
+            <p-cellEditor class="w-full">
+              <ng-template pTemplate="input">
+                <p-dropdown (onChange)="onTypeSelected($event)"
+                            [filter]="true"
+                            [ngClass]="{'ng-invalid ng-dirty':getRowsType(index).touched &&getRowsType(index).invalid}"
+                            [options]="types"
+                            [showClear]="true"
+                            [style]="{ width: '100%' }"
+                            emptyMessage="No se encontraron resultados"
+                            filterBy="name"
+                            formControlName="type"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Seleccione un tipo"
+                ></p-dropdown>
+                <small
+                  *ngIf="getRowsType(index).touched &&getRowsType(index).hasError('required')"
+                  class="p-error block"
+                >{{ formErrors.required }}</small
+                >
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{searchRowsType(getRowsType(index).value)}}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <p-cellEditor class="w-full">
+              <ng-template pTemplate="input">
+                <p-dropdown
+                  [filter]="true"
+                  [ngClass]="{'ng-invalid ng-dirty':getRowsMaterial(index).touched &&getRowsMaterial(index).invalid}"
+                  [options]="materials"
+                  [showClear]="true"
+                  [style]="{ width: '100%' }"
+                  emptyMessage="No se encontraron resultados"
+                  filterBy="name"
+                  formControlName="material"
+                  optionLabel="name"
+                  optionValue="id"
+                  placeholder="Seleccione Material"
+                ></p-dropdown>
+                <small
+                  *ngIf="getRowsMaterial(index).touched &&getRowsMaterial(index).hasError('required')"
+                  class="p-error block"
+                >{{ formErrors.required }}</small
+                >
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{searchRowsMaterial(getRowsMaterial(index).value)}}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <p-cellEditor class="w-full">
+              <ng-template pTemplate="input">
+                <input
+                  [ngClass]="{'ng-invalid ng-dirty':getRowsQuantity(index).touched && getRowsQuantity(index).invalid}"
+                  aria-describedby="quantity-help"
+                  formControlName="quantity"
+                  min="0"
+                  pInputText
+                  type="number"
+                />
+                <small
+                  *ngIf="getRowsQuantity(index).touched &&getRowsQuantity(index).hasError('required')"
+                  class="p-error block"
+                >{{ formErrors.required }}</small>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{getRowsQuantity(index).value}}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <p-cellEditor class="w-full">
+              <ng-template pTemplate="input">
+                <input
+                  [ngClass]="{'ng-invalid ng-dirty':getRowsBalance(index).touched && getRowsBalance(index).invalid}"
+                  aria-describedby="balance-help"
+                  formControlName="balance"
+                  min="0"
+                  pInputText
+                  type="number"
+                />
+                <small
+                  *ngIf="getRowsBalance(index).touched &&getRowsBalance(index).hasError('required')"
+                  class="p-error block"
+                >{{ formErrors.required }}</small>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{getRowsBalance(index).value}}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <p-cellEditor class="w-full">
+              <ng-template pTemplate="input">
+                <input
+                  [ngClass]="{'ng-invalid ng-dirty':getRowsCoat(index).touched && getRowsCoat(index).invalid}"
+                  aria-describedby="coat-help"
+                  formControlName="coat"
+                  min="0"
+                  pInputText
+                  type="number"
+                />
+                <small
+                  *ngIf="getRowsCoat(index).touched &&getRowsCoat(index).hasError('required')"
+                  class="p-error block"
+                >{{ formErrors.required }}</small>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{getRowsCoat(index).value}}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <p-cellEditor class="w-full">
+              <ng-template pTemplate="input">
+                <input
+                  [ngClass]="{'ng-invalid ng-dirty':getRowsPallets(index).touched && getRowsPallets(index).invalid}"
+                  aria-describedby="pallets-help"
+                  formControlName="pallets"
+                  min="0"
+                  pInputText
+                  type="number"
+                />
+                <small
+                  *ngIf="getRowsPallets(index).touched &&getRowsPallets(index).hasError('required')"
+                  class="p-error block"
+                >{{ formErrors.required }}</small>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{getRowsPallets(index).value}}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <p-tag
+              severity="success"
+              value="{{ getRowsWeight(index).value }} Kg"
+            ></p-tag>
+          </td>
+          <td>
+            <p-cellEditor class="w-full">
+              <ng-template pTemplate="input">
+                <input
+                  [ngClass]="{'ng-invalid ng-dirty':getRowsObservation(index).touched && getRowsObservation(index).invalid}"
+                  aria-describedby="observation-help"
+                  formControlName="observation"
+                  pInputText
+                  type="text"
+                />
+                <small
+                  *ngIf="getRowsObservation(index).touched &&getRowsObservation(index).hasError('required')"
+                  class="p-error block"
+                >{{ formErrors.required }}</small>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{getRowsObservation(index).value}}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td alignFrozen="right" pFrozenColumn style="width: 10rem">
+            <button
+              (click)="isEditing = !isEditing"
+              *ngIf="!editing"
+              class="p-button-rounded p-button-text"
+              icon="pi pi-pencil"
+              pButton
+              pInitEditableRow
+              pRipple
+              type="button"
+            ></button>
+            <button
+              (click)="deleteRow(index)"
+              *ngIf="!editing"
+              class="p-button-rounded p-button-text p-button-danger"
+              icon="pi pi-trash"
+              pButton
+              pDeleteEditableRow
+              pRipple
+              type="button"
+            ></button>
+            <button
+              (click)="isConfig = !isConfig"
+              *ngIf="editing"
+              [icon]="isConfig ? 'pi pi-sliders-h' : 'pi pi-sliders-v'"
+              class="p-button-rounded p-button-text mr-2"
+              pButton
+              pRipple
+              type="button"
+            ></button>
+            <button
+              (click)="onRowEditSave()"
+              *ngIf="editing"
+              class="p-button-rounded p-button-text p-button-success mr-2"
+              icon="pi pi-check"
+              pButton
+              pRipple
+              pSaveEditableRow
+              type="button"
+            ></button>
+            <button
+              (click)="onRowEditCancel()"
+              *ngIf="editing"
+              class="p-button-rounded p-button-text p-button-danger"
+              icon="pi pi-times"
+              pButton
+              pCancelEditableRow
+              pRipple
+              type="button"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div class="col-12 flex flex-column md:flex-row justify-content-center">
+      <button
+        (click)="onCreate(false)"
+        [disabled]="form.invalid"
+        class="mb-3 md:mb-0 mr-0 md:mr-3"
+        icon="pi pi-database"
+        label="Guardar Borrador"
+        pButton
+        pRipple
+        type="submit">
+      </button>
+      <button
+        (click)="onCreate(true)"
+        [disabled]="form.invalid"
+        icon="pi pi-save"
+        label="Guardar Terminado"
+        pButton
+        pRipple
+        type="submit">
+      </button>
+    </div>
+  </div>
+</form>

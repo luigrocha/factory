@@ -1,0 +1,120 @@
+<div class="p-grid" *ngIf="profile">
+  <div class="grid">
+    <div class="col-12 lg:col-8 md:col-8">
+      <div class="grid">
+        <div class="col-12">
+          <p-card header="Información usuario">
+            <div class="grid">
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Cédula"
+                                  [value]="profile.person.ci"
+                                  icon="pi pi-id-card">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Primer nombre"
+                                  [value]="profile.person.firstName"
+                                  icon="pi pi-user">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Segundo nombre"
+                                  [value]="profile.person.secondName"
+                                  icon="pi pi-user">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Primer apellido"
+                                  [value]="profile.person.firstLastName"
+                                  icon="pi pi-user">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Segundo apellido"
+                                  [value]="profile.person.secondLastName"
+                                  icon="pi pi-user">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <p-avatar icon="pi pi-calendar" styleClass="mr-4" size="large" shape="circle"></p-avatar>
+                <div>
+                  <h6 class="pbx-5 m-0 font-bold">Fecha de nacimiento</h6>
+                  <span class="p-text-secondary">{{profile.person.birthDate | cpDate}}</span>
+                </div>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Móvil 1"
+                                  [value]="profile.person.mobil1"
+                                  icon="pi pi-mobile">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Móvil 2"
+                                  [value]="profile.person.mobil2"
+                                  icon="pi pi-mobile">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Email 1"
+                                  [value]="profile.person.email1"
+                                  icon="pi pi-envelope">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Email 2"
+                                  [value]="profile.person.email2"
+                                  icon="pi pi-envelope">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Dirección"
+                                  [value]="profile.person.address"
+                                  icon="pi pi-compass">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Fijo"
+                                  [value]="profile.person.landline"
+                                  icon="pi pi-phone">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <p-avatar icon="pi pi-calendar" styleClass="mr-4" size="large" shape="circle"></p-avatar>
+                <div>
+                  <h6 class="pbx-5 m-0 font-bold">Fecha de contrato</h6>
+                  <span class="p-text-secondary">{{profile.person.contractDate | cpDate}}</span>
+                </div>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Étnia"
+                                  [value]="profile.person.ethnic?.name"
+                                  icon="pi pi-user">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Género"
+                                  [value]="profile.person.gender.name"
+                                  icon="pi pi-user">
+                </app-profile-line>
+              </div>
+              <div class="col-6 flex flex-row">
+                <app-profile-line label="Grupo"
+                                  [value]="profile.person.group.name"
+                                  icon="pi pi-users">
+                </app-profile-line>
+              </div>
+            </div>
+          </p-card>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 lg:col-4 md:col-4">
+      <p-card header="Roles">
+        <h6 *ngFor="let rol of profile.roles">
+          {{rol}}
+          <p-divider></p-divider>
+        </h6>
+      </p-card>
+    </div>
+  </div>
+</div>

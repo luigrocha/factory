@@ -1,0 +1,480 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+      <div class="card">
+        <h5 class="m-0 mb-5">Orden de mezcla N° {{ numberMixture }}</h5>
+
+        <div *ngIf="order && project" class="grid">
+          <p class="col-6 md:col-2 ">
+            Lote: {{order.lot}}
+          </p>
+          <p class="col-6 md:col-2 ">
+            Export (XP): {{project.projectType.id == 1 ? 'SI' : 'NO'}}
+          </p>
+          <p class="col-6 md:col-2">
+            Cirel: {{project.cyrel ? project.cyrel.print : 'N/A'}}
+          </p>
+          <p class="col-6 md:col-2">
+            Prod Troquelado: {{project.dieProduct.code}}
+          </p>
+          <p class="col-6 md:col-2">
+            <p-dropdown
+              [ngClass]="{'ng-invalid ng-dirty':die.touched &&die.invalid}"
+              [options]="dies"
+              [style]="{ width: '100%' }"
+              emptyMessage="No se encontraron resultados"
+              formControlName="die"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Seleccione un troquel"
+            ></p-dropdown>
+            <small
+              *ngIf="die.touched &&die.hasError('required')"
+              class="p-error block"
+            >{{ formErrors.required }}</small>
+          </p>
+          <p class="col-6 md:col-2">
+            Total Real: {{totalReal | number: "":"es"}}
+          </p>
+        </div>
+        <div *ngIf="die.value && dies.length > 0" class="grid">
+          <p class="col-6 md:col-2">
+            Largo: {{searchDie(die.value).leafLength}} mm
+          </p>
+          <p class="col-6 md:col-2">
+            Ancho: {{searchDie(die.value).leafWidth}} mm
+          </p>
+          <p class="col-6 md:col-2">
+            Mezcla de: {{mixtureTo}}
+          </p>
+          <p class="col-6 md:col-2">
+            Gramaje: {{project.gsm}}
+          </p>
+          <p class="col-6 md:col-2">
+            Diferencia: {{getDifference(die.value)  | number: "":"es" }}
+          </p>
+          <p class="col-6 md:col-2">
+            Total:
+            <p-tag
+              severity="primary"
+              value="{{ totalToCreate | number: '':'es' }} Kg"
+            ></p-tag>
+          </p>
+        </div>
+        <div *ngIf="die.value && dies.length > 0" class="grid">
+          <p class="col-6 md:col-2">
+            Ancho nominal: {{weightNominal}}
+          </p>
+          <p class="col-6 md:col-2">
+            Ancho extrusión: {{weightExtrusion}}
+          </p>
+          <p class="col-6 md:col-2">
+            Láminas por corte: {{getSheetPerCut(die.value) }}
+          </p>
+          <p class="col-6 md:col-2">
+            Numero cortes: {{getNumberCut(die.value)  | number: "":"es" }}
+          </p>
+          <p class="col-6 md:col-2">
+            Láminas: {{ getSheet(die.value) | number: "":"es"}} u.
+          </p>
+          <p class="col-6 md:col-2">
+            <button
+              (click)="showFilter()"
+              [disabled]="isEditing"
+              class="flex-grow-1"
+              icon="pi pi-book"
+              label="Obtener mezclas"
+              pButton
+              pRipple
+            ></button>
+          </p>
+        </div>
+
+        <div
+          class="flex flex-column md:flex-wrap md:flex-row md:justify-content-between md:align-items-center"
+        >
+          <div class="field col-12 md:col-4 flex flex-column">
+            <label for="prepare">Cantidad de Paradas</label>
+            <div class="p-inputgroup">
+              <input
+                (input)="calculateRows()"
+                [disabled]="isEditing"
+                [ngClass]="{
+                'ng-invalid ng-dirty':
+                  prepare.touched && prepare.invalid
+              }"
+                aria-describedby="prepare-help"
+                formControlName="prepare"
+                id="prepare"
+                min="0"
+                pInputText
+                type="number"
+              />
+              <span class="p-inputgroup-addon">Kg</span>
+            </div>
+            <small
+              *ngIf="prepare.touched && prepare.hasError('required')"
+              class="p-error block"
+            >{{ formErrors.required }}</small>
+          </div>
+          <div class="field col-12 md:col-4 flex flex-column">
+            <label for="preMixture">Kg Premezcla</label>
+            <div class="p-inputgroup">
+              <input
+                (input)="calculateRows()"
+                [disabled]="isEditing"
+                [ngClass]="{
+                'ng-invalid ng-dirty':
+                  preMixture.touched && preMixture.invalid
+              }"
+                aria-describedby="preMixture-help"
+                formControlName="preMixture"
+                id="preMixture"
+                min="0"
+                pInputText
+                type="number"
+              />
+              <span class="p-inputgroup-addon">Kg c/u</span>
+            </div>
+            <small
+              *ngIf="preMixture.touched && preMixture.hasError('required')"
+              class="p-error block"
+            >{{ formErrors.required }}</small>
+          </div>
+          <button
+            (click)="addRow()"
+            [disabled]="isEditing"
+            class="flex-grow-1 mt-3"
+            icon="pi pi-plus"
+            label="Añadir Item"
+            pButton
+            pRipple
+          ></button>
+        </div>
+
+        <p-table
+          #dt
+          [columns]="columns"
+          [value]="rowsFormArray.controls"
+          class="pb-5"
+          dataKey="value.index"
+          editMode="row"
+        >
+          <ng-template let-columns pTemplate="header">
+            <tr>
+              <th
+                *ngFor="let col of columns"
+              >
+                {{ col.header }}
+              </th>
+              <th>
+                <i
+                  class="pi pi-cog"
+                  pTooltip="Opciones"
+                  style="font-size: 18px"
+                ></i>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            formArrayName="rows"
+            let-editing="editing"
+            let-form
+            let-index="rowIndex"
+            pTemplate="body"
+          >
+            <tr [formGroupName]="index" [pEditableRow]="form">
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown (onChange)="onTypeSelected($event)"
+                                [filter]="true"
+                                [ngClass]="{'ng-invalid ng-dirty':getRowsType(index).touched &&getRowsType(index).invalid}"
+                                [options]="types"
+                                [showClear]="true"
+                                [style]="{ width: '100%' }"
+                                emptyMessage="No se encontraron resultados"
+                                filterBy="name"
+                                formControlName="type"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Seleccione un tipo"
+                    ></p-dropdown>
+                    <small
+                      *ngIf="getRowsType(index).touched &&getRowsType(index).hasError('required')"
+                      class="p-error block"
+                    >{{ formErrors.required }}</small
+                    >
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{searchRowsType(getRowsType(index).value)}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <p-dropdown
+                      [filter]="true"
+                      [ngClass]="{'ng-invalid ng-dirty':getRowsMaterial(index).touched &&getRowsMaterial(index).invalid}"
+                      [options]="materials"
+                      [showClear]="true"
+                      [style]="{ width: '100%' }"
+                      emptyMessage="No se encontraron resultados"
+                      filterBy="name"
+                      formControlName="material"
+                      optionLabel="name"
+                      optionValue="id"
+                      placeholder="Seleccione Material"
+                    ></p-dropdown>
+                    <small
+                      *ngIf="getRowsMaterial(index).touched &&getRowsMaterial(index).hasError('required')"
+                      class="p-error block"
+                    >{{ formErrors.required }}</small
+                    >
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{searchRowsMaterial(getRowsMaterial(index).value)}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                <p-cellEditor class="w-full">
+                  <ng-template pTemplate="input">
+                    <input
+                      (input)="calculateRows()"
+                      aria-describedby="percent-help"
+                      formControlName="percent"
+                      id="percent"
+                      min="0"
+                      pInputText
+                      type="number"
+                    />
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{ getRowsPercent(index).value }} %
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>
+                {{getRowsStop(index).value  | number: "":"es"}}
+              </td>
+              <td>
+                {{getRowsTotal(index).value  | number: "":"es"}}
+              </td>
+              <td>
+                <button
+                  (click)="onEditing(index)"
+                  *ngIf="!editing"
+                  [disabled]="isEditing"
+                  class="p-button-rounded p-button-text"
+                  icon="pi pi-pencil"
+                  pButton
+                  pInitEditableRow
+                  pRipple
+                  type="button"
+                ></button>
+                <button
+                  (click)="deleteRow(index)"
+                  *ngIf="!editing"
+                  [disabled]="isEditing"
+                  class="p-button-rounded p-button-text p-button-danger"
+                  icon="pi pi-trash"
+                  pButton
+                  pRipple
+                  type="button"
+                ></button>
+                <button
+                  (click)="onRowEditSave()"
+                  *ngIf="editing"
+                  class="p-button-rounded p-button-text p-button-success mr-2"
+                  icon="pi pi-check"
+                  pButton
+                  pRipple
+                  pSaveEditableRow
+                  type="button"
+                ></button>
+                <button
+                  (click)="onRowEditCancel()"
+                  *ngIf="editing"
+                  class="p-button-rounded p-button-text p-button-danger"
+                  icon="pi pi-times"
+                  pButton
+                  pCancelEditableRow
+                  pRipple
+                  type="button"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td colspan="2"><strong>Total</strong></td>
+              <td><strong> {{totalPercent  | number: "":"es" }} %</strong></td>
+              <td><strong>{{totalToStop  | number: "":"es" }} Kg</strong></td>
+              <td><strong>{{totalToCreate  | number: "":"es" }} Kg</strong></td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <pre>
+          {{rowsFormArray.controls}}
+        </pre>
+
+        <div class="field flex flex-column mt-3">
+          <label for="observation">Observación</label>
+          <textarea
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                observation.touched && observation.invalid
+            }"
+            aria-describedby="observation-help"
+            formControlName="observation"
+            id="observation"
+            pInputTextarea
+            type="text"
+          ></textarea>
+          <small
+            *ngIf="observation.touched && observation.hasError('required')"
+            class="p-error block"
+          >{{ formErrors.required }}</small
+          >
+        </div>
+
+        <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center">
+          <button
+            (click)="isSave = true"
+            [disabled]="form.invalid || isEditing"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            icon="pi pi-plus"
+            label="Guardar"
+            pButton
+            pRipple
+            type="submit"
+          ></button>
+          <button
+            (click)="isEditing = !isEditing"
+            *ngIf="isEditing"
+            [disabled]="!isEditing"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            icon="pi pi-pencil"
+            label="Editar"
+            pButton
+            pRipple
+          ></button>
+          <button
+            (click)="generateReceipt($event)"
+            *ngIf="isEditing"
+            [disabled]="!isEditing"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            icon="pi pi-file-pdf"
+            label="Ver PDF"
+            pButton
+            pRipple
+          ></button>
+          <button
+            (click)="generateNewMixture()"
+            *ngIf="isEditing"
+            [disabled]="!isEditing"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            icon="pi pi-clone"
+            label="Nueva Orden"
+            pButton
+            pRipple
+          ></button>
+
+          <button
+            *ngIf="isSusses"
+            class="buttons-manage mb-2 mt-2 md:mr-2 md:mb-0 md:mt-3"
+            icon="pi pi-table"
+            label="Regresar"
+            pButton
+            pRipple
+            routerLink="/home/mezcla"
+          ></button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<p-dialog
+  *ngIf="srcPdf"
+  [(visible)]="pdfDialog"
+  [modal]="true"
+  [style]="{ width: '80%' }"
+  styleClass="p-fluid"
+>
+  <ngx-extended-pdf-viewer
+    [filenameForDownload]="fileName"
+    [height]="'80vh'"
+    [src]="srcPdf"
+    [useBrowserLocale]="true"
+  >
+  </ngx-extended-pdf-viewer>
+</p-dialog>
+
+<p-sidebar [(visible)]="showFilters" [baseZIndex]="10000" position="right">
+  <h3 style="font-weight: normal">Mezclas Anteriores</h3>
+  <h5>Última mezcla: 1</h5>
+  <div class="p-fluid formgrid" style="height: 35vh">
+
+    <div class="field">
+      <label for="number">Mezcla | Número</label>
+      <div class="auto-complete-container">
+        <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+      <p-autoComplete (completeMethod)="filterMixtures($event)"
+                      (onSelect)="onSelect($event)"
+                      [minLength]="3"
+                      [showEmptyMessage]="true"
+                      [suggestions]="mixtures"
+                      style="width: 100%"
+                      delay="500"
+                      emptyMessage="No se encontraron resultados"
+                      field="mixture"
+                      id="number">
+        <ng-template let-mixture pTemplate="item">
+          <div>
+            {{mixture.order.lot }} |
+            <span class="item-subheading">{{mixture.mixture}}</span> |
+            <span class="item-subheading">{{mixture.number}}</span>
+          </div>
+        </ng-template>
+      </p-autoComplete>
+      </div>
+    </div>
+    <div *ngIf="mixtureFilter" class="flex justify-content-between filter-items">
+      <label>Lote:</label>
+      <p>{{mixtureFilter.order.lot}}</p>
+      <label>Orden:</label>
+      <p>{{mixtureFilter.order.code}}</p>
+      <label>Producto:</label>
+      <p>{{mixtureFilter.order.productCode}}</p>
+      <label>Mezcla:</label>
+      <p>{{mixtureFilter.mixture}}</p>
+      <label>Número:</label>
+      <p>{{mixtureFilter.number}}</p>
+    </div>
+  </div>
+  <div class="flex justify-content-evenly mt-5">
+    <button
+      (click)="getRowsMixture()"
+      [disabled]="!mixtureFilter"
+      class="p-button-raised"
+      icon="pi pi-copy"
+      label="Traer"
+      pButton
+      pRipple
+    ></button>
+    <!--<button
+      (click)="mixtureFilter = null"
+      class="p-button-raised"
+      icon="pi pi-filter-slash"
+      label="Limpiar"
+      pButton
+      pRipple
+    ></button>-->
+  </div>
+</p-sidebar>

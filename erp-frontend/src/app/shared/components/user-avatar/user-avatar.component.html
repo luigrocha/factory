@@ -1,0 +1,12 @@
+<p-avatar *ngIf="!userImageUrl"
+          image="assets/img/avatars/avatar.png"
+          [styleClass]="styleClasses"
+          [ngClass]="ngClasses"
+          size="xlarge"
+          shape="circle"></p-avatar>
+<p-avatar *ngIf="userImageUrl"
+          [image]="userImageUrl"
+          [styleClass]="styleClasses"
+          [ngClass]="ngClasses"
+          size="xlarge"
+          shape="circle"></p-avatar>

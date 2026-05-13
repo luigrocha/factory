@@ -1,0 +1,72 @@
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import {
+  CancelOrder,
+  CreateOrder,
+  GeneratedOrderCode,
+  Order,
+  OrderPageable, StartOrder,
+  UpdateOrder
+} from 'src/app/types/order.types';
+import { SearchRequest } from 'src/app/types/pageable.types';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class OrderService {
+
+  private readonly URL = environment.appApiUrl + '/orders';
+
+  constructor(private http: HttpClient) {
+  }
+
+  getOrders(searchRequest: SearchRequest): Observable<OrderPageable> {
+    let parameters = `/search?page=${searchRequest.page}&size=${searchRequest.size}`;
+
+    if (searchRequest.query) {
+      parameters += `&query=${searchRequest.query}`;
+    }
+
+    parameters += `&states=${searchRequest.filters.join(',')}`;
+
+    return this.http.post<OrderPageable>(this.URL + parameters, searchRequest.searchCriteria);
+  }
+
+  getOrder(id: number): Observable<Order> {
+    return this.http.get<Order>(`${this.URL}/${id}`);
+  }
+
+  createNewOrder(order: CreateOrder): Observable<Order> {
+    return this.http.post<Order>(this.URL, order);
+  }
+
+  updateOrder(id: number, order: UpdateOrder): Observable<Order> {
+    const url = `${this.URL}/${id}`;
+    return this.http.put<Order>(url, order);
+  }
+
+  cancelOrder(id: number, body: CancelOrder): Observable<Order> {
+    const url = `${this.URL}/${id}/cancel`;
+    return this.http.post<Order>(url, body);
+  }
+
+  startOrder(id: number, body: StartOrder): Observable<Order> {
+    const url = `${this.URL}/${id}/start`;
+    return this.http.post<Order>(url, body);
+  }
+
+  generateNextOrderCode(): Observable<GeneratedOrderCode> {
+    return this.http.get<GeneratedOrderCode>(`${this.URL}/generate-code`);
+  }
+
+  getOrdersByStatus(status: string): Observable<Order[]> {
+    return this.http.get<Order[]>(this.URL + '/findOrdersByStatus/' + status);
+  }
+
+  getOrderByLot(lot: string): Observable<Order> {
+    return this.http.get<Order>(this.URL + '/findOrderByLot/' + lot);
+  }
+
+}

@@ -1,0 +1,253 @@
+<div class="layout-topbar">
+  <div class="layout-topbar-wrapper">
+    <div class="layout-topbar-left">
+      <div
+        class="layout-topbar-logo"
+        id="logolink"
+        style="cursor: pointer; outline: none"
+        routerLink="/"
+      >
+        <img
+          id="app-logo"
+          [src]="'assets/img/cp-logo.png'"
+          alt="poseidon-layout"
+        />
+      </div>
+      <p-tag styleClass="mr-2" [value]="version"></p-tag>
+    </div>
+
+    <div class="layout-topbar-right">
+      <a
+        class="menu-button"
+        href="#"
+        (click)="appMain.onMenuButtonClick($event)"
+      >
+        <i class="pi pi-bars"></i>
+      </a>
+
+      <ul class="layout-topbar-actions">
+        <li
+          #searchItem
+          class="search-item topbar-item"
+          [ngClass]="{ 'active-topmenuitem': appMain.search }"
+        >
+          <a href="#" (click)="appMain.onTopbarItemClick($event, searchItem)">
+            <span class="topbar-icon">
+              <i class="pi pi-search"></i>
+            </span>
+          </a>
+
+          <div class="search-input-wrapper">
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input type="text" pInputText placeholder="Buscar..." />
+            </span>
+          </div>
+
+          <ul class="fadeInDown">
+            <div class="search-input-wrapper p-fluid">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input
+                  type="text"
+                  pInputText
+                  placeholder="Buscar..."
+                  (click)="appMain.searchClick = true"
+                />
+              </span>
+            </div>
+          </ul>
+        </li>
+        <li
+          #notifications
+          class="topbar-item notifications"
+          [ngClass]="{
+            'active-topmenuitem': appMain.activeTopbarItem === notifications
+          }"
+        >
+          <a
+            href="#"
+            (click)="appMain.onTopbarItemClick($event, notifications)"
+          >
+            <span class="p-overlay-badge topbar-icon">
+              <i class="pi pi-bell" pBadge value="2"></i>
+            </span>
+          </a>
+          <ul class="fadeInDown">
+            <li class="layout-submenu-header">
+              <h6 class="header-text">Notificaciones</h6>
+              <span class="p-badge">3</span>
+            </li>
+            <li role="menuitem">
+              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
+                <i class="pi pi-shopping-cart"></i>
+                <div class="notifications-item">
+                  <h6>Pedido <span>#5QB2K-P106-F124</span></h6>
+                  <span>Total de unidades: <span>60.000</span></span>
+                  <h6 class="p-1"><span appStatusHighlight [status]="statusPending" class="die-badge p-1">Pendiente</span></h6>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
+                <i class="pi pi-shopping-cart"></i>
+                <div class="notifications-item">
+                  <h6>Pedido <span>#1QB2K-P106-F124</span></h6>
+                  <span>Total de unidades: <span>10.000</span></span>
+                  <h6 class="p-1"><span appStatusHighlight [status]="statusPending" class="die-badge p-1">Pendiente</span></h6>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
+                <i class="pi pi-shopping-cart"></i>
+                <div class="notifications-item">
+                  <h6>Pedido <span>#5QB2-P106-F124</span></h6>
+                  <span>Total de unidades: <span>6.000</span></span>
+                  <h6 class="p-1"><span appStatusHighlight [status]="statusPending" class="die-badge p-1">Pendiente</span></h6>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li
+          #messages
+          class="topbar-item messages"
+          [ngClass]="{
+            'active-topmenuitem': appMain.activeTopbarItem === messages
+          }"
+        >
+          <a href="#" (click)="appMain.onTopbarItemClick($event, messages)">
+            <span class="p-overlay-badge topbar-icon">
+              <i class="pi pi-info-circle" pBadge value="4"></i>
+            </span>
+          </a>
+          <ul class="fadeInDown">
+            <li class="layout-submenu-header">
+              <h6 class="header-text">Alertas</h6>
+              <span class="p-badge">4</span>
+            </li>
+            <li role="menuitem">
+              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
+                <img
+                  src="assets/layout/images/dashboard/leader-1.png"
+                  alt="demo"
+                />
+                <div class="messages-item">
+                  <h6>Ha modificado el pedido #1QB2K-P106-F124</h6>
+                  <span>Wilmer Yela</span>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
+                <img
+                  src="assets/layout/images/dashboard/leader-2.png"
+                  alt="demo"
+                />
+                <div class="messages-item">
+                  <h6>Ha creado un nuevo troquel</h6>
+                  <span>Catalina Malan</span>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a
+                href="#"
+                class="topbar-message"
+                (click)="appMain.onTopbarSubItemClick($event)"
+              >
+                <img
+                  src="assets/layout/images/dashboard/leader-3.png"
+                  alt="demo"
+                />
+                <div class="messages-item">
+                  <h6>Ha modificado una orden de premezcla</h6>
+                  <span>Noel Salinas</span>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a
+                href="#"
+                class="topbar-message"
+                (click)="appMain.onTopbarSubItemClick($event)"
+              >
+                <img
+                  src="assets/layout/images/dashboard/leader-4.png"
+                  alt="demo"
+                />
+                <div class="messages-item">
+                  <h6>Ha creado un nuevo cliente</h6>
+                  <span>Cristina Almeida</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li
+          #profile
+          class="topbar-item user-profile"
+          [ngClass]="{
+            'active-topmenuitem': appMain.activeTopbarItem === profile
+          }">
+          <a href="#" (click)="appMain.onTopbarItemClick($event, profile)">
+            <img *ngIf="!image"
+              class="profile-image circle-image"
+              src="assets/img/avatars/avatar.png"
+              alt="user-logo"
+            />
+            <img *ngIf="image"
+                 class="profile-image circle-image"
+                 [src]="image.imageUrl"
+                 alt="user-logo"
+            />
+            <div class="profile-info">
+              <h6>{{ userData.name }}</h6>
+              <span>{{ rolShow }}</span>
+            </div>
+          </a>
+
+          <ul class="fadeInDown">
+            <li class="layout-submenu-header">
+              <img *ngIf="!image"
+                   class="profile-image circle-image"
+                   src="assets/img/avatars/avatar.png"
+                   alt="user-logo"
+              />
+              <img *ngIf="image"
+                   class="profile-image circle-image"
+                   [src]="image.imageUrl"
+                   alt="user-logo"
+              />
+              <div class="profile-info">
+                <h6>{{ userData.name }}</h6>
+                <span>{{ rolShow }}</span>
+              </div>
+            </li>
+            <li role="menuitem">
+              <a [routerLink]="['perfil', 'mi-perfil']" (click)="appMain.onTopbarSubItemClick($event)">
+                <i class="pi pi-user"></i>
+                <h6>Mi Perfil</h6>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="#" (click)="logout()">
+                <i class="pi pi-power-off"></i>
+                <h6>Cerrar Sesión</h6>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- <a
+          class="layout-rightpanel-button"
+          href="#"
+          (click)="appMain.onRightPanelButtonClick($event)"
+      >
+          <i class="pi pi-arrow-left"></i>
+      </a> -->
+    </div>
+  </div>
+</div>

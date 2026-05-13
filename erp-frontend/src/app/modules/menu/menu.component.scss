@@ -1,0 +1,15 @@
+.icon-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dialog-permissions {
+  width: 50%;
+}
+
+@media (max-width: 768px) {
+  .dialog-permissions {
+    width: 100%;
+  }
+}

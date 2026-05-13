@@ -1,0 +1,43 @@
+.object-cover {
+  object-fit: cover;
+}
+.opacity-25{
+  opacity: 0.25;
+}
+
+.opacity-9{
+  opacity: 0.9;
+}
+
+.bg-contrast {
+  background-color: black;
+}
+
+.position-0{
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.z-10 {
+  z-index: 10;
+}
+.-mt-16 {
+  margin-top: -4rem;
+}
+.px-gutter {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.text-contrast {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / 1);
+}
+
+.top-6 {
+  top: 1.5rem;
+}
+
+.left-4 {
+  left: 1rem;
+}

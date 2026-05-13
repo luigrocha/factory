@@ -1,0 +1,123 @@
+<div class="grid">
+  <div class="grid col-12 md:col-8">
+    <h5 class="col-12">Calcular productos por Extrusora</h5>
+    <div class="field md:col-6 col">
+      <label for="numberMixture">Número de mezcla</label>
+      <div class="auto-complete-container">
+        <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+        <p-autoComplete (completeMethod)="filterMixtures($event)"
+                        (onSelect)="onSelect($event)"
+                        [(ngModel)]="numberMixture[indexTab]"
+                        [inputStyle]="{'width':'100%'}"
+                        [minLength]="3"
+                        [showEmptyMessage]="true"
+                        [suggestions]="mixturesSearch"
+                        [style]="{'width':'100%'}"
+                        class="w-full"
+                        delay="500"
+                        emptyMessage="No se encontraron resultados"
+                        field="number"
+                        id="numberMixture">
+          <ng-template let-mixture pTemplate="item">
+            <div>
+              {{mixture.order.lot }} |
+              <span class="item-subheading">{{mixture.mixture}}</span> |
+              <span class="item-subheading">{{mixture.number}}</span>
+            </div>
+          </ng-template>
+        </p-autoComplete>
+      </div>
+    </div>
+    <div class="field md:col-6 col flex flex-column">
+      <label for="numberStop">Número de paradas</label>
+      <input (input)="calculateRows()"
+             [(ngModel)]="numberStop[indexTab]"
+             aria-describedby="numberStop-help"
+             id="numberStop"
+             pInputText
+             type="number"/>
+    </div>
+
+    <p-tabView (onChange)="onChangeTab($event)" *ngIf="machines.length > 0" class="col-12" orientation="left">
+      <p-tabPanel *ngFor="let type of machines; let i = index" [selected]="i == 0" class="line-height-3 m-0"
+                  header="{{type?.name}}">
+        <p-table
+          [columns]="columnsExt"
+          [globalFilterFields]="['name']"
+          [rowHover]="true"
+          [value]="mixtures[i]"
+          dataKey="id"
+          responsiveLayout="scroll"
+          styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th *ngFor="let col of columnsExt" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.header"></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template let-machine pTemplate="body">
+            <tr>
+              <td *ngFor="let col of columnsExt">
+                {{machine[col.field]}}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        <div class="flex justify-content-center mt-5">
+          <button
+            (click)="addToList()"
+            [disabled]="!disabled[indexTab]"
+            icon="pi pi-plus"
+            label="Añadir a listado"
+            pButton
+            pRipple
+            type="button">
+          </button>
+        </div>
+
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+  <div class="col-12 md:col-4">
+    <h5 class="col-12">Consolidado</h5>
+    <p-table
+      [columns]="columnsConsolidated"
+      [globalFilterFields]="['name']"
+      [rowHover]="true"
+      [value]="consolides"
+      class="col-12"
+      dataKey="id"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th *ngFor="let col of columnsConsolidated" [pSortableColumn]="col.field">
+            {{col.header}}
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template let-machine pTemplate="body">
+        <tr>
+          <td *ngFor="let col of columnsExt">
+            {{machine[col.field]}}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <div class="flex justify-content-center mt-5">
+      <button
+        (click)="addToRequest()"
+        [disabled]="!disabledNext"
+        icon="pi pi-plus"
+        label="Añadir a Solicitud"
+        pButton
+        pRipple
+        type="button">
+      </button>
+    </div>
+  </div>
+</div>

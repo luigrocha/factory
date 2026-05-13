@@ -1,0 +1,102 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <p-toast></p-toast>
+
+    <h5>Diseño de Mezcla</h5>
+
+    <div class="grid p-fluid">
+      <div class="col-12 md:col-6">
+        <div class="card leaderboard">
+          <div class="card-header">
+            <h6>Premezclas Disponibles</h6>
+          </div>
+          <ul class="mixture-ul mt-5">
+            <li *ngFor="let order of orders" class="mixture-li">
+              <div class="mixture-item">
+                <div class="flex justify-content-start align-items-center">
+                  <button
+                    [ngStyle]="{'color': order.priority.color ? order.priority.color:''}"
+                    class="p-button-rounded p-button-text"
+                    icon="pi {{ order.priority.icon }}"
+                    pButton
+                    pRipple
+                    pTooltip="{{ order.priority.name }}"
+                    type="button"
+                  ></button>
+                  <div class="mixture-orders">
+                    <p>{{order.lot}}</p>
+                    <span>{{order.code}} - {{order.productCode}}</span>
+                  </div>
+                </div>
+                <div class="mixture-btn-create">
+                  <button
+                    class="p-button-rounded p-button-text p-button-lg"
+                    icon="pi pi-plus-circle"
+                    pButton
+                    pRipple
+                    pTooltip="Crear Diseño"
+                    routerLink="/home/mezcla/crear/{{order.lot}}/{{order.numberMixture}}"
+                    type="button"
+                  ></button>
+                </div>
+              </div>
+              <p-divider></p-divider>
+            </li>
+          </ul>
+          <p *ngIf="orders?.length == 0" style="text-align : center">No existen premezclas disponibles de momento</p>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <div class="card leaderboard">
+          <div class="card-header">
+            <h6>Consultar Mezcla</h6>
+          </div>
+          <form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+            <div class="p-fluid grid formgrid mt-5">
+              <div class="field col-12">
+                <label for="mixture">Lote | Orden | Producto | Mezcla | Número</label>
+                <div class="auto-complete-container">
+                  <span class="p-inputgroup-addon"><i class="pi pi-search"></i></span>
+                  <p-autoComplete (completeMethod)="filterMixtures($event)"
+                                  (onSelect)="onSelect($event)"
+                                  [minLength]="3"
+                                  [ngClass]="{'ng-invalid ng-dirty': mixture.touched && mixture.invalid}"
+                                  [showEmptyMessage]="true"
+                                  [suggestions]="mixtures"
+                                  style="width: 100%"
+                                  delay="500"
+                                  emptyMessage="No se encontraron resultados"
+                                  field="order.lot"
+                                  formControlName="mixture"
+                                  id="mixture">
+                    <ng-template let-mixture pTemplate="item">
+                      <div>
+                        {{mixture.order.lot }} |
+                        <span class="item-subheading">{{mixture.order.code}}</span> |
+                        <span class="item-subheading">{{mixture.order.productCode}}</span> |
+                        <span class="item-subheading">{{mixture.mixture}}</span> |
+                        <span class="item-subheading">{{mixture.number}}</span>
+                      </div>
+                    </ng-template>
+                    <small *ngIf="mixture.touched && mixture.hasError('required')"
+                           class="p-error block"
+                           id="person-help">{{formErrors.required}}</small>
+                  </p-autoComplete>
+                </div>
+              </div>
+              <button
+                [disabled]="form.invalid || !lot.value"
+                class="p-button-raised m-3"
+                icon="pi pi-search"
+                label="Buscar"
+                pButton
+                pRipple
+                type="submit"
+              ></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

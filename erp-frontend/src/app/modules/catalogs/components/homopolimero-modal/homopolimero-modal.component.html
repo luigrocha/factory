@@ -1,0 +1,48 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="percentage">Porcentaje</label>
+      <input pInputText
+             id="percentage"
+             [ngClass]="{'ng-invalid ng-dirty': percentage.touched && percentage.invalid}"
+             formControlName="percentage"
+             aria-describedby="percentage-help"
+             type="number" />
+      <small *ngIf="percentage.touched && percentage.hasError('required')"
+             id="percentage-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+    <div class="field">
+      <label for="hpCode">HP</label>
+      <input pInputText
+             id="hpCode"
+             [ngClass]="{'ng-invalid ng-dirty': hpCode.touched && hpCode.invalid}"
+             formControlName="hpCode"
+             aria-describedby="hpCode-help"
+             appInputUppercase
+             maxlength="2"
+             type="text" />
+      <small *ngIf="hpCode.touched && hpCode.hasError('required')"
+             id="hpCode-help"
+             class="p-error block">{{formErrors.required}}</small>
+    </div>
+  </div>
+  <div class="col-12 pb-0 pt-4 pr-0 pl-0 text-right">
+    <button pButton
+            pRipple
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            (click)="close()"
+            class="p-button-text mr-4">
+    </button>
+    <button pButton
+            pRipple
+            [disabled]="form.invalid"
+            type="submit"
+            label="Guardar"
+            icon="pi pi-check"
+            class="p-button-raised">
+    </button>
+  </div>
+</form>

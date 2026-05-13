@@ -1,0 +1,77 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="p-fluid">
+    <div class="field">
+      <label for="name">Nombre</label>
+      <input [ngClass]="{'ng-invalid ng-dirty': name.touched && name.invalid}"
+             aria-describedby="name-help"
+             formControlName="name"
+             id="name"
+             maxlength="32"
+             pInputText
+             type="text"/>
+      <small *ngIf="name.touched && name.hasError('required')"
+             class="p-error block"
+             id="name-help">{{formErrors.required}}</small>
+    </div>
+    <div *ngIf="indexTab==1" class="field">
+      <label for="widthExt">Ancho Extrucción</label>
+      <input aria-describedby="widthExt-help"
+             formControlName="widthExt"
+             id="widthExt"
+             pInputText
+             type="number"/>
+    </div>
+    <div *ngIf="indexTab==2" class="field-checkbox pt-2 justify-content-start">
+      <label for="hasDesb">Tiene desbrozador</label>
+      <p-checkbox [binary]="true"
+                  [formControl]="hasDesbFormCtrl"
+                  class="ml-2"
+                  id="hasDesb"
+                  inputId="hasDesb"></p-checkbox>
+    </div>
+    <div *ngIf="indexTab==3" class="field">
+      <label for="abilityPell">Capacidad</label>
+      <input aria-describedby="abilityPell-help"
+             formControlName="abilityPell"
+             id="abilityPell"
+             pInputText
+             type="number"/>
+    </div>
+    <div class="field">
+      <label for="description">Descripción</label>
+      <input aria-describedby="description-help"
+             formControlName="description"
+             id="description"
+             maxlength="128"
+             pInputText
+             type="text"/>
+    </div>
+    <div class="field">
+      <label for="observation">Observación</label>
+      <input aria-describedby="observation-help"
+             formControlName="observation"
+             id="observation"
+             maxlength="128"
+             pInputText
+             type="text"/>
+    </div>
+  </div>
+  <div class="col-12 pb-0 pt-4 pr-0 pl-0 text-right">
+    <button (click)="close()"
+            class="p-button-text mr-4"
+            icon="pi pi-times"
+            label="Cancelar"
+            pButton
+            pRipple
+            type="button">
+    </button>
+    <button [disabled]="form.invalid"
+            class="p-button-raised"
+            icon="pi pi-check"
+            label="Guardar"
+            pButton
+            pRipple
+            type="submit">
+    </button>
+  </div>
+</form>

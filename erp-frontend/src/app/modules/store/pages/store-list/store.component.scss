@@ -1,0 +1,18 @@
+.order-badge {
+  border-radius: var(--border-radius);
+  padding: 0.25em 0.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+.order-badge-anul {
+  background-color: #ffcdd2;
+  color: #c63737;
+}
+
+.order-badge-aprobe {
+  background-color: #c8e6c9;
+  color: #256029;
+}

@@ -1,0 +1,206 @@
+<form (ngSubmit)="save()" [formGroup]="form" autocomplete="off">
+  <div class="grid">
+    <div class="col-12">
+      <div class="card">
+        <h5>Crear nuevo pedido: {{generateNextOrderCode?.nextOrderCode}}</h5>
+
+        <p-toast></p-toast>
+
+        <div class="p-fluid grid formgrid">
+          <div class="field col-12 md:col-6">
+            <label for="client">Cliente</label>
+            <p-dropdown [options]="clients$ | async"
+                        id="client"
+                        formControlName="client"
+                        [ngClass]="{'ng-invalid ng-dirty': client.touched && client.invalid}"
+                        placeholder="Seleccione un cliente"
+                        optionLabel="name"
+                        emptyMessage="No existen clientes"
+                        [filter]="true"
+                        filterBy="code,name"
+                        [showClear]="true">
+              <ng-template pTemplate="selectedItem" let-client>
+                <div class="client-item client-item-value">
+                  <img *ngIf="client.imageUrl" [src]="client.imageUrl" class="client-logo pr-2" [alt]="client.name" />
+                  <div>
+                    {{client.code}} |
+                    <span class="item-subheading">{{client.name}}</span>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template let-client pTemplate="item">
+                <div class="client-item client-item-value">
+                  <img *ngIf="client.imageUrl" [src]="client.imageUrl" class="client-logo pr-2" [alt]="client.name" />
+                  <div>
+                    {{client.code}} |
+                    <span class="item-subheading">{{client.name}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small *ngIf="client.touched && client.hasError('required')"
+                   id="client-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-6">
+            <label for="project">Proyecto</label>
+            <p-dropdown [options]="clientProjects"
+                        id="project"
+                        formControlName="project"
+                        [ngClass]="{'ng-invalid ng-dirty': project.touched && project.invalid}"
+                        placeholder="Seleccione un proyecto"
+                        optionLabel="name"
+                        emptyMessage="No existen proyectos"
+                        [filter]="true"
+                        filterBy="codeGen,name"
+                        [showClear]="true">
+              <ng-template pTemplate="selectedItem" let-project>
+                <div>
+                  {{project.codeGen}} |
+                  <span class="item-subheading">{{project.name}}</span>
+                </div>
+              </ng-template>
+              <ng-template let-project pTemplate="item">
+                <div>
+                  {{project.codeGen}} |
+                  <span class="item-subheading">{{project.name}}</span>
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small *ngIf="project.touched && project.hasError('required')"
+                   id="project-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-4 lg:col-4">
+            <label for="productCode">Código producto</label>
+            <input pInputText
+                   id="productCode"
+                   [ngClass]="{'ng-invalid ng-dirty': productCode.touched && productCode.invalid}"
+                   formControlName="productCode"
+                   aria-describedby="productCode-help"
+                   maxlength="128"
+                   type="text"/>
+            <small *ngIf="productCode.touched && productCode.hasError('required')"
+                   id="productCode-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-4 lg:col-4">
+            <label for="name">Nombre</label>
+            <input pInputText
+                   id="name"
+                   [ngClass]="{'ng-invalid ng-dirty': name.touched && name.invalid}"
+                   formControlName="name"
+                   aria-describedby="name-help"
+                   maxlength="128"
+                   type="text"/>
+            <small *ngIf="name.touched && name.hasError('required')"
+                   id="name-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-4 lg:col-4">
+            <label for="stock">Stock</label>
+            <input pInputText
+                   appNumeric
+                   decimals="0"
+                   id="stock"
+                   formControlName="stock"
+                   min="1"
+                   step="1"
+                   aria-describedby="stock-help"
+                   type="number"/>
+          </div>
+          <div class="field col-12 md:col-6 lg:col-3">
+            <label for="quantity">Cantidad</label>
+            <input pInputText
+                   appNumeric
+                   decimals="0"
+                   id="quantity"
+                   [ngClass]="{'ng-invalid ng-dirty': quantity.touched && quantity.invalid}"
+                   formControlName="quantity"
+                   min="1"
+                   step="1"
+                   aria-describedby="quantity-help"
+                   type="number"/>
+            <small *ngIf="quantity.touched && quantity.hasError('required')"
+                   id="quantity-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-6 lg:col-3">
+            <label for="priority">Prioridad</label>
+            <p-dropdown [options]="priorities$ | async"
+                        id="priority"
+                        formControlName="priority"
+                        [ngClass]="{'ng-invalid ng-dirty': priority.touched && priority.invalid}"
+                        placeholder="Seleccione una prioridad"
+                        emptyMessage="No se encontraron resultados"
+                        optionLabel="name"
+                        [showClear]="true">
+              <ng-template let-option pTemplate="item">
+                <div class="flex align-items-center">
+                  <i [ngStyle]="{'color': option.color ? option.color:''}"  class="pi {{option.icon}} pr-2"></i>
+                  {{option.name}}
+                </div>
+              </ng-template>
+              <ng-template let-option pTemplate="selectedItem">
+                <div class="flex align-items-center">
+                  <i [ngStyle]="{'color': option.color ? option.color:''}"  class="pi {{option.icon}} pr-2"></i>
+                  {{option.name}}
+                </div>
+              </ng-template>
+            </p-dropdown>
+            <small *ngIf="priority.touched && priority.hasError('required')"
+                   id="priority-help"
+                   class="p-error block">{{formErrors.required}}</small>
+          </div>
+          <div class="field col-12 md:col-6 lg:col-3">
+            <label for="estimatedDeliveryAt">Fecha entrega</label>
+            <p-calendar formControlName="estimatedDeliveryAt"
+                        [readonlyInput]="true"
+                        id="estimatedDeliveryAt"
+                        [showIcon]="true"
+                        [minDate]="minDate"
+                        showButtonBar="true"
+                        inputId="estimatedDeliveryAt"></p-calendar>
+
+          </div>
+          <div class="field col-12 md:col-6 lg:col-3">
+            <label for="clientOrderCode">Orden cliente</label>
+            <input pInputText
+                   id="clientOrderCode"
+                   formControlName="clientOrderCode"
+                   aria-describedby="clientOrderCode-help"
+                   maxlength="64"
+                   type="text"/>
+          </div>
+          <div class="field col-12">
+            <label for="observation">Observaciones</label>
+            <textarea pInputTextarea
+                      id="observation"
+                      formControlName="observation"
+                      aria-describedby="observation-help"
+                      maxlength="256"
+                      rows="2"></textarea>
+          </div>
+        </div>
+        <div class="col-12 text-right">
+          <button pButton
+                  pRipple
+                  type="button"
+                  label="Cancelar"
+                  (click)="back()"
+                  icon="pi pi-times"
+                  class="p-button-text mr-4">
+          </button>
+          <button pButton
+                  pRipple
+                  [disabled]="form.invalid"
+                  type="submit"
+                  label="Guardar"
+                  icon="pi pi-check"
+                  class="p-button-raised">
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
