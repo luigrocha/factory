@@ -1,128 +1,300 @@
-# cp-users-ws
+# cp-users-ws -- Users & Identity Microservice
 
-## Getting started
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.6.7-6DB33F?logo=spring-boot&logoColor=white)
+![Java](https://img.shields.io/badge/Java-11-007396?logo=java&logoColor=white)
+![MariaDB](https://img.shields.io/badge/MariaDB-3.0-003545?logo=mariadb&logoColor=white)
+![Keycloak](https://img.shields.io/badge/Keycloak-18.0-0081C4?logo=keycloak&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-6.8.3-02303A?logo=gradle&logoColor=white)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Overview
 
-Already a pro? Just edit this README.md and make it your own. Want to make it
-easy? [Use the template at the bottom](#editing-this-readme)!
+`cp-users-ws` is the user and identity management microservice. It acts as a bridge between the ERP system and Keycloak, managing user accounts, person profiles, user preferences, and user images (stored in MinIO via `cp-config-ws`).
 
-## Add your files
+**Key responsibilities**:
+- User CRUD with Keycloak identity synchronization
+- Person profiles (employees, contacts)
+- User preferences (locale, theme, dashboard layout)
+- User image/avatar management
+- Gender, ethnicity, division, and relationship catalogs
+- Role and group management (Keycloak-backed)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file)
-  or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line)
-  or push an existing Git repository with the following command:
+## Architecture
 
+```mermaid
+flowchart LR
+    KC[Keycloak 18.0] -->|OAuth2 Admin API| WS[cp-users-ws]
+    WS -->|User images| CFG[cp-config-ws]
+    CFG --> MINIO[MinIO S3]
+    WS --> DB[(MariaDB)]
+    DB --> FW[Flyway 3 migrations]
+    
+    FE[erp-frontend] -->|REST| WS
+    CORE[cp-core-ws] -->|User data| WS
 ```
-cd existing_repo
-git remote add origin https://gitlab.crsoft.org/microservices/cartonplast/cp-users-ws.git
-git branch -M main
-git push -uf origin main
+
+- **Identity**: Keycloak 18.0 -- both as OAuth2 bearer token validation AND as admin client for user provisioning
+- **Port**: 8081 (local), 8080 (environments via Kubernetes)
+- **Storage**: User images stored in MinIO via `cp-config-ws` REST API
+- **Database**: Dedicated MariaDB database `cartonplast-users-{env}`
+
+## Database Entity-Relationship Diagram
+
+```mermaid
+erDiagram
+    CBTPRE {
+        int ID_CBTPRE_CODE PK
+        varchar CBTPRE_LOCALE
+        varchar CBTPRE_THEME
+        bool CBTPRE_SIDEBAR_COLLAPSED
+        bool CBTPRE_DARK_MODE
+    }
+    CBTGEN {
+        int ID_CBTGEN_CODE PK
+        varchar CBTGEN_NAME
+        bool CBTGEN_ACTIVE
+    }
+    CBTETH {
+        int ID_CBTETH_CODE PK
+        varchar CBTETH_NAME
+        bool CBTETH_ACTIVE
+    }
+    CBTDIV {
+        int ID_CBTDIV_CODE PK
+        varchar CBTDIV_NAME
+        bool CBTDIV_ACTIVE
+    }
+    CBTPERSON {
+        int ID_CBTPERSON_CODE PK
+        varchar CBTPERSON_IDENTIFICATION
+        varchar CBTPERSON_NAMES
+        varchar CBTPERSON_LAST_NAME
+        varchar CBTPERSON_ADDRESS
+        varchar CBTPERSON_PHONE
+        varchar CBTPERSON_EMAIL
+        int XID_CBTGEN_CODE FK
+        int XID_CBTETH_CODE FK
+        int XID_CBTDIV_CODE FK
+        varchar CBTPERSON_IMAGE_PATH
+        bool CBTPERSON_ACTIVE
+    }
+    CBTUSE {
+        int ID_CBTUSE_CODE PK
+        varchar CBTUSE_USER_ID UK
+        varchar CBTUSE_USERNAME
+        varchar CBTUSE_EMAIL
+        int XID_CBTPERSON_CODE FK
+        int XID_CBTPRE_CODE FK
+        bool CBTUSE_ACTIVE
+    }
+
+    CBTGEN ||--o{ CBTPERSON : genera
+    CBTETH ||--o{ CBTPERSON : etnia
+    CBTDIV ||--o{ CBTPERSON : division
+    CBTPERSON ||--o{ CBTUSE : usuario
+    CBTPRE ||--o{ CBTUSE : preferencias
 ```
 
-## Integrate with your tools
+## Entity Class Diagram
 
-- [ ] [Set up project integrations](https://gitlab.crsoft.org/microservices/cartonplast/cp-users-ws/-/settings/integrations)
+```mermaid
+classDiagram
+    class Person {
+        +Long id
+        +String code
+        +String identification
+        +String names
+        +String lastName
+        +String address
+        +String phone
+        +String cellPhone
+        +String email
+        +LocalDate birthDate
+        +Gender gender
+        +Ethnic ethnic
+        +Division division
+        +String imagePath
+        +Boolean active
+    }
+    class User {
+        +Long id
+        +String userId
+        +String username
+        +String email
+        +Person person
+        +Preferences preferences
+        +Boolean active
+    }
+    class Preferences {
+        +Long id
+        +String locale
+        +String theme
+        +Boolean sidebarCollapsed
+        +Boolean darkMode
+    }
+    class Gender {
+        +Long id
+        +String code
+        +String name
+        +Boolean active
+    }
+    class Ethnic {
+        +Long id
+        +String code
+        +String name
+        +Boolean active
+    }
+    class Division {
+        +Long id
+        +String code
+        +String name
+        +Boolean active
+    }
+    class KeycloakUser {
+        +String id
+        +String username
+        +String email
+        +String firstName
+        +String lastName
+        +Boolean enabled
+        +List~String~ roles
+        +List~String~ groups
+    }
 
-## Collaborate with your team
+    User --> Person
+    User --> Preferences
+    Person --> Gender
+    Person --> Ethnic
+    Person --> Division
+    User ..> KeycloakUser : syncs with
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## User Creation Flow
 
-## Test and Deploy
+```mermaid
+sequenceDiagram
+    participant FE as Frontend
+    participant WS as cp-users-ws
+    participant KC as Keycloak Admin API
+    participant DB as MariaDB
+    participant CFG as cp-config-ws
 
-Use the built-in continuous integration in GitLab.
+    FE->>WS: POST /api/v1/users (CreateUserReq)
+    WS->>WS: Validate username uniqueness
+    WS->>KC: POST /admin/realms/carton-plast/users
+    KC-->>WS: 201 Created (userId)
+    WS->>WS: Generate username
+    WS->>DB: INSERT INTO CBTPERSON (person data)
+    WS->>DB: INSERT INTO CBTUSE (user data, userId ref)
+    opt Role assignment
+        WS->>KC: POST /users/{id}/role-mappings
+        KC-->>WS: OK
+    end
+    opt Image upload
+        FE->>CFG: POST /api/v1/files/upload
+        CFG->>WS: Update person.imagePath
+    end
+    WS-->>FE: 201 Created (UserRes)
+```
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Controllers (11 total)
 
-***
+### User Management
+| Controller | Endpoint | Operations | Roles |
+|-----------|----------|------------|-------|
+| `UserController` | `/api/v1/users` | CRUD users, generate username, find by email, find by username | `backend-admin` |
+| `PersonController` | `/api/v1/persons` | List persons, search, profile by username, delete, get image | Authenticated |
+| `PreferenceController` | `/api/v1/users/{username}/preferences` | Get/update user preferences | `backend-admin`, `backend-user`, `backend-supervisor` |
 
-# Editing this README
+### Catalogs
+| Controller | Endpoint | Operations |
+|-----------|----------|------------|
+| `GenderController` | `/api/v1/genders` | Gender CRUD |
+| `EthnicController` | `/api/v1/ethnics` | Ethnicity CRUD |
+| `DivisionController` | `/api/v1/divisions` | Division CRUD |
+| `RelationshipController` | `/api/v1/relationships` | Relationship CRUD |
+| `FirstDigitController` | `/api/v1/first-digits` | First digit catalog CRUD |
+| `SecondDigitController` | `/api/v1/second-digits` | Second digit catalog CRUD |
+| `RoleController` | `/api/v1/roles` | Keycloak role list/sync |
+| `GroupController` | `/api/v1/groups` | Keycloak group list |
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to
-structure it however you want - this is just a starting point!). Thank you
-to [makeareadme.com](https://www.makeareadme.com/) for this template.
+## Database Migrations (Flyway)
 
-## Suggestions for a good README
+3 migrations under `src/main/resources/db/migration/`.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are
-suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long
-is better than too short. If you think your README is too long, consider utilizing another form of documentation rather
-than cutting out information.
+| Migration | Tables Created | Description |
+|-----------|---------------|-------------|
+| V1 | `CBTPRE` | User preferences table |
+| V2 | `CBTGEN`, `CBTETH`, `CBTDIV`, `CBTPERSON` | Gender, ethnicity, division, person profiles |
+| V3 | `CBTUSE` | Users table (FK to CBTPERSON and CBTPRE) |
 
-## Name
+### Table Details
+- **CBTPRE** -- User preferences (locale, theme, sidebar collapsed, etc.)
+- **CBTGEN** -- Gender catalog (Masculino, Femenino, etc.)
+- **CBTETH** -- Ethnicity catalog
+- **CBTDIV** -- Division/Department catalog
+- **CBTPERSON** -- Person profiles (names, identification, contact info, image URL)
+- **CBTUSE** -- System users (linked to Keycloak ID, references person and preferences)
 
-Choose a self-explaining name for your project.
+## Key Entities
 
-## Description
+| Entity | Table | Fields |
+|--------|-------|--------|
+| `Person` | `CBTPERSON` | id, code, identification, names, lastName, address, phone, cellPhone, email, birthDate, gender, ethnic, division, imagePath, active |
+| `User` | `CBTUSE` | id, userId (Keycloak UUID), username, email, person (FK), preferences (FK), active |
+| `Preferences` | `CBTPRE` | id, locale, theme, sidebarCollapsed, darkMode |
+| `Gender` | `CBTGEN` | id, code, name, active |
+| `Ethnic` | `CBTETH` | id, code, name, active |
+| `Division` | `CBTDIV` | id, code, name, active |
 
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be
-unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your
-project, this is a good place to list differentiating factors.
+## Build & Dependencies
 
-## Badges
+**Build**: Gradle 6.8.3, Java 11, fat JAR
 
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the
-project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+**Key dependencies** (`build.gradle`):
+- `spring-boot-starter-web` 2.6.7
+- `spring-boot-starter-data-jpa` 2.6.7
+- `spring-boot-starter-security` 2.6.7
+- `keycloak-admin-client` 18.0.0 (Keycloak admin REST API)
+- `keycloak-spring-boot-starter` 18.0.0
+- `mariadb-java-client` 3.0.4
+- `flyway-core` / `flyway-mysql` 8.0.5
+- `mapstruct` 1.4.2.Final
+- `lombok` 1.18.22
+- `commons-lang3` 3.12.0
 
-## Visuals
+## Configuration Profiles
 
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see
-GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+| Profile | Port | DB Name | Keycloak URL | MinIO Bucket |
+|---------|------|---------|--------------|--------------|
+| `local` | 8081 | `cartonplast-users-dev` | `https://auth-test.carton-plast.com` | `images-test` |
+| `develop` | 8080 | `cartonplast_users_develop` | `https://auth-dev.carton-plast.com` | `images-develop` |
+| `test` | 8080 | `cartonplast_users_test` | `https://auth-test.carton-plast.com` | `images-test` |
+| `master` | 8080 | -- | `https://auth-test.carton-plast.com` | -- |
 
-## Installation
+## CI/CD
 
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew.
-However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing
-specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a
-specific context like a particular programming language version or operating system or has dependencies that have to be
-installed manually, also add a Requirements subsection.
+- **Jenkinsfile**: Kubernetes pod with `dind`, `gradle:6.8.3-jdk11`, `kustomize:v4.1.3`
+- **Pipeline stages**: `test` -> `build` (`gradle clean build -x test`) -> Docker image build -> push to registry -> ArgoCD deploy (develop/test)
+- **Note**: No SonarQube stage (unlike core/config)
+- **Dockerfile**: `adoptopenjdk/openjdk11:alpine-jre`, exposes port 8080, runs fat JAR
 
-## Usage
+## Running Locally
 
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of
-usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably
-include in the README.
+```bash
+cd erp-users-ws
+./gradlew bootRun
+# App starts at http://localhost:8081
+# Active profile: local
+```
 
-## Support
+## Integration Points
 
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address,
-etc.
+- **cp-config-ws** (`cp.config.ws.url`): Upload/download user profile images
+- **Keycloak Admin API**: Create/update/delete users, assign roles, manage groups
+- **Keycloak OAuth2**: Validates bearer tokens for secured endpoints
 
-## Roadmap
+## Related Services
 
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started.
-Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps
-explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce
-the likelihood that the changes inadvertently break something. Having instructions for running tests is especially
-helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-
-Show your appreciation to those who have contributed to the project.
-
-## License
-
-For open source projects, say how it is licensed.
-
-## Project status
-
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has
-slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or
-owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- **cp-core-ws** -- Core business logic (uses user data for order assignment, etc.)
+- **cp-config-ws** -- File storage for user images
+- **erp-frontend** -- Angular SPA consuming user/person/preference APIs
