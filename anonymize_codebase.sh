@@ -9,12 +9,7 @@
 
 echo "Starting anonymization process..."
 
-# 1. Rename directories
-echo "Renaming directories..."
-if [ -d "cartonplastng" ]; then mv cartonplastng erp-frontend; fi
-if [ -d "cp-core-ws" ]; then mv cp-core-ws erp-core-ws; fi
-if [ -d "cp-config-ws" ]; then mv cp-config-ws erp-config-ws; fi
-if [ -d "cp-users-ws" ]; then mv cp-users-ws erp-users-ws; fi
+# 1. Rename files (Directories were already renamed during monorepo merge)
 
 # Function to rename directories and files containing 'cp-' to 'erp-'
 rename_files_and_dirs() {
