@@ -1,0 +1,23 @@
+package org.crsoft.cartonplast.vo.enums;
+
+/**
+ * @author lpillaga on 03/07/2022
+ */
+public enum SearchOperation {
+    GREATER_THAN,
+    LESS_THAN,
+    GREATER_THAN_EQUAL,
+    LESS_THAN_EQUAL,
+    NOT_EQUAL,
+    EQUAL,
+    LIKE,
+    LIKE_NOT,
+    LIKE_START,
+    LIKE_END,
+    IN,
+    NOT_IN,
+    DATE_IS,
+    DATE_IS_NOT,
+    DATE_BEFORE,
+    DATE_AFTER
+}
